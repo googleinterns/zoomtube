@@ -25,25 +25,24 @@ This project uses the following tools:
 - [YouTube iFrame API]() for displaying video
 - [AppEngine]() for deploying
 
-*TODO: Add more.*
+*TODO: Add urls and more APIs.*
 
 ## Usage and Deployment
 
-To run the project, you need to install Maven and the Google Cloud Platform SDK.
-
-Create an AppEngine project within the Google Cloud Platform Console, and update
-the project id in `pom.xml`.
+To run the project, you need to install `npm`, Maven, and the Google Cloud
+Platform SDK.
 
 You can run a local test server using
 
 ```
-mvn package appengine:run
+make run
 ```
 
-or deploy using
+To deploy, create an AppEngine project within the Google Cloud Platform
+Console, and update the project id in `pom.xml`. Then, deploy using
 
 ```
-mvn package appengine:deploy
+make deploy
 ```
 
 ## Context
