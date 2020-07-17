@@ -6,5 +6,11 @@ node_modules/
 # Ignore generated Maven build files
 target/
 
-# Ignore editor config
+# Ignore editor config (jetbrains)
 .idea
+
+# Ignore editor config (vs-code)
+.settings/
+.project
+.classpath
+.factorypath
