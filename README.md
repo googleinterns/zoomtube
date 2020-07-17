@@ -17,6 +17,34 @@ annotations can include comments, questions, and replies. Students watching can
 easily refer to relevant comments made by other students, add their own, and
 reply to other students’ questions.
 
+## Technology and APIs
+
+This project uses the following tools:
+
+- [YouTube Data API]() for generating transcripts
+- [AppEngine]() for deploying
+
+*TODO: Add more.*
+
+## Usage and Deployment
+
+To run the project, you need to install Maven and the Google Cloud Platform SDK.
+
+Create an AppEngine project within the Google Cloud Platform Console, and update
+the project id in `pom.xml`.
+
+You can run a local test server using
+
+```
+mvn package appengine:run
+```
+
+or deploy using
+
+```
+mvn package appengine:deploy
+```
+
 ## Context
 
 ZoomTube was developed by Amy (@amuamushu), Jay (@jaysaleh), and Nathan (@n-wach)
