@@ -22,6 +22,7 @@ reply to other students’ questions.
 This project uses the following tools:
 
 - [YouTube Data API]() for generating transcripts
+- [YouTube iFrame API]() for displaying video
 - [AppEngine]() for deploying
 
 *TODO: Add more.*
