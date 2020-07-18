@@ -1,6 +1,6 @@
 # ZoomTube
 
-View our [Design Doc](https://docs.google.com/document/d/12t7FDPDpTpHzrQBJ3T8qdmGKGrPi3lr2-UPmoc2ISHI).
+View our [Design Doc](https://docs.google.com/document/d/12t7FDPDpTpHzrQBJ3T8qdmGKGrPi3lr2-UPmoc2ISHI/edit?usp=sharing).
 
 ## Overview
 
