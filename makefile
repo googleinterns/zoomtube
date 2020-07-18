@@ -8,14 +8,20 @@ node_modules:
 	npm install clang-format prettier css-validator html-validate eslint eslint-config-google
 
 pretty: node_modules
-	$(PRETTIER) --write portfolio/src/main/webapp/*.{html,css}
-	find portfolio/src/main/java -iname *.java | xargs $(CLANG_FORMAT) -i
-	find portfolio/src/main/webapp -iname *.js | xargs $(CLANG_FORMAT) -i
+	$(PRETTIER) --write src/main/webapp/*.{html,css}
+	find src/main/java -iname *.java | xargs $(CLANG_FORMAT) -i
+	find src/main/webapp -iname *.js | xargs $(CLANG_FORMAT) -i
 
 validate: node_modules
-	$(HTML_VALIDATE) portfolio/src/main/webapp/*.html
-	$(CSS_VALIDATOR) portfolio/src/main/webapp/*.css
-	$(ESLINT) portfolio/src/main/webapp/*.js
+	$(HTML_VALIDATE) src/main/webapp/*.html
+	$(CSS_VALIDATOR) src/main/webapp/*.css
+	$(ESLINT) src/main/webapp/*.js
 
 package:
 	mvn package
+
+run: pretty
+	mvn package appengine:run
+
+deploy: pretty validate
+	mvn package appengine:deploy
