@@ -21,11 +21,12 @@ reply to other students’ questions.
 
 This project uses the following tools:
 
-- [YouTube Data API]() for generating transcripts
-- [YouTube iFrame API]() for displaying video
-- [AppEngine]() for deploying
-
-*TODO: Add urls and more APIs.*
+- [AppEngine on Google Cloud](https://cloud.google.com/appengine) for deploying
+- [Java Servlets](https://docs.oracle.com/javaee/5/tutorial/doc/bnafe.html) for back-end
+- [React](https://reactjs.org/) for front-end
+- [YouTube Data API](https://developers.google.com/youtube/v3) for generating transcripts
+- [YouTube iFrame API](https://developers.google.com/youtube/iframe_api_reference) for displaying video
+- [Perspective API](https://www.perspectiveapi.com/) for automatic discussion moderation
 
 ## Usage and Deployment
 
@@ -47,5 +48,8 @@ make deploy
 
 ## Context
 
-ZoomTube was developed by Amy (@amuamushu), Jay (@jaysaleh), and Nathan (@n-wach)
-as a capstone project for Google's 2020 STEP internship program.
+ZoomTube was developed by
+Amy ([@amuamushu](https://github.com/amuamushu)),
+Jay ([@jaysaleh](https://github.com/jaysaleh)), and
+Nathan ([@n-wach](https://github.com/n-wach)) as a capstone project for Google's
+2020 STEP internship program.
