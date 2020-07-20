@@ -15,10 +15,28 @@
 const ENDPOINT = '/discussion';
 const PARAM_LECTURE = 'lecture';
 
+
+/**
+ * Posts comment to {@code ENDPOINT} and reloads the discussion.
+ */
+async function postAndReload(postTextarea, discussionElement, lectureKey) {
+  fetch(ENDPOINT, {
+    method: 'POST',
+    body: postTextarea.value,
+  }).then(res => {
+    postTextarea.value = '';
+    loadDiscussion(discussionElement, lectureKey);
+  });
+}
+
+
 /**
  * Adds comments to the {@code discussionElement}.
  */
 async function loadDiscussion(discussionElement, lectureKey) {
+  // Clear any existing comments before loading.
+  discussionElement.textContent = '';
+
   const comments = await fetchDiscussion(lectureKey);
   for (const comment of comments) {
     discussionElement.appendChild(createComment(comment));
