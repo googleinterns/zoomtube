@@ -1,4 +1,4 @@
- 
+
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@ package com.google.sps.data;
 import com.google.auto.value.AutoValue;
 
 /** Stores data for lectures added to site. */
-@AutoValue 
+@AutoValue
 public abstract class Lecture {
   public abstract long id();
   public abstract String lectureName();
   public abstract String videoUrl();
   public abstract String videoId();
 
-  /** 
+  /**
    * Creates a Lecture.
    * @param id Id of object stored in database
    * @param lectureName Name of lecture

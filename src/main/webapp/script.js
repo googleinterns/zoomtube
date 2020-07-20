@@ -15,17 +15,17 @@ async function loadLectureList() {
   }
 }
 
-/** 
- * Creates and returns a <li> containing an <a> linking to {@code lecture.videoUrl}
- * and the {@code lecture.lectureName}.
+/**
+ * Creates and returns a <li> containing an <a> linking to {@code
+ * lecture.videoUrl} and the {@code lecture.lectureName}.
  */
 function createLectureListItem(lecture) {
   const listItem = document.createElement('li');
   const lectureLink = document.createElement('a');
-  
+
   // TODO: Redirect to specific lecture page.
   lectureLink.href = lecture.videoUrl;
-  lectureLink.target = "_blank";
+  lectureLink.target = '_blank';
   lectureLink.innerText = lecture.lectureName;
 
   listItem.appendChild(lectureLink);
