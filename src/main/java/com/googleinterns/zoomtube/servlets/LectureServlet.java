@@ -14,10 +14,16 @@
 
 package com.googleinterns.zoomtube.servlets;
 
+import java.util.*; 
 import java.util.regex.*;
+import com.google.gson.Gson;
+import com.google.sps.data.Lecture;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity; 
+import com.google.appengine.api.datastore.Entity;
+
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -35,7 +41,7 @@ public class LectureServlet extends HttpServlet {
   /* Used to create Entity and its fields */
   private static final String LECTURE = "Lecture";
   private static final String LECTURE_NAME = "lectureName";
-  private static final String VIDEO_LINK = "videoLink";
+  private static final String VIDEO_URL = "videoUrl";
   private static final String VIDEO_ID = "videoId";
 
   /* Name of input field used for lecture name in lecture selection page. */
@@ -53,24 +59,43 @@ public class LectureServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
-    String videoLink = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
-    String videoId = getVideoId(videoLink);
+    String videoUrl = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
+    String videoId = getVideoId(videoUrl);
 
     // Creates Entity and stores in database
     Entity lectureEntity = new Entity(LECTURE);
     lectureEntity.setProperty(LECTURE_NAME, lectureName);
-    lectureEntity.setProperty(VIDEO_LINK, videoLink);
+    lectureEntity.setProperty(VIDEO_URL, videoUrl);
     lectureEntity.setProperty(VIDEO_ID, videoId);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(lectureEntity);
 
-    // TODO: Add redirect link.
+    // TODO: Add redirect to lecture page.
+    response.sendRedirect("/index.html");
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.sendError(500, "Not Implemented");
+    Query query = new Query(LECTURE);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Lecture> lectures = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      long id = entity.getKey().getId();
+      String lectureName = (String) entity.getProperty(LECTURE_NAME);
+      String videoUrl = (String) entity.getProperty(VIDEO_URL);
+      String videoId = (String) entity.getProperty(VIDEO_ID);
+      
+      // Creates new Comment for JSON accessibility
+      Lecture newLecture = Lecture.create(id, lectureName, videoUrl, videoId);
+      lectures.add(newLecture);
+    }
+
+    Gson gson = new Gson();
+    response.setContentType("text/html");
+    response.getWriter().println(gson.toJson(lectures));
   }
 
   /**
@@ -78,6 +103,7 @@ public class LectureServlet extends HttpServlet {
    * If the {@code name} cannot be found, return {@code defaultValue}.
    * @param request Form sent by client
    * @param name {@code <input>} to read content of
+   * @param defaultValue Value to return if no content is found
    */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
@@ -87,12 +113,12 @@ public class LectureServlet extends HttpServlet {
     return value;
   }
   
-  /** Returns YouTube video ID for a given {@code videoLink}. */
-  private String getVideoId(String videoLink) {
+  /** Returns YouTube video ID for a given {@code videoUrl}. */
+  private String getVideoId(String videoUrl) {
     String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
     Pattern compiledPattern = Pattern.compile(pattern);
-    Matcher matcher = compiledPattern.matcher(videoLink);
+    Matcher matcher = compiledPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();
     }
