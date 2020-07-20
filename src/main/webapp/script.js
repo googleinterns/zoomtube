@@ -23,7 +23,7 @@ function createLectureListItem(lecture) {
   const listItem = document.createElement('li');
   const lectureLink = document.createElement('a');
   
-  // TODO: Redirect to specific lecture page/
+  // TODO: Redirect to specific lecture page.
   lectureLink.href = lecture.videoUrl;
   lectureLink.target = "_blank";
   lectureLink.innerText = lecture.lectureName;
