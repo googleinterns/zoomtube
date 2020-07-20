@@ -34,7 +34,7 @@ public class LectureServlet extends HttpServlet {
   /* Used to create Entity and its fields */
   private static final String LECTURE = "Lecture";
   private static final String LECTURE_NAME = "lectureName";
-  private static final String VIDEO_LINK = "videoLink";
+  private static final String VIDEO_URL = "videoUrl";
   private static final String VIDEO_ID = "videoId";
 
   /* Name of input field used for lecture name in lecture selection page. */
@@ -52,13 +52,13 @@ public class LectureServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
-    String videoLink = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
-    String videoId = getVideoId(videoLink);
+    String videoUrl = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
+    String videoId = getVideoId(videoUrl);
 
     // Creates Entity and stores in database
     Entity lectureEntity = new Entity(LECTURE);
     lectureEntity.setProperty(LECTURE_NAME, lectureName);
-    lectureEntity.setProperty(VIDEO_LINK, videoLink);
+    lectureEntity.setProperty(VIDEO_URL, videoUrl);
     lectureEntity.setProperty(VIDEO_ID, videoId);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -86,11 +86,11 @@ public class LectureServlet extends HttpServlet {
     return value;
   }
   
-  /** Returns YouTube video ID for a given {@code videoLink}. */
-  private String getVideoId(String videoLink) {
+  /** Returns YouTube video ID for a given {@code videoUrl}. */
+  private String getVideoId(String videoUrl) {
     String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
     Pattern compiledPattern = Pattern.compile(pattern);
-    Matcher matcher = compiledPattern.matcher(videoLink);
+    Matcher matcher = compiledPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();
     }
