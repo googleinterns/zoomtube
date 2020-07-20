@@ -23,7 +23,6 @@ This project uses the following tools:
 
 - [AppEngine on Google Cloud](https://cloud.google.com/appengine) for deploying
 - [Java Servlets](https://docs.oracle.com/javaee/5/tutorial/doc/bnafe.html) for back-end
-- [React](https://reactjs.org/) for front-end
 - [YouTube Data API](https://developers.google.com/youtube/v3) for generating transcripts
 - [YouTube iFrame API](https://developers.google.com/youtube/iframe_api_reference) for displaying video
 - [Perspective API](https://www.perspectiveapi.com/) for automatic discussion moderation
