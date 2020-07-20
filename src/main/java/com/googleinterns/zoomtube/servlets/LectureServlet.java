@@ -17,12 +17,14 @@ package com.googleinterns.zoomtube.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import com.google.sps.data.Lecture;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
@@ -86,13 +88,13 @@ public class LectureServlet extends HttpServlet {
 
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      long id = lecture.getKey().getId();
+      Key key = lecture.getKey();
       String lectureName = (String) lecture.getProperty(LECTURE_NAME);
       String videoUrl = (String) lecture.getProperty(VIDEO_URL);
       String videoId = (String) lecture.getProperty(VIDEO_ID);
 
       // Creates new Comment for JSON accessibility
-      Lecture newLecture = Lecture.create(id, lectureName, videoUrl, videoId);
+      Lecture newLecture = Lecture.create(key, lectureName, videoUrl, videoId);
       lectures.add(newLecture);
     }
 
