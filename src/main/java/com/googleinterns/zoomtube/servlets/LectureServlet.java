@@ -29,6 +29,10 @@ import javax.servlet.http.HttpServletResponse;
 /** Provides information on a lecture. */
 @WebServlet("/lecture")
 public class LectureServlet extends HttpServlet {
+  
+  /* Used to generate a Pattern for a Video URL. */
+  private static final String PATTERN = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+
   /* Used to create Entity and its fields */
   private static final String LECTURE = "Lecture";
   private static final String LECTURE_NAME = "lectureName";
@@ -42,9 +46,12 @@ public class LectureServlet extends HttpServlet {
   /* Default value if new lecture inputs are empty. */
   private static final String DEFAULT_VALUE = "";
 
+  /* Pattern used to create a matcher for a video ID. */
+  Pattern compiledPattern;
+
   @Override
   public void init() throws ServletException {
-    // TODO: Implement LectureServlet.
+    compiledPattern = Pattern.compile(PATTERN);
   }
 
   @Override
@@ -85,9 +92,6 @@ public class LectureServlet extends HttpServlet {
 
   /** Returns YouTube video ID for a given {@code videoUrl}. */
   private String getVideoId(String videoUrl) {
-    String pattern =
-        "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
-    Pattern compiledPattern = Pattern.compile(pattern);
     Matcher matcher = compiledPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();
