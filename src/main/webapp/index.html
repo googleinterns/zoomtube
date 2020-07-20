@@ -4,4 +4,16 @@
 <title>ZoomTube</title>
 <link rel="stylesheet" href="style.css" />
 <script src="script.js"></script>
-<p>Hello world!</p>
+<form action="/lecture" method="POST">
+  <h2>Add a new lecture!<h2>
+  <h3>Enter a name for this lecture:</h3>
+  <input type="text" placeholder="Lecture Name" name="name-input">
+  <br/>
+  <h3>Enter the YouTube link for this lecture:<h3>
+  <input type="text" placeholder="Name" name="video-input">
+  <br/>
+  <br/>
+  <div id="submit-button">
+    <input type="submit"/>
+  </div>
+</form>
