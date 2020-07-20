@@ -51,7 +51,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
     String videoLink = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
     String videoId = getVideoId(videoLink);
@@ -65,7 +65,7 @@ public class LectureServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(lectureEntity);
 
-    // TODO: Add redirect link.
+    // TODO: Add redirect link to lecture site.
   }
 
   @Override
@@ -90,12 +90,12 @@ public class LectureServlet extends HttpServlet {
   /** Returns YouTube video ID for a given {@code videoLink}. */
   private String getVideoId(String videoLink) {
     String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
-
     Pattern compiledPattern = Pattern.compile(pattern);
     Matcher matcher = compiledPattern.matcher(videoLink);
     if (matcher.find()) {
       return matcher.group();
     }
-    return null;
+    // TODO: Throw an error saying ID not found.
+    return "";
   }
 }
