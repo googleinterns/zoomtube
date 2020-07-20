@@ -96,9 +96,9 @@ public class LectureServlet extends HttpServlet {
   /**
    * Returns value with {@code name} from the {@code request} form.
    * If the {@code name} cannot be found, return {@code defaultValue}.
-   * @param request Form sent by client
-   * @param name {@code <input>} to read content of
-   * @param defaultValue Value to return if no content is found
+   * @param request Form sent by client.
+   * @param name {@code <input>} to read content of.
+   * @param defaultValue Value to return if no content is found.
    */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
