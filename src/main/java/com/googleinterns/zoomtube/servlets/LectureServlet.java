@@ -18,7 +18,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
-import java.util.regex.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Provides information on a lecture. */
-// TODO: Check if YouTube URL is valid.
 @WebServlet("/lecture")
 public class LectureServlet extends HttpServlet {
   /* Used to create Entity and its fields */
@@ -48,6 +48,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   @Override
+  // TODO: Check and see if lectureURL is already in database and if it is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
     String videoUrl = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
