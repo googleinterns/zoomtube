@@ -14,11 +14,11 @@
 
 package com.googleinterns.zoomtube.servlets;
 
-import java.util.regex.*;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity; 
+import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
+import java.util.regex.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/lecture")
 public class LectureServlet extends HttpServlet {
-
   /* Used to create Entity and its fields */
   private static final String LECTURE = "Lecture";
   private static final String LECTURE_NAME = "lectureName";
@@ -73,7 +72,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns value with {@code name} from the {@code request} form. 
+   * Returns value with {@code name} from the {@code request} form.
    * If the {@code name} cannot be found, return {@code defaultValue}.
    * @param request Form sent by client
    * @param name {@code <input>} to read content of
@@ -85,10 +84,11 @@ public class LectureServlet extends HttpServlet {
     }
     return value;
   }
-  
+
   /** Returns YouTube video ID for a given {@code videoUrl}. */
   private String getVideoId(String videoUrl) {
-    String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+    String pattern =
+        "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
     Pattern compiledPattern = Pattern.compile(pattern);
     Matcher matcher = compiledPattern.matcher(videoUrl);
     if (matcher.find()) {
