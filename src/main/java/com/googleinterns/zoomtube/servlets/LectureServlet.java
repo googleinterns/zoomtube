@@ -25,9 +25,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Provides information on a lecture.
- */
+/** Provides information on a lecture. */
+// TODO: Check if YouTube URL is valid.
 @WebServlet("/lecture")
 public class LectureServlet extends HttpServlet {
   /* Used to create Entity and its fields */
@@ -74,8 +73,6 @@ public class LectureServlet extends HttpServlet {
   /**
    * Returns value with {@code name} from the {@code request} form.
    * If the {@code name} cannot be found, return {@code defaultValue}.
-   * @param request Form sent by client
-   * @param name {@code <input>} to read content of
    */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
