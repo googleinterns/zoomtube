@@ -21,10 +21,8 @@ import com.google.sps.data.Lecture;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -70,8 +68,6 @@ public class LectureServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(lectureEntity);
-
-    // TODO: Add redirect to lecture page.
     response.sendRedirect("/index.html");
   }
 
@@ -116,12 +112,12 @@ public class LectureServlet extends HttpServlet {
   /** Returns YouTube video ID for a given {@code videoUrl}. */
   private String getVideoId(String videoUrl) {
     String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
-
     Pattern compiledPattern = Pattern.compile(pattern);
     Matcher matcher = compiledPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();
     }
-    return null;
+    // TODO: Throw an error saying ID not found.
+    return "";
   }
 }
