@@ -17,16 +17,21 @@ package com.googleinterns.zoomtube.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.repackaged.com.google.common.io.CharStreams;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Comment;
 import java.io.IOException;
+import java.util.Date;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +46,22 @@ public class DiscussionServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.sendError(500, "Not Implemented");
+    String lecture = request.getParameter(PARAM_LECTURE);
+    String content = CharStreams.toString(request.getReader());
+
+    // TODO: Support more properties.
+    Entity commentEntity = new Entity(Comment.ENTITY_KIND);
+    commentEntity.setProperty(Comment.PROP_LECTURE, KeyFactory.createKey("Lecture", lecture));
+    commentEntity.setProperty(Comment.PROP_PARENT, null);
+    commentEntity.setProperty(Comment.PROP_TIMESTAMP, 0);
+    commentEntity.setProperty(Comment.PROP_AUTHOR, "");
+    commentEntity.setProperty(Comment.PROP_CONTENT, content);
+    commentEntity.setProperty(Comment.PROP_CREATED, new Date());
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
+    response.setStatus(200);
   }
 
   @Override
