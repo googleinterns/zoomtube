@@ -40,12 +40,6 @@ public class LectureServlet extends HttpServlet {
   private static final String YOUTUBE_VIDEO_URL_PATTERN =
       "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
-  /* Used to create Entity and its fields */
-  private static final String LECTURE = "Lecture";
-  private static final String LECTURE_NAME = "lectureName";
-  private static final String VIDEO_URL = "videoUrl";
-  private static final String VIDEO_ID = "videoId";
-
   /* Name of input field used for lecture name in lecture selection page. */
   private static final String NAME_INPUT = "name-input";
   /* Name of input field used for lecture video link in lecture selection page. */
@@ -70,10 +64,10 @@ public class LectureServlet extends HttpServlet {
     String videoId = getVideoId(videoUrl);
 
     // Creates Entity and stores in database
-    Entity lectureEntity = new Entity(LECTURE);
-    lectureEntity.setProperty(LECTURE_NAME, lectureName);
-    lectureEntity.setProperty(VIDEO_URL, videoUrl);
-    lectureEntity.setProperty(VIDEO_ID, videoId);
+    Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
+    lectureEntity.setProperty(Lecture.ENTITY_KIND, lectureName);
+    lectureEntity.setProperty(Lecture.PROP_URL, videoUrl);
+    lectureEntity.setProperty(Lecture.PROP_ID, videoId);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(lectureEntity);
@@ -82,19 +76,13 @@ public class LectureServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query(LECTURE);
+    Query query = new Query(Lecture.ENTITY_KIND);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      Key key = lecture.getKey();
-      String lectureName = (String) lecture.getProperty(LECTURE_NAME);
-      String videoUrl = (String) lecture.getProperty(VIDEO_URL);
-      String videoId = (String) lecture.getProperty(VIDEO_ID);
-
-      // Creates new Comment for JSON accessibility
-      Lecture newLecture = Lecture.create(key, lectureName, videoUrl, videoId);
+      Lecture newLecture = Lecture.fromEntity(lecture);
       lectures.add(newLecture);
     }
 
