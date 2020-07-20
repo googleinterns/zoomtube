@@ -23,7 +23,8 @@ import com.google.gson.Gson;
 import com.google.sps.data.Lecture;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,9 +32,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Provides information on a lecture. */
-// TODO: Check if YouTube URL is valid.
 @WebServlet("/lecture")
 public class LectureServlet extends HttpServlet {
+  /* Used to generate a Pattern for a Video URL. */
+  private static final String YOUTUBE_VIDEO_URL_PATTERN =
+      "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+
   /* Used to create Entity and its fields */
   private static final String LECTURE = "Lecture";
   private static final String LECTURE_NAME = "lectureName";
@@ -43,19 +47,24 @@ public class LectureServlet extends HttpServlet {
   /* Name of input field used for lecture name in lecture selection page. */
   private static final String NAME_INPUT = "name-input";
   /* Name of input field used for lecture video link in lecture selection page. */
-  private static final String VIDEO_INPUT = "video-input";
+  private static final String LINK_INPUT = "link-input";
   /* Default value if new lecture inputs are empty. */
   private static final String DEFAULT_VALUE = "";
+  private static final String REDIRECT_URL = "/";
+
+  /* Pattern used to create a matcher for a video ID. */
+  Pattern videoUrlGeneratedPattern;
 
   @Override
   public void init() throws ServletException {
-    // TODO: Implement LectureServlet.
+    videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
   @Override
+  // TODO: Check and see if lectureURL is already in database and if it is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
-    String videoUrl = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
+    String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
     String videoId = getVideoId(videoUrl);
 
     // Creates Entity and stores in database
@@ -66,7 +75,7 @@ public class LectureServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(lectureEntity);
-    response.sendRedirect("/index.html");
+    response.sendRedirect(REDIRECT_URL);
   }
 
   @Override
@@ -88,7 +97,7 @@ public class LectureServlet extends HttpServlet {
     }
 
     Gson gson = new Gson();
-    response.setContentType("text/html");
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(lectures));
   }
 
@@ -106,10 +115,7 @@ public class LectureServlet extends HttpServlet {
 
   /** Returns YouTube video ID for a given {@code videoUrl}. */
   private String getVideoId(String videoUrl) {
-    String pattern =
-        "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
-    Pattern compiledPattern = Pattern.compile(pattern);
-    Matcher matcher = compiledPattern.matcher(videoUrl);
+    Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();
     }

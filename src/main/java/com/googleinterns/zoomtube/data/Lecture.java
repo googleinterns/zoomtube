@@ -27,10 +27,11 @@ public abstract class Lecture {
 
   /**
    * Creates a Lecture.
-   * @param id Id of object stored in database
-   * @param lectureName Name of lecture
-   * @param videoUrl YouTube link where video is hosted
-   * @param videoId YouTube id of lecture video
+   *
+   * @param id Id of object stored in database.
+   * @param lectureName Name of lecture.
+   * @param videoUrl YouTube link where video is hosted.
+   * @param videoId YouTube id of lecture video.
    */
   public static Lecture create(long id, String lectureName, String videoUrl, String videoId) {
     return new AutoValue_Lecture(id, lectureName, videoUrl, videoId);

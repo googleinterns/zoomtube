@@ -4,16 +4,14 @@
 <title>ZoomTube</title>
 <link rel="stylesheet" href="style.css" />
 <script src="script.js"></script>
-<form name="lectureForm" action="/lecture" method="POST" onsubmit="return validateForm()" required>
+<form name="lectureForm" action="/lecture" method="post">
   <h2>Add a new lecture!</h2>
   <h3>Enter a name for this lecture:</h3>
-  <input type="text" placeholder="Lecture Name" name="name-input" />
+  <input type="text" placeholder="Lecture Name" name="name-input" required />
   <br />
   <h3>Enter the YouTube link for this lecture:</h3>
-  <input type="text" placeholder="Lecture URL" name="video-input" />
+  <input type="url" placeholder="Lecture URL" name="link-input" required />
   <br />
   <br />
-  <div id="submit-button">
-    <input type="submit" />
-  </div>
+  <button type="submit"></button>
 </form>
