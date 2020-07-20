@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/lecture")
 public class LectureServlet extends HttpServlet {
   /* Used to generate a Pattern for a Video URL. */
-  private static final String PATTERN =
+  private static final String YOUTUBE_VIDEO_URL_PATTERN =
       "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
   /* Used to create Entity and its fields */
@@ -47,11 +47,11 @@ public class LectureServlet extends HttpServlet {
   private static final String DEFAULT_VALUE = "";
 
   /* Pattern used to create a matcher for a video ID. */
-  Pattern compiledPattern;
+  Pattern videoUrlGeneratedPattern;
 
   @Override
   public void init() throws ServletException {
-    compiledPattern = Pattern.compile(PATTERN);
+    videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
   @Override
@@ -92,7 +92,7 @@ public class LectureServlet extends HttpServlet {
 
   /** Returns YouTube video ID for a given {@code videoUrl}. */
   private String getVideoId(String videoUrl) {
-    Matcher matcher = compiledPattern.matcher(videoUrl);
+    Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();
     }
