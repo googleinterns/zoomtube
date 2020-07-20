@@ -78,11 +78,11 @@ public class LectureServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     List<Lecture> lectures = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
-      long id = entity.getKey().getId();
-      String lectureName = (String) entity.getProperty(LECTURE_NAME);
-      String videoUrl = (String) entity.getProperty(VIDEO_URL);
-      String videoId = (String) entity.getProperty(VIDEO_ID);
+    for (Entity lecture : results.asIterable()) {
+      long id = lecture.getKey().getId();
+      String lectureName = (String) lecture.getProperty(LECTURE_NAME);
+      String videoUrl = (String) lecture.getProperty(VIDEO_URL);
+      String videoId = (String) lecture.getProperty(VIDEO_ID);
       
       // Creates new Comment for JSON accessibility
       Lecture newLecture = Lecture.create(id, lectureName, videoUrl, videoId);
