@@ -15,24 +15,42 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 
 /** Stores data for lectures added to site. */
 @AutoValue
 public abstract class Lecture {
-  public abstract long id();
+  /** Used to create an entity and its fields. */
+  public static final String ENTITY_KIND = "Lecture";
+  public static final String PROP_NAME = "lectureName";
+  public static final String PROP_URL = "videoUrl";
+  public static final String PROP_ID = "videoId";
+
+  public abstract Key key();
   public abstract String lectureName();
   public abstract String videoUrl();
   public abstract String videoId();
 
   /**
    * Creates a Lecture.
-   * @param id Id of object stored in database
-   * @param lectureName Name of lecture
-   * @param videoUrl YouTube link where video is hosted
-   * @param videoId YouTube id of lecture video
+   *
+   * @param key Key of object stored in database.
+   * @param lectureName Name of lecture.
+   * @param videoUrl YouTube link where video is hosted.
+   * @param videoId YouTube id of lecture video.
    */
-  public static Lecture create(long id, String lectureName, String videoUrl, String videoId) {
-    return new AutoValue_Lecture(id, lectureName, videoUrl, videoId);
+  public static Lecture create(Key key, String lectureName, String videoUrl, String videoId) {
+    return new AutoValue_Lecture(key, lectureName, videoUrl, videoId);
+  }
+
+  /** Returns a Lecture from {@code entity}. */
+  public static Lecture fromEntity(Entity entity) {
+    Key key = entity.getKey();
+    String lectureName = (String) entity.getProperty(PROP_NAME);
+    String videoUrl = (String) entity.getProperty(PROP_URL);
+    String videoId = (String) entity.getProperty(PROP_ID);
+    return Lecture.create(key, lectureName, videoUrl, videoId);
   }
 }

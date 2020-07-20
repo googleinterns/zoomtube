@@ -10,7 +10,7 @@ async function loadLectureList() {
 
   const lectureList = document.getElementById('lecture-list');
   lectureList.innerHTML = '';
-  for (lecture of jsonData) {
+  for (const lecture of jsonData) {
     lectureList.appendChild(createLectureListItem(lecture));
   }
 }
