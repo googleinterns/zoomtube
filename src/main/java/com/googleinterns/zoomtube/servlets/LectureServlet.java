@@ -50,7 +50,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
     String videoLink = getParameter(request, VIDEO_INPUT, DEFAULT_VALUE);
     String videoId = getVideoId(videoLink);
