@@ -71,7 +71,7 @@ public class LectureServlet extends HttpServlet {
     Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
     lectureEntity.setProperty(Lecture.PROP_NAME, lectureName);
     lectureEntity.setProperty(Lecture.PROP_URL, videoUrl);
-    lectureEntity.setProperty(Lecture.PROP_ID, videoId);
+    lectureEntity.setProperty(Lecture.PROP_VIDEO_ID, videoId);
 
     datastore.put(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity));
@@ -121,12 +121,12 @@ public class LectureServlet extends HttpServlet {
    */
   private String buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(Lecture.PROP_ID);
+    String videoId = (String) lectureEntity.getProperty(Lecture.PROP_VIDEO_ID);
 
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
-                                  .addParameter("id", lectureId)
-                                  .addParameter("videoId", videoId);
+                                  .addParameter(Lecture.PROP_ID, lectureId)
+                                  .addParameter(Lecture.PROP_VIDEO_ID, videoId);
       return urlBuilder.build().toString();
     } catch (URISyntaxException urlBuilderError) {
       throw new RuntimeException(urlBuilderError);
