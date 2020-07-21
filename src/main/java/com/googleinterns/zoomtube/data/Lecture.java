@@ -26,7 +26,8 @@ public abstract class Lecture {
   public static final String ENTITY_KIND = "Lecture";
   public static final String PROP_NAME = "lectureName";
   public static final String PROP_URL = "videoUrl";
-  public static final String PROP_ID = "videoId";
+  public static final String PROP_ID = "id";
+  public static final String PROP_VIDEO_ID = "videoId";
 
   public abstract Key key();
   public abstract String lectureName();
@@ -50,7 +51,7 @@ public abstract class Lecture {
     Key key = entity.getKey();
     String lectureName = (String) entity.getProperty(PROP_NAME);
     String videoUrl = (String) entity.getProperty(PROP_URL);
-    String videoId = (String) entity.getProperty(PROP_ID);
+    String videoId = (String) entity.getProperty(PROP_VIDEO_ID);
     return Lecture.create(key, lectureName, videoUrl, videoId);
   }
 }

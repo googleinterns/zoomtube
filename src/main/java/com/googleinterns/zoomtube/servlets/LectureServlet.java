@@ -23,6 +23,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import com.google.sps.data.Lecture;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -32,6 +33,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.client.utils.URIBuilder;
 
 /** Provides information on a lecture. */
 @WebServlet("/lecture")
@@ -46,13 +48,15 @@ public class LectureServlet extends HttpServlet {
   private static final String LINK_INPUT = "link-input";
   /* Default value if new lecture inputs are empty. */
   private static final String DEFAULT_VALUE = "";
-  private static final String REDIRECT_URL = "/";
+  private static final String REDIRECT_URL = "/lecture-view.html";
 
   /* Pattern used to create a matcher for a video ID. */
   Pattern videoUrlGeneratedPattern;
+  DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
+    datastore = DatastoreServiceFactory.getDatastoreService();
     videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
@@ -67,17 +71,15 @@ public class LectureServlet extends HttpServlet {
     Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
     lectureEntity.setProperty(Lecture.PROP_NAME, lectureName);
     lectureEntity.setProperty(Lecture.PROP_URL, videoUrl);
-    lectureEntity.setProperty(Lecture.PROP_ID, videoId);
+    lectureEntity.setProperty(Lecture.PROP_VIDEO_ID, videoId);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(lectureEntity);
-    response.sendRedirect(REDIRECT_URL);
+    response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(Lecture.ENTITY_KIND);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     List<Lecture> lectures = new ArrayList<>();
@@ -111,5 +113,23 @@ public class LectureServlet extends HttpServlet {
     }
     // TODO: Throw an error saying ID not found.
     return "";
+  }
+
+  /**
+   * Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}
+   * found in {@code lectureEntity}.
+   */
+  private String buildRedirectUrl(Entity lectureEntity) {
+    String lectureId = String.valueOf(lectureEntity.getKey().getId());
+    String videoId = (String) lectureEntity.getProperty(Lecture.PROP_VIDEO_ID);
+
+    try {
+      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
+                                  .addParameter(Lecture.PROP_ID, lectureId)
+                                  .addParameter(Lecture.PROP_VIDEO_ID, videoId);
+      return urlBuilder.build().toString();
+    } catch (URISyntaxException urlBuilderError) {
+      throw new RuntimeException(urlBuilderError);
+    }
   }
 }
