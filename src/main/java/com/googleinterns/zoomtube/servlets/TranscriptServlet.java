@@ -69,7 +69,7 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Use the client-provided lectureId.
-    long lectureId = 123456789; // Long.parseLong(request.getParameter(PARAM_LECTURE));
+    long lectureId = Long.parseLong(request.getParameter("id"));
 
     try {
       // Later, the video ID will be passed in from another servlet.
@@ -82,6 +82,10 @@ public class TranscriptServlet extends HttpServlet {
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       // A for loop is used because NodeList is not an Iterable.
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+        // TODO: Remove, currently here temporarily for testing purposes.
+        if (nodeIndex == 5) {
+          break;
+        }
         Node node = nodeList.item(nodeIndex);
         createEntity(node, lectureId);
       }
@@ -90,12 +94,13 @@ public class TranscriptServlet extends HttpServlet {
       System.out.println("XML parsing error");
     }
     // For testing purposes, will delete later.
-    response.sendRedirect("/transcript");
+    String testParamsString = "id=123456789&video=3ymwOvzhwHs";
+    response.setStatus(200);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = 123456789; // Long.parseLong(request.getParameter(PARAM_LECTURE));
+    long lectureId = Long.parseLong(request.getParameter("id"));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
     Filter lectureFilter = new FilterPredicate(Line.PROP_LECTURE, FilterOperator.EQUAL, lecture);
