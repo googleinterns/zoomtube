@@ -31,7 +31,6 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Comment;
 import java.io.IOException;
 import java.util.Date;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +52,7 @@ public class DiscussionServlet extends HttpServlet {
     Entity commentEntity = new Entity(Comment.ENTITY_KIND);
     commentEntity.setProperty(Comment.PROP_LECTURE, KeyFactory.createKey("Lecture", lecture));
     commentEntity.setProperty(Comment.PROP_PARENT, null);
-    commentEntity.setProperty(Comment.PROP_TIMESTAMP, 0);
+    commentEntity.setProperty(Comment.PROP_TIMESTAMP, 0.0);
     commentEntity.setProperty(Comment.PROP_AUTHOR, "");
     commentEntity.setProperty(Comment.PROP_CONTENT, content);
     commentEntity.setProperty(Comment.PROP_CREATED, new Date());
@@ -68,7 +67,7 @@ public class DiscussionServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    String lecture = request.getParameter(PARAM_LECTURE);
+    Key lecture = KeyFactory.createKey("Lecture", request.getParameter(PARAM_LECTURE));
     Filter lectureFilter = new FilterPredicate(Comment.PROP_LECTURE, FilterOperator.EQUAL, lecture);
 
     Query query = new Query(Comment.ENTITY_KIND)

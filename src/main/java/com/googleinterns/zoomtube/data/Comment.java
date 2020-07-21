@@ -31,7 +31,7 @@ public abstract class Comment {
   public static final String PROP_CONTENT = "content";
   public static final String PROP_CREATED = "created";
 
-  public static Comment create(Key key, Key lecture, Key parent, float timestamp, String author,
+  public static Comment create(Key key, Key lecture, Key parent, double timestamp, String author,
       String content, Date created) {
     return new AutoValue_Comment(key, lecture, parent, timestamp, author, content, created);
   }
@@ -40,7 +40,7 @@ public abstract class Comment {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
     Key parent = (Key) entity.getProperty(PROP_PARENT);
-    float timestamp = (float) entity.getProperty(PROP_TIMESTAMP);
+    double timestamp = (double) entity.getProperty(PROP_TIMESTAMP);
     String author = (String) entity.getProperty(PROP_AUTHOR);
     String content = (String) entity.getProperty(PROP_CONTENT);
     Date created = (Date) entity.getProperty(PROP_CREATED);
@@ -57,7 +57,7 @@ public abstract class Comment {
   @Nullable public abstract Key parent();
 
   /** Returns the timestamp in the video this comment is referencing. */
-  public abstract float timestamp();
+  public abstract double timestamp();
 
   /**
    * Returns the comment's author. This is the email of the user who posted the
