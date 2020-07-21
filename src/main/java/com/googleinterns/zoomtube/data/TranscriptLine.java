@@ -20,23 +20,25 @@ import com.google.auto.value.AutoValue;
 
 /** Contains data pertaining a single line of transcript. */
 @AutoValue
-public abstract class Line {
-  public static final String ENTITY_KIND = "Line";
+public abstract class TranscriptLine {
+  public static final String ENTITY_KIND = "TranscriptLine";
   public static final String PROP_LECTURE = "lecture";
   public static final String PROP_START = "start";
   public static final String PROP_DURATION = "duration";
   public static final String PROP_CONTENT = "content";
 
   /**
-   * Creates a {@code Line} object.
+   * Creates a {@code TranscriptLine} object.
    * @param key The key for the transcript.
    * @param lecture The key for the lecture.
    * @param start The starting timestamp for the lecture line in seconds.
    * @param duration The number of seconds that the timestamp lasts for.
    * @param content The text content of the transcript line.
    */
-  public static Line create(Key key, Key lecture, String start, String duration, String content) {
-    return new AutoValue_Line(key, lecture, start, duration, content);
+  // TODO: Update start to be a Date object and duration to be a long.
+  public static TranscriptLine create(
+      Key key, Key lecture, String start, String duration, String content) {
+    return new AutoValue_TranscriptLine(key, lecture, start, duration, content);
   }
 
   public abstract Key key();
@@ -50,15 +52,15 @@ public abstract class Line {
   public abstract String content();
 
   /**
-   * Creates a {@code Line} from a datastore {@link com.google.appengine.api.datastore.Entity}
-   * using the property names defined in this class.
+   * Creates a {@code TranscriptLine} from a datastore {@link
+   * com.google.appengine.api.datastore.Entity} using the property names defined in this class.
    */
-  public static Line fromEntity(Entity entity) {
+  public static TranscriptLine fromEntity(Entity entity) {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
     String start = (String) entity.getProperty(PROP_START);
     String duration = (String) entity.getProperty(PROP_DURATION);
     String content = (String) entity.getProperty(PROP_CONTENT);
-    return Line.create(key, lecture, start, duration, content);
+    return TranscriptLine.create(key, lecture, start, duration, content);
   }
 }
