@@ -90,12 +90,11 @@ public class TranscriptServlet extends HttpServlet {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
-    response.setStatus(200);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = Long.parseLong(request.getParameter("id"));
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
     Filter lectureFilter = new FilterPredicate(Line.PROP_LECTURE, FilterOperator.EQUAL, lecture);
@@ -116,12 +115,15 @@ public class TranscriptServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(lines));
   }
 
+  /**
+   * Creates an entity using the attributes from {@code node} and {@code lectureId}.
+   */
   private void createEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     String lineStart = element.getAttribute(START_ATTRIBUTE);
     String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
-    
+
     Entity lineEntity = new Entity(Line.ENTITY_KIND);
     lineEntity.setProperty(Line.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(Line.PROP_CONTENT, lineContent);
