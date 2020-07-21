@@ -1,5 +1,5 @@
 /* Used to redirect users to the lecture view page, while storing lecture key in
- * the URL */
+ * the URL. */
 const LINK_PREFIX = '/lecture-view.html?key=';
 
 loadLectureList();

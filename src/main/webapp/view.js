@@ -1,7 +1,7 @@
-/* Number of characters until lecture ID in URL */
+/* Number of characters until lecture ID in URL. */
 const URL_ID_SPACING = 5;
 
-/* Database key for specific lecture */
+/* Database key for specific lecture. */
 const LECTURE_KEY = getParam(window.location.href);
 
 // TODO: Here for testing, remove.
