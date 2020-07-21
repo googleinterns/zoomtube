@@ -74,8 +74,7 @@ public class LectureServlet extends HttpServlet {
     lectureEntity.setProperty(Lecture.PROP_ID, videoId);
 
     datastore.put(lectureEntity);
-    response.sendRedirect(
-        buildRedirectUrl(lectureEntity));
+    response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
   @Override
@@ -116,7 +115,7 @@ public class LectureServlet extends HttpServlet {
     return "";
   }
 
-  /** 
+  /**
    * Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}
    * found in {@code lectureEntity}.
    */
