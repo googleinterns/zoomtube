@@ -46,10 +46,10 @@ public class DiscussionServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
-    Key lecture = KeyFactory.createKey("Lecture", lectureId);
+    Key lecture = KeyFactory.createKey(/* kind=*/ "Lecture", lectureId);
     String content = CharStreams.toString(request.getReader());
 
-    // TODO: Support more properties.
+    // TODO: Most of these values are default placeholders. Add real values as features are added.
     Entity commentEntity = new Entity(Comment.ENTITY_KIND);
     commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
     commentEntity.setProperty(Comment.PROP_PARENT, null);
@@ -61,7 +61,7 @@ public class DiscussionServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
 
-    response.setStatus(200);
+    response.setStatus(HttpServletResponse.SC_ACCEPTED);
   }
 
   @Override

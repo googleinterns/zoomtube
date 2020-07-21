@@ -63,7 +63,7 @@ async function fetchDiscussion() {
 }
 
 /**
- * Creates an element for displaying a {@code comment}.
+ * Creates an element for displaying {@code comment}.
  */
 function createComment(comment) {
   const element = document.createElement('li');

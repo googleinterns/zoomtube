@@ -32,7 +32,7 @@ public abstract class Comment {
   public static final String PROP_CONTENT = "content";
   public static final String PROP_CREATED = "created";
 
-  public static Comment create(Key key, Key lecture, Optional<Key> parent, double timestamp,
+  private static Comment create(Key key, Key lecture, Optional<Key> parent, double timestamp,
       String author, String content, Date created) {
     return new AutoValue_Comment(key, lecture, parent, timestamp, author, content, created);
   }
