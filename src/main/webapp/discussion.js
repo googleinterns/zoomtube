@@ -19,7 +19,6 @@ const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 
 
-/* exported postAndReload */
 /**
  * Posts comment to {@code ENDPOINT} and reloads the discussion.
  */
@@ -36,7 +35,6 @@ async function postAndReload() {
   });
 }
 
-/* exported loadDiscussion */
 /**
  * Adds comments to the discussion element.
  */
