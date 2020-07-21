@@ -53,7 +53,7 @@ public class DiscussionServlet extends HttpServlet {
     Entity commentEntity = new Entity(Comment.ENTITY_KIND);
     commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
     commentEntity.setProperty(Comment.PROP_PARENT, null);
-    commentEntity.setProperty(Comment.PROP_TIMESTAMP, 0.0);
+    commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
     commentEntity.setProperty(Comment.PROP_AUTHOR, "");
     commentEntity.setProperty(Comment.PROP_CONTENT, content);
     commentEntity.setProperty(Comment.PROP_CREATED, new Date());
