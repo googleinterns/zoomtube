@@ -82,7 +82,7 @@ public class TranscriptServlet extends HttpServlet {
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
         Node node = nodeList.item(nodeIndex);
-        this.datastore.put(createEntity(node, lectureId));
+        this.datastore.put(createLineEntity(node, lectureId));
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
