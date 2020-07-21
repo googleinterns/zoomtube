@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Provides the transcript for the lecture.
+ * Provides the transcript for a given lecture.
  */
 @WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
@@ -74,13 +74,13 @@ public class TranscriptServlet extends HttpServlet {
     try {
       // Later, the video ID will be passed in from another servlet.
       String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
+
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new URL(transcriptXMLUrl).openStream());
       doc.getDocumentElement().normalize();
 
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
-      // A for loop is used because NodeList is not an Iterable.
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
         Node node = nodeList.item(nodeIndex);
         createEntity(node, lectureId);
