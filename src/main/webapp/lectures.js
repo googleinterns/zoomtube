@@ -1,3 +1,9 @@
+/* Used to gather URL parameters. */
+const URL_PARAM_ID = 'id';
+const URL_PARAM_VIDEO_ID = 'videoId';
+
+const REDIRECT_PAGE = '/lecture-view.html';
+
 loadLectureList();
 
 /**
@@ -23,9 +29,9 @@ function createLectureListItem(lecture) {
   const listItem = document.createElement('li');
   const lectureLink = document.createElement('a');
 
-  const url = new URL('/lecture-view.html', window.location.origin);
-  url.searchParams.append('id', lecture.key.id);
-  url.searchParams.append('videoId', lecture.videoId);
+  const url = new URL(REDIRECT_PAGE, window.location.origin);
+  url.searchParams.append(URL_PARAM_ID, lecture.key.id);
+  url.searchParams.append(URL_PARAM_VIDEO_ID, lecture.videoId);
   lectureLink.href = url;
 
   lectureLink.innerText = lecture.lectureName;
