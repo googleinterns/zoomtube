@@ -1,11 +1,11 @@
-/* Database key for specific lecture. */
-const LECTURE_KEY = getLectureKey();
+/* Database ID for specific lecture. */
+const LECTURE_ID = getLectureKey();
 
 // TODO: Here for testing, remove.
-console.log('Lecture Key: ' + LECTURE_KEY);
+console.log('Lecture ID: ' + LECTURE_ID);
 
-/** Returns database key id for lecture. */
+/** Returns database ID for lecture. */
 function getLectureKey() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('key');
+  return urlParams.get('id');
 }

@@ -24,7 +24,7 @@ function createLectureListItem(lecture) {
   const lectureLink = document.createElement('a');
 
   const url = new URL('/lecture-view.html', window.location.origin);
-  url.searchParams.append('key', lecture.key.id);
+  url.searchParams.append('id', lecture.key.id);
   lectureLink.href = url;
 
   lectureLink.innerText = lecture.lectureName;
