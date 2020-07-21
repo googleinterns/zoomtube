@@ -21,7 +21,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,6 +41,7 @@ public class TranscriptServlet extends HttpServlet {
   private static final String START_ATTRIBUTE = "start";
   private static final String DURATION_ATTRIBUTE = "dur";
   private static final String TEXT_TAG = "text";
+  // TODO: Use actual video id.
   private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
 
   @Override
