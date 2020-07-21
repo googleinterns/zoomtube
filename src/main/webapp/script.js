@@ -1,5 +1,5 @@
 /**
- * Sends a POST request to the transcript
+ * Sends a POST request to the transcript.
  */
 function sendPOSTToTranscript() {
   // TODO: Update with user input.
