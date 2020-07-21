@@ -1,7 +1,7 @@
 /**
  * Sends a POST request to the transcript.
  */
-function sendPOSTToTranscript() {
+function sendPostToTranscript() {
   // TODO: Update with user input.
   const testParamsString = 'id=123456789&video=3ymwOvzhwHs';
   const params = new URLSearchParams(testParamsString);

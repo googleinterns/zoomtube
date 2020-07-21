@@ -117,7 +117,7 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
    */
-  private void createLineEntity(Node node, long lectureId) {
+  private Entity createLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     String lineStart = element.getAttribute(START_ATTRIBUTE);
