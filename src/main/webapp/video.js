@@ -1,6 +1,6 @@
 /* Used to gather URL parameters. */
 const URL_PARAM_ID = 'id';
-const URL_PARAM_VIDEO_ID = 'videoId';
+const URL_PARAM_VIDEO_ID = 'video_id';
 
 /* Database ID for specific lecture. */
 const LECTURE_ID = getLectureKey();
