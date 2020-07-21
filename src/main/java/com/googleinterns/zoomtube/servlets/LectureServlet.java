@@ -74,8 +74,7 @@ public class LectureServlet extends HttpServlet {
     lectureEntity.setProperty(Lecture.PROP_ID, videoId);
 
     datastore.put(lectureEntity);
-    response.sendRedirect(
-        buildRedirectUrl(String.valueOf(lectureEntity.getKey().getId()), videoId));
+    response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
   @Override
@@ -116,8 +115,14 @@ public class LectureServlet extends HttpServlet {
     return "";
   }
 
-  /** Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}. */
-  private String buildRedirectUrl(String lectureId, String videoId) {
+  /**
+   * Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}
+   * found in {@code lectureEntity}.
+   */
+  private String buildRedirectUrl(Entity lectureEntity) {
+    String lectureId = String.valueOf(lectureEntity.getKey().getId());
+    String videoId = (String) lectureEntity.getProperty(Lecture.PROP_ID);
+
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
                                   .addParameter("id", lectureId)
