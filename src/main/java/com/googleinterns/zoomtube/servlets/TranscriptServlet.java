@@ -67,11 +67,10 @@ public class TranscriptServlet extends HttpServlet {
         String lineStart = element.getAttribute(START_ATTRIBUTE);
         String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
         String lineContent = node.getTextContent();
-        
+
         // TODO: Remove print statement. It is currently here for display purposes.
         System.out.println(lineStart + " " + lineDuration + " "
             + " " + lineContent);
-        
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
