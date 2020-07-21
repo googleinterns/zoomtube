@@ -51,6 +51,11 @@ public class TranscriptServlet extends HttpServlet {
   private static final String DURATION_ATTRIBUTE = "dur";
   private static final String TEXT_TAG = "text";
   private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
+  private static final String LINE_ENTITY = "Line";
+  private static final String LINE_LECTURE_KEY = "LectureKey";
+  private static final String LINE_START = "start";
+  private static final String LINE_DURATION = "duration";
+  private static final String LINE_CONTENT = "content";
 
   private static DatastoreService datastore;
 
@@ -62,7 +67,7 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // dummy lecture ID
-    long lectureId = 1.1101010;
+    long lectureId = 123456789;
 
     try {
       // Later, the video ID will be passed in from another servlet.
@@ -93,9 +98,9 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   private void createEntity(
-    long lectureId, String lineStart, String lineDuration, String lineContent) {
+      long lectureId, String lineStart, String lineDuration, String lineContent) {
     Entity lineEntity = new Entity(LINE_ENTITY);
-    lineEntity.setProperty(LINE_LECTURE, KeyFactory.createKey("Lecture", lectureId));
+    lineEntity.setProperty(LectureKey, KeyFactory.createKey("Lecture", lectureId));
     lineEntity.setProperty(LINE_START, lineStart);
     lineEntity.setProperty(LINE_DURATION, lineDuration);
     lineEntity.setProperty(LINE_CONTENT, lineContent);
