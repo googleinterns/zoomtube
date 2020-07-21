@@ -14,7 +14,8 @@
 
 const ENDPOINT = '/discussion';
 const PARAM_LECTURE = 'lecture';
-const ATTR_KEY = 'key';
+const PARAM_PARENT = 'parent';
+const ATTR_ID = 'id';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
@@ -23,15 +24,18 @@ const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 /**
  * Posts comment to {@code ENDPOINT} and reloads the discussion.
  */
-async function postAndReload() {
+async function postAndReload(textarea, parentKey = undefined) {
   const url = new URL(ENDPOINT, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
+  if (parentKey) {
+    url.searchParams.append(PARAM_PARENT, parentKey);
+  }
 
   fetch(url, {
     method: 'POST',
-    body: ELEMENT_POST_TEXTAREA.value,
+    body: textarea.value,
   }).then(() => {
-    ELEMENT_POST_TEXTAREA.value = '';
+    textarea.value = '';
     loadDiscussion();
   });
 }
@@ -66,7 +70,7 @@ function prepareComments(comments) {
   const rootComments = [];
   for (const comment of comments) {
     if (comment.parent.value) {
-      const parent = commentKeys[comment.parent.id];
+      const parent = commentKeys[comment.parent.value.id];
       parent.replies.push(comment);
     } else {
       // Top level comments don't have parents.
@@ -93,7 +97,7 @@ async function fetchDiscussion() {
  */
 function createComment(comment) {
   const element = document.createElement('li');
-  element.setAttribute(ATTR_KEY, comment.key);
+  element.setAttribute(ATTR_ID, comment.key.id);
 
   const content = document.createElement('span');
   content.innerText = comment.content;
@@ -129,9 +133,10 @@ function createReplySubmission(repliesDiv) {
   const div = document.createElement('div');
   const textarea = document.createElement('textarea');
   const submit = document.createElement('button');
+  const parentId = repliesDiv.parentElement.getAttribute(ATTR_ID);
   submit.innerText = 'Post';
   submit.onclick = () => {
-    alert('oof');
+    postAndReload(textarea, parentId);
   };
   div.appendChild(textarea);
   div.appendChild(submit);
