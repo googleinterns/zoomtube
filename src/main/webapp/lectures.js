@@ -1,7 +1,3 @@
-/* Used to redirect users to the lecture view page, while storing lecture key in
- * the URL. */
-const LINK_PREFIX = '/lecture-view.html?key=';
-
 loadLectureList();
 
 /**
@@ -27,8 +23,10 @@ function createLectureListItem(lecture) {
   const listItem = document.createElement('li');
   const lectureLink = document.createElement('a');
 
-  lectureLink.href = LINK_PREFIX + lecture.key.id;
-  lectureLink.target = '_blank';
+  const url = new URL('/lecture-view.html', window.location.origin);
+  url.searchParams.append('key', lecture.key.id);
+  lectureLink.href = url;
+
   lectureLink.innerText = lecture.lectureName;
 
   listItem.appendChild(lectureLink);
