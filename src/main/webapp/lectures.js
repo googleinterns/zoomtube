@@ -1,3 +1,8 @@
+/* Used to gather URL parameters. */
+const URL_PARAM_ID = 'id';
+
+const REDIRECT_PAGE = '/lecture-view.html';
+
 loadLectureList();
 
 /**
@@ -23,8 +28,8 @@ function createLectureListItem(lecture) {
   const listItem = document.createElement('li');
   const lectureLink = document.createElement('a');
 
-  const url = new URL('/lecture-view.html', window.location.origin);
-  url.searchParams.append('id', lecture.key.id);
+  const url = new URL(REDIRECT_PAGE, window.location.origin);
+  url.searchParams.append(URL_PARAM_ID, lecture.key.id);
   lectureLink.href = url;
 
   lectureLink.innerText = lecture.lectureName;
