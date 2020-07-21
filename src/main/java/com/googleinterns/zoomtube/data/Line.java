@@ -16,10 +16,7 @@ package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.auto.value.AutoValue;
-import java.util.Date;
-import javax.annotation.Nullable;
 
 /** Contains data pertaining a single line of transcript. */
 @AutoValue
@@ -41,6 +38,7 @@ public abstract class Line {
   public static Line create(Key key, Key lecture, String start, String duration, String content) {
     return new AutoValue_Line(key, lecture, start, duration, content);
   }
+
   public abstract Key key();
 
   public abstract Key lecture();
