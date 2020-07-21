@@ -21,9 +21,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -45,14 +47,29 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
+      // Later, the video ID will be passed in from another servlet.
       String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + "3ymwOvzhwHs";
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new URL(transcriptXMLUrl).openStream());
       doc.getDocumentElement().normalize();
       System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
+      NodeList nodeList = doc.getElementsByTagName("text");
+      for (int itr = 0; itr < nodeList.getLength(); itr++) {
+        Node node = nodeList.item(itr);
+        Element element = (Element) node;
+        String start = element.getAttribute("start");
+        String duration = element.getAttribute("dur");
+
+        System.out.println(node.getTextContent());
+
+        // for (QName name : (AttributeMap) (node.getAttributes()).getAttribute()) {
+        //   System.out.println(name);
+        // }
+      }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
+      System.out.println("XML parsing error");
     }
   }
 }
