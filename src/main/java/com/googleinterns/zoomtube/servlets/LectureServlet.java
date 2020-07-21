@@ -116,7 +116,10 @@ public class LectureServlet extends HttpServlet {
     return "";
   }
 
-  /** Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}. */
+  /** 
+   * Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}
+   * found in {@code lectureEntity}.
+   */
   private String buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
     String videoId = (String) lectureEntity.getProperty(Lecture.PROP_ID);
