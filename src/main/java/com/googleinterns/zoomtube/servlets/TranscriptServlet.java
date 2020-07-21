@@ -56,8 +56,9 @@ public class TranscriptServlet extends HttpServlet {
   private static final String START_ATTRIBUTE = "start";
   private static final String DURATION_ATTRIBUTE = "dur";
   private static final String TEXT_TAG = "text";
-  private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
   private static final String PARAM_LECTURE = "Lecture";
+  private static final String PARAM_LECTURE_ID = "id";
+  private static final String PARAM_VIDEO_ID = "video";
 
   private static DatastoreService datastore;
 
@@ -68,12 +69,12 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Use the client-provided lectureId.
-    long lectureId = Long.parseLong(request.getParameter("id"));
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    String videoId = request.getParameter(PARAM_VIDEO_ID);
 
     try {
       // Later, the video ID will be passed in from another servlet.
-      String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + TEST_VIDEO_ID;
+      String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new URL(transcriptXMLUrl).openStream());
@@ -82,10 +83,6 @@ public class TranscriptServlet extends HttpServlet {
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       // A for loop is used because NodeList is not an Iterable.
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-        // TODO: Remove, currently here temporarily for testing purposes.
-        if (nodeIndex == 5) {
-          break;
-        }
         Node node = nodeList.item(nodeIndex);
         createEntity(node, lectureId);
       }
@@ -93,8 +90,6 @@ public class TranscriptServlet extends HttpServlet {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
-    // For testing purposes, will delete later.
-    String testParamsString = "id=123456789&video=3ymwOvzhwHs";
     response.setStatus(200);
   }
 
@@ -122,21 +117,16 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   private void createEntity(Node node, long lectureId) {
-    // TODO: Reorder.
     Element element = (Element) node;
+    String lineContent = node.getTextContent();
     String lineStart = element.getAttribute(START_ATTRIBUTE);
     String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
-    String lineContent = node.getTextContent();
-
+    
     Entity lineEntity = new Entity(Line.ENTITY_KIND);
     lineEntity.setProperty(Line.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
+    lineEntity.setProperty(Line.PROP_CONTENT, lineContent);
     lineEntity.setProperty(Line.PROP_START, lineStart);
     lineEntity.setProperty(Line.PROP_DURATION, lineDuration);
-    lineEntity.setProperty(Line.PROP_CONTENT, lineContent);
-
-    // TODO: Remove print statement. It is currently here for display purposes.
-    System.out.println(lineStart + " " + lineDuration + " "
-        + " " + lineContent);
 
     this.datastore.put(lineEntity);
   }
