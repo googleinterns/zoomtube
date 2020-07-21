@@ -13,17 +13,21 @@
 // limitations under the License.
 
 const SELECTOR_DISCUSSION = '#discussion';
+const LECTURE_KEY = getLectureKey();
 
 initialize();
 
 /**
- * Parses the lecture key out of {@code window.location} and uses it to load
- * the current discussion.
+ * Initializes the various parts of the lecture viewer.
  */
 async function initialize() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const key = urlParams.get('key');
+  loadDiscussion();
+}
 
-  const discussionElement = document.querySelector(SELECTOR_DISCUSSION);
-  loadDiscussion(key, discussionElement);
+/**
+ * Parses the lecture key out of {@code window.location}
+ */
+function getLectureKey() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('key');
 }

@@ -15,41 +15,47 @@
 const ENDPOINT = '/discussion';
 const PARAM_LECTURE = 'lecture';
 
+const ELEMENT_DISCUSSION = document.querySelector('#discussion');
+const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
+
 
 /**
  * Posts comment to {@code ENDPOINT} and reloads the discussion.
  */
-async function postAndReload(postTextarea, discussionElement, lectureKey) {
-  fetch(ENDPOINT, {
+async function postAndReload() {
+  const url = new URL(ENDPOINT, window.location.origin);
+  url.searchParams.append(PARAM_LECTURE, LECTURE_KEY);
+
+  fetch(url, {
     method: 'POST',
-    body: postTextarea.value,
+    body: ELEMENT_POST_TEXTAREA.value,
   }).then(res => {
-    postTextarea.value = '';
-    loadDiscussion(discussionElement, lectureKey);
+    ELEMENT_POST_TEXTAREA.value = '';
+    loadDiscussion();
   });
 }
 
 
 /**
- * Adds comments to the {@code discussionElement}.
+ * Adds comments to the discussion element.
  */
-async function loadDiscussion(discussionElement, lectureKey) {
+async function loadDiscussion() {
   // Clear any existing comments before loading.
-  discussionElement.textContent = '';
+  ELEMENT_DISCUSSION.textContent = '';
 
-  const comments = await fetchDiscussion(lectureKey);
+  const comments = await fetchDiscussion();
   for (const comment of comments) {
-    discussionElement.appendChild(createComment(comment));
+    ELEMENT_DISCUSSION.appendChild(createComment(comment));
   }
 }
 
 /**
- * Requests all comments in the lecture specified by {@code lectureKey} from
+ * Requests all comments in the lecture specified by {@code LECTURE_KEY} from
  * the {@link java.com.googleinterns.zoomtube.servlets.DiscussionServlet}.
  */
-async function fetchDiscussion(lectureKey) {
+async function fetchDiscussion() {
   const url = new URL(ENDPOINT, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, lectureKey);
+  url.searchParams.append(PARAM_LECTURE, LECTURE_KEY);
 
   const request = await fetch(url);
   return request.json();
