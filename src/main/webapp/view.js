@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const SELECTOR_DISCUSSION = '#discussion';
+/* exported LECTURE_KEY */
 const LECTURE_KEY = getLectureKey();
 
 initialize();
@@ -21,7 +21,7 @@ initialize();
  * Initializes the various parts of the lecture viewer.
  */
 async function initialize() {
-  loadDiscussion();
+  window.loadDiscussion();
 }
 
 /**

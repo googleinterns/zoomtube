@@ -19,23 +19,24 @@ const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 
 
+/* exported postAndReload */
 /**
  * Posts comment to {@code ENDPOINT} and reloads the discussion.
  */
 async function postAndReload() {
   const url = new URL(ENDPOINT, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, LECTURE_KEY);
+  url.searchParams.append(PARAM_LECTURE, window.LECTURE_KEY);
 
   fetch(url, {
     method: 'POST',
     body: ELEMENT_POST_TEXTAREA.value,
-  }).then(res => {
+  }).then((res) => {
     ELEMENT_POST_TEXTAREA.value = '';
     loadDiscussion();
   });
 }
 
-
+/* exported loadDiscussion */
 /**
  * Adds comments to the discussion element.
  */
@@ -55,7 +56,7 @@ async function loadDiscussion() {
  */
 async function fetchDiscussion() {
   const url = new URL(ENDPOINT, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, LECTURE_KEY);
+  url.searchParams.append(PARAM_LECTURE, window.LECTURE_KEY);
 
   const request = await fetch(url);
   return request.json();
