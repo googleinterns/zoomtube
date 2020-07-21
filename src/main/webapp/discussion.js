@@ -44,9 +44,36 @@ async function loadDiscussion() {
   ELEMENT_DISCUSSION.textContent = '';
 
   const comments = await fetchDiscussion();
-  for (const comment of comments) {
+  const preparedComments = prepareComments(comments);
+  for (const comment of preparedComments) {
     ELEMENT_DISCUSSION.appendChild(createComment(comment));
   }
+}
+
+/**
+ * Organizes comments into threads with nested replies.
+ *
+ * <p>All comments are sent from the servlet, the client needs to organize
+ * them before displaying.
+ */
+function prepareComments(comments) {
+  const commentKeys = {};
+  for (const comment of comments) {
+    comment.replies = [];
+    commentKeys[comment.key.id] = comment;
+  }
+
+  const rootComments = [];
+  for (const comment of comments) {
+    if (comment.parent.value) {
+      const parent = commentKeys[comment.parent.id];
+      parent.replies.push(comment);
+    } else {
+      // Top level comments don't have parents.
+      rootComments.push(comment);
+    }
+  }
+  return rootComments;
 }
 
 /**
@@ -75,6 +102,12 @@ function createComment(comment) {
   const repliesDiv = document.createElement('div');
   element.appendChild(repliesDiv);
 
+  const repliesList = document.createElement('ul');
+  for (const reply of comment.replies) {
+    repliesList.appendChild(createComment(reply));
+  }
+  repliesDiv.appendChild(repliesList);
+
   const replyButton = document.createElement('button');
   replyButton.onclick = () => {
     createReplySubmission(repliesDiv);
@@ -96,6 +129,10 @@ function createReplySubmission(repliesDiv) {
   const div = document.createElement('div');
   const textarea = document.createElement('textarea');
   const submit = document.createElement('button');
+  submit.innerText = 'Post';
+  submit.onclick = () => {
+    alert('oof');
+  };
   div.appendChild(textarea);
   div.appendChild(submit);
 
