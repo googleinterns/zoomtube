@@ -16,7 +16,10 @@ async function loadApi() {
   firstScriptTag.parentNode.insertBefore(videoApiScript, firstScriptTag);
 }
 
-/** Creates a YouTube Video iFrame playing video with {@code VIDEO_ID} after API is loaded. */
+/**
+ * Creates a YouTube Video iFrame playing video with {@code VIDEO_ID} after API
+ * is loaded.
+ */
 function onYouTubeIframeAPIReady() {
   videoPlayer = new YT.Player('player', {
     height: '390',
