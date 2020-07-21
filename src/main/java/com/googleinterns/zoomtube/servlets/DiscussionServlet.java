@@ -46,7 +46,7 @@ public class DiscussionServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
-    Key lecture = KeyFactory.createKey(/* kind=*/ "Lecture", lectureId);
+    Key lecture = KeyFactory.createKey(/* kind=*/"Lecture", lectureId);
     String content = CharStreams.toString(request.getReader());
 
     // TODO: Most of these values are default placeholders. Add real values as features are added.
