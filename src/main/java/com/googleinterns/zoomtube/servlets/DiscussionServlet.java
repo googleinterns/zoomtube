@@ -38,6 +38,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Manages discussions for a lecture.
+ *
+ * TODO: References to Lecture kind string literal need to be updated once Lecture code is merged.
  */
 @WebServlet("/discussion")
 public class DiscussionServlet extends HttpServlet {
