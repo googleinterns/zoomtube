@@ -30,6 +30,14 @@ public abstract class Line {
   public static final String PROP_DURATION = "duration";
   public static final String PROP_CONTENT = "content";
 
+  /**
+   * Creates a {@code Line} object.
+   * @param key The key for the transcript.
+   * @param lecture The key for the lecture.
+   * @param start The starting timestamp for the lecture line in seconds.
+   * @param duration The number of seconds that the timestamp lasts for.
+   * @param content The text content of the transcript line.
+   */
   public static Line create(Key key, Key lecture, String start, String duration, String content) {
     return new AutoValue_Line(key, lecture, start, duration, content);
   }
