@@ -25,8 +25,8 @@ async function loadApi() {
 }
 
 /**
- * Creates a YouTube Video iFrame playing video with id:{@code VIDEO_ID} after API
- * is loaded.
+ * Creates a YouTube Video iFrame playing video with id:{@code VIDEO_ID} after
+ * API is loaded.
  */
 function onYouTubeIframeAPIReady() {
   videoPlayer = new window.YT.Player('player', {
