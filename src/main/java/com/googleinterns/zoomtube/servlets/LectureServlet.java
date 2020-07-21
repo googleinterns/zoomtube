@@ -65,7 +65,7 @@ public class LectureServlet extends HttpServlet {
 
     // Creates Entity and stores in database
     Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
-    lectureEntity.setProperty(Lecture.ENTITY_KIND, lectureName);
+    lectureEntity.setProperty(Lecture.PROP_NAME, lectureName);
     lectureEntity.setProperty(Lecture.PROP_URL, videoUrl);
     lectureEntity.setProperty(Lecture.PROP_ID, videoId);
 
