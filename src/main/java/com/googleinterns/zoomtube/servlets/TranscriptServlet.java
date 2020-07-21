@@ -39,6 +39,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import com.googleinterns.zoomtube.data.Line;
 
 /**
  * Provides the transcript for the lecture.
@@ -99,11 +100,11 @@ public class TranscriptServlet extends HttpServlet {
 
   private void createEntity(
       long lectureId, String lineStart, String lineDuration, String lineContent) {
-    Entity lineEntity = new Entity(LINE_ENTITY);
-    lineEntity.setProperty(LINE_LECTURE_KEY, KeyFactory.createKey("Lecture", lectureId));
-    lineEntity.setProperty(LINE_START, lineStart);
-    lineEntity.setProperty(LINE_DURATION, lineDuration);
-    lineEntity.setProperty(LINE_CONTENT, lineContent);
+    Entity lineEntity = new Entity(Line.ENTITY_KIND);
+    lineEntity.setProperty(Line.PROP_LECTURE, KeyFactory.createKey("Lecture", lectureId));
+    lineEntity.setProperty(LINE.PROP_START, lineStart);
+    lineEntity.setProperty(LINE.PROP_DURATION, lineDuration);
+    lineEntity.setProperty(LINE.PROP_CONTENT, lineContent);
 
     this.datastore.put(lineEntity);
   }
