@@ -1,3 +1,6 @@
+
+const TRANSCRIPT_CONTAINER = "transcript-container";
+
 /**
  * Sends a POST request to the transcript.
  */
@@ -8,34 +11,31 @@ function sendPostToTranscript() {
   fetch('/transcript', {method: 'POST', body: params})
     .then(response => response.json())
     .then((transcriptLines) => {
-        addMultipleLinesToDom(transcriptLines);
+        addMultipleTranscriptLinesToDom(transcriptLines);
     });
 }
 
 /**
- * Adds {@code comments} to the DOM as list elements.
+ * Adds {@code transcriptLines} to the DOM as list elements.
  */
-function addMultipleMessagesToDom(comments) {
-  const commentContainer = document.getElementById(COMMENT_CONTAINER);
-
-  // Removes the ul tag in the container if there is one. This prevents having
-  // multiple sets of ul tags every time the number of comments is changed.
-  if (commentContainer.firstChild) {
-    commentContainer.removeChild(commentContainer.firstChild);
+function addMultipleTranscriptLinesToDom(transcriptLines) {
+  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
+  if (transcriptContainer.firstChild) {
+    transcriptContainer.removeChild(transcriptContainer.firstChild);
   }
   const ulElement = document.createElement('ul');
-  commentContainer.appendChild(ulElement);
+  transcriptContainer.appendChild(ulElement);
 
-  comments.forEach((comment) => {
-    appendTextToList(comment, ulElement);
+  transcriptLines.forEach((transcriptLine) => {
+    appendTextToList(transcriptLine, ulElement);
   });
 }
 
 /**
- * Creates an <li> element containing {@code comment}'s text, timestamp,
+ * Creates an <li> element containing {@code transcriptLine}'s text, start time,
  *  and submitter's name and appends it to {@code ulElement}.
  */
-function appendTextToList(comment, ulElement) {
+function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
 
   const infoDivElement = document.createElement('div');
