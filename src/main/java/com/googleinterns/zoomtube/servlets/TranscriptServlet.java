@@ -21,7 +21,13 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import com.googleinterns.zoomtube.data.Line;
 import java.io.IOException;
 import java.net.URL;
 import javax.servlet.ServletException;
@@ -39,8 +45,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import com.googleinterns.zoomtube.data.Line;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Provides the transcript for the lecture.
@@ -65,7 +69,7 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Use the client-provided lectureId.
-    long lectureId = 123456789; //Long.parseLong(request.getParameter(PARAM_LECTURE));
+    long lectureId = 123456789; // Long.parseLong(request.getParameter(PARAM_LECTURE));
 
     try {
       // Later, the video ID will be passed in from another servlet.
@@ -79,31 +83,26 @@ public class TranscriptServlet extends HttpServlet {
       // A for loop is used because NodeList is not an Iterable.
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
         Node node = nodeList.item(nodeIndex);
-        Element element = (Element) node;
-        String lineStart = element.getAttribute(START_ATTRIBUTE);
-        String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
-        String lineContent = node.getTextContent();
-        createEntity(lectureId, lineStart, lineDuration, lineContent);
-
-        // TODO: Remove print statement. It is currently here for display purposes.
-        System.out.println(lineStart + " " + lineDuration + " "
-            + " " + lineContent);
+        createEntity(node, lectureId);
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
-
-    response.setStatus(200);
+    // For testing purposes, will delete later.
+    response.sendRedirect("/transcript");
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = 123456789; //Long.parseLong(request.getParameter(PARAM_LECTURE));
+    long lectureId = 123456789; // Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
-    Filter lectureFilter = new FilterPredicate(Comment.PROP_LECTURE, FilterOperator.EQUAL, lecture);
 
-    Query query = new Query(Comment.ENTITY_KIND)setFilter(lectureFilter);
+    Filter lectureFilter = new FilterPredicate(Line.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+
+    Query query = new Query(Line.ENTITY_KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(Line.PROP_START, SortDirection.ASCENDING);
     PreparedQuery pq = datastore.prepare(query);
 
     ImmutableList.Builder<Line> lineBuilder = new ImmutableList.Builder<>();
@@ -117,13 +116,22 @@ public class TranscriptServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(lines));
   }
 
-  private void createEntity(
-      long lectureId, String lineStart, String lineDuration, String lineContent) {
+  private void createEntity(Node node, long lectureId) {
+    // TODO: Reorder.
+    Element element = (Element) node;
+    String lineStart = element.getAttribute(START_ATTRIBUTE);
+    String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
+    String lineContent = node.getTextContent();
+
     Entity lineEntity = new Entity(Line.ENTITY_KIND);
     lineEntity.setProperty(Line.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
-    lineEntity.setProperty(LINE.PROP_START, lineStart);
-    lineEntity.setProperty(LINE.PROP_DURATION, lineDuration);
-    lineEntity.setProperty(LINE.PROP_CONTENT, lineContent);
+    lineEntity.setProperty(Line.PROP_START, lineStart);
+    lineEntity.setProperty(Line.PROP_DURATION, lineDuration);
+    lineEntity.setProperty(Line.PROP_CONTENT, lineContent);
+
+    // TODO: Remove print statement. It is currently here for display purposes.
+    System.out.println(lineStart + " " + lineDuration + " "
+        + " " + lineContent);
 
     this.datastore.put(lineEntity);
   }

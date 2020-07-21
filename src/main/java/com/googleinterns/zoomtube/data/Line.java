@@ -33,6 +33,15 @@ public abstract class Line {
   public static Line create(Key key, Key lecture, String start, String duration, String content) {
     return new AutoValue_Line(key, lecture, start, duration, content);
   }
+  public abstract Key key();
+
+  public abstract Key lecture();
+
+  public abstract String start();
+
+  public abstract String duration();
+
+  public abstract String content();
 
   /**
    * Creates a {@code Line} from a datastore {@link com.google.appengine.api.datastore.Entity}
@@ -44,16 +53,6 @@ public abstract class Line {
     String start = (String) entity.getProperty(PROP_START);
     String duration = (String) entity.getProperty(PROP_DURATION);
     String content = (String) entity.getProperty(PROP_CONTENT);
-    return Comment.create(key, lecture, start, duration, content);
+    return Line.create(key, lecture, start, duration, content);
   }
-
-  public abstract Key key(Key key);
-
-  public abstract Key lecture(Key lecture);
-
-  public abstract String start(String start);
-
-  public abstract String duration(String duration);
-
-  public abstract String content(String content);
 }
