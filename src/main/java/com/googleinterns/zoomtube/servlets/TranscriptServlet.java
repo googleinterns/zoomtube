@@ -72,7 +72,7 @@ public class TranscriptServlet extends HttpServlet {
     String videoId = request.getParameter(PARAM_VIDEO_ID);
 
     try {
-      // Later, the video ID will be passed in from another servlet.
+      // TODO: Pass the video ID from another servlet
       String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
@@ -80,7 +80,6 @@ public class TranscriptServlet extends HttpServlet {
       doc.getDocumentElement().normalize();
 
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
-      // A for loop is used because NodeList is not an Iterable.
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
         Node node = nodeList.item(nodeIndex);
         createEntity(node, lectureId);
