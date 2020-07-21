@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Provides the transcript for the lecture.
+ * Provides the transcript for a given lecture.
  */
 @WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
