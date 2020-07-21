@@ -27,7 +27,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import com.googleinterns.zoomtube.data.Line;
+import com.googleinterns.zoomtube.data.TranscriptLine;
 import java.io.IOException;
 import java.net.URL;
 import javax.servlet.ServletException;
@@ -55,7 +55,7 @@ public class TranscriptServlet extends HttpServlet {
   private static final String START_ATTRIBUTE = "start";
   private static final String DURATION_ATTRIBUTE = "dur";
   private static final String TEXT_TAG = "text";
-  private static final String PARAM_LECTURE = "Lecture";
+  private static final String PARAM_LECTURE = "lecture";
   private static final String PARAM_LECTURE_ID = "id";
   private static final String PARAM_VIDEO_ID = "video";
 
@@ -83,7 +83,7 @@ public class TranscriptServlet extends HttpServlet {
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
         Node node = nodeList.item(nodeIndex);
-        createEntity(node, lectureId);
+        this.datastore.put(createEntity(node, lectureId));
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
@@ -96,18 +96,19 @@ public class TranscriptServlet extends HttpServlet {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
-    Filter lectureFilter = new FilterPredicate(Line.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+    Filter lectureFilter =
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
 
-    Query query = new Query(Line.ENTITY_KIND)
+    Query query = new Query(TranscriptLine.ENTITY_KIND)
                       .setFilter(lectureFilter)
-                      .addSort(Line.PROP_START, SortDirection.ASCENDING);
+                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
     PreparedQuery pq = datastore.prepare(query);
 
-    ImmutableList.Builder<Line> lineBuilder = new ImmutableList.Builder<>();
+    ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : pq.asQueryResultIterable()) {
-      lineBuilder.add(Line.fromEntity(entity));
+      lineBuilder.add(TranscriptLine.fromEntity(entity));
     }
-    ImmutableList<Line> lines = lineBuilder.build();
+    ImmutableList<TranscriptLine> lines = lineBuilder.build();
 
     Gson gson = new Gson();
     response.setContentType("application/json;");
@@ -115,20 +116,20 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Creates an entity using the attributes from {@code node} and {@code lectureId}.
+   * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
    */
-  private void createEntity(Node node, long lectureId) {
+  private void createLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     String lineStart = element.getAttribute(START_ATTRIBUTE);
     String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
 
-    Entity lineEntity = new Entity(Line.ENTITY_KIND);
-    lineEntity.setProperty(Line.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
-    lineEntity.setProperty(Line.PROP_CONTENT, lineContent);
-    lineEntity.setProperty(Line.PROP_START, lineStart);
-    lineEntity.setProperty(Line.PROP_DURATION, lineDuration);
-
-    this.datastore.put(lineEntity);
+    Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
+    lineEntity.setProperty(
+        TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
+    lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
+    lineEntity.setProperty(TranscriptLine.PROP_START, lineStart);
+    lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
+    return lineEntity;
   }
 }
