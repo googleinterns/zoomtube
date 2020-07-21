@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* exported LECTURE_KEY */
-const LECTURE_KEY = getLectureKey();
+const PARAM_ID = 'id';
+
+/* exported LECTURE_ID */
+window.LECTURE_ID = getLectureId();
 
 initialize();
 
@@ -25,9 +27,9 @@ async function initialize() {
 }
 
 /**
- * Parses the lecture key out of {@code window.location}.
+ * Parses the lecture id out of {@code window.location}.
  */
-function getLectureKey() {
+function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('key');
+  return urlParams.get(PARAM_ID);
 }

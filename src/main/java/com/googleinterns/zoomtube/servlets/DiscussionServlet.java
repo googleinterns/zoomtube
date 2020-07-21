@@ -45,12 +45,13 @@ public class DiscussionServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String lecture = request.getParameter(PARAM_LECTURE);
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
+    Key lecture = KeyFactory.createKey("Lecture", lectureId);
     String content = CharStreams.toString(request.getReader());
 
     // TODO: Support more properties.
     Entity commentEntity = new Entity(Comment.ENTITY_KIND);
-    commentEntity.setProperty(Comment.PROP_LECTURE, KeyFactory.createKey("Lecture", lecture));
+    commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
     commentEntity.setProperty(Comment.PROP_PARENT, null);
     commentEntity.setProperty(Comment.PROP_TIMESTAMP, 0.0);
     commentEntity.setProperty(Comment.PROP_AUTHOR, "");
@@ -67,7 +68,8 @@ public class DiscussionServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Key lecture = KeyFactory.createKey("Lecture", request.getParameter(PARAM_LECTURE));
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
+    Key lecture = KeyFactory.createKey("Lecture", lectureId);
     Filter lectureFilter = new FilterPredicate(Comment.PROP_LECTURE, FilterOperator.EQUAL, lecture);
 
     Query query = new Query(Comment.ENTITY_KIND)

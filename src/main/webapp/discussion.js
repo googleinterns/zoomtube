@@ -25,7 +25,7 @@ const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
  */
 async function postAndReload() {
   const url = new URL(ENDPOINT, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_KEY);
+  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
 
   fetch(url, {
     method: 'POST',
@@ -51,12 +51,12 @@ async function loadDiscussion() {
 }
 
 /**
- * Requests all comments in the lecture specified by {@code LECTURE_KEY} from
+ * Requests all comments in the lecture specified by {@code LECTURE_ID} from
  * the {@link java.com.googleinterns.zoomtube.servlets.DiscussionServlet}.
  */
 async function fetchDiscussion() {
   const url = new URL(ENDPOINT, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_KEY);
+  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
 
   const request = await fetch(url);
   return request.json();
