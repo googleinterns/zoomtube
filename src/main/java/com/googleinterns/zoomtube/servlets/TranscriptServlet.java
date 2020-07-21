@@ -40,6 +40,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import com.googleinterns.zoomtube.data.Line;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Provides the transcript for the lecture.
@@ -52,11 +53,7 @@ public class TranscriptServlet extends HttpServlet {
   private static final String DURATION_ATTRIBUTE = "dur";
   private static final String TEXT_TAG = "text";
   private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
-  private static final String LINE_ENTITY = "Line";
-  private static final String LINE_LECTURE_KEY = "LectureKey";
-  private static final String LINE_START = "Start";
-  private static final String LINE_DURATION = "Duration";
-  private static final String LINE_CONTENT = "Content";
+  private static final String PARAM_LECTURE = "Lecture";
 
   private static DatastoreService datastore;
 
@@ -66,9 +63,9 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Use the client-provided lectureId.
-    long lectureId = 123456789;
+    long lectureId = 123456789; //Long.parseLong(request.getParameter(PARAM_LECTURE));
 
     try {
       // Later, the video ID will be passed in from another servlet.
@@ -96,12 +93,34 @@ public class TranscriptServlet extends HttpServlet {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
+
+    response.setStatus(200);
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    long lectureId = 123456789; //Long.parseLong(request.getParameter(PARAM_LECTURE));
+    Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
+    Filter lectureFilter = new FilterPredicate(Comment.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+
+    Query query = new Query(Comment.ENTITY_KIND)setFilter(lectureFilter);
+    PreparedQuery pq = datastore.prepare(query);
+
+    ImmutableList.Builder<Line> lineBuilder = new ImmutableList.Builder<>();
+    for (Entity entity : pq.asQueryResultIterable()) {
+      lineBuilder.add(Line.fromEntity(entity));
+    }
+    ImmutableList<Line> lines = lineBuilder.build();
+
+    Gson gson = new Gson();
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(lines));
   }
 
   private void createEntity(
       long lectureId, String lineStart, String lineDuration, String lineContent) {
     Entity lineEntity = new Entity(Line.ENTITY_KIND);
-    lineEntity.setProperty(Line.PROP_LECTURE, KeyFactory.createKey("Lecture", lectureId));
+    lineEntity.setProperty(Line.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(LINE.PROP_START, lineStart);
     lineEntity.setProperty(LINE.PROP_DURATION, lineDuration);
     lineEntity.setProperty(LINE.PROP_CONTENT, lineContent);
