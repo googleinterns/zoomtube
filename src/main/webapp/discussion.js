@@ -14,6 +14,7 @@
 
 const ENDPOINT = '/discussion';
 const PARAM_LECTURE = 'lecture';
+const ATTR_KEY = 'key';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
@@ -29,7 +30,7 @@ async function postAndReload() {
   fetch(url, {
     method: 'POST',
     body: ELEMENT_POST_TEXTAREA.value,
-  }).then((res) => {
+  }).then(() => {
     ELEMENT_POST_TEXTAREA.value = '';
     loadDiscussion();
   });
@@ -65,9 +66,38 @@ async function fetchDiscussion() {
  */
 function createComment(comment) {
   const element = document.createElement('li');
+  element.setAttribute(ATTR_KEY, comment.key);
 
-  // TODO: Display more than just the content.
-  element.innerText = comment.content;
+  const content = document.createElement('span');
+  content.innerText = comment.content;
+  element.appendChild(content);
+
+  const repliesDiv = document.createElement('div');
+  element.appendChild(repliesDiv);
+
+  const replyButton = document.createElement('button');
+  replyButton.onclick = () => {
+    createReplySubmission(repliesDiv);
+    replyButton.remove();
+  };
+  replyButton.innerText = 'Reply';
+  element.appendChild(replyButton);
 
   return element;
+}
+
+/**
+ * Creates a reply textarea and submit button within {@code repliesDiv}.
+ *
+ * <p>The parent of {@code repliesDiv} should be a comment element created by
+ * {@code createComment}.
+ */
+function createReplySubmission(repliesDiv) {
+  const div = document.createElement('div');
+  const textarea = document.createElement('textarea');
+  const submit = document.createElement('button');
+  div.appendChild(textarea);
+  div.appendChild(submit);
+
+  repliesDiv.appendChild(div);
 }
