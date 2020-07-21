@@ -28,7 +28,7 @@ async function initialize() {
 }
 
 /**
- * Parses the lecture id out of {@code window.location}.
+ * Returns the lecture id obtained from {@code window.location}.
  */
 function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
