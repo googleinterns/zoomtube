@@ -14,6 +14,14 @@
 
 package com.googleinterns.zoomtube.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URL;
 import javax.servlet.ServletException;
@@ -31,10 +39,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.gson.Gson;
 
 /**
  * Provides the transcript for the lecture.
@@ -48,13 +52,18 @@ public class TranscriptServlet extends HttpServlet {
   private static final String TEXT_TAG = "text";
   private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
 
+  private static DatastoreService datastore;
+
   @Override
   public void init() throws ServletException {
-    // TODO: Implement Transcript.
+    this.datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // dummy lecture ID
+    long lectureId = 1.1101010;
+
     try {
       // Later, the video ID will be passed in from another servlet.
       String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + TEST_VIDEO_ID;
@@ -71,15 +80,26 @@ public class TranscriptServlet extends HttpServlet {
         String lineStart = element.getAttribute(START_ATTRIBUTE);
         String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
         String lineContent = node.getTextContent();
-        
+        createEntity(lectureId, lineStart, lineDuration, lineContent);
+
         // TODO: Remove print statement. It is currently here for display purposes.
         System.out.println(lineStart + " " + lineDuration + " "
             + " " + lineContent);
-        
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
+  }
+
+  private void createEntity(
+    long lectureId, String lineStart, String lineDuration, String lineContent) {
+    Entity lineEntity = new Entity(LINE_ENTITY);
+    lineEntity.setProperty(LINE_LECTURE, KeyFactory.createKey("Lecture", lectureId));
+    lineEntity.setProperty(LINE_START, lineStart);
+    lineEntity.setProperty(LINE_DURATION, lineDuration);
+    lineEntity.setProperty(LINE_CONTENT, lineContent);
+
+    this.datastore.put(lineEntity);
   }
 }
