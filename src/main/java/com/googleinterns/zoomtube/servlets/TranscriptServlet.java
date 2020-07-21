@@ -53,19 +53,15 @@ public class TranscriptServlet extends HttpServlet {
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new URL(transcriptXMLUrl).openStream());
       doc.getDocumentElement().normalize();
-      System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
+      
       NodeList nodeList = doc.getElementsByTagName("text");
-      for (int itr = 0; itr < nodeList.getLength(); itr++) {
-        Node node = nodeList.item(itr);
+      // A for loop is used because NodeList is not an Iterable.
+      for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+        Node node = nodeList.item(nodeIndex);
         Element element = (Element) node;
-        String start = element.getAttribute("start");
-        String duration = element.getAttribute("dur");
-
-        System.out.println(node.getTextContent());
-
-        // for (QName name : (AttributeMap) (node.getAttributes()).getAttribute()) {
-        //   System.out.println(name);
-        // }
+        String lineStart = element.getAttribute("start");
+        String lineDuration = element.getAttribute("dur");
+        String lineContent = node.getTextContent();
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
