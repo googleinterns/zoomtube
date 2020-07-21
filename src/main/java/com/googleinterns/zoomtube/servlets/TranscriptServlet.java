@@ -39,6 +39,11 @@ import org.xml.sax.SAXException;
 public class TranscriptServlet extends HttpServlet {
   private static final String TRANSCRIPT_XML_URL_TEMPLATE =
       "http://video.google.com/timedtext?lang=en&v=";
+  private static final String START_ATTRIBUTE = "start";
+  private static final String DURATION_ATTRIBUTE = "dur";
+  private static final String TEXT_TAG = "text";
+  private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
+
   @Override
   public void init() throws ServletException {
     // TODO: Implement Transcript.
@@ -48,20 +53,21 @@ public class TranscriptServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
       // Later, the video ID will be passed in from another servlet.
-      String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + "3ymwOvzhwHs";
+      String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + TEST_VIDEO_ID;
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.parse(new URL(transcriptXMLUrl).openStream());
       doc.getDocumentElement().normalize();
       
-      NodeList nodeList = doc.getElementsByTagName("text");
+      NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       // A for loop is used because NodeList is not an Iterable.
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
         Node node = nodeList.item(nodeIndex);
         Element element = (Element) node;
-        String lineStart = element.getAttribute("start");
-        String lineDuration = element.getAttribute("dur");
+        String lineStart = element.getAttribute(START_ATTRIBUTE);
+        String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
         String lineContent = node.getTextContent();
+        System.out.println(lineStart + " " + lineDuration + " " + " " + lineContent);
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
