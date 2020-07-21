@@ -25,7 +25,7 @@ async function initialize() {
 }
 
 /**
- * Parses the lecture key out of {@code window.location}
+ * Parses the lecture key out of {@code window.location}.
  */
 function getLectureKey() {
   const urlParams = new URLSearchParams(window.location.search);

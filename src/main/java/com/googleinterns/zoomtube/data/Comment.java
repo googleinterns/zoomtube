@@ -16,6 +16,7 @@ package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.auto.value.AutoValue;
 import java.util.Date;
 import javax.annotation.Nullable;
@@ -31,15 +32,19 @@ public abstract class Comment {
   public static final String PROP_CONTENT = "content";
   public static final String PROP_CREATED = "created";
 
-  public static Comment create(Key key, Key lecture, Key parent, double timestamp, String author,
-      String content, Date created) {
+  public static Comment create(Key key, Key lecture, Optional<Key> parent, double timestamp,
+      String author, String content, Date created) {
     return new AutoValue_Comment(key, lecture, parent, timestamp, author, content, created);
   }
 
+  /**
+   * Creates a {@code Comment} from a datastore {@link com.google.appengine.api.datastore.Entity}
+   * using the property names defined in this class.
+   */
   public static Comment fromEntity(Entity entity) {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
-    Key parent = (Key) entity.getProperty(PROP_PARENT);
+    Optional<Key> parent = Optional.fromNullable((Key) entity.getProperty(PROP_PARENT));
     double timestamp = (double) entity.getProperty(PROP_TIMESTAMP);
     String author = (String) entity.getProperty(PROP_AUTHOR);
     String content = (String) entity.getProperty(PROP_CONTENT);
@@ -53,8 +58,11 @@ public abstract class Comment {
   /** Every comment is about a lecture, this returns the lecture's Datastore entity key. */
   public abstract Key lecture();
 
-  /** Returns the key of the comment this is a reply to, or {@code null} if this isn't a reply. */
-  @Nullable public abstract Key parent();
+  /**
+   * Returns the key of the comment this is a reply to, or {@code Optional.empty()} if this
+   * isn't a reply.
+   */
+  public abstract Optional<Key> parent();
 
   /** Returns the timestamp in the video this comment is referencing. */
   public abstract double timestamp();
