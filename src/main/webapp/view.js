@@ -26,7 +26,6 @@ initialize();
  */
 async function initialize() {
   window.loadVideoApi();
-  // TODO: Initialize the video and trancript sections once they are added.
 }
 
 /**
