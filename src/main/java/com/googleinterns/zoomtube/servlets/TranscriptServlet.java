@@ -82,6 +82,10 @@ public class TranscriptServlet extends HttpServlet {
 
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+        // TODO: Delete the if statement.
+        if (nodeIndex == 2) {
+          break;
+        }
         Node node = nodeList.item(nodeIndex);
         this.datastore.put(createLineEntity(node, lectureId));
       }
@@ -93,6 +97,7 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("doGET");
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
