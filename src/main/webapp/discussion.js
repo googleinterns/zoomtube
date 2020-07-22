@@ -15,7 +15,7 @@
 const ENDPOINT = '/discussion';
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
-const ATTR_ID = 'id';
+const ATTR_ID = 'key-id';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
