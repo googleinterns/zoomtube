@@ -81,6 +81,8 @@
         <configuration>
           <deploy.projectId>zoomtube</deploy.projectId>
           <deploy.version>1</deploy.version>
+          <devserver.host>0.0.0.0</devserver.host>
+          <devserver.port>8181</devserver.port>
         </configuration>
       </plugin>
       <!-- Adds processing for @AutoValue annotations. -->
