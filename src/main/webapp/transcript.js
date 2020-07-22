@@ -37,22 +37,23 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
-
   const infoDivElement = document.createElement('div');
-  infoDivElement.className = INFO_CLASS;
-  
-  const date = (new Date(comment.timestamp)).toString()
-      .substring(0, END_OF_TIMESTAMP);
 
-  appendPTagToContainer(comment.nickname, infoDivElement);
-  appendPTagToContainer("Feeling " + comment.mood, infoDivElement);
-  appendPTagToContainer(date, infoDivElement);
-
+  appendPTagToContainer(transcriptLine.start, infoDivElement);
   liElement.appendChild(infoDivElement);
-  const textPElement = appendPTagToContainer(comment.text, liElement);
-  liElement.appendChild(createCommentImage(comment.imageUrl));
+  const textPElement = appendPTagToContainer(transcriptLine.text, liElement);
   // Separates each comment with a horizontal bar.
   liElement.appendChild(document.createElement('hr'));
-  textPElement.className = COMMENT_CLASS;
   ulElement.appendChild(liElement);
+}
+
+/**
+ * Creates a <p> tag to store the given {@code text} inside the
+ * {@code container} and returns the <p> tag using the given text.
+ */
+function appendPTagToContainer(text, container) {
+  const pTag = document.createElement(P_TAG);
+  pTag.innerText = text;
+  container.appendChild(pTag);
+  return pTag;
 }
