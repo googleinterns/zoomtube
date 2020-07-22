@@ -12,8 +12,13 @@ function sendPostToTranscript() {
       .then(fetchTranscript(testParamsString));
 }
 
+/**
+ * Fetches the transcript lines from \transcript.
+ *
+ *<p>Video id to fetch the transcript from is 
+ * indicated in {@code testParamsString}.
+ */
 function fetchTranscript(testParamsString) {
-  console.log('fetchTranscript');
   fetch(
       '/transcript' +
       '?' + testParamsString)
