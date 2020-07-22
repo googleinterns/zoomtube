@@ -56,7 +56,6 @@ public class TranscriptServlet extends HttpServlet {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder db = null;
     Document doc = null;
-    
     try {
       db = dbf.newDocumentBuilder();
       doc = db.parse(new URL(transcriptXMLUrl).openStream());
@@ -65,7 +64,6 @@ public class TranscriptServlet extends HttpServlet {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
-    
     NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
