@@ -52,9 +52,11 @@ function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
   const startTime = (new Date(transcriptLine.start)).getSeconds();
   const endTime = (new Date(transcriptLine.end).getSeconds());
-  const timestamp = startTime + ' secs - ' + endTime + " secs";
+  const timestamp = startTime + ' secs - ' + endTime + ' secs';
 
-  appendPTagToContainer(timestamp, liElement);
+  const timestampPElement = appendPTagToContainer(timestamp, liElement);
+  liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
+
   appendPTagToContainer(transcriptLine.content, liElement);
   // Separates each comment with a horizontal bar.
   liElement.appendChild(document.createElement('hr'));
