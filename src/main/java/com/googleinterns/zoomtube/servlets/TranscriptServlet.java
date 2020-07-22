@@ -70,23 +70,31 @@ public class TranscriptServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     String videoId = request.getParameter(PARAM_VIDEO_ID);
+    String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    final DocumentBuilder db;
+    final Document doc;
 
     try {
-      // TODO: Pass the video ID from another servlet
-      String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse(new URL(transcriptXMLUrl).openStream());
+      db = dbf.newDocumentBuilder();
+      doc = db.parse(new URL(transcriptXMLUrl).openStream());
       doc.getDocumentElement().normalize();
-
-      NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
-      for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-        Node node = nodeList.item(nodeIndex);
-        this.datastore.put(createLineEntity(node, lectureId));
-      }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
       System.out.println("XML parsing error");
+      return;
+    }
+    
+    NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
+    for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+      Node node = nodeList.item(nodeIndex);
+      Element element = (Element) node;
+      String lineStart = element.getAttribute(START_ATTRIBUTE);
+      String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
+      String lineContent = node.getTextContent();
+      // TODO: Remove print statement. It is currently here for display purposes.
+      System.out.println(lineStart + " " + lineDuration + " "
+          + " " + lineContent);
     }
   }
 
