@@ -23,12 +23,13 @@ window.LECTURE_ID = getLectureId();
 initialize();
 
 /**
- * Initializes the discussion section of the lecture view page.
+ * Initializes the video, discussion, and transcript sections of the
+ * lecture view page.
  */
 async function initialize() {
   window.loadDiscussion();
   window.loadApi();
-  // TODO: Initialize the trancript sections once they are added.
+  window.sendPostToTranscript();
 }
 
 /**
