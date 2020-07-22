@@ -63,34 +63,42 @@ public class LectureServlet extends HttpServlet {
   @Override
   // TODO: Check and see if lectureURL is already in database and if it is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
-    String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
-    String videoId = getVideoId(videoUrl);
-
-    // Creates Entity and stores in database
-    Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
-    lectureEntity.setProperty(Lecture.PROP_NAME, lectureName);
-    lectureEntity.setProperty(Lecture.PROP_URL, videoUrl);
-    lectureEntity.setProperty(Lecture.PROP_VIDEO_ID, videoId);
-
+    Entity lectureEntity = createLectureEntity(request);
     datastore.put(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    List<Lecture> lectures = getLectures();
+    Gson gson = new Gson();
+    response.setContentType("application/json");
+    response.getWriter().println(gson.toJson(lectures));
+  }
+
+  /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
+  private Entity createLectureEntity(HttpServletRequest request) {
+    String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
+    String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
+    String videoId = getVideoId(videoUrl);
+
+    Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
+    lectureEntity.setProperty(Lecture.PROP_NAME, lectureName);
+    lectureEntity.setProperty(Lecture.PROP_URL, videoUrl);
+    lectureEntity.setProperty(Lecture.PROP_VIDEO_ID, videoId);
+    return lectureEntity;
+  }
+
+  /** Returns a list of lectures stored in the database. */
+  private List<Lecture> getLectures() {
     Query query = new Query(Lecture.ENTITY_KIND);
     PreparedQuery results = datastore.prepare(query);
-
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
       Lecture newLecture = Lecture.fromEntity(lecture);
       lectures.add(newLecture);
     }
-
-    Gson gson = new Gson();
-    response.setContentType("application/json");
-    response.getWriter().println(gson.toJson(lectures));
+    return lectures;
   }
 
   /**
