@@ -84,6 +84,7 @@ public class TranscriptServlet extends HttpServlet {
 
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+        // TODO: Remove if statement.
         if (nodeIndex == 2) {
           break;
         }
@@ -127,16 +128,18 @@ public class TranscriptServlet extends HttpServlet {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     Float lineStart = new Float(Float.parseFloat(element.getAttribute(START_ATTRIBUTE)));
-    Float lineDuration = new Float(Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE)));
-    Float lineEnd = lineStart + lineDuration;
-    new Date(lineStart.longValue());
-    Duration.ofSeconds(lineDuration.longValue());
+    // java.time.duration is not a supported type for data store. Thus, the line duration
+    // will be stored as it was received when it was parsed from the transcript XML.
+    float lineDuration = Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE));
+    Float lineEnd = new Float(lineStart.floatValue() + lineDuration);
+
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
     lineEntity.setProperty(
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
-    lineEntity.setProperty(TranscriptLine.PROP_START, 1234567);
-    lineEntity.setProperty(TranscriptLine.PROP_DURATION, 1234567);
+    lineEntity.setProperty(TranscriptLine.PROP_START, new Date(lineStart.longValue()));
+    lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
+    lineEntity.setProperty(TranscriptLine.PROP_END, new Date(lineEnd.longValue()));
     return lineEntity;
   }
 }

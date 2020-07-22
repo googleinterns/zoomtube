@@ -17,6 +17,8 @@ package com.googleinterns.zoomtube.data;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
+import java.time.Duration;
+import java.util.Date;
 
 /** Contains data pertaining a single line of transcript. */
 @AutoValue
@@ -26,18 +28,19 @@ public abstract class TranscriptLine {
   public static final String PROP_START = "start";
   public static final String PROP_DURATION = "duration";
   public static final String PROP_CONTENT = "content";
+  public static final String PROP_END = "end";
 
   /**
    * Creates a {@code TranscriptLine} object.
    * @param key The key for the transcript.
    * @param lecture The key for the lecture.
-   * @param start The starting timestamp for the lecture line in seconds.
+   * @param start The starting time for the lecture line in seconds.
    * @param duration The number of seconds that the timestamp lasts for.
    * @param content The text content of the transcript line.
    */
   // TODO: Update start to be a Date object and duration to be a long.
   public static TranscriptLine create(
-      Key key, Key lecture, Date start, Duration duration, String content) {
+      Key key, Key lecture, Date start, float duration, Date end, String content) {
     return new AutoValue_TranscriptLine(key, lecture, start, duration, content);
   }
 
@@ -47,7 +50,7 @@ public abstract class TranscriptLine {
 
   public abstract Date start();
 
-  public abstract Duration duration();
+  public abstract float duration();
 
   public abstract String content();
 
@@ -59,8 +62,9 @@ public abstract class TranscriptLine {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
     Date start = (Date) entity.getProperty(PROP_START);
-    Duration duration = (Duration) entity.getProperty(PROP_DURATION);
+    float duration = (float) entity.getProperty(PROP_DURATION);
+    Date end = (Date) entity.getProperty(PROP_END);
     String content = (String) entity.getProperty(PROP_CONTENT);
-    return TranscriptLine.create(key, lecture, start, duration, content);
+    return TranscriptLine.create(key, lecture, start, duration, end, content);
   }
 }
