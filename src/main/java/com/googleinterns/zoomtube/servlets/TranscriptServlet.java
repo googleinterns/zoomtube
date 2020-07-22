@@ -60,6 +60,7 @@ public class TranscriptServlet extends HttpServlet {
   private static final String PARAM_LECTURE = "lecture";
   private static final String PARAM_LECTURE_ID = "id";
   private static final String PARAM_VIDEO_ID = "video";
+  private static final int MILLIS_CONVERTER = 1000;
 
   private static DatastoreService datastore;
 
@@ -132,14 +133,16 @@ public class TranscriptServlet extends HttpServlet {
     // will be stored as it was received when it was parsed from the transcript XML.
     float lineDuration = Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE));
     Float lineEnd = new Float(lineStart.floatValue() + lineDuration);
-
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
+    
     lineEntity.setProperty(
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
-    lineEntity.setProperty(TranscriptLine.PROP_START, new Date(lineStart.longValue()));
+    lineEntity.setProperty(
+        TranscriptLine.PROP_START, new Date(lineStart.longValue() * MILLIS_CONVERTER));
     lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
-    lineEntity.setProperty(TranscriptLine.PROP_END, new Date(lineEnd.longValue()));
+    lineEntity.setProperty(
+        TranscriptLine.PROP_END, new Date(lineEnd.longValue() * MILLIS_CONVERTER));
     return lineEntity;
   }
 }
