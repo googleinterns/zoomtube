@@ -56,8 +56,10 @@ function appendTextToList(transcriptLine, ulElement) {
 
   const timestampPElement = appendPTagToContainer(timestamp, liElement);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
-
-  appendPTagToContainer(transcriptLine.content, liElement);
+  timestampPElement.classList.add('mx-auto');
+  const transcriptLinePElement =
+      appendPTagToContainer(transcriptLine.content, liElement);
+  transcriptLinePElement.classList.add('mx-auto');
   // Separates each comment with a horizontal bar.
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
