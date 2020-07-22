@@ -16,7 +16,6 @@ package com.googleinterns.zoomtube.servlets;
 
 import java.io.IOException;
 import java.net.URL;
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
