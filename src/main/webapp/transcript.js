@@ -52,7 +52,7 @@ function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
   const startTime = (new Date(transcriptLine.start)).getSeconds();
   const endTime = (new Date(transcriptLine.end).getSeconds());
-  const timestamp = startTime + " - " + endTime;
+  const timestamp = startTime + ' - ' + endTime;
 
   appendPTagToContainer(timestamp, liElement);
   appendPTagToContainer(transcriptLine.content, liElement);
