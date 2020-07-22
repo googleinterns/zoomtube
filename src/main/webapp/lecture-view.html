@@ -8,13 +8,15 @@
 <script src="transcript.js"></script>
 <script src="view.js" defer></script>
 
-<div id="player"></div>
-
-<div id="transcript-container"></div>
-
-<div id="discussion-div">
-  <textarea id="post-textarea"></textarea>
-  <button type="button" onclick="postAndReload()">Post Comment</button>
-  <h2>Discussion:</h2>
-  <ul id="discussion"></ul>
+<div id="lecture-view">
+  <div id="lecture">
+    <div id="player"></div>
+    <div id="transcript-container"></div>
+  </div>
+  <div id="discussion-div">
+    <h2>Discussion:</h2>
+    <textarea id="post-textarea"></textarea>
+    <button type="button" onclick="postAndReload()">Post Comment</button>
+    <ul id="discussion"></ul>
+  </div>
 </div>
