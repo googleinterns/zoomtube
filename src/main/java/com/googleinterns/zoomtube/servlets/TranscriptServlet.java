@@ -63,7 +63,7 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void init() throws ServletException {
-    this.datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   @Override
@@ -84,7 +84,6 @@ public class TranscriptServlet extends HttpServlet {
       System.out.println("XML parsing error");
       return;
     }
-
     NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
