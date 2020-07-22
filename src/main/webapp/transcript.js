@@ -17,7 +17,7 @@ function fetchTranscript(testParamsString) {
   fetch(
       '/transcript' +
       '?' + testParamsString)
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
       });
@@ -49,7 +49,7 @@ function appendTextToList(transcriptLine, ulElement) {
 
   appendPTagToContainer(transcriptLine.start, infoDivElement);
   liElement.appendChild(infoDivElement);
-  const textPElement = appendPTagToContainer(transcriptLine.content, liElement);
+  appendPTagToContainer(transcriptLine.content, liElement);
   // Separates each comment with a horizontal bar.
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);

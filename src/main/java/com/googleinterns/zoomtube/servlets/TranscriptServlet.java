@@ -93,7 +93,6 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("doGET");
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
