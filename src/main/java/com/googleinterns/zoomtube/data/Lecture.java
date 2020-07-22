@@ -27,7 +27,7 @@ public abstract class Lecture {
   public static final String PROP_NAME = "lectureName";
   public static final String PROP_URL = "videoUrl";
   public static final String PROP_ID = "id";
-  public static final String PROP_VIDEO_ID = "videoId";
+  public static final String PROP_VIDEO_ID = "video-id";
 
   public abstract Key key();
   public abstract String lectureName();
