@@ -1,6 +1,8 @@
+// TODO: Fetch video-id from servlet rather than URL.
+
 /* Used to gather URL parameters. */
 const URL_PARAM_ID = 'id';
-const URL_PARAM_VIDEO_ID = 'video_id';
+const URL_PARAM_VIDEO_ID = 'video-id';
 
 /* Database ID for specific lecture. */
 const LECTURE_ID = getLectureKey();
