@@ -51,29 +51,31 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // TODO: Pass the video ID from another servlet.
+    String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + TEST_VIDEO_ID;
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db = null;
+    Document doc = null;
+    
     try {
-      // TODO: Pass the video ID from another servlet.
-      String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + TEST_VIDEO_ID;
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse(new URL(transcriptXMLUrl).openStream());
+      db = dbf.newDocumentBuilder();
+      doc = db.parse(new URL(transcriptXMLUrl).openStream());
       doc.getDocumentElement().normalize();
-
-      NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
-      for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-        Node node = nodeList.item(nodeIndex);
-        Element element = (Element) node;
-        String lineStart = element.getAttribute(START_ATTRIBUTE);
-        String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
-        String lineContent = node.getTextContent();
-
-        // TODO: Remove print statement. It is currently here for display purposes.
-        System.out.println(lineStart + " " + lineDuration + " "
-            + " " + lineContent);
-      }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
       System.out.println("XML parsing error");
+    }
+    
+    NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
+    for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+      Node node = nodeList.item(nodeIndex);
+      Element element = (Element) node;
+      String lineStart = element.getAttribute(START_ATTRIBUTE);
+      String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
+      String lineContent = node.getTextContent();
+      // TODO: Remove print statement. It is currently here for display purposes.
+      System.out.println(lineStart + " " + lineDuration + " "
+          + " " + lineContent);
     }
   }
 }
