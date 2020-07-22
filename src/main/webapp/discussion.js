@@ -103,6 +103,10 @@ function createComment(comment) {
   content.innerText = comment.content;
   element.appendChild(content);
 
+  const replyButton = document.createElement('button');
+  replyButton.innerText = 'Reply';
+  element.appendChild(replyButton);
+
   const repliesDiv = document.createElement('div');
   element.appendChild(repliesDiv);
 
@@ -112,13 +116,10 @@ function createComment(comment) {
   }
   repliesDiv.appendChild(repliesList);
 
-  const replyButton = document.createElement('button');
   replyButton.onclick = () => {
     createReplySubmission(repliesDiv);
     replyButton.remove();
   };
-  replyButton.innerText = 'Reply';
-  element.appendChild(replyButton);
 
   return element;
 }
@@ -141,5 +142,5 @@ function createReplySubmission(repliesDiv) {
   div.appendChild(textarea);
   div.appendChild(submit);
 
-  repliesDiv.appendChild(div);
+  repliesDiv.prepend(div);
 }
