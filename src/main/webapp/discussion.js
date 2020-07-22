@@ -22,13 +22,15 @@ const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 
 
 /**
- * Posts comment to {@code ENDPOINT} and reloads the discussion.
+ * Posts comment from {@code textarea} and reloads the discussion. If
+ * {@code parentId} is provided, this posts a reply to the comment with
+ * that id.
  */
-async function postAndReload(textarea, parentKey = undefined) {
+async function postAndReload(textarea, parentId = undefined) {
   const url = new URL(ENDPOINT, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  if (parentKey) {
-    url.searchParams.append(PARAM_PARENT, parentKey);
+  if (parentId) {
+    url.searchParams.append(PARAM_PARENT, parentId);
   }
 
   fetch(url, {
@@ -57,8 +59,8 @@ async function loadDiscussion() {
 /**
  * Organizes comments into threads with nested replies.
  *
- * <p>All comments are sent from the servlet, the client needs to organize
- * them before displaying.
+ * <p>All comments are sent from the servlet without any structure, so the
+ * client needs to organize them before displaying.
  */
 function prepareComments(comments) {
   const commentKeys = {};
