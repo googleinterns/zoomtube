@@ -9,16 +9,16 @@ function sendPostToTranscript() {
   const testParamsString = 'id=123456789&video=3ymwOvzhwHs';
   const params = new URLSearchParams(testParamsString);
   fetch('/transcript', {method: 'POST', body: params})
-      .then(fetchTranscript(testParamsString));
+      .then(fetchTranscriptLines(testParamsString));
 }
 
 /**
  * Fetches the transcript lines from \transcript.
  *
- *<p>Video id to fetch the transcript from is 
+ * <p>Video id to fetch the transcript from is
  * indicated in {@code testParamsString}.
  */
-function fetchTranscript(testParamsString) {
+function fetchTranscriptLines(testParamsString) {
   fetch(
       '/transcript' +
       '?' + testParamsString)
