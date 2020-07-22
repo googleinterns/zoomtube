@@ -37,7 +37,7 @@ public abstract class TranscriptLine {
    */
   // TODO: Update start to be a Date object and duration to be a long.
   public static TranscriptLine create(
-      Key key, Key lecture, String start, String duration, String content) {
+      Key key, Key lecture, Date start, Duration duration, String content) {
     return new AutoValue_TranscriptLine(key, lecture, start, duration, content);
   }
 
@@ -45,9 +45,9 @@ public abstract class TranscriptLine {
 
   public abstract Key lecture();
 
-  public abstract String start();
+  public abstract Date start();
 
-  public abstract String duration();
+  public abstract Duration duration();
 
   public abstract String content();
 
@@ -58,8 +58,8 @@ public abstract class TranscriptLine {
   public static TranscriptLine fromEntity(Entity entity) {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
-    String start = (String) entity.getProperty(PROP_START);
-    String duration = (String) entity.getProperty(PROP_DURATION);
+    Date start = (Date) entity.getProperty(PROP_START);
+    Duration duration = (Duration) entity.getProperty(PROP_DURATION);
     String content = (String) entity.getProperty(PROP_CONTENT);
     return TranscriptLine.create(key, lecture, start, duration, content);
   }

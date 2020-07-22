@@ -30,6 +30,8 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -82,6 +84,9 @@ public class TranscriptServlet extends HttpServlet {
 
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+        if (nodeIndex == 2) {
+          break;
+        }
         Node node = nodeList.item(nodeIndex);
         this.datastore.put(createLineEntity(node, lectureId));
       }
@@ -121,15 +126,17 @@ public class TranscriptServlet extends HttpServlet {
   private Entity createLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
-    String lineStart = element.getAttribute(START_ATTRIBUTE);
-    String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
-
+    Float lineStart = new Float(Float.parseFloat(element.getAttribute(START_ATTRIBUTE)));
+    Float lineDuration = new Float(Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE)));
+    Float lineEnd = lineStart + lineDuration;
+    new Date(lineStart.longValue());
+    Duration.ofSeconds(lineDuration.longValue());
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
     lineEntity.setProperty(
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
-    lineEntity.setProperty(TranscriptLine.PROP_START, lineStart);
-    lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
+    lineEntity.setProperty(TranscriptLine.PROP_START, 1234567);
+    lineEntity.setProperty(TranscriptLine.PROP_DURATION, 1234567);
     return lineEntity;
   }
 }
