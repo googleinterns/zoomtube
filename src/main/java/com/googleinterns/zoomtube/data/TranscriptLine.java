@@ -29,6 +29,7 @@ public abstract class TranscriptLine {
 
   /**
    * Creates a {@code TranscriptLine} object.
+   * 
    * @param key The key for the transcript.
    * @param lecture The key for the lecture.
    * @param start The starting timestamp for the lecture line in seconds.

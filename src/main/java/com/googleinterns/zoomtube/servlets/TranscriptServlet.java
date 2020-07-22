@@ -123,6 +123,8 @@ public class TranscriptServlet extends HttpServlet {
     String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
 
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
+    // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
+    // merged to this branch.
     lineEntity.setProperty(
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
