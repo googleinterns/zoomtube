@@ -60,7 +60,7 @@ public class TranscriptServlet extends HttpServlet {
   private static final String PARAM_LECTURE = "lecture";
   private static final String PARAM_LECTURE_ID = "id";
   private static final String PARAM_VIDEO_ID = "video";
-  private static final int MILLIS_CONVERTER = 1000;
+  private static final int MILLISECOND_CONVERTER = 1000;
 
   private static DatastoreService datastore;
 
@@ -139,10 +139,10 @@ public class TranscriptServlet extends HttpServlet {
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
     lineEntity.setProperty(
-        TranscriptLine.PROP_START, new Date(lineStart.longValue() * MILLIS_CONVERTER));
+        TranscriptLine.PROP_START, new Date(lineStart.longValue() * MILLISECOND_CONVERTER));
     lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
     lineEntity.setProperty(
-        TranscriptLine.PROP_END, new Date(lineEnd.longValue() * MILLIS_CONVERTER));
+        TranscriptLine.PROP_END, new Date(lineEnd.longValue() * MILLISECOND_CONVERTER));
     return lineEntity;
   }
 }

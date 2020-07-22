@@ -52,8 +52,8 @@ function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
   const infoDivElement = document.createElement('div');
 
-  appendPTagToContainer(transcriptLine.start, infoDivElement);
-  liElement.appendChild(infoDivElement);
+  const timestamp = transcriptLine.start + " - " + transcriptLine.end;
+  appendPTagToContainer(timestamp, liElement);
   appendPTagToContainer(transcriptLine.content, liElement);
   // Separates each comment with a horizontal bar.
   liElement.appendChild(document.createElement('hr'));
