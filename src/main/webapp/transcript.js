@@ -1,5 +1,5 @@
 
-const TRANSCRIPT_CONTAINER = "transcript-container";
+const TRANSCRIPT_CONTAINER = 'transcript-container';
 
 /**
  * Sends a POST request to the transcript.
@@ -9,10 +9,18 @@ function sendPostToTranscript() {
   const testParamsString = 'id=123456789&video=3ymwOvzhwHs';
   const params = new URLSearchParams(testParamsString);
   fetch('/transcript', {method: 'POST', body: params})
-    .then(response => response.json())
-    .then((transcriptLines) => {
+      .then(fetchTranscript(testParamsString));
+}
+
+function fetchTranscript(testParamsString) {
+  console.log('fetchTranscript');
+  fetch(
+      '/transcript' +
+      '?' + testParamsString)
+      .then(response => response.json())
+      .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
-    });
+      });
 }
 
 /**
@@ -41,7 +49,7 @@ function appendTextToList(transcriptLine, ulElement) {
 
   appendPTagToContainer(transcriptLine.start, infoDivElement);
   liElement.appendChild(infoDivElement);
-  const textPElement = appendPTagToContainer(transcriptLine.text, liElement);
+  const textPElement = appendPTagToContainer(transcriptLine.content, liElement);
   // Separates each comment with a horizontal bar.
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
@@ -52,7 +60,7 @@ function appendTextToList(transcriptLine, ulElement) {
  * {@code container} and returns the <p> tag using the given text.
  */
 function appendPTagToContainer(text, container) {
-  const pTag = document.createElement(P_TAG);
+  const pTag = document.createElement('p');
   pTag.innerText = text;
   container.appendChild(pTag);
   return pTag;
