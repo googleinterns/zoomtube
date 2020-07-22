@@ -134,7 +134,7 @@ public class TranscriptServlet extends HttpServlet {
     float lineDuration = Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE));
     Float lineEnd = new Float(lineStart.floatValue() + lineDuration);
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-    
+
     lineEntity.setProperty(
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);

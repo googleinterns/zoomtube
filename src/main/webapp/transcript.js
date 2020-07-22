@@ -50,9 +50,10 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
-  const infoDivElement = document.createElement('div');
+  const startTime = (new Date(transcriptLine.start)).getSeconds();
+  const endTime = (new Date(transcriptLine.end).getSeconds());
+  const timestamp = startTime + " - " + endTime;
 
-  const timestamp = transcriptLine.start + " - " + transcriptLine.end;
   appendPTagToContainer(timestamp, liElement);
   appendPTagToContainer(transcriptLine.content, liElement);
   // Separates each comment with a horizontal bar.
