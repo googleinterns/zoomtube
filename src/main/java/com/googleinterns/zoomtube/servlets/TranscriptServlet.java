@@ -16,6 +16,7 @@ package com.googleinterns.zoomtube.servlets;
 
 import java.io.IOException;
 import java.net.URL;
+import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,7 +41,6 @@ public class TranscriptServlet extends HttpServlet {
   private static final String START_ATTRIBUTE = "start";
   private static final String DURATION_ATTRIBUTE = "dur";
   private static final String TEXT_TAG = "text";
-  // TODO: Use actual video id.
   private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
 
   @Override
@@ -53,18 +52,19 @@ public class TranscriptServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Pass the video ID from another servlet.
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + TEST_VIDEO_ID;
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = null;
-    Document doc = null;
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    final DocumentBuilder documentBuilder;
+    final Document document;
     try {
-      db = dbf.newDocumentBuilder();
-      doc = db.parse(new URL(transcriptXMLUrl).openStream());
-      doc.getDocumentElement().normalize();
+      documentBuilder = documentBuilderFactory.newDocumentBuilder();
+      document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
+      document.getDocumentElement().normalize();
     } catch (ParserConfigurationException | SAXException e) {
-      // TODO: alert the user.
+      // TODO: Alert the user.
       System.out.println("XML parsing error");
+      return;
     }
-    NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
+    NodeList nodeList = document.getElementsByTagName(TEXT_TAG);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
       Element element = (Element) node;
