@@ -1,4 +1,3 @@
-
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -27,7 +26,7 @@ public abstract class Lecture {
   public static final String PROP_NAME = "lectureName";
   public static final String PROP_URL = "videoUrl";
   public static final String PROP_ID = "id";
-  public static final String PROP_VIDEO_ID = "videoId";
+  public static final String PROP_VIDEO_ID = "video-id";
 
   public abstract Key key();
   public abstract String lectureName();
