@@ -14,19 +14,6 @@
 
 package com.googleinterns.zoomtube.servlets;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Optional;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -41,7 +28,17 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-
+import java.io.IOException;
+import java.net.URL;
+import java.util.Optional;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -76,13 +73,14 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Gets the transcript for a video as a document. The video to extract the transcript from is 
+   * Gets the transcript for a video as a document. The video to extract the transcript from is
    * indicated by {@code request}.
    */
-  private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request) throws IOException {
+  private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
+      throws IOException {
     String videoId = request.getParameter(PARAM_VIDEO_ID);
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
-    
+
     final Document document;
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -121,10 +119,10 @@ public class TranscriptServlet extends HttpServlet {
     Query query = new Query(TranscriptLine.ENTITY_KIND)
                       .setFilter(lectureFilter)
                       .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
-    PreparedQuery pq = datastore.prepare(query);
+    PreparedQuery preparedQuery = datastore.prepare(query);
 
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity entity : pq.asQueryResultIterable()) {
+    for (Entity entity : preparedQuery.asQueryResultIterable()) {
       lineBuilder.add(TranscriptLine.fromLineEntity(entity));
     }
     ImmutableList<TranscriptLine> lines = lineBuilder.build();
@@ -133,6 +131,12 @@ public class TranscriptServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(lines));
   }
+
+  // get lecture key
+  // filter lecture for certain key
+  // get lectures for a key --> pq
+  // add each object to a list
+  // write the list to json
 
   /**
    * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
