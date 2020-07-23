@@ -30,7 +30,7 @@ async function postAndReload() {
   fetch(url, {
     method: 'POST',
     body: ELEMENT_POST_TEXTAREA.value,
-  }).then((res) => {
+  }).then(() => {
     ELEMENT_POST_TEXTAREA.value = '';
     loadDiscussion();
   });
