@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -67,26 +68,38 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Decompose method.
+    // TODO: Decompose method. (getting parameters, getting doc to parse, adding to datastore)
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     String videoId = request.getParameter(PARAM_VIDEO_ID);
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
-    final Document document;
-    try {
-      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
-      document.getDocumentElement().normalize();
-    } catch (ParserConfigurationException | SAXException e) {
-      // TODO: Alert the user.
-      System.out.println("XML parsing error");
-      return;
-    }
+
+    Document document = getXmlAsDocument(transcriptXMLUrl).get();
+
     NodeList nodeList = document.getElementsByTagName(TEXT_TAG);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
       datastore.put(createLineEntity(node, lectureId));
     }
   }
+
+  // private Document getXmlAsDocument(aram string)
+  // private void put in datstore (param tag)
+
+  private Optional<Document> getXmlAsDocument(String xmlUrl) throws IOException {
+    final Document document;
+    try {
+      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      document = documentBuilder.parse(new URL(xmlUrl).openStream());
+      document.getDocumentElement().normalize();
+    } catch (ParserConfigurationException | SAXException e) {
+      // TODO: Alert the user.
+      System.out.println("XML parsing error");
+      return Optional.empty();
+    }
+    return Optional.of(document);
+  }
+
+  private void putInDatastore()
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
