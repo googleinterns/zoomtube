@@ -14,29 +14,34 @@
 
 const ENDPOINT = '/discussion';
 const PARAM_LECTURE = 'lecture';
+const PARAM_PARENT = 'parent';
+const ATTR_ID = 'key-id';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 
 
-/* exported postAndReload */
 /**
- * Posts comment to {@code ENDPOINT} and reloads the discussion.
+ * Posts comment from {@code textarea} and reloads the discussion. If
+ * {@code parentId} is provided, this posts a reply to the comment with
+ * that id.
  */
-async function postAndReload() {
+async function postAndReload(textarea, parentId = undefined) {
   const url = new URL(ENDPOINT, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
+  if (parentId) {
+    url.searchParams.append(PARAM_PARENT, parentId);
+  }
 
   fetch(url, {
     method: 'POST',
-    body: ELEMENT_POST_TEXTAREA.value,
-  }).then((res) => {
-    ELEMENT_POST_TEXTAREA.value = '';
+    body: textarea.value,
+  }).then(() => {
+    textarea.value = '';
     loadDiscussion();
   });
 }
 
-/* exported loadDiscussion */
 /**
  * Adds comments to the discussion element.
  */
@@ -45,9 +50,36 @@ async function loadDiscussion() {
   ELEMENT_DISCUSSION.textContent = '';
 
   const comments = await fetchDiscussion();
-  for (const comment of comments) {
+  const preparedComments = prepareComments(comments);
+  for (const comment of preparedComments) {
     ELEMENT_DISCUSSION.appendChild(createComment(comment));
   }
+}
+
+/**
+ * Organizes comments into threads with nested replies.
+ *
+ * <p>All comments are sent from the servlet without any structure, so the
+ * client needs to organize them before displaying.
+ */
+function prepareComments(comments) {
+  const commentKeys = {};
+  for (const comment of comments) {
+    comment.replies = [];
+    commentKeys[comment.key.id] = comment;
+  }
+
+  const rootComments = [];
+  for (const comment of comments) {
+    if (comment.parent.value) {
+      const parent = commentKeys[comment.parent.value.id];
+      parent.replies.push(comment);
+    } else {
+      // Top level comments don't have parents.
+      rootComments.push(comment);
+    }
+  }
+  return rootComments;
 }
 
 /**
@@ -67,9 +99,50 @@ async function fetchDiscussion() {
  */
 function createComment(comment) {
   const element = document.createElement('li');
+  element.setAttribute(ATTR_ID, comment.key.id);
 
-  // TODO: Display more than just the content.
-  element.innerText = comment.content;
+  const content = document.createElement('span');
+  content.innerText = comment.content;
+  element.appendChild(content);
+
+  const replyButton = document.createElement('button');
+  replyButton.innerText = 'Reply';
+  element.appendChild(replyButton);
+
+  const repliesDiv = document.createElement('div');
+  element.appendChild(repliesDiv);
+
+  const repliesList = document.createElement('ul');
+  for (const reply of comment.replies) {
+    repliesList.appendChild(createComment(reply));
+  }
+  repliesDiv.appendChild(repliesList);
+
+  replyButton.onclick = () => {
+    createReplySubmission(repliesDiv);
+    replyButton.remove();
+  };
 
   return element;
+}
+
+/**
+ * Creates a reply textarea and submit button within {@code repliesDiv}.
+ *
+ * <p>The parent of {@code repliesDiv} should be a comment element created by
+ * {@code createComment}.
+ */
+function createReplySubmission(repliesDiv) {
+  const div = document.createElement('div');
+  const textarea = document.createElement('textarea');
+  const submit = document.createElement('button');
+  const parentId = repliesDiv.parentElement.getAttribute(ATTR_ID);
+  submit.innerText = 'Post';
+  submit.onclick = () => {
+    postAndReload(textarea, parentId);
+  };
+  div.appendChild(textarea);
+  div.appendChild(submit);
+
+  repliesDiv.prepend(div);
 }

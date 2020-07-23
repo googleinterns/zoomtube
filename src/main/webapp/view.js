@@ -13,8 +13,6 @@
 // limitations under the License.
 
 const PARAM_ID = 'id';
-
-/* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
 initialize();
