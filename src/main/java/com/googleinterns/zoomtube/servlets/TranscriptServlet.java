@@ -51,8 +51,8 @@ import org.xml.sax.SAXException;
 public class TranscriptServlet extends HttpServlet {
   private static final String TRANSCRIPT_XML_URL_TEMPLATE =
       "http://video.google.com/timedtext?lang=en&v=";
-  private static final String START_ATTRIBUTE = "start";
-  private static final String DURATION_ATTRIBUTE = "dur";
+  private static final String ATTRIBUTE_START = "start";
+  private static final String ATTRIBUTE_DURATION = "dur";
   private static final String TEXT_TAG = "text";
   private static final String PARAM_LECTURE = "lecture";
   private static final String PARAM_LECTURE_ID = "id";
@@ -70,11 +70,9 @@ public class TranscriptServlet extends HttpServlet {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     String videoId = request.getParameter(PARAM_VIDEO_ID);
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
-    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-    final DocumentBuilder documentBuilder;
     final Document document;
     try {
-      documentBuilder = documentBuilderFactory.newDocumentBuilder();
+      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
       document.getDocumentElement().normalize();
     } catch (ParserConfigurationException | SAXException e) {
@@ -85,7 +83,7 @@ public class TranscriptServlet extends HttpServlet {
     NodeList nodeList = document.getElementsByTagName(TEXT_TAG);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
-      createLineEntity(node, lectureId);
+      datastore.put(createLineEntity(node, lectureId));
     }
   }
 
@@ -104,7 +102,7 @@ public class TranscriptServlet extends HttpServlet {
 
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : pq.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromEntity(entity));
+      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
     }
     ImmutableList<TranscriptLine> lines = lineBuilder.build();
 
@@ -119,8 +117,8 @@ public class TranscriptServlet extends HttpServlet {
   private Entity createLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
-    String lineStart = element.getAttribute(START_ATTRIBUTE);
-    String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
+    String lineStart = element.getAttribute(ATTRIBUTE_START);
+    String lineDuration = element.getAttribute(ATTRIBUTE_DURATION);
 
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
     // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
