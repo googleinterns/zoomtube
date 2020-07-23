@@ -21,7 +21,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
-import com.google.sps.data.Lecture;
+import com.googleinterns.zoomtube.data.Lecture;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -40,7 +40,9 @@ import org.apache.http.client.utils.URIBuilder;
 public class LectureServlet extends HttpServlet {
   /* Used to generate a Pattern for a Video URL. */
   private static final String YOUTUBE_VIDEO_URL_PATTERN =
-      "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+      "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|"
+      + "watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|"
+      + "embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
   /* Name of input field used for lecture name in lecture selection page. */
   private static final String NAME_INPUT = "name-input";
@@ -51,8 +53,8 @@ public class LectureServlet extends HttpServlet {
   private static final String REDIRECT_URL = "/lecture-view.html";
 
   /* Pattern used to create a matcher for a video ID. */
-  Pattern videoUrlGeneratedPattern;
-  DatastoreService datastore;
+  private static Pattern videoUrlGeneratedPattern;
+  private static DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
@@ -95,7 +97,7 @@ public class LectureServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = Lecture.fromEntity(lecture);
+      Lecture newLecture = Lecture.fromLectureEntity(lecture);
       lectures.add(newLecture);
     }
     return lectures;
