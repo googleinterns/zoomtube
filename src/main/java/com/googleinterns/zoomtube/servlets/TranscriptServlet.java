@@ -67,6 +67,7 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // TODO: Decompose method.
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     String videoId = request.getParameter(PARAM_VIDEO_ID);
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
@@ -89,6 +90,7 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // TODO: Decompose method.
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
