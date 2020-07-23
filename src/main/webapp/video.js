@@ -27,6 +27,7 @@ async function loadVideoApi() {
  * Creates a YouTube Video iFrame playing video with id:{@code VIDEO_ID} after
  * API calls it. This is a required callback from the API.
  */
+// TODO: Change height and width.
 function onYouTubeIframeAPIReady() {
   videoPlayer = new window.YT.Player('player', {
     height: '390',
