@@ -1,0 +1,27 @@
+body {
+  height: 100vh;
+  margin: 0;
+  width: 100vw;
+}
+
+#lecture-view {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+#discussion-div,
+#lecture {
+  display: inline-block;
+  width: 50%;
+}
+
+#discussion-div,
+#transcript-container {
+  overflow-y: scroll;
+}
+
+#player,
+#transcript-container {
+  height: 50%;
+}
