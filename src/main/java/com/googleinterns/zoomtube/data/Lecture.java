@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -46,7 +46,7 @@ public abstract class Lecture {
   }
 
   /** Returns a Lecture from {@code entity}. */
-  public static Lecture fromEntity(Entity entity) {
+  public static Lecture fromLectureEntity(Entity entity) {
     Key key = entity.getKey();
     String lectureName = (String) entity.getProperty(PROP_NAME);
     String videoUrl = (String) entity.getProperty(PROP_URL);
