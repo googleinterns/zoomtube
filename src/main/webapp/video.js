@@ -38,7 +38,7 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-/** Plays video. Called after API and iFrame load. */
+/** Plays video. */
 function onPlayerReady(event) {
   event.target.playVideo();
 }
