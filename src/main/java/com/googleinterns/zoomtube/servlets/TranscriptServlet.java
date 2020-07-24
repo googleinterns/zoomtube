@@ -144,7 +144,8 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Writes {@code list} as Json to {@code response}.
    */
-  private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> list) throws IOException{
+  private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> list)
+      throws IOException{
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(list));
