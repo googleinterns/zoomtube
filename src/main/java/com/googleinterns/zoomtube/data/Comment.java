@@ -16,6 +16,7 @@ package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
 import java.util.Date;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public abstract class Comment {
   public static final String PROP_CREATED = "created";
 
   private static Comment create(Key key, Key lecture, Optional<Key> parent, Date timestamp,
-      String author, String content, Date created) {
+      User author, String content, Date created) {
     return new AutoValue_Comment(key, lecture, parent, timestamp, author, content, created);
   }
 
@@ -45,7 +46,7 @@ public abstract class Comment {
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
     Optional<Key> parent = Optional.ofNullable((Key) entity.getProperty(PROP_PARENT));
     Date timestamp = (Date) entity.getProperty(PROP_TIMESTAMP);
-    String author = (String) entity.getProperty(PROP_AUTHOR);
+    User author = (User) entity.getProperty(PROP_AUTHOR);
     String content = (String) entity.getProperty(PROP_CONTENT);
     Date created = (Date) entity.getProperty(PROP_CREATED);
     return Comment.create(key, lecture, parent, timestamp, author, content, created);
@@ -67,11 +68,10 @@ public abstract class Comment {
   public abstract Date timestamp();
 
   /**
-   * Returns the comment's author. This is the email of the user who posted the
-   * comment.
+   * Returns the comment's author. This is the {@link com.google.appengine.api.users.User}
+   * who posted the comment.
    */
-  // TODO: This will return an empty string until authentication is implemented.
-  public abstract String author();
+  public abstract User author();
 
   /** Returns the comment's content. */
   public abstract String content();
