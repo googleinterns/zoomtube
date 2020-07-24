@@ -18,7 +18,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 
-/** Contains data pertaining a single line of transcript. */
+/** Contains data pertaining to a single line of transcript. */
 @AutoValue
 public abstract class TranscriptLine {
   public static final String ENTITY_KIND = "TranscriptLine";
