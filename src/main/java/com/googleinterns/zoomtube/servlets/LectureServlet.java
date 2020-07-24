@@ -64,16 +64,16 @@ public class LectureServlet extends HttpServlet {
   }
 
   @Override
-  // TODO: Check and see if lectureURL is already in database and if it is valid.
+  // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Entity lectureEntity = createLectureEntity(request);
-    Optional<Entity> existingEntity =
-        checkUrlInDatabase((String) lectureEntity.getProperty(Lecture.PROP_URL));
+    String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
+    Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
 
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()));
       return;
     }
+    Entity lectureEntity = createLectureEntity(request);
     datastore.put(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
@@ -87,8 +87,8 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns the Entity in database that has {@code url}, or an
-   * empty optional if non exist.
+   * Returns the Entity in database that has {@code url}, or
+   * {@code Optional.empty()} if one doesn't exist.
    */
   private Optional<Entity> checkUrlInDatabase(String url) {
     Query query = new Query(Lecture.ENTITY_KIND);
