@@ -52,8 +52,8 @@ import org.xml.sax.SAXException;
 public class TranscriptServlet extends HttpServlet {
   private static final String TRANSCRIPT_XML_URL_TEMPLATE =
       "http://video.google.com/timedtext?lang=en&v=";
-  private static final String ATTRIBUTE_START = "start";
-  private static final String ATTRIBUTE_DURATION = "dur";
+  private static final String ATTR_START = "start";
+  private static final String ATTR_DURATION = "dur";
   private static final String TAG_TEXT = "text";
   private static final String PARAM_LECTURE = "lecture";
   private static final String PARAM_LECTURE_ID = "id";
@@ -73,7 +73,8 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Gets the transcript for a video as a document. The video to extract the transcript from is
+   * Gets the transcript for a video as a document. Otherwise, return Optional.empty()
+   * if there is a parsing error. The video to extract the transcript from is
    * indicated by {@code request}.
    */
   private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
@@ -157,8 +158,8 @@ public class TranscriptServlet extends HttpServlet {
   private Entity createLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
-    String lineStart = element.getAttribute(ATTRIBUTE_START);
-    String lineDuration = element.getAttribute(ATTRIBUTE_DURATION);
+    String lineStart = element.getAttribute(ATTR_START);
+    String lineDuration = element.getAttribute(ATTR_DURATION);
 
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
     // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
