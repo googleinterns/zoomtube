@@ -111,18 +111,13 @@ public class TranscriptServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Decompose method.
     PreparedQuery preparedQuery = getLectureTranscriptQuery(request);
-
-    ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity entity : preparedQuery.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
-    }
-    ImmutableList<TranscriptLine> lines = lineBuilder.build();
-
-    Gson gson = new Gson();
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(lines));
+    ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
+    writeResponseAsJson(response, transcriptLines);
   }
 
+  /**
+   * Gets the query for the lecture transcripts based on lecture id indicated in {@code request}.
+   */
   private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
@@ -136,11 +131,19 @@ public class TranscriptServlet extends HttpServlet {
     return datastore.prepare(query);
   }
 
-  // get lecture key
-  // filter lecture for certain key
-  // get lectures for a key --> pq
-  // add each object to a list
-  // write the list to json
+  private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
+    ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
+    for (Entity entity : preparedQuery.asQueryResultIterable()) {
+      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
+    }
+    return lineBuilder.build();
+  }
+
+  private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> list) throws IOException{
+    Gson gson = new Gson();
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(list));
+  }
 
   /**
    * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
