@@ -16,10 +16,9 @@ package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.auto.value.AutoValue;
 import java.util.Date;
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /** Contains data related to a comment in a discussion. */
 @AutoValue
@@ -44,7 +43,7 @@ public abstract class Comment {
   public static Comment fromEntity(Entity entity) {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
-    Optional<Key> parent = Optional.fromNullable((Key) entity.getProperty(PROP_PARENT));
+    Optional<Key> parent = Optional.ofNullable((Key) entity.getProperty(PROP_PARENT));
     Date timestamp = (Date) entity.getProperty(PROP_TIMESTAMP);
     String author = (String) entity.getProperty(PROP_AUTHOR);
     String content = (String) entity.getProperty(PROP_CONTENT);
@@ -70,9 +69,8 @@ public abstract class Comment {
   /**
    * Returns the comment's author. This is the email of the user who posted the
    * comment.
-   *
-   * TODO: This will return an empty string until authentication is implemented.
    */
+  // TODO: This will return an empty string until authentication is implemented.
   public abstract String author();
 
   /** Returns the comment's content. */
