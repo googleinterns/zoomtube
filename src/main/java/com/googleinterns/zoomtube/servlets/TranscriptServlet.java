@@ -109,7 +109,6 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Decompose method.
     PreparedQuery preparedQuery = getLectureTranscriptQuery(request);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
     writeResponseAsJson(response, transcriptLines);
@@ -131,6 +130,9 @@ public class TranscriptServlet extends HttpServlet {
     return datastore.prepare(query);
   }
 
+  /**
+   * Gets the TranscriptLines from the {@code preparedQuery}.
+   */
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : preparedQuery.asQueryResultIterable()) {
@@ -139,6 +141,9 @@ public class TranscriptServlet extends HttpServlet {
     return lineBuilder.build();
   }
 
+  /**
+   * Writes {@code list} as Json to {@code response}.
+   */
   private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> list) throws IOException{
     Gson gson = new Gson();
     response.setContentType("application/json;");
