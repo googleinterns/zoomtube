@@ -22,6 +22,7 @@ const ATTR_ID = 'key-id';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
+const ELEMENT_AUTH_STATUS = document.querySelector('#auth-status');
 
 let AUTH_STATUS = null;
 
@@ -129,12 +130,7 @@ function createComment(comment) {
   content.innerText = `${comment.author.email} says ${comment.content}`;
   element.appendChild(content);
 
-  const replyButton = document.createElement('button');
-  replyButton.innerText = 'Reply';
-  element.appendChild(replyButton);
-
   const repliesDiv = document.createElement('div');
-  element.appendChild(repliesDiv);
 
   const repliesList = document.createElement('ul');
   for (const reply of comment.replies) {
@@ -142,10 +138,16 @@ function createComment(comment) {
   }
   repliesDiv.appendChild(repliesList);
 
-  replyButton.onclick = () => {
-    createReplySubmission(repliesDiv);
-    replyButton.remove();
-  };
+  if (AUTH_STATUS.loggedIn) {
+    const replyButton = document.createElement('button');
+    replyButton.innerText = 'Reply';
+    element.appendChild(replyButton);
+    replyButton.onclick = () => {
+      createReplySubmission(repliesDiv);
+      replyButton.remove();
+    };
+  }
+  element.appendChild(repliesDiv);
 
   return element;
 }
