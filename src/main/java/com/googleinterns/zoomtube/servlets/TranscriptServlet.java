@@ -110,16 +110,7 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Decompose method.
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
-    Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
-
-    Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
-
-    Query query = new Query(TranscriptLine.ENTITY_KIND)
-                      .setFilter(lectureFilter)
-                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
-    PreparedQuery preparedQuery = datastore.prepare(query);
+    PreparedQuery preparedQuery = getLectureTranscriptQuery(request);
 
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : preparedQuery.asQueryResultIterable()) {
@@ -130,6 +121,19 @@ public class TranscriptServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(lines));
+  }
+
+  private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
+
+    Filter lectureFilter =
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+
+    Query query = new Query(TranscriptLine.ENTITY_KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
+    return datastore.prepare(query);
   }
 
   // get lecture key
