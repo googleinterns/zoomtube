@@ -21,7 +21,8 @@ initialize();
 
 /** Initializes different portions of project */
 async function initialize() {
-  // TODO: Initialize the video, trancript, and discussion sections once they are added.
+  // TODO: Initialize the video, trancript, and discussion sections once they
+  // are added.
 }
 
 /**
