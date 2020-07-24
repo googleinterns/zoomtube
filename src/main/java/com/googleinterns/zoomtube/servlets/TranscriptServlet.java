@@ -74,8 +74,8 @@ public class TranscriptServlet extends HttpServlet {
 
   /**
    * Gets the transcript for a video as a document. Otherwise, return Optional.empty()
-   * if there is a parsing error. The video to extract the transcript from is
-   * indicated by {@code request}.
+   * if there is a parsing error. {@code request} indicates the video to extrac 
+   * the transcript from.
    */
   private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
       throws IOException {
