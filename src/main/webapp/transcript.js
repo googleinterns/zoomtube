@@ -3,8 +3,7 @@
  */
 function sendPostToTranscript() {
   // TODO: Update with user input.
-  console.log('sendPostToTranscript');
-  const testParamsString = 'id=123456789&video=3ymwOvzhwHs';
+  const testParamsString = 'id=123456789&video=8PrOp9t0PyQ';
   const params = new URLSearchParams(testParamsString);
   fetch('/transcript', {method: 'POST', body: params});
 }
