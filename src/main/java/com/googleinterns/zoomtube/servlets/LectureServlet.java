@@ -68,7 +68,7 @@ public class LectureServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Entity lectureEntity = createLectureEntity(request);
     Optional<Entity> existingEntity =
-        checkDatabase((String) lectureEntity.getProperty(Lecture.PROP_URL));
+        checkUrlInDatabase((String) lectureEntity.getProperty(Lecture.PROP_URL));
 
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()));
@@ -86,7 +86,11 @@ public class LectureServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(lectures));
   }
 
-  private Optional<Entity> checkDatabase(String url) {
+  /**
+   * Returns the Entity in database that has {@code url}, or an
+   * empty optional if non exist.
+   */
+  private Optional<Entity> checkUrlInDatabase(String url) {
     Query query = new Query(Lecture.ENTITY_KIND);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
