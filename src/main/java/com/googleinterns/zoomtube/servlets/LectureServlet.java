@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
@@ -66,8 +67,14 @@ public class LectureServlet extends HttpServlet {
   // TODO: Check and see if lectureURL is already in database and if it is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Entity lectureEntity = createLectureEntity(request);
-    datastore.put(lectureEntity);
-    response.sendRedirect(buildRedirectUrl(lectureEntity));
+    Optional<Entity> existingEntity =
+        checkDatabase((String) lectureEntity.getProperty(Lecture.PROP_URL));
+    if (existingEntity.isPresent()) {
+      response.sendRedirect(buildRedirectUrl(existingEntity.get()));
+    } else {
+      datastore.put(lectureEntity);
+      response.sendRedirect(buildRedirectUrl(lectureEntity));
+    }
   }
 
   @Override
@@ -76,6 +83,20 @@ public class LectureServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(lectures));
+  }
+
+  private Optional<Entity> checkDatabase(String url) {
+    Query query = new Query(Lecture.ENTITY_KIND);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+    Iterable<Entity> resultsIterable = results.asIterable();
+
+    for (Entity lecture : resultsIterable) {
+      if (lecture.getProperty(Lecture.PROP_URL).equals(url)) {
+        return Optional.of(lecture);
+      }
+    }
+    return Optional.empty();
   }
 
   /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
