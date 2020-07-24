@@ -18,7 +18,7 @@ import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
 import java.util.Optional;
 
-/** Contains a user's authentication status, with links to login or logout */
+/** Contains a user's authentication status, with links to login or logout. */
 @AutoValue
 public abstract class AuthenticationStatus {
   public static AuthenticationStatus loggedIn(User user, String logoutUrl) {
@@ -36,7 +36,7 @@ public abstract class AuthenticationStatus {
 
   /**
    * Returns the current user's information if they are logged in.  Otherwise, returns
-   * {@code Optional.empty()}
+   * {@code Optional.empty()}.
    */
   public abstract Optional<User> user();
 
