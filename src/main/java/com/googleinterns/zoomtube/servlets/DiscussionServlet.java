@@ -43,17 +43,26 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/discussion")
 public class DiscussionServlet extends HttpServlet {
   private static final String PARAM_LECTURE = "lecture";
+  private static final String PARAM_PARENT = "parent";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lecture = KeyFactory.createKey(/* kind= */ "Lecture", lectureId);
+
+    String parentIdString = request.getParameter(PARAM_PARENT);
+    Key parent = null;
+    if (parentIdString != null) {
+      long parentId = Long.parseLong(parentIdString);
+      parent = KeyFactory.createKey(Comment.ENTITY_KIND, parentId);
+    }
+
     String content = CharStreams.toString(request.getReader());
 
     // TODO: Most of these values are default placeholders. Add real values as features are added.
     Entity commentEntity = new Entity(Comment.ENTITY_KIND);
     commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
-    commentEntity.setProperty(Comment.PROP_PARENT, null);
+    commentEntity.setProperty(Comment.PROP_PARENT, parent);
     commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
     commentEntity.setProperty(Comment.PROP_AUTHOR, "");
     commentEntity.setProperty(Comment.PROP_CONTENT, content);
