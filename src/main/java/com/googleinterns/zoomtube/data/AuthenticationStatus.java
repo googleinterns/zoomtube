@@ -21,12 +21,12 @@ import java.util.Optional;
 /** Contains a user's authentication status, with links to login or logout */
 @AutoValue
 public abstract class AuthenticationStatus {
-  private static AuthenticationStatus loggedIn(String logoutUrl, User user) {
+  public static AuthenticationStatus loggedIn(User user, String logoutUrl) {
     return new AutoValue_AuthenticationStatus(
         true, Optional.of(user), Optional.empty(), Optional.of(logoutUrl));
   }
 
-  private static AuthenticationStatus loggedOut(String loginUrl) {
+  public static AuthenticationStatus loggedOut(String loginUrl) {
     return new AutoValue_AuthenticationStatus(
         false, Optional.empty(), Optional.of(loginUrl), Optional.empty());
   }
