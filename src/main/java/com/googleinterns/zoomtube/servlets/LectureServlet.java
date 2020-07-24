@@ -69,12 +69,13 @@ public class LectureServlet extends HttpServlet {
     Entity lectureEntity = createLectureEntity(request);
     Optional<Entity> existingEntity =
         checkDatabase((String) lectureEntity.getProperty(Lecture.PROP_URL));
+    
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()));
-    } else {
-      datastore.put(lectureEntity);
-      response.sendRedirect(buildRedirectUrl(lectureEntity));
+      return;
     }
+    datastore.put(lectureEntity);
+    response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
   @Override
