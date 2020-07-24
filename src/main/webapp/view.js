@@ -12,14 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* Database ID for specific lecture. */
-const LECTURE_ID = getLectureKey();
+const PARAM_ID = 'id';
 
-// TODO: Here for testing, remove.
-console.log('Lecture ID: ' + LECTURE_ID);
+/* exported LECTURE_ID */
+window.LECTURE_ID = getLectureId();
 
-/** Returns database ID for lecture. */
-function getLectureKey() {
+initialize();
+
+/** Initializes different portions of project */
+async function initialize() {
+  // TODO: Initialize the video, trancript, and discussion sections once they
+  // are added.
+}
+
+/**
+ * Returns the lecture id obtained from {@code window.location}.
+ */
+function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('id');
+  return urlParams.get(PARAM_ID);
 }
