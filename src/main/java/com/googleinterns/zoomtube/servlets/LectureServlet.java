@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
@@ -63,8 +64,15 @@ public class LectureServlet extends HttpServlet {
   }
 
   @Override
-  // TODO: Check and see if lectureURL is already in database and if it is valid.
+  // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
+    Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
+
+    if (existingEntity.isPresent()) {
+      response.sendRedirect(buildRedirectUrl(existingEntity.get()));
+      return;
+    }
     Entity lectureEntity = createLectureEntity(request);
     datastore.put(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity));
@@ -76,6 +84,24 @@ public class LectureServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(lectures));
+  }
+
+  /**
+   * Returns the Entity in database that has {@code url}, or
+   * {@code Optional.empty()} if one doesn't exist.
+   */
+  private Optional<Entity> checkUrlInDatabase(String url) {
+    Query query = new Query(Lecture.ENTITY_KIND);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+    Iterable<Entity> resultsIterable = results.asIterable();
+
+    for (Entity lecture : resultsIterable) {
+      if (lecture.getProperty(Lecture.PROP_URL).equals(url)) {
+        return Optional.of(lecture);
+      }
+    }
+    return Optional.empty();
   }
 
   /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
