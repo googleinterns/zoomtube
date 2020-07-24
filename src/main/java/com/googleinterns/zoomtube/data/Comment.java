@@ -69,9 +69,8 @@ public abstract class Comment {
   /**
    * Returns the comment's author. This is the email of the user who posted the
    * comment.
-   *
-   * TODO: This will return an empty string until authentication is implemented.
    */
+  // TODO: This will return an empty string until authentication is implemented.
   public abstract String author();
 
   /** Returns the comment's content. */
