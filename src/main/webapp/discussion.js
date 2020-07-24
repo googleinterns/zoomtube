@@ -32,6 +32,7 @@ let AUTH_STATUS = null;
  */
 async function intializeDiscussion() {
   AUTH_STATUS = await getAuthStatus();
+  displayAuthStatus();
   await loadDiscussion();
 }
 
@@ -43,6 +44,27 @@ async function getAuthStatus() {
   const url = new URL(ENDPOINT_AUTH, window.location.origin);
   const response = await fetch(url);
   return await response.json();
+}
+
+
+/**
+ * Displays authentication status and action links.  If a user is logged in,
+ * this adds the user's email and a logout link.  Otherwise, this adds a login
+ * link.
+ */
+async function displayAuthStatus() {
+  const link = document.createElement('a');
+  if (AUTH_STATUS.loggedIn) {
+    link.href = AUTH_STATUS.logoutUrl.value;
+    link.innerText = 'logout';
+    ELEMENT_AUTH_STATUS.innerText =
+        `Logged in as ${AUTH_STATUS.user.value.email}. `;
+  } else {
+    link.href = AUTH_STATUS.loginUrl.value;
+    link.innerText = 'login';
+    ELEMENT_AUTH_STATUS.innerText = 'Not logged in. ';
+  }
+  ELEMENT_AUTH_STATUS.appendChild(link);
 }
 
 
