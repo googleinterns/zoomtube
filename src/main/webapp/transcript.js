@@ -6,10 +6,14 @@ const TRANSCRIPT_CONTAINER = 'transcript-container';
  */
 function sendPostToTranscript() {
   // TODO: Update with user input.
-  const testParamsString = 'id=123456789&video=3ymwOvzhwHs';
+  let t0 = performance.now();
+  const testParamsString = 'id=123456789&video=8PrOp9t0PyQ';
   const params = new URLSearchParams(testParamsString);
   fetch('/transcript', {method: 'POST', body: params})
       .then(fetchTranscriptLines(testParamsString));
+  let t1 = performance.now();
+  console.log(t1 - t0);
+  console.log('spt')
 }
 
 /**
@@ -19,6 +23,7 @@ function sendPostToTranscript() {
  * indicated in {@code testParamsString}.
  */
 function fetchTranscriptLines(testParamsString) {
+  let t0 = performance.now();
   fetch(
       '/transcript' +
       '?' + testParamsString)
@@ -26,6 +31,9 @@ function fetchTranscriptLines(testParamsString) {
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
       });
+  let t1 = performance.now();
+  console.log(t1 - t0);
+  console.log('fetchtl');
 }
 
 /**
@@ -74,4 +82,12 @@ function appendPTagToContainer(text, container) {
   pTag.innerText = text;
   container.appendChild(pTag);
   return pTag;
+}
+
+/**
+ * Sends a POST request to delete all of the transcript lines from datastore.
+ */
+function deleteTranscript() {
+  const params = new URLSearchParams('');
+  fetch('/delete-data', {method: 'POST', body: params});
 }

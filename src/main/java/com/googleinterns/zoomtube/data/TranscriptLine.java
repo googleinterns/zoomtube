@@ -17,7 +17,6 @@ package com.googleinterns.zoomtube.data;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
-import java.time.Duration;
 import java.util.Date;
 
 /** Contains data pertaining a single line of transcript. */

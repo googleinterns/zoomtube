@@ -30,7 +30,6 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import java.io.IOException;
 import java.net.URL;
-import java.time.Duration;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,7 +64,7 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void init() throws ServletException {
-    this.datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   @Override
@@ -85,12 +83,8 @@ public class TranscriptServlet extends HttpServlet {
 
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-        // TODO: Remove if statement.
-        if (nodeIndex == 2) {
-          break;
-        }
         Node node = nodeList.item(nodeIndex);
-        this.datastore.put(createLineEntity(node, lectureId));
+        datastore.put(createLineEntity(node, lectureId));
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.
@@ -128,11 +122,12 @@ public class TranscriptServlet extends HttpServlet {
   private Entity createLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
-    Float lineStart = new Float(Float.parseFloat(element.getAttribute(START_ATTRIBUTE)));
+    Float lineStart = Float.parseFloat(element.getAttribute(START_ATTRIBUTE));
     // java.time.duration is not a supported type for data store. Thus, the line duration
-    // will be stored as it was received when it was parsed from the transcript XML.
-    float lineDuration = Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE));
-    Float lineEnd = new Float(lineStart.floatValue() + lineDuration);
+    // is temporarily stored as it was received when it was parsed from the transcript XML.
+    // TODO: Find a better way to store duration or remove it entirely.
+    Float lineDuration = Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE));
+    Float lineEnd = lineStart.floatValue() + lineDuration;
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
 
     lineEntity.setProperty(
