@@ -59,11 +59,11 @@ public class TranscriptServlet extends HttpServlet {
   private static final String PARAM_LECTURE_ID = "id";
   private static final String PARAM_VIDEO_ID = "video";
 
-  private static DatastoreService datastore;
+  private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
-    this.datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   @Override
@@ -83,7 +83,7 @@ public class TranscriptServlet extends HttpServlet {
       NodeList nodeList = doc.getElementsByTagName(TEXT_TAG);
       for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
         Node node = nodeList.item(nodeIndex);
-        this.datastore.put(createLineEntity(node, lectureId));
+        datastore.put(createLineEntity(node, lectureId));
       }
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: alert the user.

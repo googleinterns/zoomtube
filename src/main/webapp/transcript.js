@@ -46,7 +46,7 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 
 /**
  * Creates an <li> element containing {@code transcriptLine}'s text, start time,
- *  and submitter's name and appends it to {@code ulElement}.
+ * and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
