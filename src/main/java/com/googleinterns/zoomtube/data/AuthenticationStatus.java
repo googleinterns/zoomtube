@@ -16,9 +16,12 @@ package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
+import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+
 import java.util.Optional;
 
 /** Contains a user's authentication status, with links to login or logout. */
+@GenerateTypeAdapter
 @AutoValue
 public abstract class AuthenticationStatus {
   public static AuthenticationStatus loggedIn(User user, String logoutUrl) {
