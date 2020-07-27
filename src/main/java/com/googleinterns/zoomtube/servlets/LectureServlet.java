@@ -54,12 +54,13 @@ public class LectureServlet extends HttpServlet {
   private static final String REDIRECT_URL = "/lecture-view.html";
 
   /* Pattern used to create a matcher for a video ID. */
-  private static Pattern videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
+  private static Pattern videoUrlGeneratedPattern;
   private static DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
     datastore = DatastoreServiceFactory.getDatastoreService();
+    videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
   @Override
@@ -69,7 +70,7 @@ public class LectureServlet extends HttpServlet {
     Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
 
     if (existingEntity.isPresent()) {
-      response.sendRedirect(buildRedirectUrl(existingEntity.get()));
+      response.sendRedirect(buildRedirectUrl(existingEntity.get()));s
       return;
     }
     Entity lectureEntity = createLectureEntity(request);
@@ -91,7 +92,6 @@ public class LectureServlet extends HttpServlet {
    */
   public Optional<Entity> checkUrlInDatabase(String url) {
     Query query = new Query(Lecture.ENTITY_KIND);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 

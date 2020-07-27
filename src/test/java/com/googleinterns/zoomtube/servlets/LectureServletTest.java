@@ -14,90 +14,98 @@
 
 package com.googleinterns.zoomtube.servlets;
 
-import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Lecture;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.ServletException;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-/** Provides information on a lecture. */
 @RunWith(JUnit4.class)
 public final class LectureServletTest {
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+  LectureServlet servlet;
+  DatastoreService datastoreService;
+  MockHttpServletRequest mockRequest;
 
-  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  LectureServlet servlet = new LectureServlet();
-  DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+  private static final String NAME_INPUT = "name-input";
+  private static final String LINK_INPUT = "link-input";
+  private static final String DEFAULT_VALUE = "";
+
+  private static final String TEST_NAME = "test";
+  private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
 
   @Before
-  public void setUp() {
+  public void setUp() throws ServletException {
     helper.setUp();
+    datastoreService = DatastoreServiceFactory.getDatastoreService();
+    mockRequest = new MockHttpServletRequest();
+    servlet = new LectureServlet();
+    servlet.init();
   }
 
   @After
   public void tearDown() {
     helper.tearDown();
   }
-  
+
   @Test
   public void checkUrlInDatabase_urlPresent_shouldReturnLecture() {
-    MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-    mockRequest.addParameter("name-input", "Test");
-    mockRequest.addParameter("link-input", "https://www.youtube.com/watch?v=wXhTHyIgQ_U");
+    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
     Entity expected = servlet.createLectureEntity(mockRequest);
-    ds.put(expected);
+    datastoreService.put(expected);
 
-    Optional<Entity> result = servlet.checkUrlInDatabase("https://www.youtube.com/watch?v=wXhTHyIgQ_U");
-    
+    Optional<Entity> result = servlet.checkUrlInDatabase(TEST_LINK);
+
     Assert.assertEquals(expected, result.get());
   }
 
   @Test
   public void checkUrlInDatabase_urlNotPresent_shouldReturnEmptyOptional() {
-    MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-    mockRequest.addParameter("name-input", "Test");
-    mockRequest.addParameter("link-input", "https://www.youtube.com/watch?v=wXhTHyIgQ_U");
+    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
     Entity expected = servlet.createLectureEntity(mockRequest);
-    ds.put(expected);
+    datastoreService.put(expected);
 
-    Optional<Entity> result = servlet.checkUrlInDatabase("https://www.youtube.com/watch?v=YWN81V7ojOE");
-    
+    Optional<Entity> result =
+        servlet.checkUrlInDatabase("https://www.youtube.com/watch?v=YWN81V7ojOE");
+
     Assert.assertEquals(Optional.empty(), result);
   }
 
   @Test
   public void getParameter_allParamsPresent_shouldNotReturnDefaultValue() {
-    MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-    mockRequest.addParameter("name-input", "Test");
-    mockRequest.addParameter("link-input", "https://www.youtube.com/watch?v=wXhTHyIgQ_U");
+    mockRequest.addParameter(NAME_INPUT, TEST_NAME);
+    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
 
-    String nameResult = servlet.getParameter(mockRequest, "name-input", "");
-    String linkResult = servlet.getParameter(mockRequest, "link-input", "");
+    String nameResult = servlet.getParameter(mockRequest, NAME_INPUT, DEFAULT_VALUE);
+    String linkResult = servlet.getParameter(mockRequest, LINK_INPUT, DEFAULT_VALUE);
 
-    Assert.assertEquals(nameResult, "Test");
-    Assert.assertEquals(linkResult, "https://www.youtube.com/watch?v=wXhTHyIgQ_U");
+    assertThat(nameResult).isEqualTo(TEST_NAME);
+    assertThat(linkResult).isEqualTo(TEST_LINK);
   }
 
   @Test
   public void getParameter_noParamsPresent_shouldReturnDefaultValue() {
-    MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+    String nameResult = servlet.getParameter(mockRequest, NAME_INPUT, DEFAULT_VALUE);
+    String linkResult = servlet.getParameter(mockRequest, LINK_INPUT, DEFAULT_VALUE);
 
-    String nameResult = servlet.getParameter(mockRequest, "name-input", "");
-    String linkResult = servlet.getParameter(mockRequest, "link-input", "");
-
-    Assert.assertEquals(nameResult, "");
-    Assert.assertEquals(linkResult, "");
+    assertThat(nameResult).isEmpty();
+    assertThat(linkResult).isEmpty();
   }
 
   @Test
@@ -110,27 +118,46 @@ public final class LectureServletTest {
     String video6 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ";
     String video7 = "http://www.youtube.com/watch?feature=player_embedded&v=dQw4w9WgXcQ";
     String video8 = "http://www.youtube-nocookie.com/v/dQw4w9WgXcQ?version=3&hl=en_US&rel=0";
+    String id = "dQw4w9WgXcQ";
 
-    Assert.assertEquals(servlet.getVideoId(video1), "dQw4w9WgXcQ");
-    Assert.assertEquals(servlet.getVideoId(video2), "dQw4w9WgXcQ");
-    Assert.assertEquals(servlet.getVideoId(video3), "dQw4w9WgXcQ");
-    Assert.assertEquals(servlet.getVideoId(video4), "dQw4w9WgXcQ");
-    Assert.assertEquals(servlet.getVideoId(video5), "dQw4w9WgXcQ");
-    Assert.assertEquals(servlet.getVideoId(video6), "dQw4w9WgXcQ");
-    Assert.assertEquals(servlet.getVideoId(video7), "dQw4w9WgXcQ");
-    Assert.assertEquals(servlet.getVideoId(video8), "dQw4w9WgXcQ");
+    assertThat(servlet.getVideoId(video1)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video2)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video3)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video4)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video5)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video6)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video7)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video8)).isEqualTo(id);
   }
 
   @Test
   public void buildRedirectUrl_shouldFindAllIds() {
-    MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-    mockRequest.addParameter("name-input", "Test");
-    mockRequest.addParameter("link-input", "https://www.youtube.com/watch?v=wXhTHyIgQ_U");
+    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
     Entity entity = servlet.createLectureEntity(mockRequest);
-    
+
     String expectedUrl = "/lecture-view.html?id=0&video-id=wXhTHyIgQ_U";
     String resultUrl = servlet.buildRedirectUrl(entity);
 
-    Assert.assertEquals(expectedUrl, resultUrl);
+    assertThat(expectedUrl).isEqualTo(resultUrl);
+  }
+
+  @Test
+  public void getLectures_emptyDatabase_shouldReturnNoLectures() {
+    List<Lecture> result = servlet.getLectures();
+
+    assertThat(result.isEmpty()).isTrue();
+  }
+
+  @Test
+  public void getLectures_oneLectureInDatabase_shouldReturnAllLectures() {
+    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
+    Entity entity = servlet.createLectureEntity(mockRequest);
+    datastoreService.put(entity);
+
+    Lecture newLecture = Lecture.fromLectureEntity(entity);
+    List<Lecture> expected = new ArrayList<>();
+    expected.add(newLecture);
+
+    assertThat(servlet.getLectures()).isEqualTo(expected);
   }
 }
