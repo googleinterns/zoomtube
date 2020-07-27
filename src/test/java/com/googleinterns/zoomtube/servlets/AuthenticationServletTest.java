@@ -30,43 +30,67 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_loggedIn_true() throws ServletException, IOException {
-      LocalServiceTestHelper helper =
+    LocalServiceTestHelper helper =
         new LocalServiceTestHelper(new LocalUserServiceTestConfig())
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("example.com")
           .setEnvEmail("test@example.com");
-      helper.setUp();
+    helper.setUp();
 
-      servlet.doGet(request, response);
+    servlet.doGet(request, response);
 
-      assertThat(response.getContentType()).isEqualTo("application/json;");
-      String json = response.getContentAsString();
-      Gson gson = new GsonBuilder()
-          .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-          .create();
-      AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
-      assertThat(status.loggedIn()).isTrue();
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    String json = response.getContentAsString();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
+        .create();
+    AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
+    assertThat(status.loggedIn()).isTrue();
 
-      helper.tearDown();
+    helper.tearDown();
   }
 
   @Test
   public void doGet_loggedIn_false() throws ServletException, IOException {
-      LocalServiceTestHelper helper =
+    LocalServiceTestHelper helper =
         new LocalServiceTestHelper(new LocalUserServiceTestConfig())
           .setEnvIsLoggedIn(false);
-      helper.setUp();
+    helper.setUp();
 
-      servlet.doGet(request, response);
+    servlet.doGet(request, response);
 
-      assertThat(response.getContentType()).isEqualTo("application/json;");
-      String json = response.getContentAsString();
-      Gson gson = new GsonBuilder()
-          .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-          .create();
-      AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
-      assertThat(status.loggedIn()).isFalse();
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    String json = response.getContentAsString();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
+        .create();
+    AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
+    assertThat(status.loggedIn()).isFalse();
 
-      helper.tearDown();
+    helper.tearDown();
   }
+
+  @Test
+  public void doGet_user_email() throws ServletException, IOException {
+    final String EMAIL = "test@example.com";
+    LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+        .setEnvIsLoggedIn(true)
+        .setEnvAuthDomain("example.com")
+        .setEnvEmail(EMAIL);
+    helper.setUp();
+
+    servlet.doGet(request, response);
+
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    String json = response.getContentAsString();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
+        .create();
+    AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
+    assertThat(status.user().get().getEmail()).isEqualTo(EMAIL);
+
+    helper.tearDown();
+  }
+
 }
