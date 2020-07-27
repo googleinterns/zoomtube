@@ -6,22 +6,22 @@ const TRANSCRIPT_CONTAINER = 'transcript-container';
  */
 function sendPostToTranscript() {
   // TODO: Update with user input.
-  const testParamsString = 'id=123456789&video=3ymwOvzhwHs';
-  const params = new URLSearchParams(testParamsString);
+  const paramsString = 'id=123456789&video=3ymwOvzhwHs';
+  const params = new URLSearchParams(paramsString);
   fetch('/transcript', {method: 'POST', body: params})
-      .then(fetchTranscriptLines(testParamsString));
+      .then(fetchTranscriptLines(paramsString));
 }
 
 /**
  * Fetches the transcript lines from \transcript.
  *
- * <p>{@code TestParamString} indicates the video ID
+ * <p>{@code paramsString} indicates the video ID
  * to fetch the transcript from.
  */
-function fetchTranscriptLines(testParamsString) {
+function fetchTranscriptLines(paramsString) {
   fetch(
       '/transcript' +
-      '?' + testParamsString)
+      '?' + paramsString)
       .then((response) => response.json())
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
