@@ -111,7 +111,7 @@ public class AuthenticationServletTest {
         .create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.loginUrl().isPresent());
-    assertThat(status.logoutUrl().isEmpty());
+    assertThat(!status.logoutUrl().isPresent());
 
     helper.tearDown();
   }
@@ -132,7 +132,7 @@ public class AuthenticationServletTest {
         .create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.logoutUrl().isPresent());
-    assertThat(status.loginUrl().isEmpty());
+    assertThat(!status.loginUrl().isPresent());
 
     helper.tearDown();
   }
