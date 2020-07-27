@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Comment;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -85,7 +86,8 @@ public class DiscussionServlet extends HttpServlet {
     commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
     commentEntity.setProperty(Comment.PROP_AUTHOR, author);
     commentEntity.setProperty(Comment.PROP_CONTENT, content);
-    commentEntity.setProperty(Comment.PROP_CREATED, new Date());
+    // We set creation time to the time of the post request (now).
+    commentEntity.setProperty(Comment.PROP_CREATED, new Date(Clock.systemUTC().millis()));
 
     datastore.put(commentEntity);
 
