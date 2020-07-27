@@ -54,13 +54,12 @@ public class LectureServlet extends HttpServlet {
   private static final String REDIRECT_URL = "/lecture-view.html";
 
   /* Pattern used to create a matcher for a video ID. */
-  private static Pattern videoUrlGeneratedPattern;
+  private static Pattern videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   private static DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
     datastore = DatastoreServiceFactory.getDatastoreService();
-    videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
   @Override
@@ -90,7 +89,7 @@ public class LectureServlet extends HttpServlet {
    * Returns the Entity in database that has {@code url}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
-  private Optional<Entity> checkUrlInDatabase(String url) {
+  public Optional<Entity> checkUrlInDatabase(String url) {
     Query query = new Query(Lecture.ENTITY_KIND);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -105,7 +104,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
-  private Entity createLectureEntity(HttpServletRequest request) {
+  public Entity createLectureEntity(HttpServletRequest request) {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
     String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
     String videoId = getVideoId(videoUrl);
@@ -118,7 +117,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   /** Returns a list of lectures stored in the database. */
-  private List<Lecture> getLectures() {
+  public List<Lecture> getLectures() {
     Query query = new Query(Lecture.ENTITY_KIND);
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
@@ -133,7 +132,7 @@ public class LectureServlet extends HttpServlet {
    * Returns value with {@code name} from the {@code request} form.
    * If the {@code name} cannot be found, return {@code defaultValue}.
    */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+  public String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
       return defaultValue;
@@ -142,7 +141,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   /** Returns YouTube video ID for a given {@code videoUrl}. */
-  private String getVideoId(String videoUrl) {
+  public String getVideoId(String videoUrl) {
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();
@@ -155,7 +154,7 @@ public class LectureServlet extends HttpServlet {
    * Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}
    * found in {@code lectureEntity}.
    */
-  private String buildRedirectUrl(Entity lectureEntity) {
+  public String buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
     String videoId = (String) lectureEntity.getProperty(Lecture.PROP_VIDEO_ID);
 
