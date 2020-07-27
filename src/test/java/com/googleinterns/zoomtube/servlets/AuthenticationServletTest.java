@@ -4,6 +4,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -19,6 +21,7 @@ public class AuthenticationServletTest {
   private AuthenticationServlet servlet;
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
+  private LocalServiceTestHelper authServiceHelper;
 
   @Before
   public void setUp() throws ServletException {
@@ -28,14 +31,21 @@ public class AuthenticationServletTest {
     response = new MockHttpServletResponse();
   }
 
+  @After
+  public void cleanUp() {
+    if (authServiceHelper != null) {
+      authServiceHelper.tearDown();
+      authServiceHelper = null;
+    }
+  }
+
   @Test
-  public void doGet_loggedIn_true() throws ServletException, IOException {
-    LocalServiceTestHelper helper =
-        new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-          .setEnvIsLoggedIn(true)
-          .setEnvAuthDomain("example.com")
-          .setEnvEmail("test@example.com");
-    helper.setUp();
+  public void doGet_loggedIn_expectTrue() throws ServletException, IOException {
+    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+        .setEnvIsLoggedIn(true)
+        .setEnvAuthDomain("example.com")
+        .setEnvEmail("test@example.com");
+    authServiceHelper.setUp();
 
     servlet.doGet(request, response);
 
@@ -46,16 +56,13 @@ public class AuthenticationServletTest {
         .create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.loggedIn()).isTrue();
-
-    helper.tearDown();
   }
 
   @Test
-  public void doGet_loggedIn_false() throws ServletException, IOException {
-    LocalServiceTestHelper helper =
-        new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-          .setEnvIsLoggedIn(false);
-    helper.setUp();
+  public void doGet_loggedIn_expectFalse() throws ServletException, IOException {
+    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+        .setEnvIsLoggedIn(false);
+    authServiceHelper.setUp();
 
     servlet.doGet(request, response);
 
@@ -66,19 +73,16 @@ public class AuthenticationServletTest {
         .create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.loggedIn()).isFalse();
-
-    helper.tearDown();
   }
 
   @Test
-  public void doGet_user_email() throws ServletException, IOException {
+  public void doGet_returnsUserEmail() throws ServletException, IOException {
     final String EMAIL = "test@example.com";
-    LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("example.com")
-        .setEnvEmail(EMAIL);
-    helper.setUp();
+    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+      .setEnvIsLoggedIn(true)
+      .setEnvAuthDomain("example.com")
+      .setEnvEmail(EMAIL);
+    authServiceHelper.setUp();
 
     servlet.doGet(request, response);
 
@@ -89,18 +93,15 @@ public class AuthenticationServletTest {
         .create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.user().get().getEmail()).isEqualTo(EMAIL);
-
-    helper.tearDown();
   }
 
   @Test
-  public void doGet_loggedInUrls() throws ServletException, IOException {
-    LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("example.com")
-        .setEnvEmail("test@example.com");
-    helper.setUp();
+  public void doGet_urls_whenloggedIn() throws ServletException, IOException {
+    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+      .setEnvIsLoggedIn(true)
+      .setEnvAuthDomain("example.com")
+      .setEnvEmail("test@example.com");
+    authServiceHelper.setUp();
 
     servlet.doGet(request, response);
 
@@ -112,16 +113,13 @@ public class AuthenticationServletTest {
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.loginUrl().isPresent());
     assertThat(!status.logoutUrl().isPresent());
-
-    helper.tearDown();
   }
 
   @Test
-  public void doGet_loggedOutUrls() throws ServletException, IOException {
-    LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-        .setEnvIsLoggedIn(false);
-    helper.setUp();
+  public void doGet_urls_whenloggedOut() throws ServletException, IOException {
+    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+      .setEnvIsLoggedIn(false);
+    authServiceHelper.setUp();
 
     servlet.doGet(request, response);
 
@@ -133,8 +131,6 @@ public class AuthenticationServletTest {
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.logoutUrl().isPresent());
     assertThat(!status.loginUrl().isPresent());
-
-    helper.tearDown();
   }
 
 }
