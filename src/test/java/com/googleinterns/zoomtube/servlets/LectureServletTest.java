@@ -134,8 +134,8 @@ public final class LectureServletTest {
   public void buildRedirectUrl_shouldFindAllIds() {
     mockRequest.addParameter(LINK_INPUT, TEST_LINK);
     Entity entity = servlet.createLectureEntity(mockRequest);
-
     String expectedUrl = "/lecture-view.html?id=0&video-id=wXhTHyIgQ_U";
+    
     String resultUrl = servlet.buildRedirectUrl(entity);
 
     assertThat(expectedUrl).isEqualTo(resultUrl);
@@ -153,10 +153,10 @@ public final class LectureServletTest {
     mockRequest.addParameter(LINK_INPUT, TEST_LINK);
     Entity entity = servlet.createLectureEntity(mockRequest);
     datastoreService.put(entity);
-
-    Lecture newLecture = Lecture.fromLectureEntity(entity);
     List<Lecture> expected = new ArrayList<>();
     expected.add(newLecture);
+
+    Lecture newLecture = Lecture.fromLectureEntity(entity);
 
     assertThat(servlet.getLectures()).isEqualTo(expected);
   }
