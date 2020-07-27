@@ -135,7 +135,7 @@ public final class LectureServletTest {
     mockRequest.addParameter(LINK_INPUT, TEST_LINK);
     Entity entity = servlet.createLectureEntity(mockRequest);
     String expectedUrl = "/lecture-view.html?id=0&video-id=wXhTHyIgQ_U";
-    
+
     String resultUrl = servlet.buildRedirectUrl(entity);
 
     assertThat(expectedUrl).isEqualTo(resultUrl);

@@ -70,8 +70,8 @@ public class LectureServlet extends HttpServlet {
     Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
 
     if (existingEntity.isPresent()) {
-      response.sendRedirect(buildRedirectUrl(existingEntity.get()));s
-      return;
+      response.sendRedirect(buildRedirectUrl(existingEntity.get()));
+      s return;
     }
     Entity lectureEntity = createLectureEntity(request);
     datastore.put(lectureEntity);
