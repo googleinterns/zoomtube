@@ -93,4 +93,48 @@ public class AuthenticationServletTest {
     helper.tearDown();
   }
 
+  @Test
+  public void doGet_loggedInUrls() throws ServletException, IOException {
+    LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+        .setEnvIsLoggedIn(true)
+        .setEnvAuthDomain("example.com")
+        .setEnvEmail("test@example.com");
+    helper.setUp();
+
+    servlet.doGet(request, response);
+
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    String json = response.getContentAsString();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
+        .create();
+    AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
+    assertThat(status.loginUrl().isPresent());
+    assertThat(status.logoutUrl().isEmpty());
+
+    helper.tearDown();
+  }
+
+  @Test
+  public void doGet_loggedOutUrls() throws ServletException, IOException {
+    LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+        .setEnvIsLoggedIn(false);
+    helper.setUp();
+
+    servlet.doGet(request, response);
+
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    String json = response.getContentAsString();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
+        .create();
+    AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
+    assertThat(status.logoutUrl().isPresent());
+    assertThat(status.loginUrl().isEmpty());
+
+    helper.tearDown();
+  }
+
 }
