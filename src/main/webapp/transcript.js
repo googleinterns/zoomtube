@@ -15,8 +15,8 @@ function sendPostToTranscript() {
 /**
  * Fetches the transcript lines from \transcript.
  *
- * <p>Video id to fetch the transcript from is
- * indicated in {@code testParamsString}.
+ * <p>{@code TestParamString} indicates the video ID
+ * to fetch the transcript from.
  */
 function fetchTranscriptLines(testParamsString) {
   fetch(
