@@ -73,9 +73,10 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Gets the transcript for a video as a document. Otherwise, return Optional.empty()
-   * if there is a parsing error. {@code request} indicates the video to extract
-   * the transcript from.
+   * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
+   * if there is a parsing error.
+   * 
+   * @param request Indicates the video to extract the transcript from.
    */
   private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
       throws IOException {
@@ -96,8 +97,8 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Puts each transcript line from {@code document} in datastore as its own entity. The lecture
-   * key to group the transcript lines under is indicated in {@code request}.
+   * Puts each transcript line from {@code document} in datastore as its own entity.
+   * @param request Indicates the lecture key to group the transcript lines under.
    */
   private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
@@ -116,7 +117,7 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Gets the query for the lecture transcripts based on lecture id indicated in {@code request}.
+   * Returns the query for the lecture transcripts based on lecture id indicated in {@code request}.
    */
   private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
@@ -131,9 +132,6 @@ public class TranscriptServlet extends HttpServlet {
     return datastore.prepare(query);
   }
 
-  /**
-   * Gets the TranscriptLines from the {@code preparedQuery}.
-   */
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : preparedQuery.asQueryResultIterable()) {
