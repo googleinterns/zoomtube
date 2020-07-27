@@ -69,6 +69,7 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    long startTime = System.currentTimeMillis();
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     String videoId = request.getParameter(PARAM_VIDEO_ID);
 
@@ -90,10 +91,13 @@ public class TranscriptServlet extends HttpServlet {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
+    long endTime = System.currentTimeMillis();
+    System.out.println("DoPost took " + (endTime - startTime) + " milliseconds");
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    long startTime = System.currentTimeMillis();
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
@@ -103,10 +107,10 @@ public class TranscriptServlet extends HttpServlet {
     Query query = new Query(TranscriptLine.ENTITY_KIND)
                       .setFilter(lectureFilter)
                       .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
-    PreparedQuery pq = datastore.prepare(query);
+    PreparedQuery preparedQuery = datastore.prepare(query);
 
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity entity : pq.asQueryResultIterable()) {
+    for (Entity entity : preparedQuery.asQueryResultIterable()) {
       lineBuilder.add(TranscriptLine.fromEntity(entity));
     }
     ImmutableList<TranscriptLine> lines = lineBuilder.build();
@@ -114,6 +118,8 @@ public class TranscriptServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(lines));
+    long endTime = System.currentTimeMillis();
+    System.out.println("DoGet took " + (endTime - startTime) + " milliseconds");
   }
 
   /**
