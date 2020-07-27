@@ -52,12 +52,12 @@ import org.xml.sax.SAXException;
 public class TranscriptServlet extends HttpServlet {
   private static final String TRANSCRIPT_XML_URL_TEMPLATE =
       "http://video.google.com/timedtext?lang=en&v=";
-  private static final String ATTR_START = "start";
-  private static final String ATTR_DURATION = "dur";
-  private static final String TAG_TEXT = "text";
-  private static final String PARAM_LECTURE = "lecture";
-  private static final String PARAM_LECTURE_ID = "id";
-  private static final String PARAM_VIDEO_ID = "video";
+  public static final String ATTR_START = "start";
+  public static final String ATTR_DURATION = "dur";
+  public static final String TAG_TEXT = "text";
+  public static final String PARAM_LECTURE = "lecture";
+  public static final String PARAM_LECTURE_ID = "id";
+  public static final String PARAM_VIDEO_ID = "video";
 
   private static DatastoreService datastore;
 

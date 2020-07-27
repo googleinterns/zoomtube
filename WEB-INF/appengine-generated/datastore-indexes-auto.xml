@@ -1,0 +1,11 @@
+<!-- Indices written at Mon, 27 Jul 2020 21:41:07 UTC -->
+
+<datastore-indexes>
+
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="TranscriptLine" ancestor="false" source="auto">
+        <property name="lecture" direction="asc"/>
+        <property name="start" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>
