@@ -55,7 +55,6 @@ function appendTextToList(transcriptLine, ulElement) {
   appendPTagToContainer(transcriptLine.start, infoDivElement);
   liElement.appendChild(infoDivElement);
   appendPTagToContainer(transcriptLine.content, liElement);
-  // Separates each comment with a horizontal bar.
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
 }
