@@ -29,23 +29,20 @@ public class AuthenticationServletTest {
     servlet.init();
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
+    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+    authServiceHelper.setUp();
   }
 
   @After
   public void cleanUp() {
-    if (authServiceHelper != null) {
-      authServiceHelper.tearDown();
-      authServiceHelper = null;
-    }
+    authServiceHelper.tearDown();
   }
 
   @Test
   public void doGet_loggedIn_expectTrue() throws ServletException, IOException {
-    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("example.com")
-        .setEnvEmail("test@example.com");
-    authServiceHelper.setUp();
+    authServiceHelper.setEnvIsLoggedIn(true);
+    authServiceHelper.setEnvAuthDomain("example.com");
+    authServiceHelper.setEnvEmail("test@example.com");
 
     servlet.doGet(request, response);
 
@@ -60,8 +57,7 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_loggedIn_expectFalse() throws ServletException, IOException {
-    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-        .setEnvIsLoggedIn(false);
+    authServiceHelper.setEnvIsLoggedIn(false);
     authServiceHelper.setUp();
 
     servlet.doGet(request, response);
@@ -78,10 +74,9 @@ public class AuthenticationServletTest {
   @Test
   public void doGet_returnsUserEmail() throws ServletException, IOException {
     final String EMAIL = "test@example.com";
-    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-      .setEnvIsLoggedIn(true)
-      .setEnvAuthDomain("example.com")
-      .setEnvEmail(EMAIL);
+    authServiceHelper.setEnvIsLoggedIn(true);
+    authServiceHelper.setEnvAuthDomain("example.com");
+    authServiceHelper.setEnvEmail(EMAIL);
     authServiceHelper.setUp();
 
     servlet.doGet(request, response);
@@ -97,10 +92,9 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_urls_whenloggedIn() throws ServletException, IOException {
-    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-      .setEnvIsLoggedIn(true)
-      .setEnvAuthDomain("example.com")
-      .setEnvEmail("test@example.com");
+    authServiceHelper.setEnvIsLoggedIn(true);
+    authServiceHelper.setEnvAuthDomain("example.com");
+    authServiceHelper.setEnvEmail("test@example.com");
     authServiceHelper.setUp();
 
     servlet.doGet(request, response);
@@ -117,8 +111,7 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_urls_whenloggedOut() throws ServletException, IOException {
-    authServiceHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-      .setEnvIsLoggedIn(false);
+    authServiceHelper.setEnvIsLoggedIn(false);
     authServiceHelper.setUp();
 
     servlet.doGet(request, response);
