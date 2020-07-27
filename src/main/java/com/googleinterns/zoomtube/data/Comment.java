@@ -68,8 +68,7 @@ public abstract class Comment {
   public abstract Date timestamp();
 
   /**
-   * Returns the comment's author. This is the {@link com.google.appengine.api.users.User}
-   * who posted the comment.
+   * Returns the comment's author.
    */
   public abstract User author();
 
