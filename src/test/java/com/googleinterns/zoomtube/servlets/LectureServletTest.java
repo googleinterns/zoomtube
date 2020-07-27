@@ -154,9 +154,8 @@ public final class LectureServletTest {
     Entity entity = servlet.createLectureEntity(mockRequest);
     datastoreService.put(entity);
     List<Lecture> expected = new ArrayList<>();
-    expected.add(newLecture);
-
     Lecture newLecture = Lecture.fromLectureEntity(entity);
+    expected.add(newLecture);
 
     assertThat(servlet.getLectures()).isEqualTo(expected);
   }
