@@ -53,7 +53,6 @@ import org.apache.commons.io.FileUtils;
 import static com.google.common.truth.Truth.assertThat;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.gson.GsonBuilder;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
@@ -80,30 +79,11 @@ public final class TranscriptServletTest {
     helper.tearDown();
   }
 
-  // @Test
-  // public void testTest() throws IOException {
-  // servlet.doPost(request, response);
-  // servlet.doGet(request, response);
-
-  // assertThat(response.getContentType()).isEqualTo("application/json;");
-  // String json = response.getContentAsString();
-  // Gson gson = new GsonBuilder()
-  //     .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-  //     .create();
-  // TranscriptLine line = gson.fromJson(json, TranscriptLine.class);
-  // assertThat(line.start()).contains("0");
-
-  // helper.tearDown();
-  // }
-
-// To Test: TranscriptLine class
-// DoPost and doGet (everything pretty much in TranscriptServlet)
-// Test Get works
-// Test DoPost stores the right stuff
-
-// Create issue to document all of this
   @Test
-  public void testDoGet() throws ServletException, IOException {
+  public void doGet_doPost_ParseShortVideo() throws ServletException, IOException {
+    //TODO: order test file, add constants
+    DatastoreService dd = LocalDatastoreServiceTestConfig.getLocalDatastoreService();
+    DatastoreService ds = LocalServiceTestHelper.getLocalService(LocalDatastoreService.PACKAGE);
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "Obgnr9pc820");
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");  
     servlet.doPost(request, response);
@@ -118,21 +98,17 @@ public final class TranscriptServletTest {
       String expectedJson = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
       ArrayList<TranscriptLine> expectedArrayList = (ArrayList<TranscriptLine>) gson.fromJson(expectedJson,(new ArrayList<List<TranscriptLine>>().getClass()));
       
-      //THIS WAS REALLY PAINFUL OMG FFFFF (980 lines of transcript)
       ArrayList<TranscriptLine> jsonArray = (ArrayList<TranscriptLine>) gson.fromJson(json, (new ArrayList<List<TranscriptLine>>().getClass()));
       assertThat(expectedArrayList).isEqualTo(jsonArray);
+      
+      assertEquals(0, ds.prepare(new Query(TranscriptServlet.PARAM_LECTURE_ID)).countEntities(withLimit(20)));
+      LocalDatastoreServiceTestConfig.getLocalDatastoreService();
   }
 
-  // @Test
-  // public void helpMeTest() {
-  //   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  //   assertEquals(0, datastore.prepare(new Query(TranscriptLine.ENTITY_KIND)).countEntities(withLimit(10)));
-  //   datastore.put(new Entity("yam"));
-  //   datastore.put(new Entity("yam"));
-  //   // replace with doPOst stuff
-  //   request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "XsX3ATc3FbA");
-  //   request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123456789");
-  //   servlet.doGet(request, response);  
-  //   assertEquals(2, datastore.prepare(new Query("yam")).countEntities(withLimit(10)));
-  // }
+  @Test
+  public void testDoPost() {
+    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "jNQXAC9IVRw");
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");
+
+  }
 }
