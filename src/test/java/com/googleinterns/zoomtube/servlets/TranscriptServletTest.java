@@ -42,6 +42,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import com.google.common.reflect.TypeToken;
 
 import static org.junit.Assert.assertTrue;
 // TODO: Fix astrik imports.
@@ -62,7 +63,8 @@ public final class TranscriptServletTest {
   private TranscriptServlet servlet;
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
-  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  LocalDatastoreServiceTestConfig help = (new  LocalDatastoreServiceTestConfig()).setNoStorage(true);
+  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(help);
 
   @Before
   public void setUp() throws ServletException {
@@ -102,8 +104,8 @@ public final class TranscriptServletTest {
 // Create issue to document all of this
   @Test
   public void testDoGet() throws ServletException, IOException {
-    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "XsX3ATc3FbA");
-    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123456789");  
+    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "Obgnr9pc820");
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");  
     servlet.doPost(request, response);
     servlet.doGet(request, response);
 
@@ -113,9 +115,17 @@ public final class TranscriptServletTest {
       Gson gson = new GsonBuilder()
           .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
           .create();
-      TranscriptLine line = gson.fromJson(json, TranscriptLine.class);
-      // // assertThat(line.start()).contains("0");
-      // System.out.println(line);
+      String expectedJson =  "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1068},\"lecture\":{\"kind\":\"lecture\",\"id\":8716},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1069},\"lecture\":{\"kind\":\"lecture\",\"id\":8716},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1070},\"lecture\":{\"kind\":\"lecture\",\"id\":8716},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
+      //String expected = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":25},\"lecture\":{\"kind\":\"lecture\",\"id\":123456789},\"start\":\"103.819\",\"duration\":\"4.044\",\"content\":\"Than a boy with luv\"}]";
+      ArrayList<TranscriptLine> expectedArrayList = (ArrayList<TranscriptLine>) gson.fromJson(expectedJson,(new ArrayList<List<TranscriptLine>>().getClass()));
+      
+      //THIS WAS REALLY PAINFUL OMG FFFFF (980 lines of transcript)
+      ArrayList<TranscriptLine> jsonArray = (ArrayList<TranscriptLine>) gson.fromJson(json, (new ArrayList<List<TranscriptLine>>().getClass()));
+      // for (int i = 0; i < 5; i++) {
+      //   break;
+      // }
+      // System.out.println(jsonArray);
+      assertThat(expectedArrayList).isEqualTo(jsonArray);
   }
 
   // @Test

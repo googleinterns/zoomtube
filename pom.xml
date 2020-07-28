@@ -56,7 +56,7 @@
       <artifactId>libraries-bom</artifactId>
       <version>8.0.0</version>
       <type>pom</type>
-      <scope>import</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -136,6 +136,11 @@
       <version>1.3.0</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.6</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -164,6 +169,11 @@
               <groupId>com.google.auto.value</groupId>
               <artifactId>auto-value</artifactId>
               <version>1.7.3</version>
+            </path>
+            <path>
+              <groupId>com.ryanharter.auto.value</groupId>
+              <artifactId>auto-value-gson-extension</artifactId>
+              <version>1.3.0</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
