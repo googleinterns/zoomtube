@@ -115,16 +115,11 @@ public final class TranscriptServletTest {
       Gson gson = new GsonBuilder()
           .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
           .create();
-      String expectedJson =  "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1068},\"lecture\":{\"kind\":\"lecture\",\"id\":8716},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1069},\"lecture\":{\"kind\":\"lecture\",\"id\":8716},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1070},\"lecture\":{\"kind\":\"lecture\",\"id\":8716},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
-      //String expected = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":25},\"lecture\":{\"kind\":\"lecture\",\"id\":123456789},\"start\":\"103.819\",\"duration\":\"4.044\",\"content\":\"Than a boy with luv\"}]";
+      String expectedJson = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
       ArrayList<TranscriptLine> expectedArrayList = (ArrayList<TranscriptLine>) gson.fromJson(expectedJson,(new ArrayList<List<TranscriptLine>>().getClass()));
       
       //THIS WAS REALLY PAINFUL OMG FFFFF (980 lines of transcript)
       ArrayList<TranscriptLine> jsonArray = (ArrayList<TranscriptLine>) gson.fromJson(json, (new ArrayList<List<TranscriptLine>>().getClass()));
-      // for (int i = 0; i < 5; i++) {
-      //   break;
-      // }
-      // System.out.println(jsonArray);
       assertThat(expectedArrayList).isEqualTo(jsonArray);
   }
 
