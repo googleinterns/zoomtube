@@ -56,6 +56,14 @@ import javax.servlet.ServletException;
 import com.google.gson.GsonBuilder;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
+import com.google.appengine.api.capabilities.Capability;
+import com.google.appengine.api.capabilities.CapabilityStatus;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
+
 /** */
 @RunWith(JUnit4.class)
 public final class TranscriptServletTest {
@@ -63,7 +71,7 @@ public final class TranscriptServletTest {
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
   LocalDatastoreServiceTestConfig help = (new  LocalDatastoreServiceTestConfig()).setNoStorage(true);
-  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(help);
+  private LocalServiceTestHelper helper = new LocalServiceTestHelper(help);
 
   @Before
   public void setUp() throws ServletException {
@@ -82,27 +90,39 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_ParseShortVideo() throws ServletException, IOException {
     //TODO: order test file, add constants
-    // DatastoreService dd = LocalDatastoreServiceTestConfig.getLocalDatastoreService();
-    // DatastoreService ds = LocalServiceTestHelper.getLocalService(LocalDatastoreService.PACKAGE);
+
+
+    Capability testOne = new Capability("datastore_v3");
+    CapabilityStatus testStatus = CapabilityStatus.DISABLED;
+    // Initialize the test configuration.
+    LocalCapabilitiesServiceTestConfig config =
+        new LocalCapabilitiesServiceTestConfig().setCapabilityStatus(testOne, testStatus);
+    helper = new LocalServiceTestHelper(help, config);
+    helper.setUp();
+
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    servlet.init(ds);
+    String expectedJson = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "Obgnr9pc820");
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");  
     servlet.doPost(request, response);
     servlet.doGet(request, response);
 
-      assertThat(response.getContentType()).isEqualTo("application/json;");
-      String json = response.getContentAsString();
-      System.out.println(json);
-      Gson gson = new GsonBuilder()
-          .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-          .create();
-      String expectedJson = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
-      ArrayList<TranscriptLine> expectedArrayList = (ArrayList<TranscriptLine>) gson.fromJson(expectedJson,(new ArrayList<List<TranscriptLine>>().getClass()));
-      
-      ArrayList<TranscriptLine> jsonArray = (ArrayList<TranscriptLine>) gson.fromJson(json, (new ArrayList<List<TranscriptLine>>().getClass()));
-      assertThat(expectedArrayList).isEqualTo(jsonArray);
-      
-      assertEquals(0, ds.prepare(new Query(TranscriptServlet.PARAM_LECTURE_ID)).countEntities(withLimit(20)));
-      LocalDatastoreServiceTestConfig.getLocalDatastoreService();
+    
+    String actualJson = response.getContentAsString();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
+        .create();
+    
+    ArrayList<TranscriptLine> expectedArrayList = (ArrayList<TranscriptLine>) gson.fromJson(expectedJson,(new ArrayList<List<TranscriptLine>>().getClass()));
+    
+    ArrayList<TranscriptLine> jsonArray = (ArrayList<TranscriptLine>) gson.fromJson(actualJson, (new ArrayList<List<TranscriptLine>>().getClass()));
+    assertThat(expectedArrayList).isEqualTo(jsonArray);
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    System.out.println("AHHH");
+    for (Entity entity: ds.prepare(new Query(TranscriptServlet.PARAM_LECTURE_ID)).asQueryResultIterable()) {
+      System.out.println("HELP");
+    }
   }
 
   @Test

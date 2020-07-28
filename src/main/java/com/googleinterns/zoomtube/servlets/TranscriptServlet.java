@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
@@ -169,5 +170,10 @@ public class TranscriptServlet extends HttpServlet {
     lineEntity.setProperty(TranscriptLine.PROP_START, lineStart);
     lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
     return lineEntity;
+  }
+
+  @VisibleForTesting
+  protected void init(DatastoreService testDatastore) {
+    datastore = testDatastore;
   }
 }
