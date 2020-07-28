@@ -19,6 +19,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Lecture;
@@ -34,14 +35,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 @RunWith(JUnit4.class)
 public final class LectureServletTest {
-  private final LocalServiceTestHelper helper =
+  private final LocalServiceTestHelper datastoreServiceHelper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  LectureServlet servlet;
   DatastoreService datastoreService;
+  LectureServlet servlet;
   MockHttpServletRequest mockRequest;
+  MockHttpServletResponse mockResponse;
 
   private static final String NAME_INPUT = "name-input";
   private static final String LINK_INPUT = "link-input";
@@ -52,62 +55,56 @@ public final class LectureServletTest {
 
   @Before
   public void setUp() throws ServletException {
-    helper.setUp();
+    datastoreServiceHelper.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     mockRequest = new MockHttpServletRequest();
+    mockResponse = new MockHttpServletResponse();
     servlet = new LectureServlet();
     servlet.init();
   }
 
   @After
   public void tearDown() {
-    helper.tearDown();
+    datastoreServiceHelper.tearDown();
   }
 
   @Test
-  public void checkUrlInDatabase_urlPresent_shouldReturnLecture() {
+  public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
     mockRequest.addParameter(LINK_INPUT, TEST_LINK);
-    Entity expected = servlet.createLectureEntity(mockRequest);
-    datastoreService.put(expected);
+    datastoreService.put(servlet.createLectureEntity(mockRequest));
+    assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
 
-    Optional<Entity> result = servlet.checkUrlInDatabase(TEST_LINK);
-
-    Assert.assertEquals(expected, result.get());
+    servlet.doPost(mockRequest, mockResponse);
+    
+    assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
+    assertThat(mockResponse.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
-  public void checkUrlInDatabase_urlNotPresent_shouldReturnEmptyOptional() {
+  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException {
     mockRequest.addParameter(LINK_INPUT, TEST_LINK);
-    Entity expected = servlet.createLectureEntity(mockRequest);
-    datastoreService.put(expected);
-
-    Optional<Entity> result =
-        servlet.checkUrlInDatabase("https://www.youtube.com/watch?v=YWN81V7ojOE");
-
-    Assert.assertEquals(Optional.empty(), result);
+    System.out.println("Query database: " + datastoreService.prepare(new Query("Lecture")).countEntities());
+    assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(0);
+   
+    servlet.doPost(mockRequest, mockResponse);
+    
+    assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
+    assertThat(mockResponse.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
+  // Test empty database
   @Test
-  public void getParameter_allParamsPresent_shouldNotReturnDefaultValue() {
-    mockRequest.addParameter(NAME_INPUT, TEST_NAME);
-    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
+  public void doGet_emptyDatabase_shouldReturnNoLecture() throws IOException {
+    assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(0);
 
-    String nameResult = servlet.getParameter(mockRequest, NAME_INPUT, DEFAULT_VALUE);
-    String linkResult = servlet.getParameter(mockRequest, LINK_INPUT, DEFAULT_VALUE);
-
-    assertThat(nameResult).isEqualTo(TEST_NAME);
-    assertThat(linkResult).isEqualTo(TEST_LINK);
+    servlet.doGet(mockRequest, mockResponse);
+    
+    assertThat(mockResponse.getContentAsString()).isEqualTo("[]\n");
   }
 
-  @Test
-  public void getParameter_noParamsPresent_shouldReturnDefaultValue() {
-    String nameResult = servlet.getParameter(mockRequest, NAME_INPUT, DEFAULT_VALUE);
-    String linkResult = servlet.getParameter(mockRequest, LINK_INPUT, DEFAULT_VALUE);
+  // Test database that has one lecture
 
-    assertThat(nameResult).isEmpty();
-    assertThat(linkResult).isEmpty();
-  }
-
+  // Keep this
   @Test
   public void getVideoId_shouldFindAllIds() {
     String video1 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ&a=GxdCwVVULXctT2lYDEPllDR0LRTutYfW";
@@ -128,35 +125,5 @@ public final class LectureServletTest {
     assertThat(servlet.getVideoId(video6)).isEqualTo(id);
     assertThat(servlet.getVideoId(video7)).isEqualTo(id);
     assertThat(servlet.getVideoId(video8)).isEqualTo(id);
-  }
-
-  @Test
-  public void buildRedirectUrl_shouldFindAllIds() {
-    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
-    Entity entity = servlet.createLectureEntity(mockRequest);
-    String expectedUrl = "/lecture-view.html?id=0&video-id=wXhTHyIgQ_U";
-
-    String resultUrl = servlet.buildRedirectUrl(entity);
-
-    assertThat(expectedUrl).isEqualTo(resultUrl);
-  }
-
-  @Test
-  public void getLectures_emptyDatabase_shouldReturnNoLectures() {
-    List<Lecture> result = servlet.getLectures();
-
-    assertThat(result.isEmpty()).isTrue();
-  }
-
-  @Test
-  public void getLectures_oneLectureInDatabase_shouldReturnAllLectures() {
-    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
-    Entity entity = servlet.createLectureEntity(mockRequest);
-    datastoreService.put(entity);
-    List<Lecture> expected = new ArrayList<>();
-    Lecture newLecture = Lecture.fromLectureEntity(entity);
-    expected.add(newLecture);
-
-    assertThat(servlet.getLectures()).isEqualTo(expected);
   }
 }
