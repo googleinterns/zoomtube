@@ -2,20 +2,19 @@ package com.googleinterns.zoomtube.servlets;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.AuthenticationStatus;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 public class AuthenticationServletTest {
   private AuthenticationServlet servlet;
@@ -48,9 +47,7 @@ public class AuthenticationServletTest {
 
     assertThat(response.getContentType()).isEqualTo("application/json;");
     String json = response.getContentAsString();
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-        .create();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.loggedIn()).isTrue();
   }
@@ -64,9 +61,7 @@ public class AuthenticationServletTest {
 
     assertThat(response.getContentType()).isEqualTo("application/json;");
     String json = response.getContentAsString();
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-        .create();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.loggedIn()).isFalse();
   }
@@ -83,9 +78,7 @@ public class AuthenticationServletTest {
 
     assertThat(response.getContentType()).isEqualTo("application/json;");
     String json = response.getContentAsString();
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-        .create();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.user().get().getEmail()).isEqualTo(EMAIL);
   }
@@ -101,9 +94,7 @@ public class AuthenticationServletTest {
 
     assertThat(response.getContentType()).isEqualTo("application/json;");
     String json = response.getContentAsString();
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-        .create();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.loginUrl().isPresent()).isFalse();
     assertThat(status.logoutUrl().isPresent()).isTrue();
@@ -118,12 +109,9 @@ public class AuthenticationServletTest {
 
     assertThat(response.getContentType()).isEqualTo("application/json;");
     String json = response.getContentAsString();
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-        .create();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
     assertThat(status.logoutUrl().isPresent()).isFalse();
     assertThat(status.loginUrl().isPresent()).isTrue();
   }
-
 }
