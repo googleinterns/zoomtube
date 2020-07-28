@@ -7,29 +7,29 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.AuthenticationStatus;
+import com.googleinterns.zoomtube.mocks.MockRequest;
+import com.googleinterns.zoomtube.mocks.MockResponse;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 public class AuthenticationServletTest {
   private AuthenticationServlet servlet;
-  private MockHttpServletRequest request;
-  private MockHttpServletResponse response;
+  private MockRequest request;
+  private MockResponse response;
   private LocalServiceTestHelper authService;
 
   @Before
-  public void setUp() throws ServletException {
+  public void setUp() throws ServletException, IOException {
     servlet = new AuthenticationServlet();
     servlet.init();
-    request = new MockHttpServletRequest();
-    response = new MockHttpServletResponse();
     authService = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
     authService.setUp();
+    response = new MockResponse();
+    request = new MockRequest();
   }
 
   @After
