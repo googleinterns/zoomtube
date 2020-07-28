@@ -129,7 +129,7 @@ public class LectureServlet extends HttpServlet {
     return lectures;
   }
 
-  @VisibleForTesting 
+  @VisibleForTesting
   /**
    * Returns value with {@code name} from the {@code request} form.
    * If the {@code name} cannot be found, return {@code defaultValue}.
