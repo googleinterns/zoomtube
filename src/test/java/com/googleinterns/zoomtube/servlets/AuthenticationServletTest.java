@@ -91,7 +91,7 @@ public class AuthenticationServletTest {
   }
 
   @Test
-  public void doGet_urls_whenloggedIn() throws ServletException, IOException {
+  public void doGet_loggedIn_expectLogoutUrl() throws ServletException, IOException {
     authService.setEnvIsLoggedIn(true);
     authService.setEnvAuthDomain("example.com");
     authService.setEnvEmail("test@example.com");
@@ -105,12 +105,12 @@ public class AuthenticationServletTest {
         .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
         .create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
-    assertThat(status.loginUrl().isPresent());
-    assertThat(!status.logoutUrl().isPresent());
+    assertThat(status.loginUrl().isPresent()).isFalse();
+    assertThat(status.logoutUrl().isPresent()).isTrue();
   }
 
   @Test
-  public void doGet_urls_whenloggedOut() throws ServletException, IOException {
+  public void doGet_loggedOut_expectLoginUrl() throws ServletException, IOException {
     authService.setEnvIsLoggedIn(false);
     authService.setUp();
 
@@ -122,8 +122,8 @@ public class AuthenticationServletTest {
         .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
         .create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
-    assertThat(status.logoutUrl().isPresent());
-    assertThat(!status.loginUrl().isPresent());
+    assertThat(status.logoutUrl().isPresent()).isFalse();
+    assertThat(status.loginUrl().isPresent()).isTrue();
   }
 
 }
