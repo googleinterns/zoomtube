@@ -19,7 +19,10 @@ import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.util.Optional;
 
-/** Contains a user's authentication status, with links to login or logout. */
+/**
+ * Contains a user's authentication status. If currently logged out, this includes a URL to
+ * login. Otherwise, this contains the current user and a URL to logout.
+ */
 @GenerateTypeAdapter
 @AutoValue
 public abstract class AuthenticationStatus {
