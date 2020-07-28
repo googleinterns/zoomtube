@@ -1,0 +1,7 @@
+indexes:
+- kind: Comment
+  properties:
+  - name: lecture
+  - name: timestamp
+  - name: created
+    direction: desc
