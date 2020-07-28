@@ -23,13 +23,13 @@ public class DiscussionServletTest {
   private DiscussionServlet servlet;
   private MockRequest request;
   private MockResponse response;
-  private LocalServiceTestHelper serviceHelper = new LocalServiceTestHelper(
+  private LocalServiceTestHelper testServices = new LocalServiceTestHelper(
       new LocalUserServiceTestConfig(),
       new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
 
   @Before
   public void setUp() throws ServletException {
-    serviceHelper.setUp();
+    testServices.setUp();
     servlet = new DiscussionServlet();
     servlet.init();
     response = new MockResponse();
@@ -38,7 +38,7 @@ public class DiscussionServletTest {
 
   @After
   public void cleanUp() {
-    serviceHelper.tearDown();
+    testServices.tearDown();
   }
 
   @Test
