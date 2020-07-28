@@ -60,7 +60,7 @@ public class TranscriptServlet extends HttpServlet {
   public static final String PARAM_LECTURE_ID = "id";
   public static final String PARAM_VIDEO_ID = "video";
 
-  private static DatastoreService datastore;
+  private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {

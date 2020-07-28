@@ -13,7 +13,7 @@
 // limitations under the License.
 
 package com.googleinterns.zoomtube.servlets;
-
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +32,15 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static org.junit.Assert.assertEquals;
-
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -72,12 +80,13 @@ public final class TranscriptServletTest {
   private MockHttpServletResponse response;
   LocalDatastoreServiceTestConfig help = (new  LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private LocalServiceTestHelper helper = new LocalServiceTestHelper(help);
+  DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
   @Before
   public void setUp() throws ServletException {
     helper.setUp();
     servlet = new TranscriptServlet();
-    servlet.init();
+    servlet.init(ds);
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
   }
@@ -90,24 +99,11 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_ParseShortVideo() throws ServletException, IOException {
     //TODO: order test file, add constants
-
-
-    Capability testOne = new Capability("datastore_v3");
-    CapabilityStatus testStatus = CapabilityStatus.DISABLED;
-    // Initialize the test configuration.
-    LocalCapabilitiesServiceTestConfig config =
-        new LocalCapabilitiesServiceTestConfig().setCapabilityStatus(testOne, testStatus);
-    helper = new LocalServiceTestHelper(help, config);
-    helper.setUp();
-
-    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    servlet.init(ds);
     String expectedJson = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "Obgnr9pc820");
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");  
     servlet.doPost(request, response);
     servlet.doGet(request, response);
-
     
     String actualJson = response.getContentAsString();
     Gson gson = new GsonBuilder()
@@ -120,9 +116,28 @@ public final class TranscriptServletTest {
     assertThat(expectedArrayList).isEqualTo(jsonArray);
     assertThat(response.getContentType()).isEqualTo("application/json;");
     System.out.println("AHHH");
-    for (Entity entity: ds.prepare(new Query(TranscriptServlet.PARAM_LECTURE_ID)).asQueryResultIterable()) {
+    for (Entity entity: ds.prepare(new Query(TranscriptLine.ENTITY_KIND)).asQueryResultIterable()) {
       System.out.println("HELP");
+      System.out.println(entity.getProperty("start"));
     }
+
+    long lectureId = Long.parseLong("123");
+    Key lecture = KeyFactory.createKey("lecture", lectureId);
+
+    Filter lectureFilter =
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+
+    Query query = new Query(TranscriptLine.ENTITY_KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
+    PreparedQuery dsp = ds.prepare(query);
+
+    ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
+    for (Entity entity : dsp.asQueryResultIterable()) {
+      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
+    }
+
+    System.out.println(lineBuilder);
   }
 
   @Test
