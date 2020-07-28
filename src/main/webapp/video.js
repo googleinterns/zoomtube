@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const SCRIPT = 'script';
+
 /* Used to control video. */
 let videoPlayer;
 
 /** Loads YouTube iFrame API. */
 async function loadVideoApi() {
-  const videoApiScript = document.createElement('script');
-  const firstScriptTag = document.getElementsByTagName('script')[0];
+  const videoApiScript = document.createElement(SCRIPT);
+  const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
   videoApiScript.src = 'https://www.youtube.com/iframe_api';
   firstScriptTag.parentNode.insertBefore(videoApiScript, firstScriptTag);
 }
@@ -39,7 +41,7 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-/** Plays video. */
+/** {@code event} plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
 }

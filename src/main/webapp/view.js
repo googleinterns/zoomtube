@@ -21,20 +21,21 @@ window.VIDEO_ID = getVideoId();
 
 initialize();
 
+/** Initializes the video player for the lecture view page. */
 async function initialize() {
   window.loadVideoApi();
 }
 
 /**
- * Returns the lecture id obtained from {@code window.location}.
+ * Returns the lecture id obtained from the current page's URL parameters.
  */
 function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(PARAM_ID);
 }
-
+s
 /**
- * Returns the video id obtained from {@code window.location}.
+ * Returns the video id obtained from the current page's URL parameters.
  */
 function getVideoId() {
   const urlParams = new URLSearchParams(window.location.search);
