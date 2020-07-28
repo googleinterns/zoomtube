@@ -82,8 +82,8 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_ParseShortVideo() throws ServletException, IOException {
     //TODO: order test file, add constants
-    DatastoreService dd = LocalDatastoreServiceTestConfig.getLocalDatastoreService();
-    DatastoreService ds = LocalServiceTestHelper.getLocalService(LocalDatastoreService.PACKAGE);
+    // DatastoreService dd = LocalDatastoreServiceTestConfig.getLocalDatastoreService();
+    // DatastoreService ds = LocalServiceTestHelper.getLocalService(LocalDatastoreService.PACKAGE);
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "Obgnr9pc820");
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");  
     servlet.doPost(request, response);
