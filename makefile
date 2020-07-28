@@ -8,10 +8,9 @@ node_modules:
 	npm install clang-format prettier css-validator html-validate eslint eslint-config-google
 
 pretty: node_modules
-	$(PRETTIER) --write src/main/webapp/*.{html,css}
-	find src/main/java -iname *.java | xargs $(CLANG_FORMAT) -i
-	find src/test/java -iname *.java | xargs $(CLANG_FORMAT) -i
-	find src/main/webapp -iname *.js | xargs $(CLANG_FORMAT) -i
+	$(PRETTIER) --write src/**/*.{html,css}
+	find src/ -iname *.java | xargs $(CLANG_FORMAT) -i
+	find src/ -iname *.js | xargs $(CLANG_FORMAT) -i
 
 validate: node_modules
 	$(HTML_VALIDATE) src/main/webapp/*.html
