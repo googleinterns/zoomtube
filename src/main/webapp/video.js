@@ -26,8 +26,8 @@ async function loadVideoApi() {
 }
 
 /**
- * Creates a YouTube Video iFrame playing video with id:{@code VIDEO_ID} after
- * API calls it. This is a required callback from the API.
+ * Creates a YouTube Video iFrame that plays lecture video after
+ * the API calls it. This is a required callback from the API.
  */
 // TODO: Change height and width.
 function onYouTubeIframeAPIReady() {
