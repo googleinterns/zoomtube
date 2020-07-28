@@ -16,6 +16,7 @@ public class MockResponse extends HttpServletResponseWrapper {
   private StringWriter content;
   private PrintWriter writer;
   private String contentType;
+  private int status;
 
   public MockResponse() {
     // This is a bit of a hack, but it compiles and requires that any methods used
@@ -42,5 +43,21 @@ public class MockResponse extends HttpServletResponseWrapper {
 
   public String getContentAsString() {
     return content.toString();
+  }
+
+  @Override
+  public void sendError(int code, String message) {
+    setStatus(code);
+    writer.println(message);
+  }
+
+  @Override
+  public void setStatus(int code) {
+    status = code;
+  }
+
+  @Override
+  public int getStatus() {
+    return status;
   }
 }

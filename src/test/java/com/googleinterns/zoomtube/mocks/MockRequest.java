@@ -2,6 +2,9 @@ package com.googleinterns.zoomtube.mocks;
 
 import static org.mockito.Mockito.mock;
 
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +16,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * methods.
  */
 public class MockRequest extends HttpServletRequestWrapper {
-  public Map<String, String> parameters = new HashMap<>();
+  private Map<String, String> parameters = new HashMap<>();
+  private String content;
 
   public MockRequest() {
     // This is a bit of a hack, but it compiles and requires that any methods used
@@ -28,5 +32,14 @@ public class MockRequest extends HttpServletRequestWrapper {
   @Override
   public String getParameter(String name) {
     return parameters.get(name);
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  @Override
+  public BufferedReader getReader() {
+    return new BufferedReader(new StringReader(content));
   }
 }
