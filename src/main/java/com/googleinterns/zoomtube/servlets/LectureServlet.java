@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
-import com.google.common.annotations.VisibleForTesting;
 
 /** Provides information on a lecture. */
 @WebServlet("/lecture")
@@ -129,11 +129,12 @@ public class LectureServlet extends HttpServlet {
     return lectures;
   }
 
+  @VisibleForTesting 
   /**
    * Returns value with {@code name} from the {@code request} form.
    * If the {@code name} cannot be found, return {@code defaultValue}.
    */
-   @VisibleForTesting String getParameter(HttpServletRequest request, String name, String defaultValue) {
+   String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
       return defaultValue;
