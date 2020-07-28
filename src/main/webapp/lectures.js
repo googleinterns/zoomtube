@@ -20,10 +20,7 @@ const REDIRECT_PAGE = '/lecture-view.html';
 
 loadLectureList();
 
-/**
- * Fetches data from servlet and sets it in the lecture selection portion.
- * Called whenever lecture selection page is loaded.
- */
+/** Fetches data from servlet and sets it in the lecture selection page. */
 async function loadLectureList() {
   const response = await fetch('/lecture');
   const jsonData = await response.json();
@@ -37,7 +34,7 @@ async function loadLectureList() {
 
 /**
  * Creates and returns a <li> containing an <a> linking to {@code
- * lecture.videoUrl} and the {@code lecture.lectureName}.
+ * lecture}'s video url and name.
  */
 function createLectureListItem(lecture) {
   const listItem = document.createElement('li');

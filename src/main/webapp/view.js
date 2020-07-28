@@ -21,9 +21,6 @@ window.VIDEO_ID = getVideoId();
 
 initialize();
 
-/**
- * Initializes the video section of the lecture view page.
- */
 async function initialize() {
   window.loadVideoApi();
 }

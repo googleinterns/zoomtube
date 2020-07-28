@@ -66,7 +66,8 @@ public class LectureServlet extends HttpServlet {
   @Override
   // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
+    Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
+    String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
     Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
 
     if (existingEntity.isPresent()) {
@@ -104,11 +105,14 @@ public class LectureServlet extends HttpServlet {
     return Optional.empty();
   }
 
-  /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
+  /** Creates and returns an Entity using parameters found in {@code request}. */
   private Entity createLectureEntity(HttpServletRequest request) {
-    String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
-    String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
-    String videoId = getVideoId(videoUrl);
+    Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
+    String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
+    Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
+    String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
+    Optional<String> optionalVideoId = getVideoId(videoUrl);
+    String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
 
     Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
     lectureEntity.setProperty(Lecture.PROP_NAME, lectureName);
@@ -117,7 +121,7 @@ public class LectureServlet extends HttpServlet {
     return lectureEntity;
   }
 
-  /** Returns a list of lectures stored in the database. */
+  /** Returns lectures stored in the database. */
   private List<Lecture> getLectures() {
     Query query = new Query(Lecture.ENTITY_KIND);
     PreparedQuery results = datastore.prepare(query);
@@ -130,30 +134,30 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns value with {@code name} from the {@code request} form.
-   * If the {@code name} cannot be found, return {@code defaultValue}.
+   * Returns the value of {@code name} from the {@code request} form.
+   * If the {@code name} cannot be found, return {@code Optional.empty()}.
    */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+  private Optional<String> getParameter(HttpServletRequest request, String name) {
     String value = request.getParameter(name);
     if (value == null) {
-      return defaultValue;
+      return Optional.empty();
     }
-    return value;
+    return Optional.of(value);
   }
 
   /** Returns YouTube video ID for a given {@code videoUrl}. */
-  private String getVideoId(String videoUrl) {
+  private Optional<String> getVideoId(String videoUrl) {
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
-      return matcher.group();
+      return Optional.of(matcher.group());
     }
     // TODO: Throw an error saying ID not found.
-    return "";
+    return Optional.empty();
   }
 
   /**
-   * Returns URL to redirect to with parameters {@code lectureId} and {@code videoId}
-   * found in {@code lectureEntity}.
+   * Returns URL redirecting to lecture view page with parameters {@code lectureId}
+   * and {@code videoId} found in {@code lectureEntity}.
    */
   private String buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
