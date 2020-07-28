@@ -41,6 +41,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.repackaged.com.google.gson.JsonSyntaxException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -80,15 +81,25 @@ public final class TranscriptServletTest {
   private MockHttpServletResponse response;
   LocalDatastoreServiceTestConfig help = (new  LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private LocalServiceTestHelper helper = new LocalServiceTestHelper(help);
-  DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private Gson gson;
+  private static final String THREE_LINE_VIDEO_ID = "Obgnr9pc820";
+  private static final String LECTURE_ID_A = "123";
+  private static final String THREE_LINE_VIDEO_JSON = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
 
+  private static final String THREE_MIN_VIDEO_ID = "jNQXAC9IVRw";
+  private static final String THREE_MIN_VIDEO_JSON = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"1.3\",\"duration\":\"3.1\",\"content\":\"All right, so here we are\\nin front of the elephants,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"12.7\",\"duration\":\"4.3\",\"content\":\"and that&#39;s, that&#39;s cool.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"17\",\"duration\":\"1.767\",\"content\":\"And that&#39;s pretty much all there is to say.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"4.4\",\"duration\":\"4.766\",\"content\":\"the cool thing about these guys\\nis that they have really,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"9.166\",\"duration\":\"3.534\",\"content\":\"really, really long trunks,\"}]";
+  private static final String LECTURE_ID_B = "234";
   @Before
   public void setUp() throws ServletException {
     helper.setUp();
     servlet = new TranscriptServlet();
-    servlet.init(ds);
+    servlet.init(datastore);
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
+    gson = new GsonBuilder()
+    .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
+    .create();
   }
   
   @After
@@ -96,54 +107,100 @@ public final class TranscriptServletTest {
     helper.tearDown();
   }
 
+  private void putJsonInDatastore(String json, String lectureId) {
+    ArrayList<TranscriptLine> transcriptLineArray = extractJsonAsArrayList(json);
+    Key lectureKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
+    for (int i = 0; i < transcriptLineArray.size(); i++) {
+      Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
+      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
+      lineEntity.setProperty(TranscriptLine.PROP_START, "");
+      lineEntity.setProperty(TranscriptLine.PROP_DURATION, "");
+      lineEntity.setProperty(TranscriptLine.PROP_CONTENT, "");
+      datastore.put(lineEntity);
+    }
+  }
+
+  private ArrayList<TranscriptLine> extractJsonAsArrayList(String json) {
+    return (ArrayList<TranscriptLine>) gson.fromJson(THREE_LINE_VIDEO_JSON,(new ArrayList<List<TranscriptLine>>().getClass()));
+  }
+
+  @Test
+  public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
+    putJsonInDatastore(THREE_LINE_VIDEO_JSON, LECTURE_ID_A);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);
+    
+    servlet.doGet(request, response);
+    String actualJson = response.getContentAsString();
+    ArrayList<TranscriptLine> expectedArrayList = extractJsonAsArrayList(THREE_LINE_VIDEO_JSON);
+    ArrayList<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
+
+    assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size());
+  }
+
+  @Test
+  public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
+    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, THREE_LINE_VIDEO_ID);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);
+    servlet.doPost(request, response);  
+
+    Key lecture = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(LECTURE_ID_A));
+    Filter lectureFilter =
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+    int actualQueryCount = datastore.prepare(new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureFilter)).countEntities(withLimit(10));
+    int expectedQueryCount = (extractJsonAsArrayList(THREE_LINE_VIDEO_JSON)).size();
+    assertEquals(expectedQueryCount, actualQueryCount);
+  }
+
+// Check that there are the same amount of captions fetched - do Get
+// do Post = Check that the amount is the same and that it is the same as the json;
+
   @Test
   public void doGet_doPost_ParseShortVideo() throws ServletException, IOException {
-    //TODO: order test file, add constants
-    String expectedJson = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
-    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "Obgnr9pc820");
-    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");  
+    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, THREE_LINE_VIDEO_ID);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);  
     servlet.doPost(request, response);
     servlet.doGet(request, response);
     
     String actualJson = response.getContentAsString();
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
-        .create();
+    ArrayList<TranscriptLine> expectedArrayList = extractJsonAsArrayList(THREE_LINE_VIDEO_JSON);
+    ArrayList<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
     
-    ArrayList<TranscriptLine> expectedArrayList = (ArrayList<TranscriptLine>) gson.fromJson(expectedJson,(new ArrayList<List<TranscriptLine>>().getClass()));
-    
-    ArrayList<TranscriptLine> jsonArray = (ArrayList<TranscriptLine>) gson.fromJson(actualJson, (new ArrayList<List<TranscriptLine>>().getClass()));
-    assertThat(expectedArrayList).isEqualTo(jsonArray);
-    assertThat(response.getContentType()).isEqualTo("application/json;");
-    System.out.println("AHHH");
-    for (Entity entity: ds.prepare(new Query(TranscriptLine.ENTITY_KIND)).asQueryResultIterable()) {
-      System.out.println("HELP");
-      System.out.println(entity.getProperty("start"));
-    }
-
-    long lectureId = Long.parseLong("123");
-    Key lecture = KeyFactory.createKey("lecture", lectureId);
-
-    Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
-
-    Query query = new Query(TranscriptLine.ENTITY_KIND)
-                      .setFilter(lectureFilter)
-                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
-    PreparedQuery dsp = ds.prepare(query);
-
-    ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity entity : dsp.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
-    }
-
-    System.out.println(lineBuilder);
+    assertThat(expectedArrayList).isEqualTo(actualJsonArray); 
   }
 
   @Test
-  public void testDoPost() {
-    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "jNQXAC9IVRw");
-    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");
-
+  public void doGet_doPost_ParseLongVideo() throws ServletException, IOException {
+    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, THREE_MIN_VIDEO_ID);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);  
+    servlet.doPost(request, response);
+    servlet.doGet(request, response);
+    
+    String actualJson = response.getContentAsString();
+    ArrayList<TranscriptLine> expectedArrayList = extractJsonAsArrayList(THREE_MIN_VIDEO_JSON);
+    ArrayList<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
+    
+    assertThat(expectedArrayList).isEqualTo(actualJsonArray); 
   }
+
+  @Test
+  public void doGet_doPost_RetrieveBothVideos() throws ServletException, IOException {
+    putJsonInDatastore(THREE_LINE_VIDEO_JSON, LECTURE_ID_A);
+    putJsonInDatastore(THREE_MIN_VIDEO_JSON, LECTURE_ID_B);
+    //request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, THREE_LINE_VIDEO_ID);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);  
+    //servlet.doPost(request, response);
+    servlet.doGet(request, response);
+    
+    String actualJson = response.getContentAsString();
+    ArrayList<TranscriptLine> expectedArrayList = extractJsonAsArrayList(THREE_LINE_VIDEO_JSON);
+    ArrayList<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
+
+    assertThat(expectedArrayList).isEqualTo(actualJsonArray); 
+  }
+  // @Test
+  // public void testDoPost() {
+  //   request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, "jNQXAC9IVRw");
+  //   request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, "123");
+
+  // }
 }
