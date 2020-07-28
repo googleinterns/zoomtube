@@ -33,7 +33,7 @@ function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(PARAM_ID);
 }
-s
+
 /**
  * Returns the video id obtained from the current page's URL parameters.
  */
