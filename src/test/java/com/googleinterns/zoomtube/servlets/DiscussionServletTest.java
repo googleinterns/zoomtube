@@ -49,11 +49,7 @@ public class DiscussionServletTest {
   private static final int LECTURE_B = 2;
   private static final int LECTURE_C = 3;
   private static final String LECTURE_A_STR = "1";
-  private static final String LECTURE_B_STR = "2";
-  private static final String LECTURE_C_STR = "3";
-  private static final int PARENT_ID = 32;
-  private static final String PARENT_ID_STR = "32";
-  private static final String CONTENT = "Test content";
+  private static final String TEST_COMMENT_CONTENT = "Test content";
   private static final String EMAIL = "test@example.com";
   private static final String AUTH_DOMAIN = "example.com";
 
@@ -96,7 +92,7 @@ public class DiscussionServletTest {
   public void doPost_storesCommentWithProperties_noParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(CONTENT)));
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(TEST_COMMENT_CONTENT)));
 
     servlet.doPost(request, response);
 
@@ -106,16 +102,18 @@ public class DiscussionServletTest {
     Comment comment = Comment.fromEntity(query.asSingleEntity());
     assertThat(comment.lecture().getId()).isEqualTo(LECTURE_A);
     assertThat(comment.author().getEmail()).isEqualTo(EMAIL);
-    assertThat(comment.content()).isEqualTo(CONTENT);
+    assertThat(comment.content()).isEqualTo(TEST_COMMENT_CONTENT);
     assertThat(comment.parent().isPresent()).isFalse();
   }
 
   @Test
   public void doPost_storesCommentParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
+    final int PARENT_ID = 32;
+    final String PARENT_ID_STR = "32";
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
     when(request.getParameter(DiscussionServlet.PARAM_PARENT)).thenReturn(PARENT_ID_STR);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(CONTENT)));
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(TEST_COMMENT_CONTENT)));
 
     servlet.doPost(request, response);
 
@@ -159,15 +157,15 @@ public class DiscussionServletTest {
 
   @Test
   public void doGet_returnsCommentsForSpecificLecture() throws ServletException, IOException {
-    // Looking for two comments under LECTURE_B.
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_B_STR);
-    datastore.put(createTestCommentEntity(LECTURE_A));
+    // Looking for two comments under LECTURE_A.
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
+    datastore.put(createTestCommentEntity(LECTURE_B));
     datastore.put(createTestCommentEntity(LECTURE_C));
-    datastore.put(createTestCommentEntity(LECTURE_B)); // Add the first.
-    datastore.put(createTestCommentEntity(LECTURE_A));
-    datastore.put(createTestCommentEntity(LECTURE_A));
+    datastore.put(createTestCommentEntity(LECTURE_A)); // Add the first.
+    datastore.put(createTestCommentEntity(LECTURE_B));
+    datastore.put(createTestCommentEntity(LECTURE_B));
     datastore.put(createTestCommentEntity(LECTURE_C));
-    datastore.put(createTestCommentEntity(LECTURE_B)); // Add the second.
+    datastore.put(createTestCommentEntity(LECTURE_A)); // Add the second.
     datastore.put(createTestCommentEntity(LECTURE_C));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
@@ -186,8 +184,8 @@ public class DiscussionServletTest {
     commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
     commentEntity.setProperty(Comment.PROP_PARENT, null);
     commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
-    commentEntity.setProperty(Comment.PROP_AUTHOR, new User("test@example.com", "example.com"));
-    commentEntity.setProperty(Comment.PROP_CONTENT, "Test Content");
+    commentEntity.setProperty(Comment.PROP_AUTHOR, new User(EMAIL, AUTH_DOMAIN));
+    commentEntity.setProperty(Comment.PROP_CONTENT, TEST_COMMENT_CONTENT);
     commentEntity.setProperty(Comment.PROP_CREATED, new Date(Clock.systemUTC().millis()));
 
     return commentEntity;
