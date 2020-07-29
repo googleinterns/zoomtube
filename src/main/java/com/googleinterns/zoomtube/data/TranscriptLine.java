@@ -17,15 +17,10 @@ package com.googleinterns.zoomtube.data;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
-<<<<<<< HEAD:src/main/java/com/googleinterns/zoomtube/data/TranscriptLine.java
-
-/** Contains data pertaining to a single line of transcript. */
-=======
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
 /** Contains data pertaining to a single line of transcript. */
 @GenerateTypeAdapter
->>>>>>> transcript-store:src/main/java/com/googleinterns/zoomtube/data/Line.java
 @AutoValue
 public abstract class TranscriptLine {
   public static final String ENTITY_KIND = "TranscriptLine";
