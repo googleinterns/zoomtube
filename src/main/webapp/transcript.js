@@ -67,11 +67,11 @@ function appendTextToList(transcriptLine, ulElement) {
   const endTime = (new Date(transcriptLine.end).getSeconds());
   const timestamp = `${startTime} secs - ${endTime} secs`;
 
-  const timestampPElement = appendPTagToContainer(timestamp, liElement);
+  const timestampPElement = appendParagraphToContainer(timestamp, liElement);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
   timestampPElement.classList.add('mx-auto');
   const transcriptLinePElement =
-      appendPTagToContainer(transcriptLine.content, liElement);
+      appendParagraphToContainer(transcriptLine.content, liElement);
   transcriptLinePElement.classList.add('mx-auto');
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
@@ -81,7 +81,7 @@ function appendTextToList(transcriptLine, ulElement) {
  * Creates a <p> tag to store the given {@code text} inside the
  * {@code container} and returns the <p> tag using the given text.
  */
-function appendPTagToContainer(text, container) {
+function appendParagraphToContainer(text, container) {
   const pTag = document.createElement('p');
   pTag.innerText = text;
   container.appendChild(pTag);
