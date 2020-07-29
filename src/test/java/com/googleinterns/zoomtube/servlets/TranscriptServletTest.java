@@ -62,8 +62,6 @@ import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
-
-/** */
 @RunWith(JUnit4.class)
 public final class TranscriptServletTest {
   private TranscriptServlet servlet;
@@ -74,9 +72,10 @@ public final class TranscriptServletTest {
   private DatastoreService datastore;
   private Gson gson;
 
+  private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
-  private static final String LECTURE_ID_A = "123";
+
 
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String SHORT_VIDEO_JSON = 
@@ -126,8 +125,8 @@ public final class TranscriptServletTest {
   public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, SHORT_VIDEO_ID);
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_B);
+    
     servlet.doPost(request, response);
-
     int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_B);
     int expectedQueryCount = (extractJsonAsArrayList(SHORT_VIDEO_JSON)).size();
     
@@ -138,9 +137,9 @@ public final class TranscriptServletTest {
   public void doGet_doPost_StoreAndRetrieveShortVideo() throws ServletException, IOException {
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, SHORT_VIDEO_ID);
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);
+    
     servlet.doPost(request, response);
     servlet.doGet(request, response);
-    
     String actualJson = response.getContentAsString();
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(SHORT_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
@@ -152,9 +151,9 @@ public final class TranscriptServletTest {
   public void doGet_doPost_StoreAndRetrieveLongVideo() throws ServletException, IOException {
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, LONG_VIDEO_ID);
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);  
+    
     servlet.doPost(request, response);
     servlet.doGet(request, response);
-    
     String actualJson = response.getContentAsString();
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
@@ -166,8 +165,8 @@ public final class TranscriptServletTest {
   public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, LONG_VIDEO_ID);
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_C);
+    
     servlet.doPost(request, response);
-
     int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_C);
     int expectedQueryCount = (extractJsonAsArrayList(LONG_VIDEO_JSON)).size();
     
@@ -199,7 +198,7 @@ public final class TranscriptServletTest {
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
-    assertThat(actualJsonArray).isEqualTo(expectedArrayList); 
+    assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size()); 
   }
 
   private void putJsonInDatastore(String json, String lectureId) {
@@ -208,9 +207,10 @@ public final class TranscriptServletTest {
     for (int i = 0; i < transcriptLineArray.size(); i++) {
       Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
       lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
-      lineEntity.setProperty(TranscriptLine.PROP_START, lectureId);
-      lineEntity.setProperty(TranscriptLine.PROP_DURATION, lectureId);
-      lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lectureId);
+      // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
+      lineEntity.setProperty(TranscriptLine.PROP_START, "");
+      lineEntity.setProperty(TranscriptLine.PROP_DURATION, "");
+      lineEntity.setProperty(TranscriptLine.PROP_CONTENT, "");
       datastore.put(lineEntity);
     }
   }
