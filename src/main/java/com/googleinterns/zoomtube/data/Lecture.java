@@ -24,11 +24,11 @@ import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 @AutoValue
 public abstract class Lecture {
   /** Used to create an entity and its fields. */
-  public static final String ENTITY_KIND = "Lecture";
-  public static final String PROP_NAME = "lectureName";
-  public static final String PROP_URL = "videoUrl";
-  public static final String PROP_ID = "id";
-  public static final String PROP_VIDEO_ID = "video-id";
+  // public static final String ENTITY_KIND = "Lecture";
+  // public static final String PROP_NAME = "lectureName";
+  // public static final String PROP_URL = "videoUrl";
+  // public static final String PROP_ID = "id";
+  // public static final String PROP_VIDEO_ID = "video-id";
 
   public abstract Key key();
   public abstract String lectureName();
@@ -50,9 +50,9 @@ public abstract class Lecture {
   /** Returns a Lecture from {@code entity}. */
   public static Lecture fromLectureEntity(Entity entity) {
     Key key = entity.getKey();
-    String lectureName = (String) entity.getProperty(PROP_NAME);
-    String videoUrl = (String) entity.getProperty(PROP_URL);
-    String videoId = (String) entity.getProperty(PROP_VIDEO_ID);
+    String lectureName = (String) entity.getProperty(LectureEntityFields.NAME);
+    String videoUrl = (String) entity.getProperty(LectureEntityFields.VIDEO_URL);
+    String videoId = (String) entity.getProperty(LectureEntityFields.VIDEO_ID);
     return Lecture.create(key, lectureName, videoUrl, videoId);
   }
 }

@@ -23,6 +23,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
+import com.googleinterns.zoomtube.utils.LectureEntityFields;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class LectureServlet extends HttpServlet {
     Iterable<Entity> resultsIterable = results.asIterable();
 
     for (Entity lecture : resultsIterable) {
-      if (lecture.getProperty(Lecture.PROP_URL).equals(url)) {
+      if (lecture.getProperty(LectureEntityFields.VIDEO_URL).equals(url)) {
         return Optional.of(lecture);
       }
     }
@@ -116,16 +117,16 @@ public class LectureServlet extends HttpServlet {
     Optional<String> optionalVideoId = getVideoId(videoUrl);
     String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
 
-    Entity lectureEntity = new Entity(Lecture.ENTITY_KIND);
-    lectureEntity.setProperty(Lecture.PROP_NAME, lectureName);
-    lectureEntity.setProperty(Lecture.PROP_URL, videoUrl);
-    lectureEntity.setProperty(Lecture.PROP_VIDEO_ID, videoId);
+    Entity lectureEntity = new Entity(LectureEntityFields.KIND);
+    lectureEntity.setProperty(LectureEntityFields.NAME, lectureName);
+    lectureEntity.setProperty(LectureEntityFields.VIDEO_URL, videoUrl);
+    lectureEntity.setProperty(LectureEntityFields.VIDEO_ID, videoId);
     return lectureEntity;
   }
 
   /** Returns lectures stored in the database. */
   private List<Lecture> getLectures() {
-    Query query = new Query(Lecture.ENTITY_KIND);
+    Query query = new Query(LectureEntityFields.KIND);
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
@@ -164,12 +165,12 @@ public class LectureServlet extends HttpServlet {
    */
   private String buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(Lecture.PROP_VIDEO_ID);
+    String videoId = (String) lectureEntity.getProperty(LectureEntityFields.ID);
 
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
-                                  .addParameter(Lecture.PROP_ID, lectureId)
-                                  .addParameter(Lecture.PROP_VIDEO_ID, videoId);
+                                  .addParameter(LectureEntityFields.ID, lectureId)
+                                  .addParameter(LectureEntityFields.VIDEO_ID, videoId);
       return urlBuilder.build().toString();
     } catch (URISyntaxException urlBuilderError) {
       throw new RuntimeException(urlBuilderError);
