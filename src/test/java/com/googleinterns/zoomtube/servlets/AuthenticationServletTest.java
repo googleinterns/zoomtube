@@ -32,7 +32,7 @@ public class AuthenticationServletTest {
   private LocalServiceTestHelper authService;
 
   @Before
-  public void setUp() throws ServletException, IOException {
+  public void setUp() throws Exception {
     servlet = new AuthenticationServlet();
     servlet.init();
     authService = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
@@ -45,7 +45,7 @@ public class AuthenticationServletTest {
   }
 
   @Test
-  public void doGet_loggedIn_expectTrue() throws ServletException, IOException {
+  public void doGet_loggedIn_expectTrue() throws Exception {
     authService.setEnvIsLoggedIn(true);
     authService.setEnvAuthDomain("example.com");
     authService.setEnvEmail("test@example.com");
@@ -63,7 +63,7 @@ public class AuthenticationServletTest {
   }
 
   @Test
-  public void doGet_loggedIn_expectFalse() throws ServletException, IOException {
+  public void doGet_loggedIn_expectFalse() throws Exception {
     authService.setEnvIsLoggedIn(false);
     authService.setUp();
     StringWriter content = new StringWriter();
@@ -80,7 +80,7 @@ public class AuthenticationServletTest {
   }
 
   @Test
-  public void doGet_returnsUserEmail() throws ServletException, IOException {
+  public void doGet_returnsUserEmail() throws Exception {
     final String EMAIL = "test@example.com";
     authService.setEnvIsLoggedIn(true);
     authService.setEnvAuthDomain("example.com");
@@ -100,7 +100,7 @@ public class AuthenticationServletTest {
   }
 
   @Test
-  public void doGet_loggedIn_expectLogoutUrl() throws ServletException, IOException {
+  public void doGet_loggedIn_expectLogoutUrl() throws Exception {
     authService.setEnvIsLoggedIn(true);
     authService.setEnvAuthDomain("example.com");
     authService.setEnvEmail("test@example.com");
@@ -120,7 +120,7 @@ public class AuthenticationServletTest {
   }
 
   @Test
-  public void doGet_loggedOut_expectLoginUrl() throws ServletException, IOException {
+  public void doGet_loggedOut_expectLoginUrl() throws Exception {
     authService.setEnvIsLoggedIn(false);
     authService.setUp();
     StringWriter content = new StringWriter();
