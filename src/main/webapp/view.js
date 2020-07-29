@@ -13,15 +13,13 @@
 // limitations under the License.
 
 const PARAM_ID = 'id';
-
-/* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
 initialize();
 
 async function initialize() {
-  // TODO: Initialize the video, trancript, and discussion sections once they
-  // are added.
+  window.intializeDiscussion();
+  // TODO: Initialize the video and trancript sections once they are added.
 }
 
 /**
