@@ -15,6 +15,9 @@
 package com.googleinterns.zoomtube.servlets;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -38,8 +41,6 @@ import org.junit.runners.JUnit4;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mockito.Mock;
@@ -52,8 +53,8 @@ import java.io.StringWriter;
 public final class LectureServletTest {
   private final LocalServiceTestHelper testServices =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  DatastoreService datastoreService;
-  LectureServlet servlet;
+  private DatastoreService datastoreService;
+  private LectureServlet servlet;
   
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
   @Mock private HttpServletRequest request;
@@ -109,7 +110,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doGet_emptyDatabase_shouldReturnOneLecture() throws IOException {
+  public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(servlet.createLectureEntity(request));
     StringWriter content = new StringWriter();
