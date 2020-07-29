@@ -46,13 +46,13 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 
 /**
  * Creates an <li> element containing {@code transcriptLine}'s text, start time,
- *  and submitter's name and appends it to {@code ulElement}.
+ * and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
   const startTime = (new Date(transcriptLine.start)).getSeconds();
   const endTime = (new Date(transcriptLine.end).getSeconds());
-  const timestamp = startTime + ' secs - ' + endTime + ' secs';
+  const timestamp = `${startTime} secs - ${endTime} secs`;
 
   const timestampPElement = appendPTagToContainer(timestamp, liElement);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
@@ -78,7 +78,9 @@ function appendPTagToContainer(text, container) {
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
+// TODO: Delete this method once I no longer need to delete all of the transcripts
+// for testing.
 function deleteTranscript() {
   const params = new URLSearchParams('');
-  fetch('/delete-data', {method: 'POST', body: params});
+  fetch('/delete-transcript', {method: 'POST', body: params});
 }

@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that deletes all of the transcript lines. */
-// TODO: Delete this method after testing is complete.
-@WebServlet("/delete-data")
-public class DeleteData extends HttpServlet {
+// TODO: Delete this file after testing is complete.
+@WebServlet("/delete-transcript")
+public class DeleteTranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(TranscriptLine.ENTITY_KIND);
@@ -29,7 +29,7 @@ public class DeleteData extends HttpServlet {
     StreamSupport.stream(resultsIterable.spliterator(), false)
         .map(entity -> entity.getKey())
         .forEach(datastore::delete);
-    System.out.println("DeleteData doPost");
+    System.out.println("DeleteTranscript doPost");
     response.sendRedirect("/");
   }
 }
