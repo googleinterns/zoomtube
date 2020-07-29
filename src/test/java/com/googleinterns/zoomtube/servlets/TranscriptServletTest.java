@@ -74,9 +74,9 @@ public final class TranscriptServletTest {
   private DatastoreService datastore;
   private Gson gson;
 
-  private static final String LECTURE_ID_B = "3";
-  private static final String LECTURE_ID_C = "2";
-  private static final String LECTURE_ID_A = "1";
+  private static final String LECTURE_ID_B = "345";
+  private static final String LECTURE_ID_C = "234";
+  private static final String LECTURE_ID_A = "123";
 
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String SHORT_VIDEO_JSON = 
@@ -137,7 +137,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_StoreAndRetrieveShortVideo() throws ServletException, IOException {
     request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, SHORT_VIDEO_ID);
-    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_C);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);
     servlet.doPost(request, response);
     servlet.doGet(request, response);
     
@@ -190,9 +190,9 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_TwoLecturesInDatastore_GetOneLecture() throws ServletException, IOException {
-    putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_A);
-    putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_B);
-    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_B);  
+    putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
+    putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);  
     
     servlet.doGet(request, response);
     String actualJson = response.getContentAsString();
