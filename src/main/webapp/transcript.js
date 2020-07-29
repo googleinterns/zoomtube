@@ -78,8 +78,8 @@ function appendPTagToContainer(text, container) {
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
-// TODO: Delete this method once I no longer need to delete all of the transcripts
-// for testing.
+// TODO: Delete this method once I no longer need to delete all of the
+// transcripts for testing.
 function deleteTranscript() {
   const params = new URLSearchParams('');
   fetch('/delete-transcript', {method: 'POST', body: params});
