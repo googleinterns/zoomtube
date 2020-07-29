@@ -6,13 +6,10 @@ const TRANSCRIPT_CONTAINER = 'transcript-container';
  */
 function sendPostToTranscript() {
   // TODO: Update with user input.
-  let start = performance.now();
   const testParamsString = 'id=123456789&video=8PrOp9t0PyQ';
   const params = new URLSearchParams(testParamsString);
   fetch('/transcript', {method: 'POST', body: params})
       .then(fetchTranscriptLines(testParamsString));
-  let end = performance.now();
-  console.log('sendPostToTranscript() takes' + (end - start));
 }
 
 /**
@@ -22,7 +19,6 @@ function sendPostToTranscript() {
  * indicated in {@code testParamsString}.
  */
 function fetchTranscriptLines(testParamsString) {
-  let start = performance.now();
   fetch(
       '/transcript' +
       '?' + testParamsString)
@@ -30,8 +26,6 @@ function fetchTranscriptLines(testParamsString) {
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
       });
-  let end = performance.now();
-  console.log('fetchTranscriptLines() takes' + (end - start));
 }
 
 /**

@@ -60,7 +60,7 @@ public class TranscriptServlet extends HttpServlet {
   private static final String PARAM_VIDEO_ID = "video";
   private static final int MILLISECOND_CONVERTER = 1000;
 
-  private static DatastoreService datastore;
+  private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
@@ -69,7 +69,6 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long startTime = System.currentTimeMillis();
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     String videoId = request.getParameter(PARAM_VIDEO_ID);
 
@@ -91,13 +90,10 @@ public class TranscriptServlet extends HttpServlet {
       // TODO: alert the user.
       System.out.println("XML parsing error");
     }
-    long endTime = System.currentTimeMillis();
-    System.out.println("DoPost took " + (endTime - startTime) + " milliseconds");
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long startTime = System.currentTimeMillis();
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
 
@@ -118,8 +114,6 @@ public class TranscriptServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(lines));
-    long endTime = System.currentTimeMillis();
-    System.out.println("DoGet took " + (endTime - startTime) + " milliseconds");
   }
 
   /**
