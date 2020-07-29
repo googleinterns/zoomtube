@@ -45,10 +45,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 public class DiscussionServletTest {
-  private static final int LECTURE_A = 1;
-  private static final int LECTURE_B = 2;
-  private static final int LECTURE_C = 3;
-  private static final String LECTURE_A_STR = "1";
+  private static final int LECTURE_ID = 1;
+  private static final String LECTURE_ID_STR = "1";
   private static final String TEST_COMMENT_CONTENT = "Test content";
   private static final String DEFAULT_EMAIL = "test@example.com";
   private static final String AUTH_DOMAIN = "example.com";
@@ -79,7 +77,7 @@ public class DiscussionServletTest {
   @Test
   public void doPost_loggedOut_postForbidden() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(false);
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
 
     servlet.doPost(request, response);
 
@@ -92,7 +90,7 @@ public class DiscussionServletTest {
   public void doPost_storesCommentWithProperties_noParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader("Something unique")));
 
@@ -102,7 +100,7 @@ public class DiscussionServletTest {
     PreparedQuery query = datastore.prepare(new Query(Comment.ENTITY_KIND));
     assertThat(query.countEntities(withLimit(2))).isEqualTo(1);
     Comment comment = Comment.fromEntity(query.asSingleEntity());
-    assertThat(comment.lecture().getId()).isEqualTo(LECTURE_A);
+    assertThat(comment.lecture().getId()).isEqualTo(LECTURE_ID);
     assertThat(comment.author().getEmail()).isEqualTo("author@example.com");
     assertThat(comment.content()).isEqualTo("Something unique");
     assertThat(comment.parent().isPresent()).isFalse();
@@ -112,7 +110,7 @@ public class DiscussionServletTest {
   public void doPost_storesCommentParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     final int PARENT_ID = 32;
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_PARENT))
         .thenReturn(Integer.toString(PARENT_ID));
     when(request.getReader())
@@ -129,7 +127,7 @@ public class DiscussionServletTest {
 
   @Test
   public void doGet_returnsNothingForUnknownLecture() throws ServletException, IOException {
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -143,10 +141,10 @@ public class DiscussionServletTest {
 
   @Test
   public void doGet_returnsComments() throws ServletException, IOException {
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
-    datastore.put(createTestCommentEntity(LECTURE_A));
-    datastore.put(createTestCommentEntity(LECTURE_A));
-    datastore.put(createTestCommentEntity(LECTURE_A));
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    datastore.put(createTestCommentEntity(LECTURE_ID));
+    datastore.put(createTestCommentEntity(LECTURE_ID));
+    datastore.put(createTestCommentEntity(LECTURE_ID));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -160,8 +158,11 @@ public class DiscussionServletTest {
 
   @Test
   public void doGet_returnsCommentsForSpecificLecture() throws ServletException, IOException {
+    final int LECTURE_A = 1;
+    final int LECTURE_B = 2;
+    final int LECTURE_C = 3;
     // Looking for two comments under LECTURE_A.
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(Integer.toString(LECTURE_A));
     datastore.put(createTestCommentEntity(LECTURE_B));
     datastore.put(createTestCommentEntity(LECTURE_C));
     datastore.put(createTestCommentEntity(LECTURE_A)); // Add the first.
