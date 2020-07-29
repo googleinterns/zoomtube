@@ -17,9 +17,8 @@ package com.googleinterns.zoomtube.data;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
-import java.util.Date;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-
+import java.util.Date;
 
 /** Contains data pertaining to a single line of transcript. */
 @GenerateTypeAdapter

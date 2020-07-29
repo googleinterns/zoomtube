@@ -32,8 +32,8 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -135,7 +135,6 @@ public class TranscriptServlet extends HttpServlet {
     return datastore.prepare(query);
   }
 
-
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : preparedQuery.asQueryResultIterable()) {
@@ -160,8 +159,8 @@ public class TranscriptServlet extends HttpServlet {
   private Entity createLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
-    Float lineStart = Float.parseFloat(element.getAttribute(START_ATTRIBUTE));
-    Float lineDuration = Float.parseFloat(element.getAttribute(DURATION_ATTRIBUTE));
+    Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
+    Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
     Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
     // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
