@@ -20,6 +20,6 @@ public class LectureEntityFields {
   public static final String KIND = "Lecture";
   public static final String NAME = "lectureName";
   public static final String VIDEO_URL = "videoUrl";
-  public static final String ID = "id";
   public static final String VIDEO_ID = "video-id";
+  public static final String ID = "id";
 }
