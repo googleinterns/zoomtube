@@ -106,7 +106,7 @@ public final class TranscriptServletTest {
   }
 
   private List<TranscriptLine> extractJsonAsArrayList(String json) {
-    return (ArrayList<TranscriptLine>) gson.fromJson(SHORT_VIDEO_JSON,(new ArrayList<List<TranscriptLine>>().getClass()));
+    return (ArrayList<TranscriptLine>) gson.fromJson(json,(new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
   @Test
@@ -164,12 +164,12 @@ public final class TranscriptServletTest {
 
   @Test
   public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
-    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, SHORT_VIDEO_ID);
-    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_B);
+    request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, LONG_VIDEO_ID);
+    request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_C);
     servlet.doPost(request, response);
 
-    int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_B);
-    int expectedQueryCount = (extractJsonAsArrayList(SHORT_VIDEO_JSON)).size();
+    int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_C);
+    int expectedQueryCount = (extractJsonAsArrayList(LONG_VIDEO_JSON)).size();
     
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
@@ -216,7 +216,7 @@ public final class TranscriptServletTest {
   }
 
   private int countEntitiesInDatastore(String lectureId) {
-    return datastore.prepare(filteredQuery(lectureId)).countEntities(withLimit(10));
+    return datastore.prepare(filteredQuery(lectureId)).countEntities(withLimit(100));
   }
 
   private Query filteredQuery(String lectureId) {
