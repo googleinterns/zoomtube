@@ -137,13 +137,13 @@ public final class LectureServletTest {
     String video8 = "http://www.youtube-nocookie.com/v/dQw4w9WgXcQ?version=3&hl=en_US&rel=0";
     String id = "dQw4w9WgXcQ";
 
-    assertThat(servlet.getVideoId(video1)).isEqualTo(id);
-    assertThat(servlet.getVideoId(video2)).isEqualTo(id);
-    assertThat(servlet.getVideoId(video3)).isEqualTo(id);
-    assertThat(servlet.getVideoId(video4)).isEqualTo(id);
-    assertThat(servlet.getVideoId(video5)).isEqualTo(id);
-    assertThat(servlet.getVideoId(video6)).isEqualTo(id);
-    assertThat(servlet.getVideoId(video7)).isEqualTo(id);
-    assertThat(servlet.getVideoId(video8)).isEqualTo(id);
+    assertThat(servlet.getVideoId(video1).get()).isEqualTo(id);
+    assertThat(servlet.getVideoId(video2).get()).isEqualTo(id);
+    assertThat(servlet.getVideoId(video3).get()).isEqualTo(id);
+    assertThat(servlet.getVideoId(video4).get()).isEqualTo(id);
+    assertThat(servlet.getVideoId(video5).get()).isEqualTo(id);
+    assertThat(servlet.getVideoId(video6).get()).isEqualTo(id);
+    assertThat(servlet.getVideoId(video7).get()).isEqualTo(id);
+    assertThat(servlet.getVideoId(video8).get()).isEqualTo(id);
   }
 }
