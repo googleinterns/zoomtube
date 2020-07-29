@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureEntityFields;
@@ -94,7 +95,6 @@ public class LectureServlet extends HttpServlet {
    */
   private Optional<Entity> checkUrlInDatabase(String url) {
     Query query = new Query(LectureEntityFields.KIND);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
@@ -106,8 +106,10 @@ public class LectureServlet extends HttpServlet {
     return Optional.empty();
   }
 
-  /** Creates and returns an Entity using parameters found in {@code request}. */
-  private Entity createLectureEntity(HttpServletRequest request) {
+  @VisibleForTesting
+  /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
+  // TODO: Error check
+  protected Entity createLectureEntity(HttpServletRequest request) {
     Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
     String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
@@ -146,8 +148,9 @@ public class LectureServlet extends HttpServlet {
     return Optional.of(value);
   }
 
+  @VisibleForTesting
   /** Returns YouTube video ID for a given {@code videoUrl}. */
-  private Optional<String> getVideoId(String videoUrl) {
+  protected Optional<String> getVideoId(String videoUrl) {
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
       return Optional.of(matcher.group());
@@ -162,7 +165,7 @@ public class LectureServlet extends HttpServlet {
    */
   private String buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(LectureEntityFields.ID);
+    String videoId = (String) lectureEntity.getProperty(LectureEntityFields.VIDEO_ID);
 
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
