@@ -136,20 +136,9 @@ public final class TranscriptServletTest {
     request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);
     servlet.doPost(request, response);  
 
-    int actualQueryCount = countEntities(LECTURE_ID_A);
+    int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_A);
     int expectedQueryCount = (extractJsonAsArrayList(THREE_LINE_VIDEO_JSON)).size();
     assertEquals(expectedQueryCount, actualQueryCount);
-  }
-
-  private int countEntitiesInDatastore(String lectureId) {
-    return datastore.prepare(filteredQuery(lectureId)).countEntities(withLimit(10));
-  }
-
-  private Query filteredQuery(String lectureId) {
-    Key lecture = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(LECTURE_ID_A));
-    Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
-    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureFilter);    
   }
 
   @Test
