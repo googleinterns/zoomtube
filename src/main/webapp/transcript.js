@@ -40,6 +40,7 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
+    console.log(transcriptLine);
     appendTextToList(transcriptLine, ulElement);
   });
 }
