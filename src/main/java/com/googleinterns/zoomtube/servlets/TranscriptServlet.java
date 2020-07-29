@@ -76,7 +76,7 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
    * if there is a parsing error.
-   * 
+   *
    * @param request Indicates the video to extract the transcript from.
    */
   private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
@@ -99,7 +99,7 @@ public class TranscriptServlet extends HttpServlet {
 
   /**
    * Puts each transcript line from {@code document} in datastore as its own entity.
-   * 
+   *
    * @param request Indicates the lecture key to group the transcript lines under.
    */
   private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
