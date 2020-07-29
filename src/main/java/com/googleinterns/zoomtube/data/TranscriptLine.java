@@ -18,8 +18,11 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import java.util.Date;
+import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+
 
 /** Contains data pertaining to a single line of transcript. */
+@GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLine {
   public static final String ENTITY_KIND = "TranscriptLine";
@@ -31,6 +34,7 @@ public abstract class TranscriptLine {
 
   /**
    * Creates a TranscriptLine object.
+   *
    * @param key The key for the transcript.
    * @param lecture The key for the lecture.
    * @param start The starting time for the lecture line in seconds.
@@ -43,22 +47,17 @@ public abstract class TranscriptLine {
   }
 
   public abstract Key key();
-
   public abstract Key lecture();
-
   public abstract Date start();
-
   public abstract Date duration();
-
   public abstract Date end();
-
   public abstract String content();
 
   /**
    * Creates a {@code TranscriptLine} from a datastore {@code Entity} using the
    * property names defined in this class.
    */
-  public static TranscriptLine fromEntity(Entity entity) {
+  public static TranscriptLine fromLineEntity(Entity entity) {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
     Date start = (Date) entity.getProperty(PROP_START);
