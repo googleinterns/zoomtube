@@ -1,5 +1,7 @@
 # ZoomTube
 
+[Check it out!](https://zoomtube-step-2020.appspot.com/)
+
 View our [Design Doc](https://docs.google.com/document/d/12t7FDPDpTpHzrQBJ3T8qdmGKGrPi3lr2-UPmoc2ISHI/edit?usp=sharing).
 
 ## Overview
@@ -42,6 +44,8 @@ To deploy, create an AppEngine project within the Google Cloud Platform
 Console, and update the project id in `pom.xml`. Then, deploy using
 
 ```
+gcloud config set project [YOUR_PROJECT_ID]
+gcloud datastore indexes create index.yaml
 make deploy
 ```
 
