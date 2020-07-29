@@ -83,6 +83,7 @@ public class AuthenticationServletTest {
   @Test
   public void doGet_returnsUserEmail() throws Exception {
     testServices.setEnvIsLoggedIn(true);
+    testServices.setEnvEmail(EMAIL);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
