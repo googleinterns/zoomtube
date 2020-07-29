@@ -20,7 +20,7 @@ const ENDPOINT_TRANSCRIPT = '/transcript';
  * Sends a POST request to the transcript.
  */
 function sendPostToTranscript() {
-  // TODO: Update with user input.
+  // TODO: Update with user input and URL Builder.
   const paramsString = 'id=123456789&video=3ymwOvzhwHs';
   const params = new URLSearchParams(paramsString);
   fetch(ENDPOINT_TRANSCRIPT, {method: 'POST', body: params})
