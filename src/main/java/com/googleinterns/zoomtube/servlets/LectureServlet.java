@@ -106,7 +106,7 @@ public class LectureServlet extends HttpServlet {
 
   @VisibleForTesting
   /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
-  Entity createLectureEntity(HttpServletRequest request) {
+  protected Entity createLectureEntity(HttpServletRequest request) {
     String lectureName = getParameter(request, NAME_INPUT, DEFAULT_VALUE);
     String videoUrl = getParameter(request, LINK_INPUT, DEFAULT_VALUE);
     String videoId = getVideoId(videoUrl);
@@ -144,7 +144,7 @@ public class LectureServlet extends HttpServlet {
 
   @VisibleForTesting
   /** Returns YouTube video ID for a given {@code videoUrl}. */
-  String getVideoId(String videoUrl) {
+  protected String getVideoId(String videoUrl) {
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
       return matcher.group();

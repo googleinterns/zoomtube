@@ -28,17 +28,25 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Rule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.googleinterns.zoomtube.mocks.MockRequest;
-import com.googleinterns.zoomtube.mocks.MockResponse;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @RunWith(JUnit4.class)
 public final class LectureServletTest {
@@ -46,8 +54,10 @@ public final class LectureServletTest {
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   DatastoreService datastoreService;
   LectureServlet servlet;
-  MockRequest request;
-  MockResponse response;
+  
+  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+  @Mock private HttpServletRequest request;
+  @Mock private HttpServletResponse response;
 
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
@@ -56,8 +66,6 @@ public final class LectureServletTest {
   public void setUp() throws ServletException {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
-    request = new MockRequest();
-    response = new MockResponse();
     servlet = new LectureServlet();
     servlet.init();
   }
@@ -69,40 +77,48 @@ public final class LectureServletTest {
 
   @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
-    request.setParameter(LINK_INPUT, TEST_LINK);
+    when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(servlet.createLectureEntity(request));
-
+    
     servlet.doPost(request, response);
     
     assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
-    assertThat(response.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
+    verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
   public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException {
-    request.setParameter(LINK_INPUT, TEST_LINK);
+    when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
    
     servlet.doPost(request, response);
     
     assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
-    assertThat(response.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
+    verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
   public void doGet_emptyDatabase_shouldReturnNoLecture() throws IOException {
+    StringWriter content = new StringWriter();
+    PrintWriter writer = new PrintWriter(content);
+    when(response.getWriter()).thenReturn(writer);
+
     servlet.doGet(request, response);
     
-    assertThat(response.getContentLength()).isEqualTo(0);
+    String json = content.toString();
+    assertThat(json).startsWith("[]");
   }
 
   @Test
   public void doGet_emptyDatabase_shouldReturnOneLecture() throws IOException {
-    request.setParameter(LINK_INPUT, TEST_LINK);
+    when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(servlet.createLectureEntity(request));
+    StringWriter content = new StringWriter();
+    PrintWriter writer = new PrintWriter(content);
+    when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);
 
-    String json = response.getContentAsString();
+    String json = content.toString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Type listType = new TypeToken<ArrayList<Lecture>>() {}.getType();
     ArrayList<Lecture> lectures = gson.fromJson(json, listType);
