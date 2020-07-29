@@ -29,6 +29,7 @@ public class DeleteTranscriptServlet extends HttpServlet {
     StreamSupport.stream(resultsIterable.spliterator(), false)
         .map(entity -> entity.getKey())
         .forEach(datastore::delete);
+    // Print statement is here to confirm that the datastore is cleared. 
     System.out.println("DeleteTranscript doPost");
     response.sendRedirect("/");
   }
