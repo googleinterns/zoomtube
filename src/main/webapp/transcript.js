@@ -65,9 +65,9 @@ function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
   const infoDivElement = document.createElement('div');
 
-  appendAndReturnPTagToContainer(transcriptLine.start, infoDivElement);
+  appendPTagToContainer(transcriptLine.start, infoDivElement);
   liElement.appendChild(infoDivElement);
-  appendAndReturnPTagToContainer(transcriptLine.content, liElement);
+  appendPTagToContainer(transcriptLine.content, liElement);
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
 }
@@ -76,7 +76,7 @@ function appendTextToList(transcriptLine, ulElement) {
  * Creates a <p> tag to store the given {@code text} inside the
  * {@code container} and returns the <p> tag using the given text.
  */
-function appendAndReturnPTagToContainer(text, container) {
+function appendPTagToContainer(text, container) {
   const pTag = document.createElement('p');
   pTag.innerText = text;
   container.appendChild(pTag);
