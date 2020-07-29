@@ -16,7 +16,7 @@ package com.googleinterns.zoomtube.utils;
 
 /** Stores Lecture Entity field constants. */
 public class LectureEntityFields {
-  /** Used to create an entity and its fields. */
+  /** Used to create a Lecture entity and its fields. */
   public static final String KIND = "Lecture";
   public static final String NAME = "lectureName";
   public static final String VIDEO_URL = "videoUrl";
