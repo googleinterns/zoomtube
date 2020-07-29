@@ -94,7 +94,7 @@ public class LectureServlet extends HttpServlet {
    * {@code Optional.empty()} if one doesn't exist.
    */
   private Optional<Entity> checkUrlInDatabase(String url) {
-    Query query = new Query(Lecture.ENTITY_KIND);
+    Query query = new Query(LectureEntityFields.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
@@ -108,7 +108,7 @@ public class LectureServlet extends HttpServlet {
 
   @VisibleForTesting
   /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
-  // TODO: Error check 
+  // TODO: Error check
   protected Entity createLectureEntity(HttpServletRequest request) {
     Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
     String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
@@ -165,7 +165,7 @@ public class LectureServlet extends HttpServlet {
    */
   private String buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(LectureEntityFields.ID);
+    String videoId = (String) lectureEntity.getProperty(LectureEntityFields.VIDEO_ID);
 
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)

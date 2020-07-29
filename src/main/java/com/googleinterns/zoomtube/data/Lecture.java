@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+import com.googleinterns.zoomtube.utils.LectureEntityFields;
 
 /** Stores data for lectures added to site. */
 @GenerateTypeAdapter
