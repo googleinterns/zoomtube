@@ -91,8 +91,7 @@ public class DiscussionServletTest {
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
-    when(request.getReader())
-        .thenReturn(new BufferedReader(new StringReader("Something unique")));
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
 
     servlet.doPost(request, response);
 
@@ -162,7 +161,8 @@ public class DiscussionServletTest {
     final int LECTURE_B = 2;
     final int LECTURE_C = 3;
     // Looking for two comments under LECTURE_A.
-    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(Integer.toString(LECTURE_A));
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE))
+        .thenReturn(Integer.toString(LECTURE_A));
     datastore.put(createTestCommentEntity(LECTURE_B));
     datastore.put(createTestCommentEntity(LECTURE_C));
     datastore.put(createTestCommentEntity(LECTURE_A)); // Add the first.
