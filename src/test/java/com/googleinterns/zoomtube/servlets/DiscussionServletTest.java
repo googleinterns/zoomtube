@@ -6,15 +6,27 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.Comment;
 import com.googleinterns.zoomtube.mocks.MockRequest;
 import com.googleinterns.zoomtube.mocks.MockResponse;
+import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -107,6 +119,58 @@ public class DiscussionServletTest {
 
     servlet.doGet(request, response);
 
+    assertThat(response.getContentType()).isEqualTo("application/json;");
     assertThat(response.getContentAsString()).startsWith("[]");
+  }
+
+  @Test
+  public void doGet_returnsComments() throws ServletException, IOException {
+    request.setParameter(DiscussionServlet.PARAM_LECTURE, "1");
+    datastore.put(createTestCommentEntity(1));
+    datastore.put(createTestCommentEntity(1));
+    datastore.put(createTestCommentEntity(1));
+
+    servlet.doGet(request, response);
+
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    String json = response.getContentAsString();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Type listType = new TypeToken<ArrayList<Comment>>() {}.getType();
+    List<Comment> comments = gson.fromJson(json, listType);
+    assertThat(comments.size()).isEqualTo(3);
+  }
+
+  @Test
+  public void doGet_returnsCommentsForSpecificLecture() throws ServletException, IOException {
+    request.setParameter(DiscussionServlet.PARAM_LECTURE, "2");
+    datastore.put(createTestCommentEntity(1));
+    datastore.put(createTestCommentEntity(1));
+    datastore.put(createTestCommentEntity(1));
+    datastore.put(createTestCommentEntity(2)); // this one
+    datastore.put(createTestCommentEntity(2)); // and this one
+    datastore.put(createTestCommentEntity(3));
+    datastore.put(createTestCommentEntity(5));
+
+    servlet.doGet(request, response);
+
+    assertThat(response.getContentType()).isEqualTo("application/json;");
+    String json = response.getContentAsString();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Type listType = new TypeToken<ArrayList<Comment>>() {}.getType();
+    List<Comment> comments = gson.fromJson(json, listType);
+    assertThat(comments.size()).isEqualTo(2);
+  }
+
+  private Entity createTestCommentEntity(int lectureId) {
+    Entity commentEntity = new Entity(Comment.ENTITY_KIND);
+    Key lecture = KeyFactory.createKey(/* kind= */ "Lecture", lectureId);
+    commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
+    commentEntity.setProperty(Comment.PROP_PARENT, null);
+    commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
+    commentEntity.setProperty(Comment.PROP_AUTHOR, new User("test@example.com", "example.com"));
+    commentEntity.setProperty(Comment.PROP_CONTENT, "Test Content");
+    commentEntity.setProperty(Comment.PROP_CREATED, new Date(Clock.systemUTC().millis()));
+
+    return commentEntity;
   }
 }
