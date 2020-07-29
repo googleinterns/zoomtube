@@ -34,9 +34,7 @@ function sendPostToTranscript() {
  * to fetch the transcript from.
  */
 function fetchTranscriptLines(paramsString) {
-  fetch(
-    ENDPOINT_TRANSCRIPT +
-      '?' + paramsString)
+  fetch(ENDPOINT_TRANSCRIPT + '?' + paramsString)
       .then((response) => response.json())
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);

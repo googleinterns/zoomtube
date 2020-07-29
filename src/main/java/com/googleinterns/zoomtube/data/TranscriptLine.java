@@ -52,7 +52,7 @@ public abstract class TranscriptLine {
   public abstract String content();
 
   /**
-   * Creates a {@code TranscriptLine} from a datastore {@code Entity} using the 
+   * Creates a {@code TranscriptLine} from a datastore {@code Entity} using the
    * property names defined in this class.
    */
   public static TranscriptLine fromEntity(Entity entity) {
