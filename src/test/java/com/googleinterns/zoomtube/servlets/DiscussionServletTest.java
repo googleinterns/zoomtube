@@ -50,7 +50,7 @@ public class DiscussionServletTest {
   private static final int LECTURE_C = 3;
   private static final String LECTURE_A_STR = "1";
   private static final String TEST_COMMENT_CONTENT = "Test content";
-  private static final String EMAIL = "test@example.com";
+  private static final String DEFAULT_EMAIL = "test@example.com";
   private static final String AUTH_DOMAIN = "example.com";
 
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
@@ -64,7 +64,7 @@ public class DiscussionServletTest {
   @Before
   public void setUp() throws ServletException {
     testServices.setUp();
-    testServices.setEnvEmail(EMAIL);
+    testServices.setEnvEmail(DEFAULT_EMAIL);
     testServices.setEnvAuthDomain(AUTH_DOMAIN);
     servlet = new DiscussionServlet();
     servlet.init();
@@ -91,8 +91,10 @@ public class DiscussionServletTest {
   @Test
   public void doPost_storesCommentWithProperties_noParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
+    testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(TEST_COMMENT_CONTENT)));
+    when(request.getReader())
+        .thenReturn(new BufferedReader(new StringReader("Something unique")));
 
     servlet.doPost(request, response);
 
@@ -101,8 +103,8 @@ public class DiscussionServletTest {
     assertThat(query.countEntities(withLimit(2))).isEqualTo(1);
     Comment comment = Comment.fromEntity(query.asSingleEntity());
     assertThat(comment.lecture().getId()).isEqualTo(LECTURE_A);
-    assertThat(comment.author().getEmail()).isEqualTo(EMAIL);
-    assertThat(comment.content()).isEqualTo(TEST_COMMENT_CONTENT);
+    assertThat(comment.author().getEmail()).isEqualTo("author@example.com");
+    assertThat(comment.content()).isEqualTo("Something unique");
     assertThat(comment.parent().isPresent()).isFalse();
   }
 
@@ -110,10 +112,11 @@ public class DiscussionServletTest {
   public void doPost_storesCommentParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     final int PARENT_ID = 32;
-    final String PARENT_ID_STR = "32";
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_A_STR);
-    when(request.getParameter(DiscussionServlet.PARAM_PARENT)).thenReturn(PARENT_ID_STR);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(TEST_COMMENT_CONTENT)));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
+        .thenReturn(Integer.toString(PARENT_ID));
+    when(request.getReader())
+        .thenReturn(new BufferedReader(new StringReader(TEST_COMMENT_CONTENT)));
 
     servlet.doPost(request, response);
 
@@ -184,7 +187,7 @@ public class DiscussionServletTest {
     commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
     commentEntity.setProperty(Comment.PROP_PARENT, null);
     commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
-    commentEntity.setProperty(Comment.PROP_AUTHOR, new User(EMAIL, AUTH_DOMAIN));
+    commentEntity.setProperty(Comment.PROP_AUTHOR, new User(DEFAULT_EMAIL, AUTH_DOMAIN));
     commentEntity.setProperty(Comment.PROP_CONTENT, TEST_COMMENT_CONTENT);
     commentEntity.setProperty(Comment.PROP_CREATED, new Date(Clock.systemUTC().millis()));
 
