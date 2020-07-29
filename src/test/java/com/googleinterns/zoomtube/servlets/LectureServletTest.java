@@ -34,8 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import com.googleinterns.zoomtube.mocks.MockRequest;
+import com.googleinterns.zoomtube.mocks.MockResponse;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
@@ -46,8 +46,8 @@ public final class LectureServletTest {
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   DatastoreService datastoreService;
   LectureServlet servlet;
-  MockHttpServletRequest mockRequest;
-  MockHttpServletResponse mockResponse;
+  MockRequest request;
+  MockResponse response;
 
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
@@ -56,8 +56,8 @@ public final class LectureServletTest {
   public void setUp() throws ServletException {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
-    mockRequest = new MockHttpServletRequest();
-    mockResponse = new MockHttpServletResponse();
+    request = new MockRequest();
+    response = new MockResponse();
     servlet = new LectureServlet();
     servlet.init();
   }
@@ -69,40 +69,40 @@ public final class LectureServletTest {
 
   @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
-    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(mockRequest));
+    request.setParameter(LINK_INPUT, TEST_LINK);
+    datastoreService.put(servlet.createLectureEntity(request));
 
-    servlet.doPost(mockRequest, mockResponse);
+    servlet.doPost(request, response);
     
     assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
-    assertThat(mockResponse.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
+    assertThat(response.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
   public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException {
-    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
+    request.setParameter(LINK_INPUT, TEST_LINK);
    
-    servlet.doPost(mockRequest, mockResponse);
+    servlet.doPost(request, response);
     
     assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
-    assertThat(mockResponse.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
+    assertThat(response.getRedirectedUrl()).isEqualTo("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
   public void doGet_emptyDatabase_shouldReturnNoLecture() throws IOException {
-    servlet.doGet(mockRequest, mockResponse);
+    servlet.doGet(request, response);
     
-    assertThat(mockResponse.getContentLength()).isEqualTo(0);
+    assertThat(response.getContentLength()).isEqualTo(0);
   }
 
   @Test
   public void doGet_emptyDatabase_shouldReturnOneLecture() throws IOException {
-    mockRequest.addParameter(LINK_INPUT, TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(mockRequest));
+    request.setParameter(LINK_INPUT, TEST_LINK);
+    datastoreService.put(servlet.createLectureEntity(request));
 
-    servlet.doGet(mockRequest, mockResponse);
+    servlet.doGet(request, response);
 
-    String json = mockResponse.getContentAsString();
+    String json = response.getContentAsString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Type listType = new TypeToken<ArrayList<Lecture>>() {}.getType();
     ArrayList<Lecture> lectures = gson.fromJson(json, listType);
