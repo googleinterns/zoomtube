@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /* Used to gather URL parameters. */
-const URL_PARAM_ID = 'id';
+const PARAM_ID = 'id';
+const PARAM_VIDEO_ID = 'video-id';
 
 const REDIRECT_PAGE = '/lecture-view.html';
 
@@ -40,7 +41,8 @@ function createLectureListItem(lecture) {
   const lectureLink = document.createElement('a');
 
   const url = new URL(REDIRECT_PAGE, window.location.origin);
-  url.searchParams.append(URL_PARAM_ID, lecture.key.id);
+  url.searchParams.append(PARAM_ID, lecture.key.id);
+  url.searchParams.append(PARAM_VIDEO_ID, lecture.videoId);
   lectureLink.href = url;
 
   lectureLink.innerText = lecture.lectureName;
