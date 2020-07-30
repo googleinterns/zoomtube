@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.servlet.ServletContext;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -63,15 +65,16 @@ public class PageServlet extends HttpServlet {
    * automatically detects the file's MIME type and updates the content-type header.
    */
   private void sendFile(HttpServletResponse response, String path) throws IOException {
-    ServletContext context = getServletContext();
-    String mimeType = context.getMimeType(path);
+    File file = new File(path);
+    Path filePath = FileSystems.getDefault().getPath(file.getPath());
+
+    String mimeType = Files.probeContentType(filePath);
     if (mimeType == null) {
       // Set to binary type if MIME mapping not found.
       mimeType = "application/octet-stream;";
     }
     response.setContentType(mimeType);
 
-    File file = new File(path);
     FileInputStream inStream = new FileInputStream(file);
     response.setContentLength((int) file.length());
 
