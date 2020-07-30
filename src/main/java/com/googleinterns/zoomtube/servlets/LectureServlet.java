@@ -96,7 +96,7 @@ public class LectureServlet extends HttpServlet {
     if(!videoUrl.isPresent()) {
       return Optional.empty();
     }
-    String url = videoUrl.isPresent() ? videoUrl.get() : "";
+    String url = videoUrl.get();
 
     Query query = new Query(Lecture.ENTITY_KIND);
     PreparedQuery results = datastore.prepare(query);
