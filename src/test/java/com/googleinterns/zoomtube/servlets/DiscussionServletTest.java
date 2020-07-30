@@ -47,24 +47,21 @@ import org.mockito.junit.MockitoRule;
 public class DiscussionServletTest {
   private static final int LECTURE_ID = 1;
   private static final String LECTURE_ID_STR = "1";
-  private static final String TEST_COMMENT_CONTENT = "Test content";
-  private static final String DEFAULT_EMAIL = "test@example.com";
-  private static final String AUTH_DOMAIN = "example.com";
+  private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
+      new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
   private DiscussionServlet servlet;
-  private LocalServiceTestHelper testServices = new LocalServiceTestHelper(
-      new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
   private DatastoreService datastore;
 
   @Before
   public void setUp() throws ServletException {
     testServices.setUp();
-    testServices.setEnvEmail(DEFAULT_EMAIL);
-    testServices.setEnvAuthDomain(AUTH_DOMAIN);
+    testServices.setEnvEmail("test@example.com");
+    testServices.setEnvAuthDomain("example.com");
     servlet = new DiscussionServlet();
     servlet.init();
     datastore = DatastoreServiceFactory.getDatastoreService();
@@ -82,17 +79,20 @@ public class DiscussionServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(eq(HttpServletResponse.SC_FORBIDDEN), anyString());
+    verify(response).sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
     assertThat(datastore.prepare(new Query(Comment.ENTITY_KIND)).countEntities(withLimit(1)))
         .isEqualTo(0);
   }
 
   @Test
-  public void doPost_storesCommentWithProperties_noParent() throws ServletException, IOException {
+  public void doPost_storesCommentWithAllProperties() throws ServletException, IOException {
+    final int parentId = 32;
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
+        .thenReturn(Integer.toString(parentId));
 
     servlet.doPost(request, response);
 
@@ -103,26 +103,23 @@ public class DiscussionServletTest {
     assertThat(comment.lecture().getId()).isEqualTo(LECTURE_ID);
     assertThat(comment.author().getEmail()).isEqualTo("author@example.com");
     assertThat(comment.content()).isEqualTo("Something unique");
-    assertThat(comment.parent().isPresent()).isFalse();
+    assertThat(comment.parent().isPresent()).isTrue();
+    assertThat(comment.parent().get().getId()).isEqualTo(parentId);
   }
 
   @Test
-  public void doPost_storesCommentParent() throws ServletException, IOException {
-    final int parentId = 32;
+  public void doPost_rootCommentHasNoParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
-    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
-        .thenReturn(Integer.toString(parentId));
     when(request.getReader())
-        .thenReturn(new BufferedReader(new StringReader(TEST_COMMENT_CONTENT)));
+        .thenReturn(new BufferedReader(new StringReader("Random untested content")));
 
     servlet.doPost(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);
     PreparedQuery query = datastore.prepare(new Query(Comment.ENTITY_KIND));
     Comment comment = Comment.fromEntity(query.asSingleEntity());
-    assertThat(comment.parent().isPresent()).isTrue();
-    assertThat(comment.parent().get().getId()).isEqualTo(parentId);
+    assertThat(comment.parent().isPresent()).isFalse();
   }
 
   @Test
@@ -189,8 +186,11 @@ public class DiscussionServletTest {
     commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
     commentEntity.setProperty(Comment.PROP_PARENT, null);
     commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
-    commentEntity.setProperty(Comment.PROP_AUTHOR, new User(DEFAULT_EMAIL, AUTH_DOMAIN));
-    commentEntity.setProperty(Comment.PROP_CONTENT, TEST_COMMENT_CONTENT);
+    // Most properties here are not tested, but are required by the AutoValue class so must be
+    // specified.
+    commentEntity.setProperty(
+        Comment.PROP_AUTHOR, new User("untestedAuthor@example.com", "untested.com"));
+    commentEntity.setProperty(Comment.PROP_CONTENT, "Untested content");
     commentEntity.setProperty(Comment.PROP_CREATED, new Date(Clock.systemUTC().millis()));
 
     return commentEntity;
@@ -199,7 +199,6 @@ public class DiscussionServletTest {
   private List<Comment> getCommentsFromJson(String json) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Type listType = new TypeToken<ArrayList<Comment>>() {}.getType();
-    List<Comment> comments = gson.fromJson(json, listType);
-    return comments;
+    return gson.fromJson(json, listType);
   }
 }

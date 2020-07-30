@@ -48,8 +48,8 @@ import javax.servlet.http.HttpServletResponse;
 // TODO: References to Lecture kind string literal need to be updated once Lecture code is merged.
 @WebServlet("/discussion")
 public class DiscussionServlet extends HttpServlet {
-  @VisibleForTesting protected static final String PARAM_LECTURE = "lecture";
-  @VisibleForTesting protected static final String PARAM_PARENT = "parent";
+  @VisibleForTesting static final String PARAM_LECTURE = "lecture";
+  @VisibleForTesting static final String PARAM_PARENT = "parent";
 
   private UserService userService;
   private DatastoreService datastore;
