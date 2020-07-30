@@ -93,10 +93,10 @@ public class LectureServlet extends HttpServlet {
    * {@code Optional.empty()} if one doesn't exist.
    */
   private Optional<Entity> checkUrlInDatabase(Optional<String> videoUrl) {
-    String url = videoUrl.isPresent() ? videoUrl.get() : "";
-    if(url.isEmpty()) {
+    if(!videoUrl.isPresent()) {
       return Optional.empty();
     }
+    String url = videoUrl.isPresent() ? videoUrl.get() : "";
 
     Query query = new Query(Lecture.ENTITY_KIND);
     PreparedQuery results = datastore.prepare(query);
@@ -113,7 +113,7 @@ public class LectureServlet extends HttpServlet {
   @VisibleForTesting
   /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
   // TODO: Send errors as a response if fields are empty.
-  // TODO: Move to LectureEntityGenerator class.
+  // TODO: Move to LectureEntityCreator class.
   protected Entity createLectureEntity(HttpServletRequest request) {
     Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
     String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
