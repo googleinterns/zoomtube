@@ -75,7 +75,9 @@ function appendTextToList(transcriptLine, ulElement) {
 /**
  * Creates a <p> tag to store the given {@code text} inside the
  * {@code container} and returns the <p> tag using the given text
- * to add additional styling to the <p> tag as needed.
+ * 
+ * <p>The <p> tag is returned so that the calling method can add additional
+ * attributes to the tag.
  */
 function appendPTagToContainer(text, container) {
   const pTag = document.createElement('p');
