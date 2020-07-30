@@ -1,25 +1,34 @@
 package com.googleinterns.zoomtube.servlets.pages;
 
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 public class PageServletTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+  @Rule public final TemporaryFolder testFolder = new TemporaryFolder();
   private PageServlet servlet;
   @Mock private ServletConfig servletConfig;
   @Mock private HttpServletRequest request;
@@ -39,16 +48,19 @@ public class PageServletTest {
     testServices.tearDown();
   }
 
-  @Test(expected = FileNotFoundException.class)
-  public void doGet_loggedIn_expectFileNotFound() throws Exception {
-    // This test does not run in the correct directory to reference existing HTML
-    // files, and reading disk during a test is probably a bad idea.
-    // This should throw an error as it tries to read a file that doesn't exist.
+  @Test
+  public void doGet_loggedIn_expectHtmlFile() throws Exception {
+    File createdFile = testFolder.newFile("test.html");
     testServices.setEnvIsLoggedIn(true);
-    servlet = new PageServlet("does_not_exist.html");
+    ServletOutputStream mockOutput = mock(ServletOutputStream.class);
+    when(response.getOutputStream()).thenReturn(mockOutput);
+    servlet = new PageServlet(createdFile.getPath());
     servlet.init();
 
     servlet.doGet(request, response);
+
+    // The file is recognized as plain text, maybe because it is empty?
+    verify(response).setContentType("text/plain;");
   }
 
   @Test
