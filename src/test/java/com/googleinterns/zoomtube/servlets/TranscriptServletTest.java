@@ -65,6 +65,7 @@ public final class TranscriptServletTest {
   private final LocalServiceTestHelper localServiceHelper = new LocalServiceTestHelper(datastoreConfig);
   private DatastoreService datastore;
   private Gson gson;
+  StringWriter content;
 
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
@@ -78,7 +79,7 @@ public final class TranscriptServletTest {
   
   
   @Before
-  public void setUp() throws ServletException {
+  public void setUp() throws ServletException, IOException {
     localServiceHelper.setUp();
     servlet = new TranscriptServlet();
     datastore = DatastoreServiceFactory.getDatastoreService();
@@ -86,9 +87,11 @@ public final class TranscriptServletTest {
     gson = new GsonBuilder()
     .registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY)
     .create();
+    content = new StringWriter();
+    PrintWriter writer = new PrintWriter(content);
+    when(response.getWriter()).thenReturn(writer);
   }
   
-
   @After
   public void tearDown() {
     localServiceHelper.tearDown();
@@ -98,9 +101,6 @@ public final class TranscriptServletTest {
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
-    StringWriter content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
-    when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);
     String actualJson = content.toString();
@@ -114,9 +114,6 @@ public final class TranscriptServletTest {
   public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_B);
-    StringWriter content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
-    when(response.getWriter()).thenReturn(writer);
     
     servlet.doPost(request, response);
     int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_B);
@@ -129,9 +126,6 @@ public final class TranscriptServletTest {
   public void doGet_doPost_StoreAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
-    StringWriter content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
-    when(response.getWriter()).thenReturn(writer);
     
     servlet.doPost(request, response);
     servlet.doGet(request, response);
@@ -142,59 +136,59 @@ public final class TranscriptServletTest {
     assertThat(actualJsonArray).isEqualTo(expectedArrayList); 
   }
 
-  // @Test
-  // public void doGet_doPost_StoreAndRetrieveLongVideo() throws ServletException, IOException {
-  //   request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, LONG_VIDEO_ID);
-  //   request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);  
-    
-  //   servlet.doPost(request, response);
-  //   servlet.doGet(request, response);
-  //   String actualJson = response.getContentAsString();
-  //   List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
-  //   List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
-    
-  //   assertThat(actualJsonArray).isEqualTo(expectedArrayList);
-  // }
+  @Test
+  public void doGet_doPost_StoreAndRetrieveLongVideo() throws ServletException, IOException {
+    when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
-  // @Test
-  // public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
-  //   request.addParameter(TranscriptServlet.PARAM_VIDEO_ID, LONG_VIDEO_ID);
-  //   request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_C);
+    servlet.doPost(request, response);
+    servlet.doGet(request, response);
+    String actualJson = content.toString();
+    List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
+    List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
     
-  //   servlet.doPost(request, response);
-  //   int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_C);
-  //   int expectedQueryCount = (extractJsonAsArrayList(LONG_VIDEO_JSON)).size();
+    assertThat(actualJsonArray).isEqualTo(expectedArrayList);
+  }
+
+  @Test
+  public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
+    when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
     
-  //   assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
-  // }
-
-  // @Test
-  // public void doGet_OnlyOtherLecturesInDatastore_GetNoLectures() throws ServletException, IOException {
-  //   putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
-  //   putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
-  //   request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_C);  
+    servlet.doPost(request, response);
+    int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_C);
+    int expectedQueryCount = (extractJsonAsArrayList(LONG_VIDEO_JSON)).size();
     
-  //   servlet.doGet(request, response);
-  //   String actualJson = response.getContentAsString();
-  //   List<TranscriptLine> expectedArrayList = new ArrayList<>();
-  //   List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
+    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
+  }
 
-  //   assertThat(actualJsonArray).isEqualTo(expectedArrayList); 
-  // }
-
-  // @Test
-  // public void doGet_TwoLecturesInDatastore_GetOneLecture() throws ServletException, IOException {
-  //   putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
-  //   putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
-  //   request.addParameter(TranscriptServlet.PARAM_LECTURE_ID, LECTURE_ID_A);  
+  @Test
+  public void doGet_OnlyOtherLecturesInDatastore_GetNoLectures() throws ServletException, IOException {
+    putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
+    putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
     
-  //   servlet.doGet(request, response);
-  //   String actualJson = response.getContentAsString();
-  //   List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
-  //   List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
+    servlet.doGet(request, response);
+    String actualJson = content.toString();
+    List<TranscriptLine> expectedArrayList = new ArrayList<>();
+    List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
-  //   assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size()); 
-  // }
+    assertThat(actualJsonArray).isEqualTo(expectedArrayList); 
+  }
+
+  @Test
+  public void doGet_TwoLecturesInDatastore_GetOneLecture() throws ServletException, IOException {
+    putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
+    putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
+    
+    servlet.doGet(request, response);
+    String actualJson = content.toString();
+    List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
+    List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
+
+    assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size()); 
+  }
 
   private List<TranscriptLine> extractJsonAsArrayList(String json) {
     return (ArrayList<TranscriptLine>) gson.fromJson(json,(new ArrayList<List<TranscriptLine>>().getClass()));
