@@ -69,6 +69,17 @@ public class TranscriptServlet extends HttpServlet {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
+  /**
+   * Initializes the servlet with {@code testDatastore} created during testing.
+   *
+   * <p>The unit tests need access to the datastore to check that doPost() puts
+   * the entities in datastore.
+   */
+  @VisibleForTesting
+  protected void init(DatastoreService testDatastore) {
+    datastore = testDatastore;
+  }
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Document document = getTranscriptXmlAsDocument(request).get();
@@ -175,10 +186,5 @@ public class TranscriptServlet extends HttpServlet {
     lineEntity.setProperty(
         TranscriptLine.PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
-  }
-
-  @VisibleForTesting
-  protected void init(DatastoreService testDatastore) {
-    datastore = testDatastore;
   }
 }

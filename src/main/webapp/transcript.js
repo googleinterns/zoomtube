@@ -21,21 +21,21 @@ const MILLISECOND_CONVERTER = 1000;
  * Sends a POST request to the transcript.
  */
 function sendPostToTranscript() {
-  // TODO: Update with user input and URL Builder.
-  const paramsString = 'id=123456789&video=3ymwOvzhwHs';
-  const params = new URLSearchParams(paramsString);
+  // TODO: Update lectureQueryString with user input and URL Builder.
+  const lectureQueryString = 'id=123456789&video=3ymwOvzhwHs';
+  const params = new URLSearchParams(lectureQueryString);
   fetch(ENDPOINT_TRANSCRIPT, {method: 'POST', body: params})
-      .then(fetchTranscriptLines(paramsString));
+      .then(fetchTranscriptLines(lectureQueryString));
 }
 
 /**
  * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
  *
- * <p>{@code paramsString} indicates the video ID
+ * <p>{@code lectureQueryString} indicates the video ID and the lecture ID
  * to fetch the transcript from.
  */
-function fetchTranscriptLines(paramsString) {
-  fetch(ENDPOINT_TRANSCRIPT + '?' + paramsString)
+function fetchTranscriptLines(lectureQueryString) {
+  fetch(ENDPOINT_TRANSCRIPT + '?' + lectureQueryString)
       .then((response) => response.json())
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
@@ -87,7 +87,10 @@ function appendTextToList(transcriptLine, ulElement) {
 
 /**
  * Creates a <p> tag to store the given {@code text} inside the
- * {@code container} and returns the <p> tag using the given text.
+ * {@code container} and returns the <p> tag using the given text
+ * 
+ * <p>The <p> tag is returned so that the calling method can add additional
+ * attributes to the tag.
  */
 function appendParagraphToContainer(text, container) {
   const pTag = document.createElement('p');
