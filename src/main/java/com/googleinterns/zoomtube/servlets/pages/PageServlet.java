@@ -50,7 +50,8 @@ public class PageServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     User user = userService.getCurrentUser();
     if (user == null) {
-      String login = userService.createLoginURL(request.getRequestURI());
+      String requestUrl = request.getRequestURL() + "?" + request.getQueryString();
+      String login = userService.createLoginURL(requestUrl);
       response.sendRedirect(login);
       return;
     }
