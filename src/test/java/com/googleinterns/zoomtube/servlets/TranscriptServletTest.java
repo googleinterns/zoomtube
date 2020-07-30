@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
@@ -39,7 +38,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import org.junit.After;
-import static org.mockito.Mockito.*;
 import static com.google.common.truth.Truth.assertThat;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -148,6 +146,19 @@ public final class TranscriptServletTest {
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
     
     assertThat(actualJsonArray).isEqualTo(expectedArrayList);
+  }
+
+  @Test
+  public void doGet_getDataInDatastoreForLongVideo() throws ServletException, IOException {
+    putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
+
+    servlet.doGet(request, response);
+    String actualJson = content.toString();
+    List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
+    List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
+
+    assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size());
   }
 
   @Test
