@@ -23,7 +23,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
-import com.googleinterns.zoomtube.utils.LectureEntityFields;
+import com.googleinterns.zoomtube.utils.LectureEntityUtil;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class LectureServlet extends HttpServlet {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()).get());
       return;
     }
-    Entity lectureEntity = createLectureEntity(request);
+    Entity lectureEntity = getLectureEntity(request);
     datastore.put(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
@@ -95,12 +95,12 @@ public class LectureServlet extends HttpServlet {
    * {@code Optional.empty()} if one doesn't exist.
    */
   private Optional<Entity> checkUrlInDatabase(String url) {
-    Query query = new Query(LectureEntityFields.KIND);
+    Query query = new Query(LectureEntityUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
     for (Entity lecture : resultsIterable) {
-      if (lecture.getProperty(LectureEntityFields.VIDEO_URL).equals(url)) {
+      if (lecture.getProperty(LectureEntityUtil.VIDEO_URL).equals(url)) {
         return Optional.of(lecture);
       }
     }
@@ -108,30 +108,25 @@ public class LectureServlet extends HttpServlet {
   }
 
   @VisibleForTesting
-  /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
+  /** Returns {@code lectureEntity} using parameters found in {@code request}. */
   // TODO: Error check
-  protected Entity createLectureEntity(HttpServletRequest request) {
+  protected Entity getLectureEntity(HttpServletRequest request) {
     Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
     String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
     String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
     Optional<String> optionalVideoId = getVideoId(videoUrl);
     String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
-
-    Entity lectureEntity = new Entity(LectureEntityFields.KIND);
-    lectureEntity.setProperty(LectureEntityFields.NAME, lectureName);
-    lectureEntity.setProperty(LectureEntityFields.VIDEO_URL, videoUrl);
-    lectureEntity.setProperty(LectureEntityFields.VIDEO_ID, videoId);
-    return lectureEntity;
+    return LectureEntityUtil.createLectureEntity(lectureName, videoUrl, videoId);
   }
 
   /** Returns lectures stored in the database. */
   private List<Lecture> getLectures() {
-    Query query = new Query(LectureEntityFields.KIND);
+    Query query = new Query(LectureEntityUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = Lecture.fromLectureEntity(lecture);
+      Lecture newLecture = LectureEntityUtil.createLecture(lecture);
       lectures.add(newLecture);
     }
     return lectures;
@@ -165,12 +160,12 @@ public class LectureServlet extends HttpServlet {
    */
   private Optional<String> buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(LectureEntityFields.VIDEO_ID);
+    String videoId = (String) lectureEntity.getProperty(LectureEntityUtil.VIDEO_ID);
 
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
-                                  .addParameter(LectureEntityFields.ID, lectureId)
-                                  .addParameter(LectureEntityFields.VIDEO_ID, videoId);
+                                  .addParameter(LectureEntityUtil.ID, lectureId)
+                                  .addParameter(LectureEntityUtil.VIDEO_ID, videoId);
       return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
       return Optional.empty();
