@@ -24,6 +24,7 @@ import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 @AutoValue
 public abstract class Lecture {
   /** Used to create a Lecture entity and its fields. */
+  // TODO: Move to a util class.
   public static final String ENTITY_KIND = "Lecture";
   public static final String PROP_NAME = "lectureName";
   public static final String PROP_VIDEO_URL = "videoUrl";
@@ -48,6 +49,7 @@ public abstract class Lecture {
   }
 
   /** Returns a Lecture from {@code entity}. */
+  // TODO: Move to a util class.
   public static Lecture fromLectureEntity(Entity entity) {
     Key key = entity.getKey();
     String lectureName = (String) entity.getProperty(PROP_NAME);

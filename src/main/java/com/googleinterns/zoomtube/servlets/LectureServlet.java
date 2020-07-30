@@ -108,7 +108,7 @@ public class LectureServlet extends HttpServlet {
 
   @VisibleForTesting
   /** Creates and returns {@code lectureEntity} using parameters found in {@code request}. */
-  // TODO: Error check
+  // TODO: Send errors as a response if fields are empty.
   protected Entity createLectureEntity(HttpServletRequest request) {
     Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
     String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
