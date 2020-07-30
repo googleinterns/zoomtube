@@ -20,7 +20,7 @@ import com.google.appengine.api.datastore.Key;
 
 /** Stores Lecture Entity field constants. */
 public class LectureEntityUtil {
-  /** Used to create a Lecture entity and its fields. */
+  /** Used to create a Lecture Entity and its fields. */
   public static final String KIND = "Lecture";
   public static final String NAME = "lectureName";
   public static final String VIDEO_URL = "videoUrl";
