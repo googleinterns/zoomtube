@@ -71,12 +71,30 @@ public final class TranscriptServletTest {
   private static final String LECTURE_ID_C = "234";
 
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
-  private static final String SHORT_VIDEO_JSON =
-      "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
-
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
+      private static final String SHORT_VIDEO_JSON =
+      "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},"
+      + "\"lecture\":{\"kind\":\"lecture\",\"id\":123},"
+      + "\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},"
+      + "{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":"
+      + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\""
+      + ":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":"
+      + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\","
+      + "\"content\":\"Okay\"}]";
   private static final String LONG_VIDEO_JSON =
-      "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"1.3\",\"duration\":\"3.1\",\"content\":\"All right, so here we are\\nin front of the elephants,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"12.7\",\"duration\":\"4.3\",\"content\":\"and that&#39;s, that&#39;s cool.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"17\",\"duration\":\"1.767\",\"content\":\"And that&#39;s pretty much all there is to say.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"4.4\",\"duration\":\"4.766\",\"content\":\"the cool thing about these guys\\nis that they have really,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"9.166\",\"duration\":\"3.534\",\"content\":\"really, really long trunks,\"}]";
+      "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":"
+      + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"1.3\",\"duration\":"
+      + "\"3.1\",\"content\":\"All right, so here we are\\nin front of the "
+      + "elephants,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lecture\":"
+      + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"12.7\",\"duration\":\"4.3\",\"content\":"
+      + "\"and that&#39;s, that&#39;s cool.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":5},"
+      + "\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"17\",\"duration\":\"1.767\",\""
+      + "content\":\"And that&#39;s pretty much all there is to say.\"},{\"key\":{\"kind\""
+      + ":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":"
+      + "\"4.4\",\"duration\":\"4.766\",\"content\":\"the cool thing about these guys\\nis that "
+      + "they have really,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":"
+      + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"9.166\",\"duration\":\"3.534\","
+      + "\"content\":\"really, really long trunks,\"}]";
 
   @Before
   public void setUp() throws ServletException, IOException {
