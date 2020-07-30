@@ -72,11 +72,11 @@ public class PageServlet extends HttpServlet {
       mimeType = "application/octet-stream;";
     }
     response.setContentType(mimeType);
-
-    FileInputStream inStream = new FileInputStream(file);
     response.setContentLength((int) file.length());
 
+    FileInputStream inStream = new FileInputStream(file);
     OutputStream outStream = response.getOutputStream();
+
     byte[] buffer = new byte[4096];
     int bytesRead = -1;
     while ((bytesRead = inStream.read(buffer)) != -1) {
