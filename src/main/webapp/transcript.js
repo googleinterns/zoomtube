@@ -87,13 +87,19 @@ function appendTextToList(transcriptLine, ulElement) {
 
 /**
  * Creates a <p> tag to store the given {@code text} inside the
- * {@code container} and returns the <p> tag using the given text.
+ * {@code container}.
+ * 
+ * <p>Adds classes the the <p> tag if {@code classList} is provided.
  */
-function appendParagraphToContainer(text, container) {
+function appendParagraphToContainer(text, container, classes = [] ) {
   const pTag = document.createElement('p');
   pTag.innerText = text;
   container.appendChild(pTag);
-  return pTag;
+  
+  if (classes.length == 0) {
+    return;
+  }
+  pTag.classList.add(...classList);
 }
 
 /**
