@@ -66,12 +66,11 @@ public class LectureServlet extends HttpServlet {
     videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
-  @Override
   // TODO: Check if URL is valid.
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
-    String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
-    Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
+    Optional<Entity> existingEntity = checkUrlInDatabase(optionalVideoUrl);
 
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()).get());
@@ -94,8 +93,13 @@ public class LectureServlet extends HttpServlet {
    * Returns the Entity in database that has {@code url}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
-  private Optional<Entity> checkUrlInDatabase(String url) {
-    Query query = new Query(LectureEntityUtil.KIND);
+  private Optional<Entity> checkUrlInDatabase(Optional<String> videoUrl) {
+    if(!videoUrl.isPresent()) {
+      return Optional.empty();
+    }
+    String url = videoUrl.get();
+
+    Query query = new Query(Lecture.ENTITY_KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
@@ -109,7 +113,7 @@ public class LectureServlet extends HttpServlet {
 
   @VisibleForTesting
   /** Returns {@code lectureEntity} using parameters found in {@code request}. */
-  // TODO: Error check
+  // TODO: Send errors as a response if fields are empty.
   protected Entity getLectureEntity(HttpServletRequest request) {
     Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
     String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
@@ -168,6 +172,7 @@ public class LectureServlet extends HttpServlet {
                                   .addParameter(LectureEntityUtil.VIDEO_ID, videoId);
       return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
+      // TODO: Send a response error.
       return Optional.empty();
     }
   }

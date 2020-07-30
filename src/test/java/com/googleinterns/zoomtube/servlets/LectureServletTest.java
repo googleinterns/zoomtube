@@ -83,17 +83,18 @@ public final class LectureServletTest {
     
     servlet.doPost(request, response);
     
-    assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
   public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-   
+    
+    // No lecture in datastoreService.
     servlet.doPost(request, response);
     
-    assertThat(datastoreService.prepare(new Query("Lecture")).countEntities()).isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
