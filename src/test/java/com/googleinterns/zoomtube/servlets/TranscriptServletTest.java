@@ -72,8 +72,7 @@ public final class TranscriptServletTest {
 
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
-      private static final String SHORT_VIDEO_JSON =
-      "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},"
+  private static final String SHORT_VIDEO_JSON = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},"
       + "\"lecture\":{\"kind\":\"lecture\",\"id\":123},"
       + "\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},"
       + "{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":"
