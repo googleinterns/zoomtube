@@ -49,7 +49,7 @@ public class PageServletTest {
   }
 
   @Test
-  public void doGet_loggedIn_expectHtmlFile() throws Exception {
+  public void doGet_loggedIn_expectFile() throws Exception {
     File createdFile = testFolder.newFile("test.html");
     testServices.setEnvIsLoggedIn(true);
     ServletOutputStream mockOutput = mock(ServletOutputStream.class);
