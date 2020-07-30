@@ -14,19 +14,19 @@
 
 package com.googleinterns.zoomtube.servlets;
 
+import static org.mockito.Mockito.when;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static com.google.common.truth.Truth.assertThat;
+
 import java.util.ArrayList;
-
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import static org.mockito.Mockito.when;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -38,7 +38,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import org.junit.After;
-import static com.google.common.truth.Truth.assertThat;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import com.google.gson.GsonBuilder;
@@ -59,6 +58,7 @@ public final class TranscriptServletTest {
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
   private TranscriptServlet servlet;
+  
   private LocalDatastoreServiceTestConfig datastoreConfig = (new  LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private final LocalServiceTestHelper localServiceHelper = new LocalServiceTestHelper(datastoreConfig);
   private DatastoreService datastore;
@@ -68,13 +68,14 @@ public final class TranscriptServletTest {
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
+  
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String SHORT_VIDEO_JSON = 
       "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\",\"content\":\"Okay\"}]";
+
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   private static final String LONG_VIDEO_JSON = 
       "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"1.3\",\"duration\":\"3.1\",\"content\":\"All right, so here we are\\nin front of the elephants,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"12.7\",\"duration\":\"4.3\",\"content\":\"and that&#39;s, that&#39;s cool.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"17\",\"duration\":\"1.767\",\"content\":\"And that&#39;s pretty much all there is to say.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"4.4\",\"duration\":\"4.766\",\"content\":\"the cool thing about these guys\\nis that they have really,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"9.166\",\"duration\":\"3.534\",\"content\":\"really, really long trunks,\"}]";
-  
   
   @Before
   public void setUp() throws ServletException, IOException {
