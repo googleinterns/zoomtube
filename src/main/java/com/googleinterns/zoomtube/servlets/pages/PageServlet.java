@@ -74,7 +74,8 @@ public class PageServlet extends HttpServlet {
       // Set to binary type if MIME mapping not found.
       mimeType = "application/octet-stream;";
     }
-    response.setContentType(mimeType);
+    // MIME types should end in a semicolon.
+    response.setContentType(mimeType + ";");
     response.setContentLength((int) file.length());
 
     FileInputStream inStream = new FileInputStream(file);
