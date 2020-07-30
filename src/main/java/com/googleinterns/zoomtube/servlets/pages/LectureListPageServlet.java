@@ -19,7 +19,8 @@ import javax.servlet.annotation.WebServlet;
 /**
  * Serves the lecture-list page to logged in users.
  *
- * <p>We extend {@code PageServlet} 
+ * <p>We extend {@code PageServlet} and specify the lecture-list html file. This reuses
+ * {@code PageServlet}, which already implements sending files to logged-in users.
  */
 @WebServlet("/list/*")
 public class LectureListPageServlet extends PageServlet {
