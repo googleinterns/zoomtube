@@ -67,9 +67,9 @@ function appendTextToList(transcriptLine, ulElement) {
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
+      startDate.getSeconds()}`;
   const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
@@ -85,18 +85,18 @@ function appendTextToList(transcriptLine, ulElement) {
 /**
  * Creates a <p> tag to store the given {@code text} inside the
  * {@code container}.
- * 
+ *
  * <p>Adds classes the the <p> tag if {@code classList} is provided.
  */
-function appendParagraphToContainer(text, container, classes = [] ) {
+function appendParagraphToContainer(text, container, classes = []) {
   const pTag = document.createElement('p');
   pTag.innerText = text;
   container.appendChild(pTag);
-  
+
   if (classes.length == 0) {
     return;
   }
-  pTag.classList.add(...classList);
+  pTag.classList.add(...classes);
 }
 
 /**
