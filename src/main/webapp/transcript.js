@@ -75,7 +75,7 @@ function appendTextToList(transcriptLine, ulElement) {
 /**
  * Creates a <p> tag to store the given {@code text} inside the
  * {@code container} and returns the <p> tag using the given text
- * 
+ *
  * <p>The <p> tag is returned so that the calling method can add additional
  * attributes to the tag.
  */
