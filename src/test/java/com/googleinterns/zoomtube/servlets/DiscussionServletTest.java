@@ -52,6 +52,7 @@ public class DiscussionServletTest {
   private static final String AUTH_DOMAIN = "example.com";
 
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
   private DiscussionServlet servlet;
@@ -107,11 +108,11 @@ public class DiscussionServletTest {
 
   @Test
   public void doPost_storesCommentParent() throws ServletException, IOException {
+    final int parentId = 32;
     testServices.setEnvIsLoggedIn(true);
-    final int PARENT_ID = 32;
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_PARENT))
-        .thenReturn(Integer.toString(PARENT_ID));
+        .thenReturn(Integer.toString(parentId));
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader(TEST_COMMENT_CONTENT)));
 
@@ -121,7 +122,7 @@ public class DiscussionServletTest {
     PreparedQuery query = datastore.prepare(new Query(Comment.ENTITY_KIND));
     Comment comment = Comment.fromEntity(query.asSingleEntity());
     assertThat(comment.parent().isPresent()).isTrue();
-    assertThat(comment.parent().get().getId()).isEqualTo(PARENT_ID);
+    assertThat(comment.parent().get().getId()).isEqualTo(parentId);
   }
 
   @Test
@@ -157,20 +158,20 @@ public class DiscussionServletTest {
 
   @Test
   public void doGet_returnsCommentsForSpecificLecture() throws ServletException, IOException {
-    final int LECTURE_A = 1;
-    final int LECTURE_B = 2;
-    final int LECTURE_C = 3;
+    final int lectureA = 1;
+    final int lectureB = 2;
+    final int lectureC = 3;
     // Looking for two comments under LECTURE_A.
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE))
-        .thenReturn(Integer.toString(LECTURE_A));
-    datastore.put(createTestCommentEntity(LECTURE_B));
-    datastore.put(createTestCommentEntity(LECTURE_C));
-    datastore.put(createTestCommentEntity(LECTURE_A)); // Add the first.
-    datastore.put(createTestCommentEntity(LECTURE_B));
-    datastore.put(createTestCommentEntity(LECTURE_B));
-    datastore.put(createTestCommentEntity(LECTURE_C));
-    datastore.put(createTestCommentEntity(LECTURE_A)); // Add the second.
-    datastore.put(createTestCommentEntity(LECTURE_C));
+        .thenReturn(Integer.toString(lectureA));
+    datastore.put(createTestCommentEntity(lectureB));
+    datastore.put(createTestCommentEntity(lectureC));
+    datastore.put(createTestCommentEntity(lectureA)); // Add the first.
+    datastore.put(createTestCommentEntity(lectureB));
+    datastore.put(createTestCommentEntity(lectureB));
+    datastore.put(createTestCommentEntity(lectureC));
+    datastore.put(createTestCommentEntity(lectureA)); // Add the second.
+    datastore.put(createTestCommentEntity(lectureC));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
