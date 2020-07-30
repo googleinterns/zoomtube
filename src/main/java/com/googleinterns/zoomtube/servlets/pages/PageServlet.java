@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PageServlet extends HttpServlet {
   private UserService userService;
   private String pageFile;
+  private int BUFFER_SIZE = 4096;
 
   public PageServlet(String pageFile) {
     this.pageFile = pageFile;
@@ -60,8 +61,9 @@ public class PageServlet extends HttpServlet {
   }
 
   /**
-   * Reads a file from disk and sends to the {@code response} output stream. This also
-   * automatically detects the file's MIME type and updates the content-type header.
+   * Reads a file from disk and sends to the {@code response} output stream.
+   *
+   * <p>This also automatically detects the file's MIME type and updates the content-type header.
    */
   private void sendFile(HttpServletResponse response, String path) throws IOException {
     File file = new File(path);
@@ -78,7 +80,7 @@ public class PageServlet extends HttpServlet {
     FileInputStream inStream = new FileInputStream(file);
     OutputStream outStream = response.getOutputStream();
 
-    byte[] buffer = new byte[4096];
+    byte[] buffer = new byte[BUFFER_SIZE];
     int bytesRead = -1;
     while ((bytesRead = inStream.read(buffer)) != -1) {
       outStream.write(buffer, 0, bytesRead);

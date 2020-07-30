@@ -41,15 +41,14 @@ public class PageServletTest {
 
   @Test(expected = FileNotFoundException.class)
   public void doGet_loggedIn_expectFileNotFound() throws Exception {
+    // This test does not run in the correct directory to reference existing HTML
+    // files, and reading disk during a test is probably a bad idea.
+    // This should throw an error as it tries to read a file that doesn't exist.
     testServices.setEnvIsLoggedIn(true);
     servlet = new PageServlet("does_not_exist.html");
     servlet.init();
 
     servlet.doGet(request, response);
-
-    // This test does not run in the correct directory to reference existing HTML
-    // files, and reading disk during a test is probably a bad idea.
-    // This should throw an error as it tries to read a file that doesn't exist.
   }
 
   @Test
