@@ -21,9 +21,7 @@ import javax.servlet.annotation.WebServlet;
  */
 @WebServlet("/list/*")
 public class ListServlet extends PageServlet {
-  private static final String PAGE = "lecture-list.html";
-  private static final String REDIRECT_URL = "/";
   public ListServlet() {
-    super(PAGE, REDIRECT_URL);
+    super("lecture-list.html");
   }
 }

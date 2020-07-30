@@ -21,9 +21,7 @@ import javax.servlet.annotation.WebServlet;
  */
 @WebServlet("/view/*")
 public class ViewServlet extends PageServlet {
-  private static final String PAGE = "lecture-view.html";
-  private static final String REDIRECT_URL = "/";
   public ViewServlet() {
-    super(PAGE, REDIRECT_URL);
+    super("lecture-view.html");
   }
 }

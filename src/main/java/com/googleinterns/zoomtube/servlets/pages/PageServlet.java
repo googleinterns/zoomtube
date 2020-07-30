@@ -35,12 +35,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PageServlet extends HttpServlet {
   private UserService userService;
-  private String loginRedirect;
   private String pageFile;
 
-  public PageServlet(String pageFile, String loginRedirect) {
+  public PageServlet(String pageFile) {
     this.pageFile = pageFile;
-    this.loginRedirect = loginRedirect;
   }
 
   @Override
@@ -52,7 +50,7 @@ public class PageServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     User user = userService.getCurrentUser();
     if (user == null) {
-      String login = userService.createLoginURL(loginRedirect);
+      String login = userService.createLoginURL(request.getRequestURI());
       response.sendRedirect(login);
       return;
     }

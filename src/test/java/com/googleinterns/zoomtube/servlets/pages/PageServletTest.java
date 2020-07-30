@@ -42,7 +42,7 @@ public class PageServletTest {
   @Test(expected = FileNotFoundException.class)
   public void doGet_loggedIn_expectHtmlAndFileNotFound() throws Exception {
     testServices.setEnvIsLoggedIn(true);
-    servlet = new PageServlet("does_not_exist.html", "/");
+    servlet = new PageServlet("does_not_exist.html");
     servlet.init();
 
     servlet.doGet(request, response);
@@ -53,8 +53,9 @@ public class PageServletTest {
   @Test
   public void doGet_loggedOut_expectRedirect() throws Exception {
     testServices.setEnvIsLoggedIn(false);
-    servlet = new PageServlet("does_not_exist.html", "/");
+    servlet = new PageServlet("does_not_exist.html");
     servlet.init();
+    when(request.getRequestURI()).thenReturn("/some-page");
 
     servlet.doGet(request, response);
 
