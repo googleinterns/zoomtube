@@ -34,9 +34,9 @@ import javax.servlet.http.HttpServletResponse;
  * redirected to a login page.
  */
 public class PageServlet extends HttpServlet {
+  private static final int BUFFER_SIZE = 4096;
+  private final String pageFile;
   private UserService userService;
-  private String pageFile;
-  private int BUFFER_SIZE = 4096;
 
   public PageServlet(String pageFile) {
     this.pageFile = pageFile;

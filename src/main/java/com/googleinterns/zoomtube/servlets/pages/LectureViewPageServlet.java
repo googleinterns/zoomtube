@@ -20,8 +20,8 @@ import javax.servlet.annotation.WebServlet;
  * Serves the lecture-view page to logged in users.
  */
 @WebServlet("/view/*")
-public class ViewServlet extends PageServlet {
-  public ViewServlet() {
+public class LectureViewPageServlet extends PageServlet {
+  public LectureViewPageServlet() {
     super("lecture-view.html");
   }
 }

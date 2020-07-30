@@ -18,10 +18,12 @@ import javax.servlet.annotation.WebServlet;
 
 /**
  * Serves the lecture-list page to logged in users.
+ *
+ * <p>We extend {@code PageServlet} 
  */
 @WebServlet("/list/*")
-public class ListServlet extends PageServlet {
-  public ListServlet() {
+public class LectureListPageServlet extends PageServlet {
+  public LectureListPageServlet() {
     super("lecture-list.html");
   }
 }
