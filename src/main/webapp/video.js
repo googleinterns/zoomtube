@@ -48,5 +48,5 @@ function onPlayerReady(event) {
 
 // TODO: Implement
 function seekVideo(currentTime) {
-  console.log("SEEKING VIDEO TO: " + currentTime);
+  console.log('SEEKING VIDEO TO: ' + currentTime);
 }

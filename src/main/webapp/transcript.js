@@ -23,8 +23,8 @@ function sendPostToTranscript() {
   // TODO: Update with user input and URL Builder.
   const paramsString = 'id=123456789&video=3ymwOvzhwHs';
   const params = new URLSearchParams(paramsString);
-  fetch(ENDPOINT_TRANSCRIPT, {method: 'POST', body: params})
-      .then(fetchTranscriptLines(paramsString));
+  fetch(ENDPOINT_TRANSCRIPT, { method: 'POST', body: params })
+    .then(fetchTranscriptLines(paramsString));
 }
 
 /**
@@ -35,10 +35,10 @@ function sendPostToTranscript() {
  */
 function fetchTranscriptLines(paramsString) {
   fetch(ENDPOINT_TRANSCRIPT + '?' + paramsString)
-      .then((response) => response.json())
-      .then((transcriptLines) => {
-        addMultipleTranscriptLinesToDom(transcriptLines);
-      });
+    .then((response) => response.json())
+    .then((transcriptLines) => {
+      addMultipleTranscriptLinesToDom(transcriptLines);
+    });
 }
 
 /**
@@ -71,7 +71,7 @@ function appendTextToList(transcriptLine, ulElement) {
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
   timestampPElement.classList.add('mx-auto');
   const transcriptLinePElement =
-      appendParagraphToContainer(transcriptLine.content, liElement);
+    appendParagraphToContainer(transcriptLine.content, liElement);
   transcriptLinePElement.classList.add('mx-auto');
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
@@ -95,5 +95,10 @@ function appendParagraphToContainer(text, container) {
 // transcripts for testing.
 function deleteTranscript() {
   const params = new URLSearchParams('');
-  fetch('/delete-transcript', {method: 'POST', body: params});
+  fetch('/delete-transcript', { method: 'POST', body: params });
+}
+
+// TODO: Implement
+function seekTranscript(currentTime) {
+  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
 }

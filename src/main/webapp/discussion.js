@@ -197,5 +197,5 @@ function createReplySubmission(repliesDiv) {
 
 // TODO: Implement
 function seekDiscussion(currentTime) {
-  console.log("SEEKING DISCUSSION TO: " + currentTime);
+  console.log('SEEKING DISCUSSION TO: ' + currentTime);
 }

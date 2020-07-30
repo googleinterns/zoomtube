@@ -15,8 +15,8 @@
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
 
-var timer;
-var lastTime;
+let timer;
+let lastTime;
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
@@ -26,19 +26,15 @@ initialize();
 
 /** Initializes the video player for the lecture view page. */
 async function initialize() {
-<<<<<<< HEAD
   timer = window.setInterval(getCurrentTime, 1000);
   window.loadVideoApi();
+  window.loadDiscussion();
+  window.sendPostToTranscript();
 }
 
 function getCurrentTime() {
   const currentTime = videoPlayer.getCurrentTime();
   sync(currentTime, false);
-=======
-  window.loadDiscussion();
-  window.sendPostToTranscript();
-  // TODO: Initialize the video and trancript sections once they are added.
->>>>>>> origin/transcript-dom-style
 }
 
 function sync(currentTime, syncVideo) {
@@ -46,10 +42,13 @@ function sync(currentTime, syncVideo) {
     return;
   }
   lastTime = currentTime;
-  if (syncVideo) { seekVideo(currentTime); }
+  if (syncVideo) {
+    seekVideo(currentTime);
+  }
+  seekTranscript(currentTime);
   seekDiscussion(currentTime);
-  // seekTranscript(currentTime);
 }
+
 /**
  * Returns the lecture id obtained from the current page's URL parameters.
  */
