@@ -18,12 +18,18 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import com.googleinterns.zoomtube.utils.LectureEntityFields;
 
 /** Stores data for lectures added to site. */
 @GenerateTypeAdapter
 @AutoValue
 public abstract class Lecture {
+  /** Used to create a Lecture entity and its fields. */
+  public static final String ENTITY_KIND = "Lecture";
+  public static final String PROP_NAME = "lectureName";
+  public static final String PROP_VIDEO_URL = "videoUrl";
+  public static final String PROP_VIDEO_ID = "video-id";
+  public static final String PROP_ID = "id";
+
   public abstract Key key();
   public abstract String lectureName();
   public abstract String videoUrl();
@@ -44,9 +50,9 @@ public abstract class Lecture {
   /** Returns a Lecture from {@code entity}. */
   public static Lecture fromLectureEntity(Entity entity) {
     Key key = entity.getKey();
-    String lectureName = (String) entity.getProperty(LectureEntityFields.NAME);
-    String videoUrl = (String) entity.getProperty(LectureEntityFields.VIDEO_URL);
-    String videoId = (String) entity.getProperty(LectureEntityFields.VIDEO_ID);
+    String lectureName = (String) entity.getProperty(PROP_NAME);
+    String videoUrl = (String) entity.getProperty(PROP_VIDEO_URL);
+    String videoId = (String) entity.getProperty(PROP_VIDEO_ID);
     return Lecture.create(key, lectureName, videoUrl, videoId);
   }
 }
