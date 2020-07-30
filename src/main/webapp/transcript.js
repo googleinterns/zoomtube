@@ -72,12 +72,9 @@ function appendTextToList(transcriptLine, ulElement) {
     `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
-  const timestampPElement = appendParagraphToContainer(timestamp, liElement);
+  appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
-  timestampPElement.classList.add('mx-auto');
-  const transcriptLinePElement =
-      appendParagraphToContainer(transcriptLine.content, liElement);
-  transcriptLinePElement.classList.add('mx-auto');
+  appendParagraphToContainer(transcriptLine.content, liElement, ['mx-auto']);
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
 
