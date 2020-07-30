@@ -49,14 +49,15 @@ public class LectureServlet extends HttpServlet {
 
   /* Name of input field used for lecture name in lecture selection page. */
   private static final String NAME_INPUT = "name-input";
+  
   /* Name of input field used for lecture video link in lecture selection page. */
   private static final String LINK_INPUT = "link-input";
-  /* Default value if new lecture inputs are empty. */
-  private static final String DEFAULT_VALUE = "";
+
   private static final String REDIRECT_URL = "/lecture-view.html";
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern;
+
   private static DatastoreService datastore;
 
   @Override
@@ -73,12 +74,12 @@ public class LectureServlet extends HttpServlet {
     Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
 
     if (existingEntity.isPresent()) {
-      response.sendRedirect(buildRedirectUrl(existingEntity.get()));
+      response.sendRedirect(buildRedirectUrl(existingEntity.get()).get());
       return;
     }
     Entity lectureEntity = createLectureEntity(request);
     datastore.put(lectureEntity);
-    response.sendRedirect(buildRedirectUrl(lectureEntity));
+    response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
 
   @Override
@@ -155,7 +156,6 @@ public class LectureServlet extends HttpServlet {
     if (matcher.find()) {
       return Optional.of(matcher.group());
     }
-    // TODO: Throw an error saying ID not found.
     return Optional.empty();
   }
 
@@ -163,7 +163,7 @@ public class LectureServlet extends HttpServlet {
    * Returns URL redirecting to lecture view page with parameters {@code lectureId}
    * and {@code videoId} found in {@code lectureEntity}.
    */
-  private String buildRedirectUrl(Entity lectureEntity) {
+  private Optional<String> buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
     String videoId = (String) lectureEntity.getProperty(LectureEntityFields.VIDEO_ID);
 
@@ -171,9 +171,9 @@ public class LectureServlet extends HttpServlet {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
                                   .addParameter(LectureEntityFields.ID, lectureId)
                                   .addParameter(LectureEntityFields.VIDEO_ID, videoId);
-      return urlBuilder.build().toString();
+      return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
-      throw new RuntimeException(urlBuilderError);
+      return Optional.empty();
     }
   }
 }
