@@ -194,3 +194,8 @@ function createReplySubmission(repliesDiv) {
 
   repliesDiv.prepend(div);
 }
+
+// TODO: Implement
+function seekDiscussion(currentTime) {
+  console.log("SEEKING DISCUSSION TO: " + currentTime);
+}

@@ -45,3 +45,8 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
   event.target.playVideo();
 }
+
+// TODO: Implement
+function seekVideo(currentTime) {
+  console.log("SEEKING VIDEO TO: " + currentTime);
+}

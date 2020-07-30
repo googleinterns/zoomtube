@@ -15,6 +15,9 @@
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
 
+var timer;
+var lastTime;
+
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 window.VIDEO_ID = getVideoId();
@@ -23,9 +26,24 @@ initialize();
 
 /** Initializes the video player for the lecture view page. */
 async function initialize() {
+  timer = window.setInterval(getCurrentTime, 1000);
   window.loadVideoApi();
 }
 
+function getCurrentTime() {
+  const currentTime = videoPlayer.getCurrentTime();
+  sync(currentTime, false);
+}
+
+function sync(currentTime, syncVideo) {
+  if (lastTime == currentTime) {
+    return;
+  }
+  lastTime = currentTime;
+  if (syncVideo) { seekVideo(currentTime); }
+  seekDiscussion(currentTime);
+  // seekTranscript(currentTime);
+}
 /**
  * Returns the lecture id obtained from the current page's URL parameters.
  */
