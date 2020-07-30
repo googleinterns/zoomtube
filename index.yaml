@@ -5,3 +5,7 @@ indexes:
   - name: timestamp
   - name: created
     direction: desc
+- kind: TranscriptLine
+  properties:
+  - name: transcriptLine
+  - name: start
