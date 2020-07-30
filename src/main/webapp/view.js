@@ -24,7 +24,7 @@ async function initialize() {
   window.loadDiscussion();
   window.intializeDiscussion();
   window.sendPostToTranscript();
-  // TODO: Initialize the video and trancript sections once they are added.
+  // TODO: Initialize the video sections once they are added.
 }
 
 /**

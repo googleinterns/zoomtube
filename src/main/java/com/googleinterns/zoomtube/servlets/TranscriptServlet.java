@@ -69,6 +69,9 @@ public class TranscriptServlet extends HttpServlet {
 
   /**
    * Initializes the servlet with {@code testDatastore} created during testing.
+   *
+   * <p>The unit tests need access to the datastore to check that doPost() puts
+   * the entities in datastore.
    */
   @VisibleForTesting
   protected void init(DatastoreService testDatastore) {
