@@ -15,6 +15,7 @@
 
 const TRANSCRIPT_CONTAINER = 'transcript-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
+const MILLISECOND_CONVERTER = 1000;
 
 /**
  * Sends a POST request to the transcript.
@@ -63,9 +64,13 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
-  const startTime = (new Date(transcriptLine.start)).getSeconds();
-  const endTime = (new Date(transcriptLine.end).getSeconds());
-  const timestamp = `${startTime} secs - ${endTime} secs`;
+  const startDate = new Date(transcriptLine.start);
+  const endDate = new Date(transcriptLine.end);
+  const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
+    startDate.getSeconds()}`;
+  const endTimestamp =
+    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+  const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   const timestampPElement = appendParagraphToContainer(timestamp, liElement);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
@@ -75,6 +80,9 @@ function appendTextToList(transcriptLine, ulElement) {
   transcriptLinePElement.classList.add('mx-auto');
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
+
+  liElement.startDate = startDate;
+  liElement.endDate = endDate;
 }
 
 /**
