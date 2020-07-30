@@ -30,7 +30,7 @@ public abstract class TranscriptLine {
   public static final String PROP_CONTENT = "content";
 
   /**
-   * Creates a {@code TranscriptLine} object.
+   * Creates a TranscriptLine object.
    *
    * @param key The key for the transcript.
    * @param lecture The key for the lecture.
@@ -51,8 +51,8 @@ public abstract class TranscriptLine {
   public abstract String content();
 
   /**
-   * Creates and returns a {@code TranscriptLine} from a datastore {@code entity} using the
-   * property names defined in this class.
+   * Creates and returns a TranscriptLine from a datastore {@code entity} using 
+   * the property names defined in this class.
    */
   public static TranscriptLine fromLineEntity(Entity entity) {
     Key key = entity.getKey();

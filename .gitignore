@@ -2,6 +2,7 @@
 # These are sometimes included but not necessary for this project
 package-lock.json
 node_modules/
+WEB-INF/appengine-generated/
 
 # Ignore generated Maven build files
 target/
@@ -10,6 +11,7 @@ target/
 .idea
 
 # Ignore editor config (vs-code)
+.vscode/
 .settings/
 .project
 .classpath
