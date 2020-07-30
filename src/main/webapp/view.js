@@ -26,6 +26,7 @@ initialize();
 
 /** Initializes the video player for the lecture view page. */
 async function initialize() {
+<<<<<<< HEAD
   timer = window.setInterval(getCurrentTime, 1000);
   window.loadVideoApi();
 }
@@ -33,6 +34,11 @@ async function initialize() {
 function getCurrentTime() {
   const currentTime = videoPlayer.getCurrentTime();
   sync(currentTime, false);
+=======
+  window.loadDiscussion();
+  window.sendPostToTranscript();
+  // TODO: Initialize the video and trancript sections once they are added.
+>>>>>>> origin/transcript-dom-style
 }
 
 function sync(currentTime, syncVideo) {
