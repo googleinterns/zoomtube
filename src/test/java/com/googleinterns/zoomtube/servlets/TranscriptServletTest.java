@@ -54,10 +54,10 @@ import org.mockito.junit.MockitoRule;
 @RunWith(JUnit4.class)
 public final class TranscriptServletTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-  
+
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
-  
+
   private TranscriptServlet servlet;
 
   private LocalDatastoreServiceTestConfig datastoreConfig =
