@@ -140,6 +140,9 @@ async function fetchDiscussion() {
 }
 
 
+/**
+ * 
+ */
 class DiscussionComment extends HTMLElement {
   constructor(comment) {
     super();
@@ -172,6 +175,10 @@ class DiscussionComment extends HTMLElement {
     };
   }
 
+  /**
+   * Sets the content of the shadow-dom slot named {@code name} to a span
+   * element containing {@code value} as text.
+   */
   setSlotSpan(name, value) {
     const span = document.createElement('span');
     span.innerText = value;
