@@ -40,7 +40,7 @@ public class LectureUtil {
    * Creates and returns a Lecture Entity using {@code lectureName},
    * {@code videoUrl}, and {@code videoId}.
    */
-  public static Entity createLecture(String lectureName, String videoUrl, String videoId) {
+  public static Entity createEntity(String lectureName, String videoUrl, String videoId) {
     Entity lectureEntity = new Entity(KIND);
     lectureEntity.setProperty(NAME, lectureName);
     lectureEntity.setProperty(VIDEO_URL, videoUrl);

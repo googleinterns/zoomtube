@@ -18,31 +18,58 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.google.appengine.api.datastore.KeyFactory;
 import java.io.IOException;
 import org.junit.Rule;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public final class LectureUtilTest {
+  private final LocalServiceTestHelper testServices =
+    new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-  @Test
-  public void create() throws IOException {
-    Entity lectureEntity = new Entity(KIND);
-    lectureEntity.setProperty(NAME, "test");
-    lectureEntity.setProperty(VIDEO_URL, "testUrl");
-    lectureEntity.setProperty(VIDEO_ID, "testId");
+  @Before
+  public void setUp() {
+    testServices.setUp();
+  }
 
-    Lecture result = Lecture.create(lectureEntity);
+  @After
+  public void tearDown() {
+    testServices.tearDown();
   }
 
   @Test
-  public void createLectureEntity() throws IOException {
-    // TODO: Create entity from lecture
+  public void create() throws IOException {
+    Entity lectureEntity = new Entity(LectureUtil.KIND);
+    lectureEntity.setProperty(LectureUtil.NAME, "testName");
+    lectureEntity.setProperty(LectureUtil.VIDEO_URL, "testUrl");
+    lectureEntity.setProperty(LectureUtil.VIDEO_ID, "testId");
+
+    Lecture result = LectureUtil.create(lectureEntity);
+
+    assertThat(result.lectureName()).isEqualTo("testName");
+    assertThat(result.videoUrl()).isEqualTo("testUrl");
+    assertThat(result.videoId()).isEqualTo("testId");
+  }
+
+  @Test
+  public void createEntity() throws IOException {
+    Entity result = LectureUtil.createEntity("testName", "testUrl", "testId");
+
+    assertThat(result.getProperty(LectureUtil.NAME)).isEqualTo("testName");
+    assertThat(result.getProperty(LectureUtil.VIDEO_URL)).isEqualTo("testUrl");
+    assertThat(result.getProperty(LectureUtil.VIDEO_ID)).isEqualTo("testId");
   }
 }

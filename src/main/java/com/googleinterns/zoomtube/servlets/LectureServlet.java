@@ -121,7 +121,7 @@ public class LectureServlet extends HttpServlet {
     String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
     Optional<String> optionalVideoId = getVideoId(videoUrl);
     String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
-    return LectureUtil.createLectureEntity(lectureName, videoUrl, videoId);
+    return LectureUtil.createEntity(lectureName, videoUrl, videoId);
   }
 
   /** Returns lectures stored in the database. */
@@ -130,7 +130,7 @@ public class LectureServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = LectureUtil.createLecture(lecture);
+      Lecture newLecture = LectureUtil.create(lecture);
       lectures.add(newLecture);
     }
     return lectures;
