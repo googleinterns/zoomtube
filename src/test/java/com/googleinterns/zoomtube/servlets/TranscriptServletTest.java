@@ -54,8 +54,10 @@ import org.mockito.junit.MockitoRule;
 @RunWith(JUnit4.class)
 public final class TranscriptServletTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+  
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
+  
   private TranscriptServlet servlet;
 
   private LocalDatastoreServiceTestConfig datastoreConfig =
@@ -69,7 +71,6 @@ public final class TranscriptServletTest {
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
-
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   private static final String SHORT_VIDEO_JSON =
