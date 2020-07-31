@@ -19,7 +19,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.googleinterns.zoomtube.data.TranscriptLine;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.util.stream.StreamSupport;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DeleteTranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query(TranscriptLine.ENTITY_KIND);
+    Query query = new Query(TranscriptLineUtil.ENTITY_KIND);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);

@@ -51,7 +51,6 @@ import org.xml.sax.SAXException;
  */
 @WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
-
   private DatastoreService datastore;
 
   @Override
@@ -128,11 +127,11 @@ public class TranscriptServlet extends HttpServlet {
     long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, lectureId);
     Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+        new FilterPredicate(TranscriptLineUtil.PROP_LECTURE, FilterOperator.EQUAL, lecture);
 
-    Query query = new Query(TranscriptLine.ENTITY_KIND)
+    Query query = new Query(TranscriptLineUtil.ENTITY_KIND)
                       .setFilter(lectureFilter)
-                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
+                      .addSort(TranscriptLineUtil.PROP_START, SortDirection.ASCENDING);
     return datastore.prepare(query);
   }
 

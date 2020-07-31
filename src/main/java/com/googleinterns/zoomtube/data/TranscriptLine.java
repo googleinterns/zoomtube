@@ -31,23 +31,15 @@ public abstract class TranscriptLine {
   public abstract String content();
 
   /**
-   * Creates a TranscriptLine object.
-   *
-   * @param key The key for the transcript.
-   * @param lecture The key for the lecture.
-   * @param start The starting time for the lecture line in seconds.
-   * @param duration The number of seconds that the timestamp lasts for.
-   * @param content The text content of the transcript line.
+   * Returns a builder instance that can be used to create Comments.
    */
-  public static TranscriptLine create(
-      Key key, Key lecture, Date start, Date duration, Date end, String content) {
-    return new AutoValue_TranscriptLine(key, lecture, start, duration, end, content);
-  }
-
   public static Builder builder() {
     return new AutoValue_TranscriptLine.Builder();
   }
 
+  /**
+   * Returns a builder instance that can be used to create TranscriptLines.
+   */
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder setKey(Key key);
@@ -56,5 +48,6 @@ public abstract class TranscriptLine {
     public abstract Builder setDuration(Date duration);
     public abstract Builder setEnd(Date end);
     public abstract Builder setContent(String content);
+    public abstract TranscriptLine build();
   }
 }

@@ -14,19 +14,18 @@
 
 package com.googleinterns.zoomtube.utils;
 
-import com.googleinterns.zoomtube.data.TranscriptLine;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.googleinterns.zoomtube.data.TranscriptLine;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public class TranscriptLineUtil {
-  public static final String XML_URL_TEMPLATE =
-      "http://video.google.com/timedtext?lang=en&v=";
+  public static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
@@ -53,7 +52,14 @@ public class TranscriptLineUtil {
     Date duration = (Date) entity.getProperty(PROP_DURATION);
     Date end = (Date) entity.getProperty(PROP_END);
     String content = (String) entity.getProperty(PROP_CONTENT);
-    return TranscriptLine.create(key, lecture, start, duration, end, content);
+    return TranscriptLine.builder()
+        .setKey(key)
+        .setLecture(lecture)
+        .setStart(start)
+        .setDuration(duration)
+        .setEnd(end)
+        .setContent(content)
+        .build();
   }
 
   /**
@@ -68,15 +74,12 @@ public class TranscriptLineUtil {
     Entity lineEntity = new Entity(ENTITY_KIND);
     // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
     // merged to this branch.
-    lineEntity.setProperty(
-        PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
+    lineEntity.setProperty(PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(PROP_CONTENT, lineContent);
+    lineEntity.setProperty(PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
     lineEntity.setProperty(
-        PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
-    lineEntity.setProperty(PROP_DURATION,
-        new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
-    lineEntity.setProperty(
-        PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
+        PROP_DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
+    lineEntity.setProperty(PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
   }
-} 
+}
