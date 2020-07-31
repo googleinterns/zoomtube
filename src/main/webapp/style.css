@@ -1,0 +1,24 @@
+.actions-bar {
+  text-align: right;
+}
+
+.comment-content {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.comment-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 0;
+  margin-top: 20px;
+}
+
+form {
+  width: 100%;
+}
+
+.replies {
+  margin-left: 20px;
+}

@@ -20,9 +20,12 @@ const PARAM_PARENT = 'parent';
 
 const ATTR_ID = 'key-id';
 
-const ELEMENT_DISCUSSION = document.querySelector('#discussion');
+const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 const ELEMENT_AUTH_STATUS = document.querySelector('#auth-status');
+
+const TEMPLATE_ROOT_COMMENT = document.querySelector('#comment-template');
+const TEMPLATE_REPLY = document.querySelector('#reply-template');
 
 let AUTH_STATUS = null;
 
@@ -32,9 +35,9 @@ let AUTH_STATUS = null;
  */
 async function intializeDiscussion() {
   AUTH_STATUS = await getAuthStatus();
-  displayAuthStatus();
   await loadDiscussion();
 }
+
 
 /**
  * Fetches and returns the user's authentication status from the authentication
@@ -48,23 +51,18 @@ async function getAuthStatus() {
 
 
 /**
- * Displays authentication status and action links.  If a user is logged in,
- * this adds the user's email and a logout link.  Otherwise, this adds a login
- * link.
+ * Posts a new comment using the main post textarea.
  */
-async function displayAuthStatus() {
-  const link = document.createElement('a');
-  if (AUTH_STATUS.loggedIn) {
-    link.href = AUTH_STATUS.logoutUrl.value;
-    link.innerText = 'logout';
-    ELEMENT_AUTH_STATUS.innerText =
-        `Logged in as ${AUTH_STATUS.user.value.email}. `;
-  } else {
-    link.href = AUTH_STATUS.loginUrl.value;
-    link.innerText = 'login';
-    ELEMENT_AUTH_STATUS.innerText = 'Not logged in. ';
-  }
-  ELEMENT_AUTH_STATUS.appendChild(link);
+async function postNewComment() {
+  postAndReload(ELEMENT_POST_TEXTAREA);
+}
+
+
+/**
+ * Posts a reply to a comment.
+ */
+async function postReply(textarea, parentId) {
+  postAndReload(textarea, parentId);
 }
 
 
@@ -99,7 +97,7 @@ async function loadDiscussion() {
   const comments = await fetchDiscussion();
   const preparedComments = prepareComments(comments);
   for (const comment of preparedComments) {
-    ELEMENT_DISCUSSION.appendChild(createComment(comment));
+    ELEMENT_DISCUSSION.appendChild(new Comment(comment));
   }
 }
 
@@ -141,56 +139,46 @@ async function fetchDiscussion() {
   return request.json();
 }
 
-/**
- * Creates an element for displaying {@code comment}.
- */
-function createComment(comment) {
-  const element = document.createElement('li');
-  element.setAttribute(ATTR_ID, comment.key.id);
 
-  const content = document.createElement('span');
-  content.innerText = `${comment.author.email} says ${comment.content}`;
-  element.appendChild(content);
+class Comment extends HTMLElement {
+  constructor(comment) {
+    super();
+    this.attachShadow({mode: 'open'});
+    const shadow = TEMPLATE_ROOT_COMMENT.content.cloneNode(true);
+    this.shadowRoot.appendChild(shadow);
 
-  const repliesDiv = document.createElement('div');
+    const username = comment.author.email.split('@')[0];
+    this.setSlotSpan('author', username);
+    this.setSlotSpan('timestamp', '00:00');
+    this.setSlotSpan('created', comment.created);
+    this.setSlotSpan('content', comment.content);
 
-  const repliesList = document.createElement('ul');
-  for (const reply of comment.replies) {
-    repliesList.appendChild(createComment(reply));
-  }
-  repliesDiv.appendChild(repliesList);
+    const replies = document.createElement('div');
+    replies.slot = 'replies';
+    for (const reply of comment.replies) {
+      replies.appendChild(new Comment(reply));
+    }
+    this.appendChild(replies);
 
-  if (AUTH_STATUS.loggedIn) {
-    const replyButton = document.createElement('button');
-    replyButton.innerText = 'Reply';
-    element.appendChild(replyButton);
-    replyButton.onclick = () => {
-      createReplySubmission(repliesDiv);
-      replyButton.remove();
+    this.shadowRoot.querySelector('#show-reply').onclick = () => {
+      $(this.shadowRoot.querySelector('#reply-form')).collapse('show');
+    };
+    this.shadowRoot.querySelector('#cancel-reply').onclick = () => {
+      $(this.shadowRoot.querySelector('#reply-form')).collapse('hide');
+    };
+    this.shadowRoot.querySelector('#post-reply').onclick = () => {
+      const textarea = this.shadowRoot.querySelector('#post-textarea');
+      postReply(textarea, comment.key.id);
     };
   }
-  element.appendChild(repliesDiv);
 
-  return element;
+  setSlotSpan(name, value) {
+    let span = document.createElement('span');
+    span.innerText = value;
+    span.slot = name;
+    this.appendChild(span);
+  }
 }
 
-/**
- * Creates a reply textarea and submit button within {@code repliesDiv}.
- *
- * <p>The parent of {@code repliesDiv} should be a comment element created by
- * {@code createComment}.
- */
-function createReplySubmission(repliesDiv) {
-  const div = document.createElement('div');
-  const textarea = document.createElement('textarea');
-  const submit = document.createElement('button');
-  const parentId = repliesDiv.parentElement.getAttribute(ATTR_ID);
-  submit.innerText = 'Post';
-  submit.onclick = () => {
-    postAndReload(textarea, parentId);
-  };
-  div.appendChild(textarea);
-  div.appendChild(submit);
-
-  repliesDiv.prepend(div);
-}
+// Custom element names must contain a hyphen.
+customElements.define('discussion-comment', Comment);
