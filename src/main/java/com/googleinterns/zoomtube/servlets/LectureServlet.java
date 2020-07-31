@@ -76,7 +76,7 @@ public class LectureServlet extends HttpServlet {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()).get());
       return;
     }
-    Entity lectureEntity = getLectureEntity(request);
+    Entity lectureEntity = getLectureEntityFromRequest(request);
     datastore.put(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
@@ -111,10 +111,9 @@ public class LectureServlet extends HttpServlet {
     return Optional.empty();
   }
 
-  @VisibleForTesting
   /** Returns {@code lectureEntity} using parameters found in {@code request}. */
   // TODO: Send errors as a response if fields are empty.
-  protected Entity getLectureEntity(HttpServletRequest request) {
+  private Entity getLectureEntityFromRequest(HttpServletRequest request) {
     Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
     String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);

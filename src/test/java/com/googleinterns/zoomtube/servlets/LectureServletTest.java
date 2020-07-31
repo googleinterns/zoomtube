@@ -63,6 +63,7 @@ public final class LectureServletTest {
 
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
+  private static final String TEST_ID = "wXhTHyIgQ_U";
 
   @Before
   public void setUp() throws ServletException {
@@ -80,8 +81,8 @@ public final class LectureServletTest {
   @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.getLectureEntity(request));
-    
+    datastoreService.put(LectureUtil.createEntity("", TEST_LINK, TEST_ID));
+        
     servlet.doPost(request, response);
     
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
@@ -114,7 +115,7 @@ public final class LectureServletTest {
   @Test
   public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.getLectureEntity(request));
+    datastoreService.put(LectureUtil.createEntity("", TEST_LINK, TEST_ID));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
