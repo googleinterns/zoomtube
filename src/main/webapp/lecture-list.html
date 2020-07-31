@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
   integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link href="sticky-footer.css" rel="stylesheet">
 <script src="lectures.js" defer></script>
 
 
@@ -18,6 +19,7 @@
   <div class="text-container">
     <h2 class="text-center">Active Lectures</h2>
     <h5 class="text-center">Select a lecture below to start watching and interacting with other students!</h5>
+    <ul id="lecture-list"></ul>
   </div>
 </div>
 
@@ -25,7 +27,7 @@
   <button type="button" class="btn btn-outline-primary">Add a Lecture</button>
 </div>
 
-<form name="lectureForm" action="/lecture" method="post">
+<!-- <form name="lectureForm" action="/lecture" method="post">
   <h2>Add a new lecture</h2>
   <h3>Enter a name for this lecture:</h3>
   <input type="text" placeholder="Lecture Name" name="name-input" required />
@@ -35,13 +37,25 @@
   <br />
   <br />
   <button type="submit">Submit</button>
-</form>
-<ul id="lecture-list"></ul>
+</form> -->
 
-<!-- <div class="container footer navbar-fixed-bottom">
-  <footer class="footer mt-auto py-3">
-    <h5 class="text-center">Whats up</h5>
+<footer class="footer">
+  <div class="container">
+    <span class="text-muted">Place sticky footer content here.</span>
+  </div>
+</footer>
+
+<!-- <body>
+  <main role="main" class="container">
+    <h1 class="mt-5">Sticky footer</h1>
+    <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML
+      and CSS.</p>
+    <p>Use <a href="../sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <span class="text-muted">Place sticky footer content here.</span>
+    </div>
   </footer>
-</div> -->
-
-<footer class="footer">Sup</footer>
+</body>
+</html> -->
