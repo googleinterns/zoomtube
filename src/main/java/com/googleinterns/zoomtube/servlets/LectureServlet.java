@@ -23,7 +23,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
-import com.googleinterns.zoomtube.utils.LectureEntityUtil;
+import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -99,12 +99,12 @@ public class LectureServlet extends HttpServlet {
     }
     String url = videoUrl.get();
 
-    Query query = new Query(Lecture.ENTITY_KIND);
+    Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
     for (Entity lecture : resultsIterable) {
-      if (lecture.getProperty(LectureEntityUtil.VIDEO_URL).equals(url)) {
+      if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
         return Optional.of(lecture);
       }
     }
@@ -121,16 +121,16 @@ public class LectureServlet extends HttpServlet {
     String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
     Optional<String> optionalVideoId = getVideoId(videoUrl);
     String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
-    return LectureEntityUtil.createLectureEntity(lectureName, videoUrl, videoId);
+    return LectureUtil.createLectureEntity(lectureName, videoUrl, videoId);
   }
 
   /** Returns lectures stored in the database. */
   private List<Lecture> getLectures() {
-    Query query = new Query(LectureEntityUtil.KIND);
+    Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = LectureEntityUtil.createLecture(lecture);
+      Lecture newLecture = LectureUtil.createLecture(lecture);
       lectures.add(newLecture);
     }
     return lectures;
@@ -164,12 +164,12 @@ public class LectureServlet extends HttpServlet {
    */
   private Optional<String> buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(LectureEntityUtil.VIDEO_ID);
+    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
 
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
-                                  .addParameter(LectureEntityUtil.ID, lectureId)
-                                  .addParameter(LectureEntityUtil.VIDEO_ID, videoId);
+                                  .addParameter(LectureUtil.ID, lectureId)
+                                  .addParameter(LectureUtil.VIDEO_ID, videoId);
       return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
       // TODO: Send a response error.

@@ -19,7 +19,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 
 /** Provides methods to create Lecture Entities and Lectures. */
-public class LectureEntityUtil {
+public class LectureUtil {
   /** Used to create a Lecture Entity and its fields. */
   public static final String KIND = "Lecture";
   public static final String NAME = "lectureName";
@@ -28,7 +28,7 @@ public class LectureEntityUtil {
   public static final String ID = "id";
 
   /** Returns a Lecture from {@code entity}. */
-  public static Lecture createLecture(Entity entity) {
+  public static Lecture create(Entity entity) {
     Key key = entity.getKey();
     String lectureName = (String) entity.getProperty(NAME);
     String videoUrl = (String) entity.getProperty(VIDEO_URL);
@@ -40,7 +40,7 @@ public class LectureEntityUtil {
    * Creates and returns a Lecture Entity using {@code lectureName},
    * {@code videoUrl}, and {@code videoId}.
    */
-  public static Entity createLectureEntity(String lectureName, String videoUrl, String videoId) {
+  public static Entity createLecture(String lectureName, String videoUrl, String videoId) {
     Entity lectureEntity = new Entity(KIND);
     lectureEntity.setProperty(NAME, lectureName);
     lectureEntity.setProperty(VIDEO_URL, videoUrl);

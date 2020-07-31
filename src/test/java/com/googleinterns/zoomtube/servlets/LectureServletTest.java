@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Lecture;
+import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -83,7 +84,7 @@ public final class LectureServletTest {
     
     servlet.doPost(request, response);
     
-    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities()).isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
@@ -94,7 +95,7 @@ public final class LectureServletTest {
     // No lecture in datastoreService.
     servlet.doPost(request, response);
     
-    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities()).isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
