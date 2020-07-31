@@ -74,7 +74,7 @@ public class TranscriptServlet extends HttpServlet {
    * the entities in datastore.
    */
   @VisibleForTesting
-  protected void init(DatastoreService testDatastore) {
+  void init(DatastoreService testDatastore) {
     datastore = testDatastore;
   }
 
@@ -112,6 +112,7 @@ public class TranscriptServlet extends HttpServlet {
    * Puts each transcript line from {@code document} in datastore as its own entity.
    *
    * @param request Indicates the lecture key to group the transcript lines under.
+   * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
