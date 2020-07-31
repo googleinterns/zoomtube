@@ -79,7 +79,7 @@ public final class LectureServletTest {
   @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(request));
+    datastoreService.put(servlet.getLectureEntity(request));
     
     servlet.doPost(request, response);
     
@@ -113,7 +113,7 @@ public final class LectureServletTest {
   @Test
   public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(request));
+    datastoreService.put(servlet.getLectureEntity(request));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
