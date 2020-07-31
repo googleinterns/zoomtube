@@ -29,11 +29,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,7 +42,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -53,14 +51,6 @@ import org.xml.sax.SAXException;
  */
 @WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
-  private static final String TRANSCRIPT_XML_URL_TEMPLATE =
-      "http://video.google.com/timedtext?lang=en&v=";
-  public static final String ATTR_START = "start";
-  public static final String ATTR_DURATION = "dur";
-  public static final String TAG_TEXT = "text";
-  public static final String PARAM_LECTURE = "lecture";
-  public static final String PARAM_LECTURE_ID = "id";
-  public static final String PARAM_VIDEO_ID = "video";
 
   private DatastoreService datastore;
 
@@ -94,8 +84,8 @@ public class TranscriptServlet extends HttpServlet {
    */
   private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
       throws IOException {
-    String videoId = request.getParameter(PARAM_VIDEO_ID);
-    String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
+    String videoId = request.getParameter(TranscriptLineUtil.PARAM_VIDEO_ID);
+    String transcriptXMLUrl = TranscriptLineUtil.XML_URL_TEMPLATE + videoId;
 
     final Document document;
     try {
@@ -116,11 +106,11 @@ public class TranscriptServlet extends HttpServlet {
    * @param request Indicates the lecture key to group the transcript lines under.
    */
   private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
-    NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
+    long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
+    NodeList nodeList = document.getElementsByTagName(TranscriptLineUtil.TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
-      datastore.put(createLineEntity(node, lectureId));
+      datastore.put(TranscriptLineUtil.createEntity(node, lectureId));
     }
   }
 
@@ -135,8 +125,8 @@ public class TranscriptServlet extends HttpServlet {
    * Returns the query for the lecture transcripts based on lecture id indicated in {@code request}.
    */
   private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
-    Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
+    long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
+    Key lecture = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
 
@@ -149,7 +139,7 @@ public class TranscriptServlet extends HttpServlet {
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : preparedQuery.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
+      lineBuilder.add(TranscriptLineUtil.fromEntity(entity));
     }
     return lineBuilder.build();
   }
@@ -162,29 +152,5 @@ public class TranscriptServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(list));
-  }
-
-  /**
-   * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
-   */
-  private Entity createLineEntity(Node node, long lectureId) {
-    Element element = (Element) node;
-    String lineContent = node.getTextContent();
-    Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
-    Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
-    Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
-    Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-    // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
-    // merged to this branch.
-    lineEntity.setProperty(
-        TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
-    lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
-    lineEntity.setProperty(
-        TranscriptLine.PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
-    lineEntity.setProperty(TranscriptLine.PROP_DURATION,
-        new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
-    lineEntity.setProperty(
-        TranscriptLine.PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
-    return lineEntity;
   }
 }

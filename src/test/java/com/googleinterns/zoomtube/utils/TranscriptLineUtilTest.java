@@ -52,7 +52,7 @@ public final class TranscriptLineUtilTest {
   }
 
   @Test
-  public void create() throws IOException {
+  public void fromEntity_sanityCheck() throws IOException {
     Entity lineEntity = new Entity(TranscriptLineUtil.ENTITY_KIND);
     lineEntity.setProperty(TranscriptLineUtil.PROP_LECTURE, TEST_LECTURE);
     lineEntity.setProperty(TranscriptLineUtil.PROP_CONTENT, TEST_CONTENT);
@@ -70,7 +70,7 @@ public final class TranscriptLineUtilTest {
   }
 
   @Test
-  public void createEntity() throws IOException {
+  public void createEntity_sanityCheck() throws IOException {
     // TODO: Create a mock for node
   }
 

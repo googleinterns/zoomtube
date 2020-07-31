@@ -14,7 +14,6 @@
 
 package com.googleinterns.zoomtube.data;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
@@ -24,12 +23,12 @@ import java.util.Date;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLine {
-  public static final String ENTITY_KIND = "TranscriptLine";
-  public static final String PROP_LECTURE = "lecture";
-  public static final String PROP_START = "start";
-  public static final String PROP_DURATION = "duration";
-  public static final String PROP_CONTENT = "content";
-  public static final String PROP_END = "end";
+  public abstract Key key();
+  public abstract Key lecture();
+  public abstract Date start();
+  public abstract Date duration();
+  public abstract Date end();
+  public abstract String content();
 
   /**
    * Creates a TranscriptLine object.
@@ -45,24 +44,17 @@ public abstract class TranscriptLine {
     return new AutoValue_TranscriptLine(key, lecture, start, duration, end, content);
   }
 
-  public abstract Key key();
-  public abstract Key lecture();
-  public abstract Date start();
-  public abstract Date duration();
-  public abstract Date end();
-  public abstract String content();
+  public static Builder builder() {
+    return new AutoValue_TranscriptLine.Builder();
+  }
 
-  /**
-   * Creates and returns a TranscriptLine from a datastore {@code entity} using
-   * the property names defined in this class.
-   */
-  public static TranscriptLine fromLineEntity(Entity entity) {
-    Key key = entity.getKey();
-    Key lecture = (Key) entity.getProperty(PROP_LECTURE);
-    Date start = (Date) entity.getProperty(PROP_START);
-    Date duration = (Date) entity.getProperty(PROP_DURATION);
-    Date end = (Date) entity.getProperty(PROP_END);
-    String content = (String) entity.getProperty(PROP_CONTENT);
-    return TranscriptLine.create(key, lecture, start, duration, end, content);
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setKey(Key key);
+    public abstract Builder setLecture(Key lecture);
+    public abstract Builder setStart(Date start);
+    public abstract Builder setDuration(Date duration);
+    public abstract Builder setEnd(Date end);
+    public abstract Builder setContent(String content);
   }
 }
