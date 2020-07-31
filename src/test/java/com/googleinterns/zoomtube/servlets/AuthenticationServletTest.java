@@ -26,9 +26,9 @@ import org.mockito.junit.MockitoRule;
 
 public class AuthenticationServletTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-  private AuthenticationServlet servlet;
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
+  private AuthenticationServlet servlet;
   private LocalServiceTestHelper testServices =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
 

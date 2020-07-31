@@ -45,15 +45,15 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 public class DiscussionServletTest {
+  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+  @Mock private HttpServletRequest request;
+  @Mock private HttpServletResponse response;
+
   private static final int LECTURE_ID = 1;
   private static final String LECTURE_ID_STR = "1";
   private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
       new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
-  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-
-  @Mock private HttpServletRequest request;
-  @Mock private HttpServletResponse response;
   private DiscussionServlet servlet;
   private DatastoreService datastore;
 
