@@ -28,7 +28,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public class TranscriptLineUtil {
-  private static final String TRANSCRIPT_XML_URL_TEMPLATE =
+  public static final String XML_URL_TEMPLATE =
       "http://video.google.com/timedtext?lang=en&v=";
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
@@ -47,7 +47,7 @@ public class TranscriptLineUtil {
    * Creates and returns a TranscriptLine from a datastore {@code entity} using
    * the property names defined in this class.
    */
-  public static TranscriptLine fromLineEntity(Entity entity) {
+  public static TranscriptLine fromEntity(Entity entity) {
     Key key = entity.getKey();
     Key lecture = (Key) entity.getProperty(PROP_LECTURE);
     Date start = (Date) entity.getProperty(PROP_START);
@@ -60,7 +60,7 @@ public class TranscriptLineUtil {
   /**
    * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
    */
-  private static Entity createEntity(Node node, long lectureId) {
+  public static Entity createEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
