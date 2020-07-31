@@ -18,7 +18,7 @@ import com.googleinterns.zoomtube.data.Lecture;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 
-/** Stores Lecture Entity field constants. */
+/** Provides methods to create Lecture Entities and Lectures. */
 public class LectureEntityUtil {
   /** Used to create a Lecture Entity and its fields. */
   public static final String KIND = "Lecture";
