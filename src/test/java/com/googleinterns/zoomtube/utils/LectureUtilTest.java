@@ -18,14 +18,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
-import com.google.appengine.api.datastore.KeyFactory;
 import java.io.IOException;
 import org.junit.Rule;
 import org.junit.Assert;
@@ -38,7 +34,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class LectureUtilTest {
   private final LocalServiceTestHelper testServices =
-    new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    new LocalServiceTestHelper();
 
   @Before
   public void setUp() {
