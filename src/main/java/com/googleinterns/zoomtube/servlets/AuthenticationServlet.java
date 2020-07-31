@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.AuthenticationStatus;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,9 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Sends a user their authentication information, with links to login and logout.
  */
-@WebServlet("/auth")
 public class AuthenticationServlet extends HttpServlet {
-  private static final String REDIRECT_URL = "/lecture-list.html";
+  private static final String REDIRECT_URL = "/";
 
   private UserService userService;
 
