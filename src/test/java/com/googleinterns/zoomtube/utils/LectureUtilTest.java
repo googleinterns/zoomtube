@@ -33,6 +33,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public final class LectureUtilTest {
+  // Needed for accessing datastore services while creating an Entity.
   private final LocalServiceTestHelper testServices =
     new LocalServiceTestHelper();
 
@@ -47,7 +48,7 @@ public final class LectureUtilTest {
   }
 
   @Test
-  public void create() throws IOException {
+  public void create_shouldReturnLectureFromEntity() throws IOException {
     Entity lectureEntity = new Entity(LectureUtil.KIND);
     lectureEntity.setProperty(LectureUtil.NAME, "testName");
     lectureEntity.setProperty(LectureUtil.VIDEO_URL, "testUrl");
@@ -61,7 +62,7 @@ public final class LectureUtilTest {
   }
 
   @Test
-  public void createEntity() throws IOException {
+  public void createEntity_shouldReturnEntityWithInputs() throws IOException {
     Entity result = LectureUtil.createEntity("testName", "testUrl", "testId");
 
     assertThat(result.getProperty(LectureUtil.NAME)).isEqualTo("testName");
