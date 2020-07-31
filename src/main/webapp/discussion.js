@@ -141,7 +141,7 @@ async function fetchDiscussion() {
 
 
 /**
- * 
+ *
  */
 class DiscussionComment extends HTMLElement {
   constructor(comment) {
@@ -151,15 +151,16 @@ class DiscussionComment extends HTMLElement {
     this.shadowRoot.appendChild(shadow);
 
     const username = comment.author.email.split('@')[0];
-    this.setSlotSpan('author', username);
-    this.setSlotSpan('timestamp', '00:00');
-    this.setSlotSpan('created', comment.created);
+    const timestampPrefix = comment.parent.value ? '' : '00:00 - ';
+    const header = `${timestampPrefix}${username} on ${comment.created}`;
+    this.setSlotSpan('header', header);
+
     this.setSlotSpan('content', comment.content);
 
     const replies = document.createElement('div');
     replies.slot = 'replies';
     for (const reply of comment.replies) {
-      replies.appendChild(new Comment(reply));
+      replies.appendChild(new DiscussionComment(reply));
     }
     this.appendChild(replies);
 

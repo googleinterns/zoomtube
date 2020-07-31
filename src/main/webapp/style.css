@@ -15,7 +15,8 @@
   margin-top: 20px;
 }
 
-form {
+#new-comment-form,
+#reply-form {
   width: 100%;
 }
 

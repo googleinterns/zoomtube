@@ -12,7 +12,7 @@
 
 <div class="container" id="discussion">
   <div class="row">
-    <div class="form-group">
+    <div id="new-comment-form" class="form-group">
       <label for="post-textarea">Leave a Comment</label>
       <textarea class="form-control" id="post-textarea" rows="3"></textarea>
     </div>
@@ -31,11 +31,7 @@
       <div class="comment">
         <div>
           <h1 class="comment-header">
-            <slot name="timestamp"></slot>
-            -
-            <slot name="author"></slot>
-            on
-            <slot name="created"></slot>
+            <slot name="header"></slot>&nbsp;
           </h1>
           <div class="comment-content">
             <div><slot name="content"></slot></div>
