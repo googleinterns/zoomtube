@@ -15,61 +15,89 @@
 package com.googleinterns.zoomtube.utils;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.w3c.dom.Element;
 
 @RunWith(JUnit4.class)
 public final class TranscriptLineUtilTest {
-  private final LocalServiceTestHelper testServices = new LocalServiceTestHelper();
-  private static final String TEST_LECTURE = "test lecture";
+  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+  @Mock private Element node;
+  
+  private LocalDatastoreServiceTestConfig datastoreConfig =
+      (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
+  private final LocalServiceTestHelper localServiceHelper =
+      new LocalServiceTestHelper(datastoreConfig);
   private static final String TEST_CONTENT = "test content";
-  private static final Date TEST_DATE = new Date(0);
-
+  
   @Before
   public void setUp() {
-    testServices.setUp();
+    localServiceHelper.setUp();
   }
 
   @After
   public void tearDown() {
-    testServices.tearDown();
+    localServiceHelper.tearDown();
   }
 
   @Test
-  public void fromEntity_sanityCheck() throws IOException {
+  public void fromEntity_transcriptLineSuccessfullyCreated() throws IOException {
+    Date testDate = new Date();
+    Key testLectureKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, "Test Key Id");
     Entity lineEntity = new Entity(TranscriptLineUtil.ENTITY_KIND);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_LECTURE, TEST_LECTURE);
+    lineEntity.setProperty(TranscriptLineUtil.PROP_LECTURE, testLectureKey);
     lineEntity.setProperty(TranscriptLineUtil.PROP_CONTENT, TEST_CONTENT);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_START, TEST_DATE);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_DURATION, TEST_DATE);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_END, TEST_DATE);
+    lineEntity.setProperty(TranscriptLineUtil.PROP_START, testDate);
+    lineEntity.setProperty(TranscriptLineUtil.PROP_DURATION, testDate);
+    lineEntity.setProperty(TranscriptLineUtil.PROP_END, testDate);
 
     TranscriptLine actualLine = TranscriptLineUtil.fromEntity(lineEntity);
 
-    assertThat(actualLine.lecture()).isEqualTo(TEST_LECTURE);
-    assertThat(actualLine.start()).isEqualTo(TEST_DATE);
-    assertThat(actualLine.duration()).isEqualTo(TEST_DATE);
-    assertThat(actualLine.end()).isEqualTo(TEST_DATE);
+    assertThat(actualLine.lecture()).isEqualTo(testLectureKey);
+    assertThat(actualLine.start()).isEqualTo(testDate);
+    assertThat(actualLine.duration()).isEqualTo(testDate);
+    assertThat(actualLine.end()).isEqualTo(testDate);
     assertThat(actualLine.content()).isEqualTo(TEST_CONTENT);
   }
 
   @Test
-  public void createEntity_sanityCheck() throws IOException {
-    // TODO: Create a mock for node
+  public void createEntity_entityAndPropertiesSuccessfullyCreated() throws IOException {
+    String dateAsString = "23.32";
+    long dateAsLong = (long) 23.32;
+    long lectureId = 1;
+    when(node.getTextContent()).thenReturn(TEST_CONTENT);
+    when(node.getAttribute(TranscriptLineUtil.ATTR_START)).thenReturn(dateAsString);
+    when(node.getAttribute(TranscriptLineUtil.ATTR_DURATION)).thenReturn(dateAsString);
+
+    Entity actualEntity = TranscriptLineUtil.createEntity(node, lectureId);
+    Key actualKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, lectureId);
+    Date actualDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong));
+    Date actualStartPlusDurationDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong * 2));
+
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_LECTURE)).isEqualTo(actualKey);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_CONTENT)).isEqualTo(TEST_CONTENT);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_START)).isEqualTo(actualDate);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_DURATION)).isEqualTo(actualDate);
+    // The end time is calculated as start time + duration.
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_END))
+        .isEqualTo(actualStartPlusDurationDate);
   }
 }
