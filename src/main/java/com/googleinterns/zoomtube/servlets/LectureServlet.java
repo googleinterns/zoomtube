@@ -129,7 +129,7 @@ public class LectureServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = LectureUtil.create(lecture);
+      Lecture newLecture = LectureUtil.fromEntity(lecture);
       lectures.add(newLecture);
     }
     return lectures;

@@ -28,7 +28,7 @@ public class LectureUtil {
   public static final String ID = "id";
 
   /** Returns a Lecture from {@code entity}. */
-  public static Lecture create(Entity entity) {
+  public static Lecture fromEntity(Entity entity) {
     Key key = entity.getKey();
     String lectureName = (String) entity.getProperty(NAME);
     String videoUrl = (String) entity.getProperty(VIDEO_URL);
