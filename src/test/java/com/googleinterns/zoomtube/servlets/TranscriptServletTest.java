@@ -72,26 +72,27 @@ public final class TranscriptServletTest {
 
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
-  private static final String SHORT_VIDEO_JSON = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},"
-      + "\"lecture\":{\"kind\":\"lecture\",\"id\":123},"
+  private static final String SHORT_VIDEO_JSON =
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},"
+      + "\"lectureKey\":{\"kind\":\"lecture\",\"id\":123},"
       + "\"start\":\"0.4\",\"duration\":\"1\",\"content\":\" \"},"
-      + "{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":"
+      + "{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lectureKey\":"
       + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"2.28\",\"duration\":\"1\",\"content\""
-      + ":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":"
+      + ":\"Hi\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lectureKey\":"
       + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"5.04\",\"duration\":\"1.6\","
       + "\"content\":\"Okay\"}]";
   private static final String LONG_VIDEO_JSON =
-      "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lecture\":"
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":"
       + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"1.3\",\"duration\":"
       + "\"3.1\",\"content\":\"All right, so here we are\\nin front of the "
-      + "elephants,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lecture\":"
+      + "elephants,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectureKey\":"
       + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"12.7\",\"duration\":\"4.3\",\"content\":"
-      + "\"and that&#39;s, that&#39;s cool.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":5},"
-      + "\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"17\",\"duration\":\"1.767\",\""
-      + "content\":\"And that&#39;s pretty much all there is to say.\"},{\"key\":{\"kind\""
-      + ":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":"
+      + "\"and that&#39;s, that&#39;s cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},"
+      + "\"lectureKey\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"17\",\"duration\":\"1.767\",\""
+      + "content\":\"And that&#39;s pretty much all there is to say.\"},{\"transcriptKey\":{\"kind\""
+      + ":\"TranscriptLine\",\"id\":2},\"lectureKey\":{\"kind\":\"lecture\",\"id\":123},\"start\":"
       + "\"4.4\",\"duration\":\"4.766\",\"content\":\"the cool thing about these guys\\nis that "
-      + "they have really,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lecture\":"
+      + "they have really,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lectureKey\":"
       + "{\"kind\":\"lecture\",\"id\":123},\"start\":\"9.166\",\"duration\":\"3.534\","
       + "\"content\":\"really, really long trunks,\"}]";
 
@@ -224,13 +225,13 @@ public final class TranscriptServletTest {
         json, (new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
-  private void putJsonInDatastore(String json, String lectureId) {
+  private void putJsonInDatastore(String json, String lectureKeyId) {
     List<TranscriptLine> transcriptLineArray = extractJsonAsArrayList(json);
-    Key lectureKey =
-        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
+    Key lectureKeyKey =
+        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureKeyId));
     for (int i = 0; i < transcriptLineArray.size(); i++) {
       Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
+      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKeyKey);
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
       lineEntity.setProperty(TranscriptLine.PROP_START, "");
       lineEntity.setProperty(TranscriptLine.PROP_DURATION, "");
@@ -239,14 +240,15 @@ public final class TranscriptServletTest {
     }
   }
 
-  private int countEntitiesInDatastore(String lectureId) {
-    return datastore.prepare(filteredQuery(lectureId)).countEntities(withLimit(100));
+  private int countEntitiesInDatastore(String lectureKeyId) {
+    return datastore.prepare(filteredQuery(lectureKeyId)).countEntities(withLimit(100));
   }
 
-  private Query filteredQuery(String lectureId) {
-    Key lectureKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
-    Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
-    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureFilter);
+  private Query filteredQuery(String lectureKeyId) {
+    Key lectureKeyKey =
+        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureKeyId));
+    Filter lectureKeyFilter =
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKeyKey);
+    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureKeyFilter);
   }
 }
