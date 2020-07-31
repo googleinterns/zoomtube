@@ -12,13 +12,11 @@
 
 <div class="container" id="discussion">
   <div class="row">
-    <form>
-      <div class="form-group">
-        <label for="post-textarea">Leave a Comment</label>
-        <textarea class="form-control" id="post-textarea" rows="3"></textarea>
-      </div>
-      <button class="btn btn-primary mb-2" type="button" onclick="postNewComment()">Post Comment</button>
-    </form>
+    <div class="form-group">
+      <label for="post-textarea">Leave a Comment</label>
+      <textarea class="form-control" id="post-textarea" rows="3"></textarea>
+    </div>
+    <button class="btn btn-primary mb-2" type="button" onclick="postNewComment()">Post Comment</button>
   </div>
   <div class="row">
     <div class="container" id="discussion-comments"></div>
@@ -48,11 +46,11 @@
             </div>
           </div>
           <div class="replies">
-            <form id="reply-form" class="collapse">
-              <textarea class="form-control" id="post-textarea" rows="3"></textarea>
+            <div id="reply-form" class="collapse">
+              <textarea class="form-control" id="reply-textarea" rows="3"></textarea>
               <button class="btn btn-primary mb-2" type="button" id="post-reply">Post</button>
               <button class="btn btn-secondary mb-2" type="button" id="cancel-reply">Cancel</button>
-            </form>
+            </div>
             <slot name="replies"></slot>
           </div>
         </div>

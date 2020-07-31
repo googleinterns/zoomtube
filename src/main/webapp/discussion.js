@@ -97,7 +97,7 @@ async function loadDiscussion() {
   const comments = await fetchDiscussion();
   const preparedComments = prepareComments(comments);
   for (const comment of preparedComments) {
-    ELEMENT_DISCUSSION.appendChild(new Comment(comment));
+    ELEMENT_DISCUSSION.appendChild(new DiscussionComment(comment));
   }
 }
 
@@ -140,7 +140,7 @@ async function fetchDiscussion() {
 }
 
 
-class Comment extends HTMLElement {
+class DiscussionComment extends HTMLElement {
   constructor(comment) {
     super();
     this.attachShadow({mode: 'open'});
@@ -167,13 +167,13 @@ class Comment extends HTMLElement {
       $(this.shadowRoot.querySelector('#reply-form')).collapse('hide');
     };
     this.shadowRoot.querySelector('#post-reply').onclick = () => {
-      const textarea = this.shadowRoot.querySelector('#post-textarea');
+      const textarea = this.shadowRoot.querySelector('#reply-textarea');
       postReply(textarea, comment.key.id);
     };
   }
 
   setSlotSpan(name, value) {
-    let span = document.createElement('span');
+    const span = document.createElement('span');
     span.innerText = value;
     span.slot = name;
     this.appendChild(span);
@@ -181,4 +181,4 @@ class Comment extends HTMLElement {
 }
 
 // Custom element names must contain a hyphen.
-customElements.define('discussion-comment', Comment);
+customElements.define('discussion-comment', DiscussionComment);
