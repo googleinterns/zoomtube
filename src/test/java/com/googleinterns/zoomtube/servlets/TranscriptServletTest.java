@@ -244,9 +244,9 @@ public final class TranscriptServletTest {
   }
 
   private Query filteredQuery(String lectureId) {
-    Key lecture = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
+    Key lectureKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
     Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureFilter);
   }
 }

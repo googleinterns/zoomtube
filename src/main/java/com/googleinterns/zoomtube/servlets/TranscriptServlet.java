@@ -134,9 +134,9 @@ public class TranscriptServlet extends HttpServlet {
    */
   private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
-    Key lecture = KeyFactory.createKey(PARAM_LECTURE, lectureId);
+    Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
     Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
 
     Query query = new Query(TranscriptLine.ENTITY_KIND)
                       .setFilter(lectureFilter)
