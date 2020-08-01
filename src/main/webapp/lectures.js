@@ -36,15 +36,14 @@ async function loadLectureList() {
  * lecture}'s video url and name.
  */
 function createLectureListItem(lecture) {
-  const listItem = document.createElement('li');
   const lectureLink = document.createElement('a');
 
   const url = new URL(REDIRECT_PAGE, window.location.origin);
   url.searchParams.append(URL_PARAM_ID, lecture.key.id);
   lectureLink.href = url;
+  lectureLink.className = 'list-group-item list-group-item-action';
 
   lectureLink.innerText = lecture.lectureName;
 
-  listItem.appendChild(lectureLink);
-  return listItem;
+  return lectureLink;
 }

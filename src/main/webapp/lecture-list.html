@@ -1,61 +1,76 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
 <title>ZoomTube</title>
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-<link href="sticky-footer.css" rel="stylesheet">
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+<link href="sticky-footer.css" rel="stylesheet" />
 <script src="lectures.js" defer></script>
 
+<body>
+  <div class="super">
+    <nav class="navbar navbar-light" style="background-color: #f3f3f3;">
+      <h2 id="header-text">ZoomTube</h2>
+      <button type="button" class="btn btn-outline-primary">Logout</button>
+    </nav>
 
-<nav class="navbar navbar-light" style="background-color: #f3f3f3;">
-  <a class="navbar-brand">ZoomTube</a>
-  <button type="button" class="btn btn-outline-primary">Logout</button>
-</nav>
+    <div class="list-container">
+      <div class="text-container">
+        <h2 class="text-center">Active Lectures</h2>
+        <p class="text-center">Select a lecture below or add a lecture to start watching and interacting with other
+          students!</p>
+        <div id="lecture-list" class="list-group">
+        </div>
+      </div>
+    </div>
 
-<div class="list-container">
-  <div class="text-container">
-    <h2 class="text-center">Active Lectures</h2>
-    <h5 class="text-center">Select a lecture below to start watching and interacting with other students!</h5>
-    <ul id="lecture-list"></ul>
+    <div class="button-container">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Add a
+        Lecture</button>
+    </div>
   </div>
-</div>
 
-<div class="button-container">
-  <button type="button" class="btn btn-outline-primary">Add a Lecture</button>
-</div>
-
-<!-- <form name="lectureForm" action="/lecture" method="post">
-  <h2>Add a new lecture</h2>
-  <h3>Enter a name for this lecture:</h3>
-  <input type="text" placeholder="Lecture Name" name="name-input" required />
-  <br />
-  <h3>Enter the YouTube link for this lecture:</h3>
-  <input type="url" placeholder="Lecture URL" name="link-input" required />
-  <br />
-  <br />
-  <button type="submit">Submit</button>
-</form> -->
-
-<footer class="footer">
-  <div class="container">
-    <span class="text-muted">Place sticky footer content here.</span>
-  </div>
-</footer>
-
-<!-- <body>
-  <main role="main" class="container">
-    <h1 class="mt-5">Sticky footer</h1>
-    <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML
-      and CSS.</p>
-    <p>Use <a href="../sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
-  </main>
   <footer class="footer">
     <div class="container">
-      <span class="text-muted">Place sticky footer content here.</span>
+      <p class="text-center">
+        <a href="#" class="link">About</a> | <a href="#" class="link">Feedback</a> |
+        <a href="https://github.com/googleinterns/zoomtube" class="link" target="_blank">Source Code</a>
+      </p>
     </div>
   </footer>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div id="cont-text">
+            <h3 class="text-center">Add a Lecture</h3>
+            <p class="text-center">Add a lecture below to start watching and interacting with other students!</p>
+          </div>
+          <div id="cont">
+            <form name="lectureForm" action="/lecture" method="post">
+              <input type="text" class="form-control" placeholder="Lecture Name" name="name-input" required>
+              <br />
+              <input type="url" class="form-control" placeholder="Lecture YouTube URL" name="link-input" required>
+              <br />
+              <div class="submit-button-container">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
-</html> -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+  integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+  integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
