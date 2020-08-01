@@ -21,7 +21,7 @@ const ENDPOINT_TRANSCRIPT = '/transcript';
  */
 function sendPostToTranscript() {
   // TODO: Update lectureQueryString with user input and URL Builder.
-  const lectureQueryString = 'id=123456789&video=3ymwOvzhwHs';
+  const lectureQueryString = 'id=123456789&video=Obgnr9pc820';
   const params = new URLSearchParams(lectureQueryString);
   fetch(ENDPOINT_TRANSCRIPT, {method: 'POST', body: params})
       .then(fetchTranscriptLines(lectureQueryString));
