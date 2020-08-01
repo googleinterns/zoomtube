@@ -1,0 +1,98 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package com.googleinterns.zoomtube.utils;
+
+import static com.google.common.truth.Truth.assertThat;
+
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.User;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.googleinterns.zoomtube.data.Comment;
+import com.googleinterns.zoomtube.data.Lecture;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Optional;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+@RunWith(JUnit4.class)
+public final class CommentUtilTest {
+  // Needed for accessing datastore services while creating an Entity.
+  private final LocalServiceTestHelper testServices = new LocalServiceTestHelper();
+
+  @Before
+  public void setUp() {
+    testServices.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    testServices.tearDown();
+  }
+
+  @Test
+  public void fromEntity_shouldReturnCommentFromEntity() throws IOException {
+    Key lecture = KeyFactory.createKey(LectureUtil.KIND, 12345);
+    Key parent = KeyFactory.createKey(CommentUtil.KIND, 67890);
+    Date timestamp = new Date(123);
+    User author = new User("test@example.com", "example.com");
+    String content = "Test content";
+    Date created = new Date();
+
+    Entity entity = new Entity(CommentUtil.KIND);
+    entity.setProperty(CommentUtil.LECTURE, lecture);
+    entity.setProperty(CommentUtil.PARENT, parent);
+    entity.setProperty(CommentUtil.TIMESTAMP, timestamp);
+    entity.setProperty(CommentUtil.AUTHOR, author);
+    entity.setProperty(CommentUtil.CONTENT, content);
+    entity.setProperty(CommentUtil.CREATED, created);
+
+    Comment comment = CommentUtil.fromEntity(entity);
+
+    assertThat(comment.key()).isEqualTo(entity.getKey());
+    assertThat(comment.lecture()).isEqualTo(lecture);
+    assertThat(comment.parent().isPresent()).isTrue();
+    assertThat(comment.parent().get()).isEqualTo(parent);
+    assertThat(comment.timestamp()).isEqualTo(timestamp);
+    assertThat(comment.author()).isEqualTo(author);
+    assertThat(comment.content()).isEqualTo(content);
+    assertThat(comment.created()).isEqualTo(created);
+  }
+
+  @Test
+  public void createEntity_shouldReturnEntityWithProperties() throws IOException {
+    Key lecture = KeyFactory.createKey(LectureUtil.KIND, 12345);
+    Key parent = KeyFactory.createKey(CommentUtil.KIND, 67890);
+    Date timestamp = new Date(123);
+    User author = new User("test@example.com", "example.com");
+    String content = "Test content";
+    Date created = new Date();
+
+    Entity entity =
+        CommentUtil.createEntity(lecture, Optional.of(parent), timestamp, author, content, created);
+
+    assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lecture);
+    assertThat(entity.getProperty(CommentUtil.PARENT)).isEqualTo(parent);
+    assertThat(entity.getProperty(CommentUtil.TIMESTAMP)).isEqualTo(timestamp);
+    assertThat(entity.getProperty(CommentUtil.AUTHOR)).isEqualTo(author);
+    assertThat(entity.getProperty(CommentUtil.CONTENT)).isEqualTo(content);
+    assertThat(entity.getProperty(CommentUtil.CREATED)).isEqualTo(created);
+  }
+}

@@ -24,32 +24,9 @@ import java.util.Optional;
 /** Contains data related to a comment in a discussion. */
 @AutoValue
 public abstract class Comment {
-  public static final String ENTITY_KIND = "Comment";
-  public static final String PROP_LECTURE = "lecture";
-  public static final String PROP_PARENT = "parent";
-  public static final String PROP_TIMESTAMP = "timestamp";
-  public static final String PROP_AUTHOR = "author";
-  public static final String PROP_CONTENT = "content";
-  public static final String PROP_CREATED = "created";
-
-  private static Comment create(Key key, Key lecture, Optional<Key> parent, Date timestamp,
+  public static Comment create(Key key, Key lecture, Optional<Key> parent, Date timestamp,
       User author, String content, Date created) {
     return new AutoValue_Comment(key, lecture, parent, timestamp, author, content, created);
-  }
-
-  /**
-   * Creates a {@code Comment} from a datastore {@link com.google.appengine.api.datastore.Entity}
-   * using the property names defined in this class.
-   */
-  public static Comment fromEntity(Entity entity) {
-    Key key = entity.getKey();
-    Key lecture = (Key) entity.getProperty(PROP_LECTURE);
-    Optional<Key> parent = Optional.ofNullable((Key) entity.getProperty(PROP_PARENT));
-    Date timestamp = (Date) entity.getProperty(PROP_TIMESTAMP);
-    User author = (User) entity.getProperty(PROP_AUTHOR);
-    String content = (String) entity.getProperty(PROP_CONTENT);
-    Date created = (Date) entity.getProperty(PROP_CREATED);
-    return Comment.create(key, lecture, parent, timestamp, author, content, created);
   }
 
   /** Returns the comment's Datastore entity key. */

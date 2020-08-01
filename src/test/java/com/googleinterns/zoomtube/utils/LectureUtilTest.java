@@ -12,30 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.googleinterns.zoomtube.servlets;
+package com.googleinterns.zoomtube.utils;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
-import org.junit.Rule;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public final class LectureUtilTest {
   // Needed for accessing datastore services while creating an Entity.
-  private final LocalServiceTestHelper testServices =
-    new LocalServiceTestHelper();
+  private final LocalServiceTestHelper testServices = new LocalServiceTestHelper();
 
   @Before
   public void setUp() {
