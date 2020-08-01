@@ -31,7 +31,7 @@ public abstract class TranscriptLine {
   public abstract String content();
 
   /**
-   * Returns a builder instance that can be used to create Comments.
+   * Returns a builder instance that can be used to create TranscriptLines.
    */
   public static Builder builder() {
     return new AutoValue_TranscriptLine.Builder();
