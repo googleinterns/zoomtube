@@ -168,7 +168,7 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_getDataInDatastoreForLongVideo() throws ServletException, IOException {
+  public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
