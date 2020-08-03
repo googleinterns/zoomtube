@@ -55,8 +55,10 @@ import org.mockito.junit.MockitoRule;
 @RunWith(JUnit4.class)
 public final class TranscriptServletTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
+
   private TranscriptServlet servlet;
 
   private LocalDatastoreServiceTestConfig datastoreConfig =
@@ -70,7 +72,6 @@ public final class TranscriptServletTest {
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
-
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   private static final String SHORT_VIDEO_JSON = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":"
@@ -228,13 +229,13 @@ public final class TranscriptServletTest {
         json, (new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
-  private void putJsonInDatastore(String json, String lectureId) {
+  private void putJsonInDatastore(String json, String lectureKeyId) {
     List<TranscriptLine> transcriptLineArray = extractJsonAsArrayList(json);
-    Key lectureKey =
-        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
+    Key lectureKeyKey =
+        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureKeyId));
     for (int i = 0; i < transcriptLineArray.size(); i++) {
       Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
+      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKeyKey);
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
       lineEntity.setProperty(TranscriptLine.PROP_START, new Date());
       lineEntity.setProperty(TranscriptLine.PROP_DURATION, new Date());
@@ -244,14 +245,15 @@ public final class TranscriptServletTest {
     }
   }
 
-  private int countEntitiesInDatastore(String lectureId) {
-    return datastore.prepare(filteredQuery(lectureId)).countEntities(withLimit(100));
+  private int countEntitiesInDatastore(String lectureKeyId) {
+    return datastore.prepare(filteredQuery(lectureKeyId)).countEntities(withLimit(100));
   }
 
-  private Query filteredQuery(String lectureId) {
-    Key lecture = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
-    Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lecture);
-    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureFilter);
+  private Query filteredQuery(String lectureKeyId) {
+    Key lectureKeyKey =
+        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureKeyId));
+    Filter lectureKeyFilter =
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKeyKey);
+    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureKeyFilter);
   }
 }

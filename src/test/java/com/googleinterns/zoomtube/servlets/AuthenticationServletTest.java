@@ -26,29 +26,31 @@ import org.mockito.junit.MockitoRule;
 
 public class AuthenticationServletTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-  private AuthenticationServlet servlet;
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
-  private LocalServiceTestHelper authService;
+  private AuthenticationServlet servlet;
+  private LocalServiceTestHelper testServices =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+
+  private static final String EMAIL = "test@example.com";
 
   @Before
   public void setUp() throws Exception {
+    testServices.setUp();
+    testServices.setEnvAuthDomain("example.com");
+    testServices.setEnvEmail(EMAIL);
     servlet = new AuthenticationServlet();
     servlet.init();
-    authService = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
-    authService.setUp();
   }
 
   @After
   public void cleanUp() {
-    authService.tearDown();
+    testServices.tearDown();
   }
 
   @Test
   public void doGet_loggedIn_expectTrue() throws Exception {
-    authService.setEnvIsLoggedIn(true);
-    authService.setEnvAuthDomain("example.com");
-    authService.setEnvEmail("test@example.com");
+    testServices.setEnvIsLoggedIn(true);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -64,8 +66,7 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_loggedIn_expectFalse() throws Exception {
-    authService.setEnvIsLoggedIn(false);
-    authService.setUp();
+    testServices.setEnvIsLoggedIn(false);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -81,11 +82,8 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_returnsUserEmail() throws Exception {
-    final String EMAIL = "test@example.com";
-    authService.setEnvIsLoggedIn(true);
-    authService.setEnvAuthDomain("example.com");
-    authService.setEnvEmail(EMAIL);
-    authService.setUp();
+    testServices.setEnvIsLoggedIn(true);
+    testServices.setEnvEmail(EMAIL);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -101,10 +99,7 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_loggedIn_expectLogoutUrl() throws Exception {
-    authService.setEnvIsLoggedIn(true);
-    authService.setEnvAuthDomain("example.com");
-    authService.setEnvEmail("test@example.com");
-    authService.setUp();
+    testServices.setEnvIsLoggedIn(true);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -121,8 +116,7 @@ public class AuthenticationServletTest {
 
   @Test
   public void doGet_loggedOut_expectLoginUrl() throws Exception {
-    authService.setEnvIsLoggedIn(false);
-    authService.setUp();
+    testServices.setEnvIsLoggedIn(false);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);

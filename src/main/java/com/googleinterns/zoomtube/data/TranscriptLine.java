@@ -34,19 +34,20 @@ public abstract class TranscriptLine {
   /**
    * Creates a TranscriptLine object.
    *
-   * @param key The key for the transcript.
-   * @param lecture The key for the lecture.
-   * @param start The starting time for the lecture line in seconds.
-   * @param duration The number of seconds that the timestamp lasts for.
+   * @param transcriptKey The key for the transcript.
+   * @param lectureKey The key for the lecture.
+   * @param start The starting Date for the transcript line.
+   * @param duration The duration for the timestamp as a Date.
+   * @param end The ending Date for the transcript line.
    * @param content The text content of the transcript line.
    */
   public static TranscriptLine create(
-      Key key, Key lecture, Date start, Date duration, Date end, String content) {
-    return new AutoValue_TranscriptLine(key, lecture, start, duration, end, content);
+      Key transcriptKey, Key lectureKey, Date start, Date duration, Date end, String content) {
+    return new AutoValue_TranscriptLine(transcriptKey, lectureKey, start, duration, end, content);
   }
 
-  public abstract Key key();
-  public abstract Key lecture();
+  public abstract Key transcriptKey();
+  public abstract Key lectureKey();
   public abstract Date start();
   public abstract Date duration();
   public abstract Date end();
@@ -57,8 +58,8 @@ public abstract class TranscriptLine {
    * the property names defined in this class.
    */
   public static TranscriptLine fromLineEntity(Entity entity) {
-    Key key = entity.getKey();
-    Key lecture = (Key) entity.getProperty(PROP_LECTURE);
+    Key transcriptKey = entity.getKey();
+    Key lectureKey = (Key) entity.getProperty(PROP_LECTURE);
     Date start = (Date) entity.getProperty(PROP_START);
     Date duration = (Date) entity.getProperty(PROP_DURATION);
     Date end = (Date) entity.getProperty(PROP_END);
