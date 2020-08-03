@@ -53,17 +53,16 @@ public final class CommentUtilTest {
     Date timestamp = new Date(123);
     User author = new User("test@example.com", "example.com");
     String content = "Test content";
-    Date created = new Date();
-
+    Date dateNow = new Date();
     Entity entity = new Entity(CommentUtil.KIND);
     entity.setProperty(CommentUtil.LECTURE, lecture);
     entity.setProperty(CommentUtil.PARENT, parent);
     entity.setProperty(CommentUtil.TIMESTAMP, timestamp);
     entity.setProperty(CommentUtil.AUTHOR, author);
     entity.setProperty(CommentUtil.CONTENT, content);
-    entity.setProperty(CommentUtil.CREATED, created);
+    entity.setProperty(CommentUtil.CREATED, dateNow);
 
-    Comment comment = CommentUtil.fromEntity(entity);
+    Comment comment = CommentUtil.createComment(entity);
 
     assertThat(comment.commentKey()).isEqualTo(entity.getKey());
     assertThat(comment.lectureKey()).isEqualTo(lecture);
@@ -72,7 +71,7 @@ public final class CommentUtilTest {
     assertThat(comment.timestamp()).isEqualTo(timestamp);
     assertThat(comment.author()).isEqualTo(author);
     assertThat(comment.content()).isEqualTo(content);
-    assertThat(comment.created()).isEqualTo(created);
+    assertThat(comment.created()).isEqualTo(dateNow);
   }
 
   @Test
@@ -82,16 +81,16 @@ public final class CommentUtilTest {
     Date timestamp = new Date(123);
     User author = new User("test@example.com", "example.com");
     String content = "Test content";
-    Date created = new Date();
+    Date dateNow = new Date();
 
     Entity entity = CommentUtil.createEntity(
-        lectureKey, Optional.of(parentKey), timestamp, author, content, created);
+        lectureKey, Optional.of(parentKey), timestamp, author, content, dateNow);
 
     assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lectureKey);
     assertThat(entity.getProperty(CommentUtil.PARENT)).isEqualTo(parentKey);
     assertThat(entity.getProperty(CommentUtil.TIMESTAMP)).isEqualTo(timestamp);
     assertThat(entity.getProperty(CommentUtil.AUTHOR)).isEqualTo(author);
     assertThat(entity.getProperty(CommentUtil.CONTENT)).isEqualTo(content);
-    assertThat(entity.getProperty(CommentUtil.CREATED)).isEqualTo(created);
+    assertThat(entity.getProperty(CommentUtil.CREATED)).isEqualTo(dateNow);
   }
 }

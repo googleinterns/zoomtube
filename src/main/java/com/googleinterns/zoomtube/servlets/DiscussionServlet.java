@@ -101,7 +101,7 @@ public class DiscussionServlet extends HttpServlet {
 
     ImmutableList.Builder<Comment> commentsBuilder = new ImmutableList.Builder<>();
     for (Entity entity : pq.asQueryResultIterable()) {
-      commentsBuilder.add(CommentUtil.fromEntity(entity));
+      commentsBuilder.add(CommentUtil.createComment(entity));
     }
     ImmutableList<Comment> comments = commentsBuilder.build();
 

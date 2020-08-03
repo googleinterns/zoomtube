@@ -36,7 +36,7 @@ public final class CommentUtil {
   /**
    * Returns a Comment using the properties of {@code entity}.
    */
-  public static Comment fromEntity(Entity entity) {
+  public static Comment createComment(Entity entity) {
     Key commentKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
     Optional<Key> parentKey = Optional.ofNullable((Key) entity.getProperty(PARENT));
