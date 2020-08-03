@@ -103,6 +103,5 @@ function appendParagraphToContainer(text, container, classes = []) {
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
 function deleteTranscript() {
-  const params = new URLSearchParams('');
   fetch('/delete-transcript', {method: 'POST', body: ''});
 }
