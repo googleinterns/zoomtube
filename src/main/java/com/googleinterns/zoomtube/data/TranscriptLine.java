@@ -54,6 +54,7 @@ public abstract class TranscriptLine {
    * Creates and returns a TranscriptLine from a datastore {@code entity} using the
    * property names defined in this class.
    */
+  // TODO: Convert fromLineEntity into a builder and move it into a Utils class.
   public static TranscriptLine fromLineEntity(Entity entity) {
     Key transcriptKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(PROP_LECTURE);
