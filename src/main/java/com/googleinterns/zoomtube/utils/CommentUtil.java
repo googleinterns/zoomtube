@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.Optional;
 
 /** Provides methods to create Comment Entities and Comments. */
-public class CommentUtil {
+public final class CommentUtil {
   public static final String KIND = "Comment";
   public static final String LECTURE = "lecture";
   public static final String PARENT = "parent";
@@ -30,6 +30,8 @@ public class CommentUtil {
   public static final String AUTHOR = "author";
   public static final String CONTENT = "content";
   public static final String CREATED = "created";
+
+  private CommentUtil(){};
 
   /**
    * Returns a Comment using the properties of {@code entity}.
