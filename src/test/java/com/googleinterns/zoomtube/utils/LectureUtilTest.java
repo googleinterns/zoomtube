@@ -51,7 +51,7 @@ public final class LectureUtilTest {
     lectureEntity.setProperty(LectureUtil.VIDEO_URL, "testUrl");
     lectureEntity.setProperty(LectureUtil.VIDEO_ID, "testId");
 
-    Lecture result = LectureUtil.fromEntity(lectureEntity);
+    Lecture result = LectureUtil.createLecture(lectureEntity);
 
     assertThat(result.lectureName()).isEqualTo("testName");
     assertThat(result.videoUrl()).isEqualTo("testUrl");
