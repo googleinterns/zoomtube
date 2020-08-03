@@ -44,7 +44,15 @@ public final class CommentUtil {
     User author = (User) entity.getProperty(AUTHOR);
     String content = (String) entity.getProperty(CONTENT);
     Date created = (Date) entity.getProperty(CREATED);
-    return Comment.create(commentKey, lectureKey, parentKey, timestamp, author, content, created);
+    return Comment.builder()
+        .setCommentKey(commentKey)
+        .setLectureKey(lectureKey)
+        .setParentKey(parentKey)
+        .setTimestamp(timestamp)
+        .setAuthor(author)
+        .setContent(content)
+        .setCreated(created)
+        .build();
   }
 
   /**

@@ -23,12 +23,6 @@ import java.util.Optional;
 /** Contains data related to a comment in a discussion. */
 @AutoValue
 public abstract class Comment {
-  public static Comment create(Key commentKey, Key lectureKey, Optional<Key> parentKey,
-      Date timestamp, User author, String content, Date created) {
-    return new AutoValue_Comment(
-        commentKey, lectureKey, parentKey, timestamp, author, content, created);
-  }
-
   /** Returns the comment's Datastore entity key. */
   public abstract Key commentKey();
 
@@ -54,4 +48,22 @@ public abstract class Comment {
 
   /** Returns the comment's creation date. */
   public abstract Date created();
+
+  public static Builder builder() {
+    return new AutoValue_Comment.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setCommentKey(Key commentKey);
+    public abstract Builder setLectureKey(Key lectureKey);
+    public abstract Builder setParentKey(Key parentKey);
+    public abstract Builder setParentKey(Optional<Key> parentKey);
+    public abstract Builder setTimestamp(Date timestamp);
+    public abstract Builder setAuthor(User author);
+    public abstract Builder setContent(String content);
+    public abstract Builder setCreated(Date created);
+
+    public abstract Comment build();
+  }
 }
