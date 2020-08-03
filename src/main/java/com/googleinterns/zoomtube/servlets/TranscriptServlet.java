@@ -95,17 +95,16 @@ public class TranscriptServlet extends HttpServlet {
   private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
 
-    final Document document;
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
+      Document document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
       document.getDocumentElement().normalize();
+      return Optional.of(document);
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: Alert the user.
       System.out.println("XML parsing error");
       return Optional.empty();
     }
-    return Optional.of(document);
   }
 
   /**
