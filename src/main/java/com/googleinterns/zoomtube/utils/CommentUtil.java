@@ -18,7 +18,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.googleinterns.zoomtube.data.Comment;
-import com.googleinterns.zoomtube.data.Lecture;
 import java.util.Date;
 import java.util.Optional;
 
@@ -36,25 +35,25 @@ public class CommentUtil {
    * Returns a Comment using the properties of {@code entity}.
    */
   public static Comment fromEntity(Entity entity) {
-    Key key = entity.getKey();
-    Key lecture = (Key) entity.getProperty(LECTURE);
-    Optional<Key> parent = Optional.ofNullable((Key) entity.getProperty(PARENT));
+    Key commentKey = entity.getKey();
+    Key lectureKey = (Key) entity.getProperty(LECTURE);
+    Optional<Key> parentKey = Optional.ofNullable((Key) entity.getProperty(PARENT));
     Date timestamp = (Date) entity.getProperty(TIMESTAMP);
     User author = (User) entity.getProperty(AUTHOR);
     String content = (String) entity.getProperty(CONTENT);
     Date created = (Date) entity.getProperty(CREATED);
-    return Comment.create(key, lecture, parent, timestamp, author, content, created);
+    return Comment.create(commentKey, lectureKey, parentKey, timestamp, author, content, created);
   }
 
   /**
-   * Creates and returns an entity for {@code comment}.
+   * Creates and returns an entity with the specified properties.
    */
-  public static Entity createEntity(Key lecture, Optional<Key> parent, Date timestamp, User author,
-      String content, Date created) {
+  public static Entity createEntity(Key lectureKey, Optional<Key> parentKey, Date timestamp,
+      User author, String content, Date created) {
     Entity entity = new Entity(KIND);
-    entity.setProperty(LECTURE, lecture);
-    if (parent.isPresent()) {
-      entity.setProperty(PARENT, parent.get());
+    entity.setProperty(LECTURE, lectureKey);
+    if (parentKey.isPresent()) {
+      entity.setProperty(PARENT, parentKey.get());
     }
     entity.setProperty(TIMESTAMP, timestamp);
     entity.setProperty(AUTHOR, author);

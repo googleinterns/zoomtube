@@ -14,7 +14,6 @@
 
 package com.googleinterns.zoomtube.data;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
@@ -24,22 +23,23 @@ import java.util.Optional;
 /** Contains data related to a comment in a discussion. */
 @AutoValue
 public abstract class Comment {
-  public static Comment create(Key key, Key lecture, Optional<Key> parent, Date timestamp,
-      User author, String content, Date created) {
-    return new AutoValue_Comment(key, lecture, parent, timestamp, author, content, created);
+  public static Comment create(Key commentKey, Key lectureKey, Optional<Key> parentKey,
+      Date timestamp, User author, String content, Date created) {
+    return new AutoValue_Comment(
+        commentKey, lectureKey, parentKey, timestamp, author, content, created);
   }
 
   /** Returns the comment's Datastore entity key. */
-  public abstract Key key();
+  public abstract Key commentKey();
 
   /** Every comment is about a lecture, this returns the lecture's Datastore entity key. */
-  public abstract Key lecture();
+  public abstract Key lectureKey();
 
   /**
    * Returns the key of the comment this is a reply to, or {@code Optional.empty()} if this
    * isn't a reply.
    */
-  public abstract Optional<Key> parent();
+  public abstract Optional<Key> parentKey();
 
   /** Returns the timestamp in the video this comment is referencing. */
   public abstract Date timestamp();

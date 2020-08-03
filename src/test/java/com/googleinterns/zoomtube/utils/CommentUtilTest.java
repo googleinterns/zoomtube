@@ -22,7 +22,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Comment;
-import com.googleinterns.zoomtube.data.Lecture;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
@@ -66,10 +65,10 @@ public final class CommentUtilTest {
 
     Comment comment = CommentUtil.fromEntity(entity);
 
-    assertThat(comment.key()).isEqualTo(entity.getKey());
-    assertThat(comment.lecture()).isEqualTo(lecture);
-    assertThat(comment.parent().isPresent()).isTrue();
-    assertThat(comment.parent().get()).isEqualTo(parent);
+    assertThat(comment.commentKey()).isEqualTo(entity.getKey());
+    assertThat(comment.lectureKey()).isEqualTo(lecture);
+    assertThat(comment.parentKey().isPresent()).isTrue();
+    assertThat(comment.parentKey().get()).isEqualTo(parent);
     assertThat(comment.timestamp()).isEqualTo(timestamp);
     assertThat(comment.author()).isEqualTo(author);
     assertThat(comment.content()).isEqualTo(content);
@@ -78,18 +77,18 @@ public final class CommentUtilTest {
 
   @Test
   public void createEntity_shouldReturnEntityWithProperties() throws IOException {
-    Key lecture = KeyFactory.createKey(LectureUtil.KIND, 12345);
-    Key parent = KeyFactory.createKey(CommentUtil.KIND, 67890);
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 12345);
+    Key parentKey = KeyFactory.createKey(CommentUtil.KIND, 67890);
     Date timestamp = new Date(123);
     User author = new User("test@example.com", "example.com");
     String content = "Test content";
     Date created = new Date();
 
-    Entity entity =
-        CommentUtil.createEntity(lecture, Optional.of(parent), timestamp, author, content, created);
+    Entity entity = CommentUtil.createEntity(
+        lectureKey, Optional.of(parentKey), timestamp, author, content, created);
 
-    assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lecture);
-    assertThat(entity.getProperty(CommentUtil.PARENT)).isEqualTo(parent);
+    assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lectureKey);
+    assertThat(entity.getProperty(CommentUtil.PARENT)).isEqualTo(parentKey);
     assertThat(entity.getProperty(CommentUtil.TIMESTAMP)).isEqualTo(timestamp);
     assertThat(entity.getProperty(CommentUtil.AUTHOR)).isEqualTo(author);
     assertThat(entity.getProperty(CommentUtil.CONTENT)).isEqualTo(content);
