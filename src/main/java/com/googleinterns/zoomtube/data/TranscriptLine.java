@@ -64,6 +64,6 @@ public abstract class TranscriptLine {
     Date duration = (Date) entity.getProperty(PROP_DURATION);
     Date end = (Date) entity.getProperty(PROP_END);
     String content = (String) entity.getProperty(PROP_CONTENT);
-    return TranscriptLine.create(key, lecture, start, duration, end, content);
+    return TranscriptLine.create(transcriptKey, lectureKey, start, duration, end, content);
   }
 }

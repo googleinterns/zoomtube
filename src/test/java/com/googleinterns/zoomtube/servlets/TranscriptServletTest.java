@@ -74,28 +74,30 @@ public final class TranscriptServletTest {
   private static final String LECTURE_ID_C = "234";
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
-  private static final String SHORT_VIDEO_JSON = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":"
-      + "1},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:00 AM\","
+  private static final String SHORT_VIDEO_JSON =
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
+      + "1},\"lectureKey\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:00 AM\","
       + "\"duration\":\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:01 AM\",\"content\":"
-      + "\" \"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\","
+      + "\" \"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lectureKey\":{\"kind\":\"lecture\","
       + "\"id\":123},\"start\":\"Jan 1, 1970 12:00:02 AM\",\"duration\":\"Jan 1, 1970 12:00:01 AM\","
-      + "\"end\":\"Jan 1, 1970 12:00:03 AM\",\"content\":\"Hi\"},{\"key\":{\"kind\":\"TranscriptLine\","
-      + "\"id\":3},\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:05 AM\","
+      + "\"end\":\"Jan 1, 1970 12:00:03 AM\",\"content\":\"Hi\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\","
+      + "\"id\":3},\"lectureKey\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:05 AM\","
       + "\"duration\":\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:06 AM\",\"content\":\"Okay\"}]";
-  private static final String LONG_VIDEO_JSON = "[{\"key\":{\"kind\":\"TranscriptLine\",\"id\":1}"
-      + ",\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:01 AM\","
+  private static final String LONG_VIDEO_JSON =
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1}"
+      + ",\"lectureKey\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:01 AM\","
       + "\"duration\":\"Jan 1, 1970 12:00:03 AM\",\"end\":\"Jan 1, 1970 12:00:04 AM\",\"content\""
-      + ":\"All right, so here we are\\nin front of the elephants,\"},{\"key\":{\"kind\":"
-      + "\"TranscriptLine\",\"id\":2},\"lecture\":{\"kind\":\"lecture\",\"id\":123}"
+      + ":\"All right, so here we are\\nin front of the elephants,\"},{\"transcriptKey\":{\"kind\":"
+      + "\"TranscriptLine\",\"id\":2},\"lectureKey\":{\"kind\":\"lecture\",\"id\":123}"
       + ",\"start\":\"Jan 1, 1970 12:00:04 AM\",\"duration\":\"Jan 1, 1970 12:00:04 AM\","
       + "\"end\":\"Jan 1, 1970 12:00:09 AM\",\"content\":\"the cool thing about these "
-      + "guys\\nis that they have really,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":3},"
-      + "\"lecture\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:09 AM\","
+      + "guys\\nis that they have really,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},"
+      + "\"lectureKey\":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:09 AM\","
       + "\"duration\":\"Jan 1, 1970 12:00:03 AM\",\"end\":\"Jan 1, 1970 12:00:12 AM\",\"content\":"
-      + "\"really, really long trunks,\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lecture\""
+      + "\"really, really long trunks,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectureKey\""
       + ":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:12 AM\",\"duration\":\"Jan "
       + "1, 1970 12:00:04 AM\",\"end\":\"Jan 1, 1970 12:00:17 AM\",\"content\":\"and that&#39;s, "
-      + "that&#39;s cool.\"},{\"key\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lecture\""
+      + "that&#39;s cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectureKey\""
       + ":{\"kind\":\"lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:17 AM\",\"duration\":"
       + "\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:18 AM\",\"content\""
       + ":\"And that&#39;s pretty much all there is to say.\"}]";

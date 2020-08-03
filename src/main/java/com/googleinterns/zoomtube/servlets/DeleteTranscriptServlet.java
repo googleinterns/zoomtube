@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that deletes all of the transcript lines. */
-// TODO: Delete this file after testing is complete.
 @WebServlet("/delete-transcript")
 public class DeleteTranscriptServlet extends HttpServlet {
   @Override
