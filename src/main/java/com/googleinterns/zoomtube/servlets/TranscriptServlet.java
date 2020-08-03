@@ -80,8 +80,10 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Document document = getTranscriptXmlAsDocument(request).get();
-    putTranscriptLinesInDatastore(request, document);
+    String videoId = request.getParameter(PARAM_VIDEO_ID);
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    Document document = getTranscriptXmlAsDocument(videoId).get();
+    putTranscriptLinesInDatastore(lectureId, document);
   }
 
   /**
@@ -90,9 +92,8 @@ public class TranscriptServlet extends HttpServlet {
    *
    * @param request Indicates the video to extract the transcript from.
    */
-  private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
+  private Optional<Document> getTranscriptXmlAsDocument(String videoId)
       throws IOException {
-    String videoId = request.getParameter(PARAM_VIDEO_ID);
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
 
     final Document document;
@@ -114,8 +115,7 @@ public class TranscriptServlet extends HttpServlet {
    * @param request Indicates the lecture key to group the transcript lines under.
    * @param document The XML file containing the transcript lines.
    */
-  private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+  private void putTranscriptLinesInDatastore(long lectureId, Document document) {
     NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
@@ -125,7 +125,8 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PreparedQuery preparedQuery = getLectureTranscriptQuery(request);
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
     writeResponseAsJson(response, transcriptLines);
   }
@@ -133,8 +134,7 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Returns the query for the lecture transcripts based on lecture id indicated in {@code request}.
    */
-  private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+  private PreparedQuery getLectureTranscriptQuery(long lectureId) {
     Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
