@@ -67,9 +67,9 @@ function appendTextToList(transcriptLine, ulElement) {
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
+      startDate.getSeconds()}`;
   const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
@@ -103,5 +103,5 @@ function appendParagraphToContainer(text, container, classes = []) {
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
 function deleteTranscript() {
-  fetch('/delete-transcript', {method: 'POST', body: ''});
+  fetch('/delete-transcript', {method: 'POST'});
 }
