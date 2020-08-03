@@ -119,10 +119,10 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
+    
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(SHORT_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
-
     assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size());
   }
 
@@ -132,9 +132,9 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_B);
 
     servlet.doPost(request, response);
+    
     int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B);
     int expectedQueryCount = (extractJson(SHORT_VIDEO_JSON)).size();
-
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
 
@@ -145,10 +145,10 @@ public final class TranscriptServletTest {
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
+    
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(SHORT_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
-
     assertThat(actualJsonArray).isEqualTo(expectedArrayList);
   }
 
@@ -199,8 +199,8 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
     servlet.doGet(request, response);
-    String actualJson = lectureTranscript.toString();
     
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
     assertThat(actualJsonArray.size()).isEqualTo(0);
   }
@@ -212,8 +212,8 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
-    String actualJson = lectureTranscript.toString();
     
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
     assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size());
