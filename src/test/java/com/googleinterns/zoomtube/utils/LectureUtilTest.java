@@ -16,24 +16,23 @@ package com.googleinterns.zoomtube.utils;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
-import org.junit.Rule;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public final class LectureUtilTest {
   // Needed for accessing datastore services while creating an Entity.
-  private final LocalServiceTestHelper testServices =
-    new LocalServiceTestHelper();
+  private final LocalServiceTestHelper testServices = new LocalServiceTestHelper();
 
   @Before
   public void setUp() {
@@ -46,7 +45,7 @@ public final class LectureUtilTest {
   }
 
   @Test
-  public void create_shouldReturnLectureFromEntity() throws IOException {
+  public void createLecture_shouldReturnLectureFromEntity() throws IOException {
     Entity lectureEntity = new Entity(LectureUtil.KIND);
     lectureEntity.setProperty(LectureUtil.NAME, "testName");
     lectureEntity.setProperty(LectureUtil.VIDEO_URL, "testUrl");
@@ -61,7 +60,8 @@ public final class LectureUtilTest {
 
   @Test
   public void createEntity_shouldReturnEntityWithInputs() throws IOException {
-    Entity result = LectureUtil.createEntity("testName", "testUrl", "testId");
+    Entity result = LectureUtil.createEntity(
+        /* lectureName= */ "testName", /* videoUrl= */ "testUrl", /* videoId= */ "testId");
 
     assertThat(result.getProperty(LectureUtil.NAME)).isEqualTo("testName");
     assertThat(result.getProperty(LectureUtil.VIDEO_URL)).isEqualTo("testUrl");

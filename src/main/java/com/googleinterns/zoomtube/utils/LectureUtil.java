@@ -14,12 +14,12 @@
 
 package com.googleinterns.zoomtube.utils;
 
-import com.googleinterns.zoomtube.data.Lecture;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.googleinterns.zoomtube.data.Lecture;
 
 /** Utility for creating Lecture Entities and Lectures. */
-public class LectureUtil {
+public final class LectureUtil {
   /** Used to create a Lecture Entity and its fields. */
   public static final String KIND = "Lecture";
   public static final String NAME = "lectureName";
@@ -27,16 +27,18 @@ public class LectureUtil {
   public static final String VIDEO_ID = "video-id";
   public static final String ID = "id";
 
+  private LectureUtil(){};
+
   /** Returns a Lecture from {@code entity}. */
-  public static Lecture fromEntity(Entity entity) {
+  public static Lecture createLecture(Entity entity) {
     Key key = entity.getKey();
     String lectureName = (String) entity.getProperty(NAME);
     String videoUrl = (String) entity.getProperty(VIDEO_URL);
     String videoId = (String) entity.getProperty(VIDEO_ID);
     return Lecture.create(key, lectureName, videoUrl, videoId);
   }
-  
-  /** 
+
+  /**
    * Creates and returns a Lecture Entity using {@code lectureName},
    * {@code videoUrl}, and {@code videoId}.
    */
