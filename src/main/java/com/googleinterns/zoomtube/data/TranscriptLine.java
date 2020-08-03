@@ -23,8 +23,8 @@ import java.util.Date;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLine {
-  public abstract Key key();
-  public abstract Key lecture();
+  public abstract Key transcriptKey();
+  public abstract Key lectureKey();
   public abstract Date start();
   public abstract Date duration();
   public abstract Date end();
@@ -42,8 +42,8 @@ public abstract class TranscriptLine {
    */
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder setKey(Key key);
-    public abstract Builder setLecture(Key lecture);
+    public abstract Builder setTranscriptKey(Key transcriptKey);
+    public abstract Builder setLectureKey(Key lectureKey);
     public abstract Builder setStart(Date start);
     public abstract Builder setDuration(Date duration);
     public abstract Builder setEnd(Date end);

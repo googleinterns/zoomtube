@@ -22,7 +22,7 @@ const MILLISECOND_CONVERTER = 1000;
  */
 function sendPostToTranscript() {
   // TODO: Update lectureQueryString with user input and URL Builder.
-  const lectureQueryString = 'id=123456789&video=3ymwOvzhwHs';
+  const lectureQueryString = 'id=123456789&video=Obgnr9pc820';
   const params = new URLSearchParams(lectureQueryString);
   fetch(ENDPOINT_TRANSCRIPT, {method: 'POST', body: params})
       .then(fetchTranscriptLines(lectureQueryString));
@@ -83,10 +83,10 @@ function appendTextToList(transcriptLine, ulElement) {
 }
 
 /**
- * Creates a <p> tag to store the given {@code text} inside the
+ * Creates a p tag to store the given {@code text} inside the
  * {@code container}.
  *
- * <p>Adds classes the the <p> tag if {@code classList} is provided.
+ * <p>Adds classes the the p tag if {@code classList} is provided.
  */
 function appendParagraphToContainer(text, container, classes = []) {
   const pTag = document.createElement('p');
@@ -102,9 +102,6 @@ function appendParagraphToContainer(text, container, classes = []) {
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
-// TODO: Delete this method once I no longer need to delete all of the
-// transcripts for testing.
 function deleteTranscript() {
-  const params = new URLSearchParams('');
-  fetch('/delete-transcript', {method: 'POST', body: params});
+  fetch('/delete-transcript', {method: 'POST'});
 }

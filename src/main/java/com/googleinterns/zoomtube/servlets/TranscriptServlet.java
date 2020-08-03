@@ -65,7 +65,7 @@ public class TranscriptServlet extends HttpServlet {
    * the entities in datastore.
    */
   @VisibleForTesting
-  protected void init(DatastoreService testDatastore) {
+  void init(DatastoreService testDatastore) {
     datastore = testDatastore;
   }
 
@@ -103,6 +103,7 @@ public class TranscriptServlet extends HttpServlet {
    * Puts each transcript line from {@code document} in datastore as its own entity.
    *
    * @param request Indicates the lecture key to group the transcript lines under.
+   * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
     long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
@@ -125,9 +126,9 @@ public class TranscriptServlet extends HttpServlet {
    */
   private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
-    Key lecture = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, lectureId);
+    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, lectureId);
     Filter lectureFilter =
-        new FilterPredicate(TranscriptLineUtil.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+        new FilterPredicate(TranscriptLineUtil.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
 
     Query query = new Query(TranscriptLineUtil.ENTITY_KIND)
                       .setFilter(lectureFilter)
