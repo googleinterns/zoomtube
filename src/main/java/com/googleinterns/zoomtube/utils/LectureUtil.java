@@ -18,7 +18,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.googleinterns.zoomtube.data.Lecture;
 
-/** Provides methods to create Lecture Entities and Lectures. */
+/** Utility for creating Lecture Entities and Lectures. */
 public class LectureUtil {
   /** Used to create a Lecture Entity and its fields. */
   public static final String KIND = "Lecture";
