@@ -59,14 +59,14 @@ public final class TranscriptServletTest {
   @Mock private HttpServletResponse response;
 
   private TranscriptServlet servlet;
-
-  private LocalDatastoreServiceTestConfig datastoreConfig =
-      (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
-  private final LocalServiceTestHelper localServiceHelper =
-      new LocalServiceTestHelper(datastoreConfig);
   private DatastoreService datastore;
   private Gson gson;
-  StringWriter content;
+  private StringWriter lectureTranscript;
+
+  private final LocalDatastoreServiceTestConfig datastoreConfig =
+  (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
+  private final LocalServiceTestHelper localServiceHelper =
+  new LocalServiceTestHelper(datastoreConfig);
 
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
@@ -104,8 +104,8 @@ public final class TranscriptServletTest {
     datastore = DatastoreServiceFactory.getDatastoreService();
     servlet.init(datastore);
     gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
-    content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
+    lectureTranscript = new StringWriter();
+    PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
   }
 
@@ -120,7 +120,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
-    String actualJson = content.toString();
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(SHORT_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
@@ -140,13 +140,13 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_doPost_StoreAndRetrieveShortVideo() throws ServletException, IOException {
+  public void doGet_doPost_storeAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
-    String actualJson = content.toString();
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(SHORT_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
@@ -154,13 +154,13 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_doPost_StoreAndRetrieveLongVideo() throws ServletException, IOException {
+  public void doGet_doPost_storeAndRetrieveLongVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
-    String actualJson = content.toString();
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
@@ -173,7 +173,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
-    String actualJson = content.toString();
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
@@ -193,14 +193,14 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_OnlyOtherLecturesInDatastore_GetNoLectures()
+  public void doGet_onlyOtherLecturesInDatastore_GetNoLectures()
       throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
     servlet.doGet(request, response);
-    String actualJson = content.toString();
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = new ArrayList<>();
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
@@ -208,13 +208,13 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_TwoLecturesInDatastore_GetOneLecture() throws ServletException, IOException {
+  public void doGet_twoLecturesInDatastore_GetOneLecture() throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
-    String actualJson = content.toString();
+    String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJsonAsArrayList(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJsonAsArrayList(actualJson);
 
