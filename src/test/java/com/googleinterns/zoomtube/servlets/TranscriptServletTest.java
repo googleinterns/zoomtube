@@ -64,9 +64,9 @@ public final class TranscriptServletTest {
   private StringWriter lectureTranscript;
 
   private static final LocalDatastoreServiceTestConfig datastoreConfig =
-  (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
+      (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private static final LocalServiceTestHelper localServiceHelper =
-  new LocalServiceTestHelper(datastoreConfig);
+      new LocalServiceTestHelper(datastoreConfig);
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
@@ -119,7 +119,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
-    
+
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(SHORT_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
@@ -132,7 +132,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_B);
 
     servlet.doPost(request, response);
-    
+
     int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B);
     int expectedQueryCount = (extractJson(SHORT_VIDEO_JSON)).size();
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
@@ -145,7 +145,7 @@ public final class TranscriptServletTest {
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
-    
+
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(SHORT_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
@@ -159,7 +159,7 @@ public final class TranscriptServletTest {
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
-    
+
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
@@ -172,7 +172,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
-    
+
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
@@ -185,7 +185,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
     servlet.doPost(request, response);
-    
+
     int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
     int expectedQueryCount = (extractJson(LONG_VIDEO_JSON)).size();
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
@@ -199,20 +199,21 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
     servlet.doGet(request, response);
-    
+
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);
     assertThat(actualJsonArray.size()).isEqualTo(0);
   }
 
   @Test
-  public void doGet_twoLecturesInDatastore_returnsOneLecture() throws ServletException, IOException {
+  public void doGet_twoLecturesInDatastore_returnsOneLecture()
+      throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
-    
+
     String actualJson = lectureTranscript.toString();
     List<TranscriptLine> expectedArrayList = extractJson(LONG_VIDEO_JSON);
     List<TranscriptLine> actualJsonArray = extractJson(actualJson);

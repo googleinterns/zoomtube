@@ -92,8 +92,7 @@ public class TranscriptServlet extends HttpServlet {
    *
    * @param request Indicates the video to extract the transcript from.
    */
-  private Optional<Document> getTranscriptXmlAsDocument(String videoId)
-      throws IOException {
+  private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
 
     final Document document;
