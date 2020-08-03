@@ -63,11 +63,10 @@ public final class TranscriptServletTest {
   private Gson gson;
   private StringWriter lectureTranscript;
 
-  private final LocalDatastoreServiceTestConfig datastoreConfig =
+  private static final LocalDatastoreServiceTestConfig datastoreConfig =
   (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
-  private final LocalServiceTestHelper localServiceHelper =
+  private static final LocalServiceTestHelper localServiceHelper =
   new LocalServiceTestHelper(datastoreConfig);
-
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
