@@ -66,6 +66,7 @@ public class LectureServlet extends HttpServlet {
 
   // TODO: Check if URL is valid.
   @Override
+  // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
     Optional<Entity> existingEntity = checkUrlInDatabase(optionalVideoUrl);
