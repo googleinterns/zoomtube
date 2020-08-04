@@ -21,18 +21,13 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.servlets.TranscriptServlet;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public class TranscriptLineUtil {
   // TODO: Move these constants back to TranscriptServlet because
   // that is where the XML is being parsed.
-  public static final String ATTR_START = "start";
-  public static final String ATTR_DURATION = "dur";
-  public static final String TAG_TEXT = "text";
   public static final String KIND = "TranscriptLine";
-
   public static final String LECTURE = "lecture";
   public static final String START = "start";
   public static final String DURATION = "duration";
@@ -78,6 +73,23 @@ public class TranscriptLineUtil {
     Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
     lineEntity.setProperty(DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
     Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+    lineEntity.setProperty(END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
+    return lineEntity;
+  }
+
+  /**
+   * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
+   */
+  // TODO: Update createEntity to take in the attributes rather than the nodes.
+  public static Entity createEntity(long lectureId, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
+    Entity lineEntity = new Entity(KIND);
+    // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is
+    // merged to this branch.
+    lineEntity.setProperty(
+      LECTURE, KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId));
+    lineEntity.setProperty(CONTENT, lineContent);
+    lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
+    lineEntity.setProperty(DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
     lineEntity.setProperty(END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
   }

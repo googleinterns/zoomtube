@@ -45,6 +45,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import org.w3c.dom.Element;
 
 /**
  * Provides the transcript for a given lecture.
@@ -55,6 +56,9 @@ public class TranscriptServlet extends HttpServlet {
   public static final String PARAM_LECTURE = "lecture";
   public static final String PARAM_LECTURE_ID = "id";
   public static final String PARAM_VIDEO_ID = "video";
+  public static final String ATTR_START = "start";
+  public static final String ATTR_DURATION = "dur";
+  public static final String TAG_TEXT = "text";
 
   private DatastoreService datastore;
 
@@ -112,10 +116,15 @@ public class TranscriptServlet extends HttpServlet {
    */
   private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
-    NodeList nodeList = document.getElementsByTagName(TranscriptLineUtil.TAG_TEXT);
+    NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
-      datastore.put(TranscriptLineUtil.createEntity(node, lectureId));
+      Element element = (Element) node;
+      String lineContent = node.getTextContent();
+      Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
+      Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
+      Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+      datastore.put(TranscriptLineUtil.createEntity(lectureId, lineContent, lineStart, lineDuration, lineEnd));
     }
   }
 

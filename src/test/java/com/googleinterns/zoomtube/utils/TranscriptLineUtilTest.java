@@ -83,8 +83,8 @@ public final class TranscriptLineUtilTest {
     long dateAsLong = (long) 23.32;
     long lectureId = 1;
     when(node.getTextContent()).thenReturn(TEST_CONTENT);
-    when(node.getAttribute(TranscriptLineUtil.ATTR_START)).thenReturn(dateAsString);
-    when(node.getAttribute(TranscriptLineUtil.ATTR_DURATION)).thenReturn(dateAsString);
+    when(node.getAttribute(TranscriptServlet.ATTR_START)).thenReturn(dateAsString);
+    when(node.getAttribute(TranscriptServlet.ATTR_DURATION)).thenReturn(dateAsString);
 
     Entity actualEntity = TranscriptLineUtil.createEntity(node, lectureId);
     Key actualKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId);
