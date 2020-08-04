@@ -242,7 +242,7 @@ public final class TranscriptServletTest {
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
       lineEntity.setProperty(TranscriptLineUtil.START, new Date());
       lineEntity.setProperty(TranscriptLineUtil.DURATION, new Date());
-      lineEntity.setProperty(TranscriptLineUtil.PROP_END, new Date());
+      lineEntity.setProperty(TranscriptLineUtil.END, new Date());
       lineEntity.setProperty(TranscriptLineUtil.CONTENT, "test content");
       datastore.put(lineEntity);
     }

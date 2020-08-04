@@ -51,6 +51,8 @@ import org.xml.sax.SAXException;
  */
 @WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
+  public static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
+  
   private DatastoreService datastore;
 
   @Override
@@ -84,7 +86,7 @@ public class TranscriptServlet extends HttpServlet {
   private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
       throws IOException {
     String videoId = request.getParameter(TranscriptLineUtil.PARAM_VIDEO_ID);
-    String transcriptXMLUrl = TranscriptLineUtil.XML_URL_TEMPLATE + videoId;
+    String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
 
     final Document document;
     try {

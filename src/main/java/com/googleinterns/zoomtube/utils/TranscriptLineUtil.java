@@ -25,7 +25,6 @@ import org.w3c.dom.Node;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public class TranscriptLineUtil {
-  public static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
@@ -39,7 +38,7 @@ public class TranscriptLineUtil {
   public static final String START = "start";
   public static final String DURATION = "duration";
   public static final String CONTENT = "content";
-  public static final String PROP_END = "end";
+  public static final String END = "end";
 
   /**
    * Creates and returns a TranscriptLine from a datastore {@code entity} using
@@ -50,7 +49,7 @@ public class TranscriptLineUtil {
     Key lectureKey = (Key) entity.getProperty(LECTURE);
     Date start = (Date) entity.getProperty(START);
     Date duration = (Date) entity.getProperty(DURATION);
-    Date end = (Date) entity.getProperty(PROP_END);
+    Date end = (Date) entity.getProperty(END);
     String content = (String) entity.getProperty(CONTENT);
     return TranscriptLine.builder()
         .setTranscriptKey(transcriptKey)
@@ -79,7 +78,7 @@ public class TranscriptLineUtil {
     lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
     lineEntity.setProperty(
         DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
-    lineEntity.setProperty(PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
+    lineEntity.setProperty(END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
   }
 }

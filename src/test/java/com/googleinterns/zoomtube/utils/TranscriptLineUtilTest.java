@@ -67,7 +67,7 @@ public final class TranscriptLineUtilTest {
     lineEntity.setProperty(TranscriptLineUtil.CONTENT, TEST_CONTENT);
     lineEntity.setProperty(TranscriptLineUtil.START, testDate);
     lineEntity.setProperty(TranscriptLineUtil.DURATION, testDate);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_END, testDate);
+    lineEntity.setProperty(TranscriptLineUtil.END, testDate);
 
     TranscriptLine actualLine = TranscriptLineUtil.fromEntity(lineEntity);
 
@@ -97,7 +97,7 @@ public final class TranscriptLineUtilTest {
     assertThat(actualEntity.getProperty(TranscriptLineUtil.START)).isEqualTo(actualDate);
     assertThat(actualEntity.getProperty(TranscriptLineUtil.DURATION)).isEqualTo(actualDate);
     // The end time is calculated as start time + duration.
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_END))
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.END))
         .isEqualTo(actualStartPlusDurationDate);
   }
 }
