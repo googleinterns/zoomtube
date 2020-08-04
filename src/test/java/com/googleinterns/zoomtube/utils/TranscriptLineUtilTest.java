@@ -41,13 +41,13 @@ import org.w3c.dom.Element;
 public final class TranscriptLineUtilTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
   @Mock private Element node;
-  
+
   private LocalDatastoreServiceTestConfig datastoreConfig =
       (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper(datastoreConfig);
   private static final String TEST_CONTENT = "test content";
-  
+
   @Before
   public void setUp() {
     localServiceHelper.setUp();
@@ -71,7 +71,7 @@ public final class TranscriptLineUtilTest {
 
     TranscriptLine actualLine = TranscriptLineUtil.fromEntity(lineEntity);
 
-    assertThat(actualLine.lecture()).isEqualTo(testLectureKey);
+    assertThat(actualLine.lectureKey()).isEqualTo(testLectureKey);
     assertThat(actualLine.start()).isEqualTo(testDate);
     assertThat(actualLine.duration()).isEqualTo(testDate);
     assertThat(actualLine.end()).isEqualTo(testDate);

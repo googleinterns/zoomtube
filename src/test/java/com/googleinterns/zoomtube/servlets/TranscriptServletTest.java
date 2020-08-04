@@ -232,7 +232,7 @@ public final class TranscriptServletTest {
         json, (new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
-  private void putJsonInDatastore(String json, String lectureKeyId) {
+  private void putJsonInDatastore(String json, String lectureId) {
     List<TranscriptLine> transcriptLineArray = extractJsonAsArrayList(json);
     Key lectureKey =
         KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, Long.parseLong(lectureId));
@@ -253,7 +253,8 @@ public final class TranscriptServletTest {
   }
 
   private Query filteredQuery(String lectureId) {
-    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, Long.parseLong(lectureId));
+    Key lectureKey =
+        KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, Long.parseLong(lectureId));
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLineUtil.ENTITY_KIND).setFilter(lectureFilter);

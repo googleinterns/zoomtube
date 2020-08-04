@@ -46,15 +46,15 @@ public class TranscriptLineUtil {
    * the property names defined in this class.
    */
   public static TranscriptLine fromEntity(Entity entity) {
-    Key key = entity.getKey();
-    Key lecture = (Key) entity.getProperty(PROP_LECTURE);
+    Key transcriptKey = entity.getKey();
+    Key lectureKey = (Key) entity.getProperty(PROP_LECTURE);
     Date start = (Date) entity.getProperty(PROP_START);
     Date duration = (Date) entity.getProperty(PROP_DURATION);
     Date end = (Date) entity.getProperty(PROP_END);
     String content = (String) entity.getProperty(PROP_CONTENT);
     return TranscriptLine.builder()
-        .setKey(key)
-        .setLecture(lecture)
+        .setTranscriptKey(transcriptKey)
+        .setLectureKey(lectureKey)
         .setStart(start)
         .setDuration(duration)
         .setEnd(end)
