@@ -24,30 +24,31 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.googleinterns.zoomtube.data.Lecture;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.googleinterns.zoomtube.data.Lecture;
+import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
-import javax.servlet.ServletException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Rule;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.lang.reflect.Type;
-import com.google.gson.reflect.TypeToken;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 @RunWith(JUnit4.class)
 public final class LectureServletTest {
@@ -55,13 +56,14 @@ public final class LectureServletTest {
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private DatastoreService datastoreService;
   private LectureServlet servlet;
-  
+
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
 
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
+  private static final String TEST_ID = "wXhTHyIgQ_U";
 
   @Before
   public void setUp() throws ServletException {
@@ -79,22 +81,21 @@ public final class LectureServletTest {
   @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(request));
-    
+    datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     servlet.doPost(request, response);
-    
-    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities()).isEqualTo(1);
+
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
   public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    
+
     // No lecture in datastoreService.
     servlet.doPost(request, response);
-    
-    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities()).isEqualTo(1);
+
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
@@ -105,7 +106,7 @@ public final class LectureServletTest {
     when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);
-    
+
     String json = content.toString();
     assertThat(json).startsWith("[]");
   }
@@ -113,7 +114,7 @@ public final class LectureServletTest {
   @Test
   public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(request));
+    datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
