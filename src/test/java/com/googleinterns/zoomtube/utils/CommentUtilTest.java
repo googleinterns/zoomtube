@@ -74,7 +74,7 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createEntity_shouldReturnEntityWithProperties_noParent() throws IOException {
+  public void createEntity_noParent_shouldReturnEntityWithProperties_noParent() throws IOException {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 12345);
     Date timestamp = new Date(123);
     User author = new User("test@example.com", "example.com");
@@ -91,7 +91,7 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createEntity_shouldReturnEntityWithProperties_withParent() throws IOException {
+  public void createEntity_withParent_shouldReturnEntityWithProperties() throws IOException {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 12345);
     Key parentKey = KeyFactory.createKey(CommentUtil.KIND, 67890);
     Date timestamp = new Date(123);
