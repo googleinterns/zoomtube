@@ -24,12 +24,14 @@ window.VIDEO_ID = getVideoId();
 
 initialize();
 
-/** Initializes the video player for the lecture view page. */
+/**
+ * Initializes the timer, video player, and discussion section
+ * for the lecture view page.
+ */
 async function initialize() {
   timer = window.setInterval(getCurrentTime, 1000);
   window.loadVideoApi();
   window.loadDiscussion();
-  window.sendPostToTranscript();
 }
 
 function getCurrentTime() {
