@@ -77,17 +77,17 @@ public class DiscussionServlet extends HttpServlet {
       return;
     }
     String content = CharStreams.toString(request.getReader());
+    // TODO: Get actual video timestamp from request.
+    // Use the start of the video for now.
+    Date timestamp = new Date(0);
+    Date dateNow = new Date(Clock.systemUTC().millis());
 
-    final Entity comment;
     if (parent == null) {
-      comment = CommentUtil.createEntityNoParent(
-          lecture, new Date(0), author, content, new Date(Clock.systemUTC().millis()));
-    } else {
-      comment = CommentUtil.createEntityWithParent(
-          lecture, parent, new Date(0), author, content, new Date(Clock.systemUTC().millis()));
+      datastore.put(CommentUtil.createEntity(lecture, timestamp, author, content, dateNow));
+      response.setStatus(HttpServletResponse.SC_ACCEPTED);
+      return;
     }
-    datastore.put(comment);
-
+    datastore.put(CommentUtil.createEntity(lecture, parent, timestamp, author, content, dateNow));
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
   }
 

@@ -59,7 +59,7 @@ public final class CommentUtil {
   /**
    * Creates and returns an entity with the specified properties and no parent comment.
    */
-  public static Entity createEntityNoParent(
+  public static Entity createEntity(
       Key lectureKey, Date timestamp, User author, String content, Date created) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
@@ -73,7 +73,7 @@ public final class CommentUtil {
   /**
    * Creates and returns an entity with the specified properties, including a parent comment.
    */
-  public static Entity createEntityWithParent(
+  public static Entity createEntity(
       Key lectureKey, Key parentKey, Date timestamp, User author, String content, Date created) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);

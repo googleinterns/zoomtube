@@ -24,7 +24,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Comment;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,15 +74,14 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createEntityNoParent_shouldReturnEntityWithProperties() throws IOException {
+  public void createEntity_shouldReturnEntityWithProperties_noParent() throws IOException {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 12345);
     Date timestamp = new Date(123);
     User author = new User("test@example.com", "example.com");
     String content = "Test content";
     Date dateNow = new Date();
 
-    Entity entity =
-        CommentUtil.createEntityNoParent(lectureKey, timestamp, author, content, dateNow);
+    Entity entity = CommentUtil.createEntity(lectureKey, timestamp, author, content, dateNow);
 
     assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lectureKey);
     assertThat(entity.getProperty(CommentUtil.TIMESTAMP)).isEqualTo(timestamp);
@@ -93,7 +91,7 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createEntityWithParent_shouldReturnEntityWithProperties() throws IOException {
+  public void createEntity_shouldReturnEntityWithProperties_withParent() throws IOException {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 12345);
     Key parentKey = KeyFactory.createKey(CommentUtil.KIND, 67890);
     Date timestamp = new Date(123);
@@ -101,8 +99,8 @@ public final class CommentUtilTest {
     String content = "Test content";
     Date dateNow = new Date();
 
-    Entity entity = CommentUtil.createEntityWithParent(
-        lectureKey, parentKey, timestamp, author, content, dateNow);
+    Entity entity =
+        CommentUtil.createEntity(lectureKey, parentKey, timestamp, author, content, dateNow);
 
     assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lectureKey);
     assertThat(entity.getProperty(CommentUtil.PARENT)).isEqualTo(parentKey);
