@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.Lecture;
+import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,17 +52,18 @@ import org.mockito.junit.MockitoRule;
 
 @RunWith(JUnit4.class)
 public final class LectureServletTest {
+  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+  @Mock private HttpServletRequest request;
+  @Mock private HttpServletResponse response;
+
   private final LocalServiceTestHelper testServices =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private DatastoreService datastoreService;
   private LectureServlet servlet;
 
-  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-  @Mock private HttpServletRequest request;
-  @Mock private HttpServletResponse response;
-
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
+  private static final String TEST_ID = "wXhTHyIgQ_U";
 
   @Before
   public void setUp() throws ServletException {
@@ -79,12 +81,10 @@ public final class LectureServletTest {
   @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(request));
-
+    datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     servlet.doPost(request, response);
 
-    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities())
-        .isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
@@ -95,8 +95,7 @@ public final class LectureServletTest {
     // No lecture in datastoreService.
     servlet.doPost(request, response);
 
-    assertThat(datastoreService.prepare(new Query(Lecture.ENTITY_KIND)).countEntities())
-        .isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/lecture-view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
@@ -115,7 +114,7 @@ public final class LectureServletTest {
   @Test
   public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(servlet.createLectureEntity(request));
+    datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -126,6 +125,7 @@ public final class LectureServletTest {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Type listType = new TypeToken<ArrayList<Lecture>>() {}.getType();
     ArrayList<Lecture> lectures = gson.fromJson(json, listType);
+    assertThat(lectures).hasSize(1);
     assertThat(lectures.get(0).videoUrl()).isEqualTo(TEST_LINK);
   }
 

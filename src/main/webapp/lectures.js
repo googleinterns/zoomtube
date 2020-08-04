@@ -15,7 +15,7 @@
 /* Used to gather URL parameters. */
 const URL_PARAM_ID = 'id';
 
-const REDIRECT_PAGE = '/lecture-view.html';
+const REDIRECT_PAGE = '/view.html';
 
 loadLectureList();
 
