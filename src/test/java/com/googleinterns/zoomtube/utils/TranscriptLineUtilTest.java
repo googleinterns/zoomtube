@@ -43,10 +43,8 @@ public final class TranscriptLineUtilTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
   @Mock private Element node;
 
-  private LocalDatastoreServiceTestConfig datastoreConfig =
-      (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private final LocalServiceTestHelper localServiceHelper =
-      new LocalServiceTestHelper(datastoreConfig);
+      new LocalServiceTestHelper((new LocalDatastoreServiceTestConfig()).setNoStorage(true));
   private static final String TEST_CONTENT = "test content";
 
   @Before
