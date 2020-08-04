@@ -84,10 +84,10 @@ public class DiscussionServlet extends HttpServlet {
 
     if (parent == null) {
       datastore.put(CommentUtil.createEntity(lecture, timestamp, author, content, dateNow));
-      response.setStatus(HttpServletResponse.SC_ACCEPTED);
-      return;
+    } else {
+      datastore.put(CommentUtil.createEntity(lecture, parent, timestamp, author, content, dateNow));
     }
-    datastore.put(CommentUtil.createEntity(lecture, parent, timestamp, author, content, dateNow));
+
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
   }
 
