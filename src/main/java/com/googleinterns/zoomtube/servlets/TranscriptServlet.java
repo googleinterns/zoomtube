@@ -128,11 +128,11 @@ public class TranscriptServlet extends HttpServlet {
    */
   private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
-    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, lectureId);
+    Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
 
-    Query query = new Query(TranscriptLineUtil.ENTITY_KIND)
+    Query query = new Query(TranscriptLineUtil.KIND)
                       .setFilter(lectureFilter)
                       .addSort(TranscriptLineUtil.START, SortDirection.ASCENDING);
     return datastore.prepare(query);

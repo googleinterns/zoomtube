@@ -61,8 +61,8 @@ public final class TranscriptLineUtilTest {
   @Test
   public void fromEntity_transcriptLineSuccessfullyCreated() throws IOException {
     Date testDate = new Date();
-    Key testLectureKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, "Test Key Id");
-    Entity lineEntity = new Entity(TranscriptLineUtil.ENTITY_KIND);
+    Key testLectureKey = KeyFactory.createKey(TranscriptServlet.LECTURE, "Test Key Id");
+    Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
     lineEntity.setProperty(TranscriptLineUtil.LECTURE, testLectureKey);
     lineEntity.setProperty(TranscriptLineUtil.CONTENT, TEST_CONTENT);
     lineEntity.setProperty(TranscriptLineUtil.START, testDate);
@@ -88,7 +88,7 @@ public final class TranscriptLineUtilTest {
     when(node.getAttribute(TranscriptLineUtil.ATTR_DURATION)).thenReturn(dateAsString);
 
     Entity actualEntity = TranscriptLineUtil.createEntity(node, lectureId);
-    Key actualKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, lectureId);
+    Key actualKey = KeyFactory.createKey(TranscriptServlet.LECTURE, lectureId);
     Date actualDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong));
     Date actualStartPlusDurationDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong * 2));
 

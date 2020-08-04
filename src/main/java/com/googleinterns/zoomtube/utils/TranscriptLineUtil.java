@@ -25,6 +25,8 @@ import org.w3c.dom.Node;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public class TranscriptLineUtil {
+  // TODO: Move these constants back to TranscriptServlet because
+  // that is where the XML is being parsed.
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
@@ -32,7 +34,7 @@ public class TranscriptLineUtil {
   public static final String PARAM_LECTURE = "lecture";
   public static final String PARAM_LECTURE_ID = "id";
   public static final String PARAM_VIDEO_ID = "video";
-  public static final String ENTITY_KIND = "TranscriptLine";
+  public static final String KIND = "TranscriptLine";
 
   public static final String LECTURE = "lecture";
   public static final String START = "start";
@@ -64,14 +66,15 @@ public class TranscriptLineUtil {
   /**
    * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
    */
+  // TODO: Update createEntity to take in the attributes rather than the nodes.
   public static Entity createEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
     Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
     Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
-    Entity lineEntity = new Entity(ENTITY_KIND);
-    // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
+    Entity lineEntity = new Entity(KIND);
+    // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is
     // merged to this branch.
     lineEntity.setProperty(LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
     lineEntity.setProperty(CONTENT, lineContent);

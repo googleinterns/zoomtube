@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DeleteTranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query(TranscriptLineUtil.ENTITY_KIND);
+    Query query = new Query(TranscriptLineUtil.KIND);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);

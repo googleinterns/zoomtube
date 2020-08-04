@@ -235,9 +235,9 @@ public final class TranscriptServletTest {
   private void putJsonInDatastore(String json, String lectureId) {
     List<TranscriptLine> transcriptLineArray = extractJsonAsArrayList(json);
     Key lectureKey =
-        KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, Long.parseLong(lectureId));
+        KeyFactory.createKey(TranscriptServlet.LECTURE, Long.parseLong(lectureId));
     for (int i = 0; i < transcriptLineArray.size(); i++) {
-      Entity lineEntity = new Entity(TranscriptLineUtil.ENTITY_KIND);
+      Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
       lineEntity.setProperty(TranscriptLineUtil.LECTURE, lectureKey);
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
       lineEntity.setProperty(TranscriptLineUtil.START, new Date());
@@ -254,9 +254,9 @@ public final class TranscriptServletTest {
 
   private Query filteredQuery(String lectureId) {
     Key lectureKey =
-        KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, Long.parseLong(lectureId));
+        KeyFactory.createKey(TranscriptServlet.LECTURE, Long.parseLong(lectureId));
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
-    return new Query(TranscriptLineUtil.ENTITY_KIND).setFilter(lectureFilter);
+    return new Query(TranscriptLineUtil.KIND).setFilter(lectureFilter);
   }
 }
