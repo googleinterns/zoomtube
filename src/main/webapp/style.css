@@ -50,7 +50,7 @@ body,
 
 #discussion-comments {
   height: calc(100vh - 200px);
-  max-height: calc(100vh - 200p);
+  max-height: calc(100vh - 200px);
   overflow: scroll;
 }
 
