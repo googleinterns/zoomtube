@@ -19,24 +19,24 @@
     <button type="button" class="btn btn-outline-primary">Logout</button>
   </nav>
 
-  <div class="list-container">
-    <div class="text-container">
+  <div id="list-cont">
+    <div id="text-cont">
       <h2 class="text-center">Active Lectures</h2>
       <p class="text-center">
         Select a lecture below or add a lecture to start watching and interacting with other students!
       </p>
-      <div id="lecture-list" class="list-group"></div>
     </div>
+    <div id="lecture-list" class="list-group"></div>
   </div>
 
-  <div id="add-btn-container">
+  <div id="add-btn-cont">
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addLectureModal">
       Add a Lecture
     </button>
   </div>
 </body>
 
-<footer class="footer">
+<footer id="footer">
   <div class="container">
     <p class="text-center">
       <a href="#" class="link">About</a> | <a href="#" class="link">Feedback</a> |
@@ -59,7 +59,7 @@
             <br />
             <input type="url" class="form-control" placeholder="Lecture YouTube URL" name="link-input" required />
             <br />
-            <div id="submit-button-container">
+            <div id="submit-btn-cont">
               <button type="submit" class="btn btn-primary">Submit</button>
             </div>
           </form>
