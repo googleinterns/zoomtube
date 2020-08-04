@@ -29,6 +29,7 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.common.io.CharStreams;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Comment;
@@ -47,10 +48,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Manages discussions for a lecture.
  */
-@WebServlet("/discussion")
 public class DiscussionServlet extends HttpServlet {
-  private static final String PARAM_LECTURE = "lecture";
-  private static final String PARAM_PARENT = "parent";
+  @VisibleForTesting static final String PARAM_LECTURE = "lecture";
+  @VisibleForTesting static final String PARAM_PARENT = "parent";
 
   private UserService userService;
   private DatastoreService datastore;

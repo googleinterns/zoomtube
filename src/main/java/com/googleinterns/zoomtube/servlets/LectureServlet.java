@@ -32,14 +32,16 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 
 /** Provides information on a lecture. */
+<<<<<<< HEAD
 @WebServlet("/lecture")
+=======
+>>>>>>> master
 public class LectureServlet extends HttpServlet {
   /* Used to generate a Pattern for a Video URL. */
   private static final String YOUTUBE_VIDEO_URL_PATTERN =
@@ -68,6 +70,7 @@ public class LectureServlet extends HttpServlet {
 
   // TODO: Check if URL is valid.
   @Override
+  // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
     Optional<Entity> existingEntity = checkUrlInDatabase(optionalVideoUrl);

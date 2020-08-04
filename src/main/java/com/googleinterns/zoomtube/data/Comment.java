@@ -17,10 +17,12 @@ package com.googleinterns.zoomtube.data;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
+import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.util.Date;
 import java.util.Optional;
 
 /** Contains data related to a comment in a discussion. */
+@GenerateTypeAdapter
 @AutoValue
 public abstract class Comment {
   /** Returns the comment's Datastore entity key. */

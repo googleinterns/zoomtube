@@ -17,7 +17,6 @@ package com.googleinterns.zoomtube.servlets;
 import java.io.IOException;
 import java.net.URL;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,6 @@ import org.xml.sax.SAXException;
 /**
  * Provides the transcript for a given lecture.
  */
-@WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
   private static final String TRANSCRIPT_XML_URL_TEMPLATE =
       "http://video.google.com/timedtext?lang=en&v=";
