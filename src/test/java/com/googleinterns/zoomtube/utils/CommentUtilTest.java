@@ -82,7 +82,8 @@ public final class CommentUtilTest {
     String content = "Test content";
     Date dateNow = new Date();
 
-    Entity entity = CommentUtil.createEntityNoParent(lectureKey, timestamp, author, content, dateNow);
+    Entity entity =
+        CommentUtil.createEntityNoParent(lectureKey, timestamp, author, content, dateNow);
 
     assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lectureKey);
     assertThat(entity.getProperty(CommentUtil.TIMESTAMP)).isEqualTo(timestamp);

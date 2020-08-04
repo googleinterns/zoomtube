@@ -19,7 +19,6 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.googleinterns.zoomtube.data.Comment;
 import java.util.Date;
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 /** Provides methods to create Comment Entities and Comments. */
