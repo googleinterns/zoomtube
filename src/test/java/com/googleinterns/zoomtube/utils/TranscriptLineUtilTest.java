@@ -87,7 +87,6 @@ public final class TranscriptLineUtilTest {
     long durationAsLong = (long) 23.32;
     long lectureId = 1;
 
-// TODO: add params
     Entity actualEntity = TranscriptLineUtil.createEntity(lectureId, TEST_CONTENT, startDate, duration, endDate);
     Key actualKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId);
     Date actualStartDate = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
