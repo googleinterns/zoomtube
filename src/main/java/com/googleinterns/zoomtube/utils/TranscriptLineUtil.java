@@ -59,28 +59,6 @@ public class TranscriptLineUtil {
    * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
    */
   // TODO: Update createEntity to take in the attributes rather than the nodes.
-  public static Entity createEntity(Node node, long lectureId) {
-    Entity lineEntity = new Entity(KIND);
-    // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is
-    // merged to this branch.
-    lineEntity.setProperty(
-      LECTURE, KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId));
-    Element element = (Element) node;
-    String lineContent = node.getTextContent();
-    lineEntity.setProperty(CONTENT, lineContent);
-    Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
-    lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
-    Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
-    lineEntity.setProperty(DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
-    Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
-    lineEntity.setProperty(END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
-    return lineEntity;
-  }
-
-  /**
-   * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
-   */
-  // TODO: Update createEntity to take in the attributes rather than the nodes.
   public static Entity createEntity(long lectureId, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
     Entity lineEntity = new Entity(KIND);
     // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is

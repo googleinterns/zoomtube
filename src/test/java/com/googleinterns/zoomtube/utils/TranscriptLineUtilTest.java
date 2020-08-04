@@ -79,22 +79,24 @@ public final class TranscriptLineUtilTest {
 
   @Test
   public void createEntity_entityAndPropertiesSuccessfullyCreated() throws IOException {
-    String dateAsString = "23.32";
-    long dateAsLong = (long) 23.32;
+    Float startDate = Float.parseFloat("23.32");
+    Float duration = Float.parseFloat("23.32");
+    Float endDate = startDate.floatValue() + duration.floatValue();
+    long startDateAsLong = (long) 23.32;
+    long durationAsLong = (long) 23.32;
     long lectureId = 1;
-    when(node.getTextContent()).thenReturn(TEST_CONTENT);
-    when(node.getAttribute(TranscriptServlet.ATTR_START)).thenReturn(dateAsString);
-    when(node.getAttribute(TranscriptServlet.ATTR_DURATION)).thenReturn(dateAsString);
 
-    Entity actualEntity = TranscriptLineUtil.createEntity(node, lectureId);
+// TODO: add params
+    Entity actualEntity = TranscriptLineUtil.createEntity(lectureId, TEST_CONTENT, startDate, duration, endDate);
     Key actualKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId);
-    Date actualDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong));
-    Date actualStartPlusDurationDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong * 2));
+    Date actualStartDate = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
+    Date actualEndDate = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
+    Date actualStartPlusDurationDate = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong + durationAsLong));
 
     assertThat(actualEntity.getProperty(TranscriptLineUtil.LECTURE)).isEqualTo(actualKey);
     assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.START)).isEqualTo(actualDate);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.DURATION)).isEqualTo(actualDate);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.START)).isEqualTo(actualStartDate);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.DURATION)).isEqualTo(actualEndDate);
     // The end time is calculated as start time + duration.
     assertThat(actualEntity.getProperty(TranscriptLineUtil.END))
         .isEqualTo(actualStartPlusDurationDate);

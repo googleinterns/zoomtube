@@ -124,6 +124,7 @@ public class TranscriptServlet extends HttpServlet {
       Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
       Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
       Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+      System.out.println(lineEnd);
       datastore.put(TranscriptLineUtil.createEntity(lectureId, lineContent, lineStart, lineDuration, lineEnd));
     }
   }
