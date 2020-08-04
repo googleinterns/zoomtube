@@ -58,7 +58,7 @@ public final class TranscriptLineUtilTest {
   }
 
   @Test
-  public void fromEntity_transcriptLineSuccessfullyCreated() throws IOException {
+  public void createTranscriptLine_transcriptLineSuccessfullyCreated() throws IOException {
     Date testDate = new Date();
     Key testLectureKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, "Test Key Id");
     Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
@@ -68,7 +68,7 @@ public final class TranscriptLineUtilTest {
     lineEntity.setProperty(TranscriptLineUtil.DURATION, testDate);
     lineEntity.setProperty(TranscriptLineUtil.END, testDate);
 
-    TranscriptLine actualLine = TranscriptLineUtil.fromEntity(lineEntity);
+    TranscriptLine actualLine = TranscriptLineUtil.createTranscriptLine(lineEntity);
 
     assertThat(actualLine.lectureKey()).isEqualTo(testLectureKey);
     assertThat(actualLine.start()).isEqualTo(testDate);

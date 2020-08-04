@@ -38,7 +38,7 @@ public class TranscriptLineUtil {
    * Creates and returns a TranscriptLine from a datastore {@code entity} using
    * the property names defined in this class.
    */
-  public static TranscriptLine fromEntity(Entity entity) {
+  public static TranscriptLine createTranscriptLine(Entity entity) {
     Key transcriptKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
     Date start = (Date) entity.getProperty(START);
@@ -56,7 +56,7 @@ public class TranscriptLineUtil {
   }
 
   /**
-   * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
+   * Creates a transcript line entity using the attributes from {@code node} and {@code lectureId}.
    */
   // TODO: Update createEntity to take in the attributes rather than the nodes.
   public static Entity createEntity(long lectureId, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
