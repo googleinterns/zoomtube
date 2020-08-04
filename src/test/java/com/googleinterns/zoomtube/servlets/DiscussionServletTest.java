@@ -190,7 +190,7 @@ public class DiscussionServletTest {
     // Most properties here are not tested, but are required by the AutoValue class so must be
     // specified.
     commentEntity.setProperty(
-      CommentUtil.AUTHOR, new User("untestedAuthor@example.com", "untested.com"));
+        CommentUtil.AUTHOR, new User("untestedAuthor@example.com", "untested.com"));
     commentEntity.setProperty(CommentUtil.CONTENT, "Untested content");
     commentEntity.setProperty(CommentUtil.CREATED, new Date(Clock.systemUTC().millis()));
 

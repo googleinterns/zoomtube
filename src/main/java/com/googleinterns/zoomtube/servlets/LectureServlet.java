@@ -38,10 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 
 /** Provides information on a lecture. */
-<<<<<<< HEAD
-@WebServlet("/lecture")
-=======
->>>>>>> master
 public class LectureServlet extends HttpServlet {
   /* Used to generate a Pattern for a Video URL. */
   private static final String YOUTUBE_VIDEO_URL_PATTERN =

@@ -60,6 +60,7 @@ public abstract class Comment {
     public abstract Builder setCommentKey(Key commentKey);
     public abstract Builder setLectureKey(Key lectureKey);
     public abstract Builder setParentKey(Key parentKey);
+    public abstract Builder setParentKey(Optional<Key> parentKey);
     public abstract Builder setTimestamp(Date timestamp);
     public abstract Builder setAuthor(User author);
     public abstract Builder setContent(String content);
