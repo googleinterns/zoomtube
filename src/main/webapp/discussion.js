@@ -58,7 +58,7 @@ async function displayAuthStatus() {
     link.href = AUTH_STATUS.logoutUrl.value;
     link.innerText = 'logout';
     ELEMENT_AUTH_STATUS.innerText =
-      `Logged in as ${AUTH_STATUS.user.value.email}. `;
+        `Logged in as ${AUTH_STATUS.user.value.email}. `;
   } else {
     link.href = AUTH_STATUS.loginUrl.value;
     link.innerText = 'login';
