@@ -1,0 +1,50 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+  <servlet>
+    <servlet-name>authentication</servlet-name>
+    <servlet-class>com.googleinterns.zoomtube.servlets.AuthenticationServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>discussion</servlet-name>
+    <servlet-class>com.googleinterns.zoomtube.servlets.DiscussionServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>lecture</servlet-name>
+    <servlet-class>com.googleinterns.zoomtube.servlets.LectureServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>transcript</servlet-name>
+    <servlet-class>com.googleinterns.zoomtube.servlets.TranscriptServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>authentication</servlet-name>
+    <url-pattern>/auth</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>discussion</servlet-name>
+    <url-pattern>/discussion</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>lecture</servlet-name>
+    <url-pattern>/lecture</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>transcript</servlet-name>
+    <url-pattern>/transcript</url-pattern>
+  </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>view</web-resource-name>
+      <url-pattern>/view.html</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>*</role-name>
+    </auth-constraint>
+  </security-constraint>
+</web-app>

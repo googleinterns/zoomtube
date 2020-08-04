@@ -32,14 +32,12 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 
 /** Provides information on a lecture. */
-@WebServlet("/lecture")
 public class LectureServlet extends HttpServlet {
   /* Used to generate a Pattern for a Video URL. */
   private static final String YOUTUBE_VIDEO_URL_PATTERN =
@@ -101,7 +99,7 @@ public class LectureServlet extends HttpServlet {
     Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
-    
+
     String url = videoUrl.get();
     for (Entity lecture : resultsIterable) {
       if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
