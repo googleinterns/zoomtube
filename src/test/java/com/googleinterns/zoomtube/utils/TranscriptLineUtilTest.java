@@ -59,8 +59,9 @@ public final class TranscriptLineUtilTest {
 
   @Test
   public void createTranscriptLine_transcriptLineSuccessfullyCreated() throws IOException {
+    long lectureId = 1234;
     Date testDate = new Date();
-    Key testLectureKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, "Test Key Id");
+    Key testLectureKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId);
     Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
     lineEntity.setProperty(TranscriptLineUtil.LECTURE, testLectureKey);
     lineEntity.setProperty(TranscriptLineUtil.CONTENT, TEST_CONTENT);

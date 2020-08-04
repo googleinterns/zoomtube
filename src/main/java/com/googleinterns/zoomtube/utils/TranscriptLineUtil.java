@@ -59,6 +59,7 @@ public class TranscriptLineUtil {
    * Creates a transcript line entity using the attributes from {@code node} and {@code lectureId}.
    */
   // TODO: Update createEntity to take in the attributes rather than the nodes.
+  // TODO: add parameters. @param
   public static Entity createEntity(long lectureId, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
     Entity lineEntity = new Entity(KIND);
     // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is
