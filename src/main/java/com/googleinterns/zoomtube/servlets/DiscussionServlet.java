@@ -78,8 +78,14 @@ public class DiscussionServlet extends HttpServlet {
     }
     String content = CharStreams.toString(request.getReader());
 
-    Entity comment = CommentUtil.createEntity(lecture, Optional.ofNullable(parent), new Date(0),
-        author, content, new Date(Clock.systemUTC().millis()));
+    final Entity comment;
+    if (parent == null) {
+      comment = CommentUtil.createEntityNoParent(
+          lecture, new Date(0), author, content, new Date(Clock.systemUTC().millis()));
+    } else {
+      comment = CommentUtil.createEntityWithParent(
+          lecture, parent, new Date(0), author, content, new Date(Clock.systemUTC().millis()));
+    }
     datastore.put(comment);
 
     response.setStatus(HttpServletResponse.SC_ACCEPTED);

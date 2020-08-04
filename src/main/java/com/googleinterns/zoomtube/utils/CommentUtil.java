@@ -20,6 +20,7 @@ import com.google.appengine.api.users.User;
 import com.googleinterns.zoomtube.data.Comment;
 import java.util.Date;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 /** Provides methods to create Comment Entities and Comments. */
 public final class CommentUtil {
@@ -31,44 +32,59 @@ public final class CommentUtil {
   public static final String CONTENT = "content";
   public static final String CREATED = "created";
 
-  private CommentUtil(){};
-
   /**
-   * Returns a Comment using the properties of {@code entity}.
+   * Creates and returns a Comment using the properties of {@code entity}.
    */
   public static Comment createComment(Entity entity) {
     Key commentKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
-    Optional<Key> parentKey = Optional.ofNullable((Key) entity.getProperty(PARENT));
+    @Nullable Key parentKey = (Key) entity.getProperty(PARENT);
     Date timestamp = (Date) entity.getProperty(TIMESTAMP);
     User author = (User) entity.getProperty(AUTHOR);
     String content = (String) entity.getProperty(CONTENT);
     Date created = (Date) entity.getProperty(CREATED);
-    return Comment.builder()
-        .setCommentKey(commentKey)
-        .setLectureKey(lectureKey)
-        .setParentKey(parentKey)
-        .setTimestamp(timestamp)
-        .setAuthor(author)
-        .setContent(content)
-        .setCreated(created)
-        .build();
+
+    Comment.Builder builder = Comment.builder()
+                                  .setCommentKey(commentKey)
+                                  .setLectureKey(lectureKey)
+                                  .setTimestamp(timestamp)
+                                  .setAuthor(author)
+                                  .setContent(content)
+                                  .setCreated(created);
+    if (parentKey != null) {
+      builder.setParentKey(parentKey);
+    }
+    return builder.build();
   }
 
   /**
-   * Creates and returns an entity with the specified properties.
+   * Creates and returns an entity with the specified properties and no parent comment.
    */
-  public static Entity createEntity(Key lectureKey, Optional<Key> parentKey, Date timestamp,
-      User author, String content, Date created) {
+  public static Entity createEntityNoParent(
+      Key lectureKey, Date timestamp, User author, String content, Date created) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
-    if (parentKey.isPresent()) {
-      entity.setProperty(PARENT, parentKey.get());
-    }
     entity.setProperty(TIMESTAMP, timestamp);
     entity.setProperty(AUTHOR, author);
     entity.setProperty(CONTENT, content);
     entity.setProperty(CREATED, created);
     return entity;
   }
+
+  /**
+   * Creates and returns an entity with the specified properties, including a parent comment.
+   */
+  public static Entity createEntityWithParent(
+      Key lectureKey, Key parentKey, Date timestamp, User author, String content, Date created) {
+    Entity entity = new Entity(KIND);
+    entity.setProperty(LECTURE, lectureKey);
+    entity.setProperty(PARENT, parentKey);
+    entity.setProperty(TIMESTAMP, timestamp);
+    entity.setProperty(AUTHOR, author);
+    entity.setProperty(CONTENT, content);
+    entity.setProperty(CREATED, created);
+    return entity;
+  }
+
+  private CommentUtil(){};
 }
