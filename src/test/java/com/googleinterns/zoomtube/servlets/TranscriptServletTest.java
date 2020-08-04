@@ -238,12 +238,12 @@ public final class TranscriptServletTest {
         KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, Long.parseLong(lectureId));
     for (int i = 0; i < transcriptLineArray.size(); i++) {
       Entity lineEntity = new Entity(TranscriptLineUtil.ENTITY_KIND);
-      lineEntity.setProperty(TranscriptLineUtil.PROP_LECTURE, lectureKey);
+      lineEntity.setProperty(TranscriptLineUtil.LECTURE, lectureKey);
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
-      lineEntity.setProperty(TranscriptLineUtil.PROP_START, new Date());
-      lineEntity.setProperty(TranscriptLineUtil.PROP_DURATION, new Date());
+      lineEntity.setProperty(TranscriptLineUtil.START, new Date());
+      lineEntity.setProperty(TranscriptLineUtil.DURATION, new Date());
       lineEntity.setProperty(TranscriptLineUtil.PROP_END, new Date());
-      lineEntity.setProperty(TranscriptLineUtil.PROP_CONTENT, "test content");
+      lineEntity.setProperty(TranscriptLineUtil.CONTENT, "test content");
       datastore.put(lineEntity);
     }
   }
@@ -256,7 +256,7 @@ public final class TranscriptServletTest {
     Key lectureKey =
         KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, Long.parseLong(lectureId));
     Filter lectureFilter =
-        new FilterPredicate(TranscriptLineUtil.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
+        new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLineUtil.ENTITY_KIND).setFilter(lectureFilter);
   }
 }

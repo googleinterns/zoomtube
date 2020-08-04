@@ -35,10 +35,10 @@ public class TranscriptLineUtil {
   public static final String PARAM_VIDEO_ID = "video";
   public static final String ENTITY_KIND = "TranscriptLine";
 
-  public static final String PROP_LECTURE = "lecture";
-  public static final String PROP_START = "start";
-  public static final String PROP_DURATION = "duration";
-  public static final String PROP_CONTENT = "content";
+  public static final String LECTURE = "lecture";
+  public static final String START = "start";
+  public static final String DURATION = "duration";
+  public static final String CONTENT = "content";
   public static final String PROP_END = "end";
 
   /**
@@ -47,11 +47,11 @@ public class TranscriptLineUtil {
    */
   public static TranscriptLine fromEntity(Entity entity) {
     Key transcriptKey = entity.getKey();
-    Key lectureKey = (Key) entity.getProperty(PROP_LECTURE);
-    Date start = (Date) entity.getProperty(PROP_START);
-    Date duration = (Date) entity.getProperty(PROP_DURATION);
+    Key lectureKey = (Key) entity.getProperty(LECTURE);
+    Date start = (Date) entity.getProperty(START);
+    Date duration = (Date) entity.getProperty(DURATION);
     Date end = (Date) entity.getProperty(PROP_END);
-    String content = (String) entity.getProperty(PROP_CONTENT);
+    String content = (String) entity.getProperty(CONTENT);
     return TranscriptLine.builder()
         .setTranscriptKey(transcriptKey)
         .setLectureKey(lectureKey)
@@ -74,11 +74,11 @@ public class TranscriptLineUtil {
     Entity lineEntity = new Entity(ENTITY_KIND);
     // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
     // merged to this branch.
-    lineEntity.setProperty(PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
-    lineEntity.setProperty(PROP_CONTENT, lineContent);
-    lineEntity.setProperty(PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
+    lineEntity.setProperty(LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
+    lineEntity.setProperty(CONTENT, lineContent);
+    lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
     lineEntity.setProperty(
-        PROP_DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
+        DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
     lineEntity.setProperty(PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
   }

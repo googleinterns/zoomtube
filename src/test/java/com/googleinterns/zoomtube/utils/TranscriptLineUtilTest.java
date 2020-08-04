@@ -63,10 +63,10 @@ public final class TranscriptLineUtilTest {
     Date testDate = new Date();
     Key testLectureKey = KeyFactory.createKey(TranscriptLineUtil.PARAM_LECTURE, "Test Key Id");
     Entity lineEntity = new Entity(TranscriptLineUtil.ENTITY_KIND);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_LECTURE, testLectureKey);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_CONTENT, TEST_CONTENT);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_START, testDate);
-    lineEntity.setProperty(TranscriptLineUtil.PROP_DURATION, testDate);
+    lineEntity.setProperty(TranscriptLineUtil.LECTURE, testLectureKey);
+    lineEntity.setProperty(TranscriptLineUtil.CONTENT, TEST_CONTENT);
+    lineEntity.setProperty(TranscriptLineUtil.START, testDate);
+    lineEntity.setProperty(TranscriptLineUtil.DURATION, testDate);
     lineEntity.setProperty(TranscriptLineUtil.PROP_END, testDate);
 
     TranscriptLine actualLine = TranscriptLineUtil.fromEntity(lineEntity);
@@ -92,10 +92,10 @@ public final class TranscriptLineUtilTest {
     Date actualDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong));
     Date actualStartPlusDurationDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong * 2));
 
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_LECTURE)).isEqualTo(actualKey);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_CONTENT)).isEqualTo(TEST_CONTENT);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_START)).isEqualTo(actualDate);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_DURATION)).isEqualTo(actualDate);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.LECTURE)).isEqualTo(actualKey);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.START)).isEqualTo(actualDate);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.DURATION)).isEqualTo(actualDate);
     // The end time is calculated as start time + duration.
     assertThat(actualEntity.getProperty(TranscriptLineUtil.PROP_END))
         .isEqualTo(actualStartPlusDurationDate);
