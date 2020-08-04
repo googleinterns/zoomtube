@@ -52,7 +52,10 @@ import org.xml.sax.SAXException;
 @WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
   public static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
-  
+  public static final String PARAM_LECTURE = "lecture";
+  public static final String PARAM_LECTURE_ID = "id";
+  public static final String PARAM_VIDEO_ID = "video";
+
   private DatastoreService datastore;
 
   @Override
@@ -85,7 +88,7 @@ public class TranscriptServlet extends HttpServlet {
    */
   private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
       throws IOException {
-    String videoId = request.getParameter(TranscriptLineUtil.PARAM_VIDEO_ID);
+    String videoId = request.getParameter(PARAM_VIDEO_ID);
     String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
 
     final Document document;
@@ -108,7 +111,7 @@ public class TranscriptServlet extends HttpServlet {
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
-    long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     NodeList nodeList = document.getElementsByTagName(TranscriptLineUtil.TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
@@ -127,7 +130,7 @@ public class TranscriptServlet extends HttpServlet {
    * Returns the query for the lecture transcripts based on lecture id indicated in {@code request}.
    */
   private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
-    long lectureId = Long.parseLong(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID));
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);

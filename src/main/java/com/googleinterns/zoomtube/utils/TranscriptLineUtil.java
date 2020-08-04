@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.googleinterns.zoomtube.data.TranscriptLine;
+import com.googleinterns.zoomtube.servlets.TranscriptServlet;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.w3c.dom.Element;
@@ -30,10 +31,6 @@ public class TranscriptLineUtil {
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
-
-  public static final String PARAM_LECTURE = "lecture";
-  public static final String PARAM_LECTURE_ID = "id";
-  public static final String PARAM_VIDEO_ID = "video";
   public static final String KIND = "TranscriptLine";
 
   public static final String LECTURE = "lecture";
@@ -76,11 +73,11 @@ public class TranscriptLineUtil {
     Entity lineEntity = new Entity(KIND);
     // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is
     // merged to this branch.
-    lineEntity.setProperty(LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
+    lineEntity.setProperty(
+        LECTURE, KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId));
     lineEntity.setProperty(CONTENT, lineContent);
     lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
-    lineEntity.setProperty(
-        DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
+    lineEntity.setProperty(DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
     lineEntity.setProperty(END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
   }

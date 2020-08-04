@@ -36,6 +36,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.w3c.dom.Element;
+import com.googleinterns.zoomtube.servlets.TranscriptServlet;
 
 @RunWith(JUnit4.class)
 public final class TranscriptLineUtilTest {
@@ -61,7 +62,7 @@ public final class TranscriptLineUtilTest {
   @Test
   public void fromEntity_transcriptLineSuccessfullyCreated() throws IOException {
     Date testDate = new Date();
-    Key testLectureKey = KeyFactory.createKey(TranscriptServlet.LECTURE, "Test Key Id");
+    Key testLectureKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, "Test Key Id");
     Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
     lineEntity.setProperty(TranscriptLineUtil.LECTURE, testLectureKey);
     lineEntity.setProperty(TranscriptLineUtil.CONTENT, TEST_CONTENT);
@@ -88,7 +89,7 @@ public final class TranscriptLineUtilTest {
     when(node.getAttribute(TranscriptLineUtil.ATTR_DURATION)).thenReturn(dateAsString);
 
     Entity actualEntity = TranscriptLineUtil.createEntity(node, lectureId);
-    Key actualKey = KeyFactory.createKey(TranscriptServlet.LECTURE, lectureId);
+    Key actualKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId);
     Date actualDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong));
     Date actualStartPlusDurationDate = new Date(TimeUnit.SECONDS.toMillis(dateAsLong * 2));
 

@@ -123,7 +123,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_A);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
     String actualJson = content.toString();
@@ -135,8 +135,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
-    when(request.getParameter(TranscriptLineUtil.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_B);
+    when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_B);
 
     servlet.doPost(request, response);
     int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_B);
@@ -147,8 +147,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_doPost_StoreAndRetrieveShortVideo() throws ServletException, IOException {
-    when(request.getParameter(TranscriptLineUtil.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
@@ -161,8 +161,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_doPost_StoreAndRetrieveLongVideo() throws ServletException, IOException {
-    when(request.getParameter(TranscriptLineUtil.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
@@ -176,7 +176,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_getDataInDatastoreForLongVideo() throws ServletException, IOException {
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
     String actualJson = content.toString();
@@ -188,8 +188,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
-    when(request.getParameter(TranscriptLineUtil.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
+    when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
     servlet.doPost(request, response);
     int actualQueryCount = countEntitiesInDatastore(LECTURE_ID_C);
@@ -203,7 +203,7 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
     servlet.doGet(request, response);
     String actualJson = content.toString();
@@ -217,7 +217,7 @@ public final class TranscriptServletTest {
   public void doGet_TwoLecturesInDatastore_GetOneLecture() throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B);
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A);
-    when(request.getParameter(TranscriptLineUtil.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     servlet.doGet(request, response);
     String actualJson = content.toString();
@@ -234,8 +234,7 @@ public final class TranscriptServletTest {
 
   private void putJsonInDatastore(String json, String lectureId) {
     List<TranscriptLine> transcriptLineArray = extractJsonAsArrayList(json);
-    Key lectureKey =
-        KeyFactory.createKey(TranscriptServlet.LECTURE, Long.parseLong(lectureId));
+    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.LECTURE, Long.parseLong(lectureId));
     for (int i = 0; i < transcriptLineArray.size(); i++) {
       Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
       lineEntity.setProperty(TranscriptLineUtil.LECTURE, lectureKey);
@@ -253,8 +252,7 @@ public final class TranscriptServletTest {
   }
 
   private Query filteredQuery(String lectureId) {
-    Key lectureKey =
-        KeyFactory.createKey(TranscriptServlet.LECTURE, Long.parseLong(lectureId));
+    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.LECTURE, Long.parseLong(lectureId));
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLineUtil.KIND).setFilter(lectureFilter);
