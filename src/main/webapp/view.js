@@ -17,9 +17,6 @@ window.LECTURE_ID = getLectureId();
 
 initialize();
 
-/**
- * Initializes the discussion section of the lecture view page.
- */
 async function initialize() {
   window.intializeDiscussion();
   // TODO: Initialize the video and trancript sections once they are added.
