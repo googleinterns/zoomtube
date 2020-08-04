@@ -21,9 +21,14 @@ window.VIDEO_ID = getVideoId();
 
 initialize();
 
-/** Initializes the video player for the lecture view page. */
+/**
+ * Initializes the video player and discussion section
+ * for the lecture view page.
+ */
 async function initialize() {
   window.loadVideoApi();
+  window.intializeDiscussion();
+  // TODO: Initialize the trancript section.
 }
 
 /**
