@@ -97,12 +97,12 @@ public class LectureServlet extends HttpServlet {
     if (!videoUrl.isPresent()) {
       return Optional.empty();
     }
-    String url = videoUrl.get();
 
     Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
+    String url = videoUrl.get();
     for (Entity lecture : resultsIterable) {
       if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
         return Optional.of(lecture);
@@ -129,7 +129,7 @@ public class LectureServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
     for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = LectureUtil.fromEntity(lecture);
+      Lecture newLecture = LectureUtil.createLecture(lecture);
       lectures.add(newLecture);
     }
     return lectures;

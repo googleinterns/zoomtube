@@ -45,13 +45,13 @@ public final class LectureUtilTest {
   }
 
   @Test
-  public void create_shouldReturnLectureFromEntity() throws IOException {
+  public void createLecture_shouldReturnLectureFromEntity() throws IOException {
     Entity lectureEntity = new Entity(LectureUtil.KIND);
     lectureEntity.setProperty(LectureUtil.NAME, "testName");
     lectureEntity.setProperty(LectureUtil.VIDEO_URL, "testUrl");
     lectureEntity.setProperty(LectureUtil.VIDEO_ID, "testId");
 
-    Lecture result = LectureUtil.fromEntity(lectureEntity);
+    Lecture result = LectureUtil.createLecture(lectureEntity);
 
     assertThat(result.lectureName()).isEqualTo("testName");
     assertThat(result.videoUrl()).isEqualTo("testUrl");
@@ -60,7 +60,8 @@ public final class LectureUtilTest {
 
   @Test
   public void createEntity_shouldReturnEntityWithInputs() throws IOException {
-    Entity result = LectureUtil.createEntity("testName", "testUrl", "testId");
+    Entity result = LectureUtil.createEntity(
+        /* lectureName= */ "testName", /* videoUrl= */ "testUrl", /* videoId= */ "testId");
 
     assertThat(result.getProperty(LectureUtil.NAME)).isEqualTo("testName");
     assertThat(result.getProperty(LectureUtil.VIDEO_URL)).isEqualTo("testUrl");

@@ -52,14 +52,14 @@ import org.mockito.junit.MockitoRule;
 
 @RunWith(JUnit4.class)
 public final class LectureServletTest {
+  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+  @Mock private HttpServletRequest request;
+  @Mock private HttpServletResponse response;
+
   private final LocalServiceTestHelper testServices =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private DatastoreService datastoreService;
   private LectureServlet servlet;
-
-  @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-  @Mock private HttpServletRequest request;
-  @Mock private HttpServletResponse response;
 
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
@@ -81,7 +81,7 @@ public final class LectureServletTest {
   @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(LectureUtil.createEntity("", TEST_LINK, TEST_ID));
+    datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
@@ -114,7 +114,7 @@ public final class LectureServletTest {
   @Test
   public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(LectureUtil.createEntity("", TEST_LINK, TEST_ID));
+    datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
@@ -125,6 +125,7 @@ public final class LectureServletTest {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Type listType = new TypeToken<ArrayList<Lecture>>() {}.getType();
     ArrayList<Lecture> lectures = gson.fromJson(json, listType);
+    assertThat(lectures).hasSize(1);
     assertThat(lectures.get(0).videoUrl()).isEqualTo(TEST_LINK);
   }
 
