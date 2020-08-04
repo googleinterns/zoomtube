@@ -32,6 +32,7 @@ async function initialize() {
   timer = window.setInterval(getCurrentTime, 1000);
   window.loadVideoApi();
   window.loadDiscussion();
+  // TODO: Initialize the trancript section.
 }
 
 function getCurrentTime() {
