@@ -21,7 +21,6 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.servlets.TranscriptServlet;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import org.w3c.dom.Node;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public class TranscriptLineUtil {
