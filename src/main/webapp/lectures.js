@@ -16,7 +16,7 @@
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
 
-const REDIRECT_PAGE = '/lecture-view.html';
+const REDIRECT_PAGE = '/view.html';
 
 loadLectureList();
 
@@ -37,16 +37,15 @@ async function loadLectureList() {
  * lecture}'s video url and name.
  */
 function createLectureListItem(lecture) {
-  const listItem = document.createElement('li');
   const lectureLink = document.createElement('a');
 
   const url = new URL(REDIRECT_PAGE, window.location.origin);
   url.searchParams.append(PARAM_ID, lecture.key.id);
   url.searchParams.append(PARAM_VIDEO_ID, lecture.videoId);
   lectureLink.href = url;
+  lectureLink.className = 'list-group-item list-group-item-action';
 
   lectureLink.innerText = lecture.lectureName;
 
-  listItem.appendChild(lectureLink);
-  return listItem;
+  return lectureLink;
 }
