@@ -55,7 +55,7 @@ public class LectureServlet extends HttpServlet {
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern;
-  
+
   private static DatastoreService datastore;
 
   @Override
