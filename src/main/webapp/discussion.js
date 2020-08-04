@@ -111,13 +111,13 @@ function prepareComments(comments) {
   const commentKeys = {};
   for (const comment of comments) {
     comment.replies = [];
-    commentKeys[comment.key.id] = comment;
+    commentKeys[comment.commentKey.id] = comment;
   }
 
   const rootComments = [];
   for (const comment of comments) {
-    if (comment.parent.value) {
-      const parent = commentKeys[comment.parent.value.id];
+    if (comment.parentKey.value) {
+      const parent = commentKeys[comment.parentKey.value.id];
       parent.replies.push(comment);
     } else {
       // Top level comments don't have parents.
@@ -151,7 +151,7 @@ class DiscussionComment extends HTMLElement {
     this.shadowRoot.appendChild(shadow);
 
     const username = comment.author.email.split('@')[0];
-    const timestampPrefix = comment.parent.value ? '' : '00:00 - ';
+    const timestampPrefix = comment.parentKey.value ? '' : '00:00 - ';
     const header = `${timestampPrefix}${username} on ${comment.created}`;
     this.setSlotSpan('header', header);
 
@@ -172,7 +172,7 @@ class DiscussionComment extends HTMLElement {
     };
     this.shadowRoot.querySelector('#post-reply').onclick = () => {
       const textarea = this.shadowRoot.querySelector('#reply-textarea');
-      postReply(textarea, comment.key.id);
+      postReply(textarea, comment.commentKey.id);
     };
   }
 
