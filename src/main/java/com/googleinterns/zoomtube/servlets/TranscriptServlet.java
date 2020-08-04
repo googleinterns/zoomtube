@@ -90,7 +90,7 @@ public class TranscriptServlet extends HttpServlet {
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
    * if there is a parsing error.
    *
-   * @param request Indicates the video to extract the transcript from.
+   * @param videoId Indicates the video to extract the transcript from.
    */
   private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
@@ -110,14 +110,14 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Puts each transcript line from {@code document} in datastore as its own entity.
    *
-   * @param request Indicates the lecture key to group the transcript lines under.
+   * @param lectureId Indicates the lecture id to group the transcript lines under.
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(long lectureId, Document document) {
     NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
-      datastore.put(createLineEntity(node, lectureId));
+      datastore.put(createTranscriptLineEntity(node, lectureId));
     }
   }
 
@@ -130,7 +130,7 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Returns the query for the lecture transcripts based on lecture id indicated in {@code request}.
+   * Returns the query for the lecture transcripts based on lecture id indicated in {@code lectureId}.
    */
   private PreparedQuery getLectureTranscriptQuery(long lectureId) {
     Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
@@ -143,6 +143,9 @@ public class TranscriptServlet extends HttpServlet {
     return datastore.prepare(query);
   }
 
+  /**
+   * Returns the transcript lines in {@code preparedQuery}.
+   */
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : preparedQuery.asQueryResultIterable()) {
@@ -152,31 +155,31 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Writes {@code list} as Json to {@code response}.
+   * Writes {@code transcriptLines} as Json to {@code response}.
    */
-  private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> list)
+  private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> transcriptLines)
       throws IOException {
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(list));
+    response.getWriter().println(gson.toJson(transcriptLines));
   }
 
   /**
-   * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
+   * Creates a transcript line entity using the attributes from {@code node}
+   * and {@code lectureId}.
    */
-  private Entity createLineEntity(Node node, long lectureId) {
-    Element element = (Element) node;
-    String lineContent = node.getTextContent();
-    String lineStart = element.getAttribute(ATTR_START);
-    String lineDuration = element.getAttribute(ATTR_DURATION);
-
+  private Entity createTranscriptLineEntity(Node node, long lectureId) {
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
     // TODO: Change PARAM_LECTURE to Lecture.ENTITY_KIND once lectureServlet is
     // merged to this branch.
     lineEntity.setProperty(
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(PARAM_LECTURE, lectureId));
+    Element element = (Element) node;
+    String lineContent = node.getTextContent();
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
+    String lineStart = element.getAttribute(ATTR_START);
     lineEntity.setProperty(TranscriptLine.PROP_START, lineStart);
+    String lineDuration = element.getAttribute(ATTR_DURATION);
     lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
     return lineEntity;
   }
