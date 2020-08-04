@@ -48,7 +48,7 @@ public class LectureServlet extends HttpServlet {
 
   /* Name of input field used for lecture name in lecture selection page. */
   private static final String NAME_INPUT = "name-input";
-  
+
   /* Name of input field used for lecture video link in lecture selection page. */
   private static final String LINK_INPUT = "link-input";
 
@@ -93,7 +93,7 @@ public class LectureServlet extends HttpServlet {
    * {@code Optional.empty()} if one doesn't exist.
    */
   private Optional<Entity> checkUrlInDatabase(Optional<String> videoUrl) {
-    if(!videoUrl.isPresent()) {
+    if (!videoUrl.isPresent()) {
       return Optional.empty();
     }
     String url = videoUrl.get();
