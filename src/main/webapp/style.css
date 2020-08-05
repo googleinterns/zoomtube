@@ -46,6 +46,20 @@ body {
   background-color: #f3f3f3;
 }
 
+.btn-wide {
+  font-size: 20px !important;
+  height: 40px !important;
+  padding: 0px !important;
+  width: 150px !important;
+}
+
+.btn-wider {
+  font-size: 20px !important;
+  height: 40px !important;
+  padding: 0px !important;
+  width: 200px !important;
+}
+
 /* List page */
 
 #header-text {
@@ -90,11 +104,6 @@ body {
 #add-btn-cont .btn,
 #submit-btn-cont .btn {
   background-color: #4c8bf5 !important;
-}
-
-#add-btn-cont .btn,
-#add-btn-cont .btn:hover {
-  width: 200px !important;
 }
 
 #add-btn-cont .btn:hover,
