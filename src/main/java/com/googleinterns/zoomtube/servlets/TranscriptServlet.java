@@ -148,8 +148,8 @@ public class TranscriptServlet extends HttpServlet {
    */
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity entity : preparedQuery.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
+    for (Entity transcriptLine : preparedQuery.asQueryResultIterable()) {
+      lineBuilder.add(TranscriptLine.fromLineEntity(transcriptLine));
     }
     return lineBuilder.build();
   }
