@@ -81,8 +81,8 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String videoId = request.getParameter(PARAM_VIDEO_ID);
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Document document = getTranscriptXmlAsDocument(videoId).get();
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     putTranscriptLinesInDatastore(lectureId, document);
   }
 
@@ -132,7 +132,7 @@ public class TranscriptServlet extends HttpServlet {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
-    writeTranscriptList(response, transcriptLines);
+    writeTranscriptLines(response, transcriptLines);
   }
 
   /**
@@ -155,8 +155,8 @@ public class TranscriptServlet extends HttpServlet {
    */
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity entity : preparedQuery.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLineUtil.createTranscriptLine(entity));
+    for (Entity transcriptLine : preparedQuery.asQueryResultIterable()) {
+      lineBuilder.add(TranscriptLineUtil.createTranscriptLine(transcriptLine));
     }
     return lineBuilder.build();
   }
@@ -164,10 +164,10 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Writes {@code transcriptLines} as Json to {@code response}.
    */
-  private void writeTranscriptList(HttpServletResponse response,
+  private void writeTranscriptLines(HttpServletResponse response,
       ImmutableList<TranscriptLine> transcriptLines) throws IOException {
-    Gson gson = new Gson();
     response.setContentType("application/json;");
+    Gson gson = new Gson();
     response.getWriter().println(gson.toJson(transcriptLines));
   }
 }
