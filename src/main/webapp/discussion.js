@@ -32,7 +32,7 @@ const SLOT_REPLIES = 'replies';
 
 const SELECTOR_SHOW_REPLY = '#show-reply';
 const SELECTOR_REPLY_FORM = '#reply-form';
-const SELECTOR_CANCEL_REPLY = '#cancel-repy';
+const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
@@ -132,7 +132,7 @@ async function fetchDiscussion() {
 
 
 /**
- * Rnders a comment and its replies, with a form to post a new reply.
+ * Renders a comment and its replies, with a form to post a new reply.
  */
 class DiscussionComment extends HTMLElement {
   constructor(comment) {
