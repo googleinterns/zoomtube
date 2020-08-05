@@ -24,8 +24,16 @@ const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 const ELEMENT_AUTH_STATUS = document.querySelector('#auth-status');
 
-const TEMPLATE_ROOT_COMMENT = document.querySelector('#comment-template');
-const TEMPLATE_REPLY = document.querySelector('#reply-template');
+const TEMPLATE_COMMENT = document.querySelector('#comment-template');
+
+const SLOT_HEADER = 'header';
+const SLOT_CONTENT = 'content';
+const SLOT_REPLIES = 'replies';
+
+const SELECTOR_SHOW_REPLY = '#show-reply';
+const SELECTOR_REPLY_FORM = '#reply-form';
+const SELECTOR_POST_REPLY = '#post-reply';
+const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
 let AUTH_STATUS = null;
 
@@ -147,31 +155,33 @@ class DiscussionComment extends HTMLElement {
   constructor(comment) {
     super();
     this.attachShadow({mode: 'open'});
-    const shadow = TEMPLATE_ROOT_COMMENT.content.cloneNode(true);
+    const shadow = TEMPLATE_COMMENT.content.cloneNode(true);
     this.shadowRoot.appendChild(shadow);
 
     const username = comment.author.email.split('@')[0];
     const timestampPrefix = comment.parentKey.value ? '' : '00:00 - ';
     const header = `${timestampPrefix}${username} on ${comment.created}`;
-    this.setSlotSpan('header', header);
+    this.setSlotSpan(SLOT_HEADER, header);
 
-    this.setSlotSpan('content', comment.content);
+    this.setSlotSpan(SLOT_CONTENT, comment.content);
 
     const replies = document.createElement('div');
-    replies.slot = 'replies';
+    replies.slot = SLOT_REPLIES;
     for (const reply of comment.replies) {
       replies.appendChild(new DiscussionComment(reply));
     }
     this.appendChild(replies);
 
+    const replyForm = this.shadowRoot.querySelector(SELECTOR_REPLY_FORM);
+
     this.shadowRoot.querySelector('#show-reply').onclick = () => {
-      $(this.shadowRoot.querySelector('#reply-form')).collapse('show');
+      $(replyForm).collapse('show');
     };
     this.shadowRoot.querySelector('#cancel-reply').onclick = () => {
-      $(this.shadowRoot.querySelector('#reply-form')).collapse('hide');
+      $(replyForm).collapse('hide');
     };
-    this.shadowRoot.querySelector('#post-reply').onclick = () => {
-      const textarea = this.shadowRoot.querySelector('#reply-textarea');
+    this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
+      const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
       postReply(textarea, comment.commentKey.id);
     };
   }
