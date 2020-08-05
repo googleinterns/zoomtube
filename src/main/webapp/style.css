@@ -123,12 +123,31 @@ body {
 
 /* View page */
 
+.comment-content {
+  border: 2px solid #aaa;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.comment-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 0;
+  margin-top: 20px;
+}
+
 .halfpage {
   height: calc(100vh - 56px);
   max-height: calc(100vh - 56px);
   max-width: 50vw;
   width: 50vw;
   overflow: hidden;
+}
+
+.replies {
+  border-left: #ddd solid 5px;
+  margin-left: 8px;
+  padding-left: 8px;
 }
 
 #page {
@@ -142,7 +161,8 @@ body {
   overflow: hidden;
 }
 
-#new-comment-form {
+#new-comment-form,
+#reply-form {
   width: 100%;
 }
 
