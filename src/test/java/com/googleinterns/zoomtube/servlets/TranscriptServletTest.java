@@ -217,7 +217,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
     transcriptServlet.doGet(request, response);
-    
+
     List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
     List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
     assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
@@ -226,11 +226,11 @@ public final class TranscriptServletTest {
   private static List<TranscriptLine> transcriptLines(String transcriptLinesJson) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     return (ArrayList<TranscriptLine>) gson.fromJson(
-      transcriptLinesJson, (new ArrayList<List<TranscriptLine>>().getClass()));
+        transcriptLinesJson, (new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
-
-  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, String lectureId) {
+  private void putTranscriptLinesInDatastore(
+      List<TranscriptLine> transcriptLines, String lectureId) {
     Key lectureKey =
         KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
     for (int i = 0; i < transcriptLines.size(); i++) {
@@ -248,7 +248,8 @@ public final class TranscriptServletTest {
     // A limit of 100 for the maximum number of entities counted is used because
     // we can assume that for this test datastore, there won't be more than 100 entities
     // for a lecture key.
-    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureId)).countEntities(withLimit(100));
+    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureId))
+        .countEntities(withLimit(100));
   }
 
   private Query filteredQueryOfTranscriptLinesByLectureId(String lectureId) {

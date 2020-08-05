@@ -130,7 +130,8 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Returns the query for the lecture transcripts based on lecture id indicated in {@code lectureId}.
+   * Returns the query for the lecture transcripts based on lecture id indicated in {@code
+   * lectureId}.
    */
   private PreparedQuery getLectureTranscriptQuery(long lectureId) {
     Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
@@ -157,8 +158,8 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Writes {@code transcriptLines} as Json to {@code response}.
    */
-  private void writeTranscriptLines(HttpServletResponse response, ImmutableList<TranscriptLine> transcriptLines)
-      throws IOException {
+  private void writeTranscriptLines(HttpServletResponse response,
+      ImmutableList<TranscriptLine> transcriptLines) throws IOException {
     response.setContentType("application/json;");
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(transcriptLines));
