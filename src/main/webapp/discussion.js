@@ -22,11 +22,37 @@ const ATTR_ID = 'key-id';
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 
+const TEMPLATE_COMMENT = document.querySelector('#comment-template');
+
+const SLOT_HEADER = 'header';
+const SLOT_CONTENT = 'content';
+const SLOT_REPLIES = 'replies';
+
+const SELECTOR_SHOW_REPLY = '#show-reply';
+const SELECTOR_REPLY_FORM = '#reply-form';
+const SELECTOR_CANCEL_REPLY = '#cancel-reply';
+const SELECTOR_POST_REPLY = '#post-reply';
+const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
+
 /**
  * Loads the lecture disucssion.
  */
 async function intializeDiscussion() {
   await loadDiscussion();
+}
+
+/**
+ * Posts a new comment using the main post textarea.
+ */
+async function postNewComment() {
+  postAndReload(ELEMENT_POST_TEXTAREA);
+}
+
+/**
+ * Posts a reply to a comment.
+ */
+async function postReply(textarea, parentId) {
+  postAndReload(textarea, parentId);
 }
 
 /**
@@ -60,7 +86,7 @@ async function loadDiscussion() {
   const comments = await fetchDiscussion();
   const preparedComments = prepareComments(comments);
   for (const comment of preparedComments) {
-    ELEMENT_DISCUSSION.appendChild(createComment(comment));
+    ELEMENT_DISCUSSION.appendChild(new DiscussionComment(comment));
   }
 }
 
@@ -103,53 +129,54 @@ async function fetchDiscussion() {
 }
 
 /**
- * Creates an element for displaying {@code comment}.
+ * Renders a comment and its replies, with a form to post a new reply.
  */
-function createComment(comment) {
-  const element = document.createElement('li');
-  element.setAttribute(ATTR_ID, comment.commentKey.id);
+class DiscussionComment extends HTMLElement {
+  constructor(comment) {
+    super();
+    this.attachShadow({mode: 'open'});
+    const shadow = TEMPLATE_COMMENT.content.cloneNode(true);
+    this.shadowRoot.appendChild(shadow);
 
-  const content = document.createElement('span');
-  content.innerText = `${comment.author.email} says ${comment.content}`;
-  element.appendChild(content);
+    const username = comment.author.email.split('@')[0];
+    const timestampPrefix = comment.parentKey.value ? '' : '00:00 - ';
+    const header = `${timestampPrefix}${username} on ${comment.created}`;
+    this.setSlotSpan(SLOT_HEADER, header);
 
-  const repliesDiv = document.createElement('div');
+    this.setSlotSpan(SLOT_CONTENT, comment.content);
 
-  const repliesList = document.createElement('ul');
-  for (const reply of comment.replies) {
-    repliesList.appendChild(createComment(reply));
+    const replies = document.createElement('div');
+    replies.slot = SLOT_REPLIES;
+    for (const reply of comment.replies) {
+      replies.appendChild(new DiscussionComment(reply));
+    }
+    this.appendChild(replies);
+
+    const replyForm = this.shadowRoot.querySelector(SELECTOR_REPLY_FORM);
+
+    this.shadowRoot.querySelector(SELECTOR_SHOW_REPLY).onclick = () => {
+      $(replyForm).collapse('show');
+    };
+    this.shadowRoot.querySelector(SELECTOR_CANCEL_REPLY).onclick = () => {
+      $(replyForm).collapse('hide');
+    };
+    this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
+      const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
+      postReply(textarea, comment.commentKey.id);
+    };
   }
-  repliesDiv.appendChild(repliesList);
 
-  const replyButton = document.createElement('button');
-  replyButton.innerText = 'Reply';
-  element.appendChild(replyButton);
-  replyButton.onclick = () => {
-    createReplySubmission(repliesDiv);
-    replyButton.remove();
-  };
-  element.appendChild(repliesDiv);
-
-  return element;
+  /**
+   * Sets the content of the shadow-dom slot named {@code name} to a span
+   * element containing {@code value} as text.
+   */
+  setSlotSpan(name, value) {
+    const span = document.createElement('span');
+    span.innerText = value;
+    span.slot = name;
+    this.appendChild(span);
+  }
 }
 
-/**
- * Creates a reply textarea and submit button within {@code repliesDiv}.
- *
- * <p>The parent of {@code repliesDiv} should be a comment element created by
- * {@code createComment}.
- */
-function createReplySubmission(repliesDiv) {
-  const div = document.createElement('div');
-  const textarea = document.createElement('textarea');
-  const submit = document.createElement('button');
-  const parentId = repliesDiv.parentElement.getAttribute(ATTR_ID);
-  submit.innerText = 'Post';
-  submit.onclick = () => {
-    postAndReload(textarea, parentId);
-  };
-  div.appendChild(textarea);
-  div.appendChild(submit);
-
-  repliesDiv.prepend(div);
-}
+// Custom element names must contain a hyphen.
+customElements.define('discussion-comment', DiscussionComment);
