@@ -114,15 +114,13 @@ function createComment(comment) {
   }
   repliesDiv.appendChild(repliesList);
 
-  if (AUTH_STATUS.loggedIn) {
-    const replyButton = document.createElement('button');
-    replyButton.innerText = 'Reply';
-    element.appendChild(replyButton);
-    replyButton.onclick = () => {
-      createReplySubmission(repliesDiv);
-      replyButton.remove();
-    };
-  }
+  const replyButton = document.createElement('button');
+  replyButton.innerText = 'Reply';
+  element.appendChild(replyButton);
+  replyButton.onclick = () => {
+    createReplySubmission(repliesDiv);
+    replyButton.remove();
+  };
   element.appendChild(repliesDiv);
 
   return element;
