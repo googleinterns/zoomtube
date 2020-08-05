@@ -16,6 +16,7 @@ const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
 
 let timer;
+/** Timestamp that video, disccussion, and transcript were synced to. */
 let lastSyncedTime;
 
 /* exported LECTURE_ID */
