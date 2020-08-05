@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const ENDPOINT_AUTH = '/auth';
-let AUTH_STATUS = null;
+let AUTH_STATUS;
 
 /**
  * Loads and saves the user's authentication status.
