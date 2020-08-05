@@ -19,11 +19,6 @@ html {
   align-items: center !important;
 }
 
-#view-btn-cont a {
-  font-size: 22px;
-  color: white;
-}
-
 #add-btn-cont .btn,
 #submit-btn-cont .btn,
 #view-btn-cont .btn {
@@ -33,11 +28,6 @@ html {
 #add-btn-cont .btn,
 #add-btn-cont .btn:hover {
   width: 200px !important;
-}
-
-#view-btn-cont .btn,
-#view-btn-cont .btn:hover {
-  width: 250px !important;
 }
 
 #add-btn-cont .btn:hover,
@@ -135,4 +125,14 @@ html {
   margin: auto;
   margin-top: 100px;
   max-width: 45%;
+}
+
+#view-btn-cont a {
+  font-size: 22px;
+  color: white;
+}
+
+#view-btn-cont .btn,
+#view-btn-cont .btn:hover {
+  width: 250px !important;
 }
