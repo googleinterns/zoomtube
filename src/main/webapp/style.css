@@ -1,9 +1,18 @@
+/* Global styling */
+
+@font-face {
+  font-family: 'Product Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/product-sans/ProductSansRegular.ttf') format('truetype');
+}
+
 * {
   font-family: 'Product Sans';
 }
 
-html,
-body {
+body,
+html {
   height: 100vh;
   max-height: 100vh;
   max-width: 100vw;
@@ -11,61 +20,20 @@ body {
   overflow: hidden;
 }
 
-.halfpage {
-  height: calc(100vh - 56px);
-  max-height: calc(100vh - 56px);
-  max-width: 50vw;
-  width: 50vw;
-  overflow: hidden;
-}
-
-#page {
-  display: flex;
-  justify-content: center;
-}
-
-#new-comment-row {
-  height: 200px;
-  max-height: 200px;
-  overflow: hidden;
-}
-
-#new-comment-form {
-  width: 100%;
-}
-
-#discussion-comments {
-  height: calc(100vh - 200px);
-  max-height: calc(100vh - 200px);
-  overflow: scroll;
-}
-
 body {
   margin-bottom: 60px !important;
 }
 
-#add-btn-cont {
-  margin: 30px auto auto auto;
-  width: 200px;
+#footer {
+  bottom: 0;
+  height: 60px;
+  line-height: 60px;
+  padding-top: 0px !important;
+  position: absolute;
+  width: 100%;
 }
 
-#add-btn-cont .btn,
-#submit-btn-cont .btn {
-  background-color: #4c8bf5 !important;
-}
-
-#add-btn-cont .btn,
-#add-btn-cont .btn:hover {
-  width: 200px !important;
-}
-
-#add-btn-cont .btn:hover,
-#submit-btn-cont .btn:hover {
-  background-color: #579ff7 !important;
-}
-
-.btn,
-.btn:hover {
+.btn {
   border-color: #4c8bf5 !important;
   border-radius: 50px !important;
   font-size: 20px !important;
@@ -78,14 +46,11 @@ body {
   background-color: #4c8bf5 !important;
 }
 
-#footer {
-  bottom: 0;
-  height: 60px;
-  line-height: 60px;
-  padding-top: 0px !important;
-  position: absolute;
-  width: 100%;
+.navbar {
+  background-color: #f3f3f3;
 }
+
+/* List page */
 
 #header-text {
   font-weight: 700;
@@ -121,8 +86,24 @@ body {
   width: 70%;
 }
 
-.navbar {
-  background-color: #f3f3f3;
+#add-btn-cont {
+  margin: 30px auto auto auto;
+  width: 200px;
+}
+
+#add-btn-cont .btn,
+#submit-btn-cont .btn {
+  background-color: #4c8bf5 !important;
+}
+
+#add-btn-cont .btn,
+#add-btn-cont .btn:hover {
+  width: 200px !important;
+}
+
+#add-btn-cont .btn:hover,
+#submit-btn-cont .btn:hover {
+  background-color: #579ff7 !important;
 }
 
 #submit-btn-cont {
@@ -140,9 +121,33 @@ body {
   width: 50%;
 }
 
-@font-face {
-  font-family: 'Product Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: url('./fonts/product-sans/ProductSansRegular.ttf') format('truetype');
+/* View page */
+
+.halfpage {
+  height: calc(100vh - 56px);
+  max-height: calc(100vh - 56px);
+  max-width: 50vw;
+  width: 50vw;
+  overflow: hidden;
+}
+
+#page {
+  display: flex;
+  justify-content: center;
+}
+
+#new-comment-row {
+  height: 200px;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+#new-comment-form {
+  width: 100%;
+}
+
+#discussion-comments {
+  height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+  overflow: scroll;
 }
