@@ -11,17 +11,22 @@ html {
   position: relative;
 }
 
-#add-btn-cont {
+#add-btn-cont,
+#view-btn-cont {
   margin: 30px auto auto auto;
-  text-align: center;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
-#add-btn-cont a {
+#view-btn-cont a {
   font-size: 22px;
+  color: white;
 }
 
 #add-btn-cont .btn,
-#submit-btn-cont .btn {
+#submit-btn-cont .btn,
+#view-btn-cont .btn {
   background-color: #4c8bf5 !important;
 }
 
@@ -30,18 +35,26 @@ html {
   width: 200px !important;
 }
 
+#view-btn-cont .btn,
+#view-btn-cont .btn:hover {
+  width: 250px !important;
+}
+
 #add-btn-cont .btn:hover,
+#view-btn-cont .btn:hover,
 #submit-btn-cont .btn:hover {
   background-color: #579ff7 !important;
 }
 
 .btn,
 .btn:hover {
+  align-items: center !important;
   border-color: #4c8bf5 !important;
   border-radius: 50px !important;
+  display: flex !important;
   font-size: 20px !important;
   height: 40px !important;
-  padding: 0px !important;
+  justify-content: center !important;
   width: 150px !important;
 }
 
