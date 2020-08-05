@@ -238,7 +238,7 @@ public final class TranscriptServletTest {
       Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
       lineEntity.setProperty(TranscriptLineUtil.LECTURE, lectureKey);
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
-      lineEntity.setProperty(TranscriptLineUtil.START, /* start= */ new Date());
+      lineEntity.setProperty(TranscriptLineUtil.START,  /* start= */ new Date());
       lineEntity.setProperty(TranscriptLineUtil.DURATION, /* duration= */ new Date());
       lineEntity.setProperty(TranscriptLineUtil.END, /* end= */ new Date());
       lineEntity.setProperty(TranscriptLineUtil.CONTENT, "test content");
