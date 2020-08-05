@@ -11,8 +11,8 @@
   font-family: 'Product Sans';
 }
 
-body,
-html {
+html,
+body {
   height: 100vh;
   max-height: 100vh;
   max-width: 100vw;
