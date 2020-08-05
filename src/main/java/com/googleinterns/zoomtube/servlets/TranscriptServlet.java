@@ -126,7 +126,7 @@ public class TranscriptServlet extends HttpServlet {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
-    writeTranscriptList(response, transcriptLines);
+    writeTranscriptLines(response, transcriptLines);
   }
 
   /**
@@ -157,7 +157,7 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Writes {@code transcriptLines} as Json to {@code response}.
    */
-  private void writeTranscriptList(HttpServletResponse response, ImmutableList<TranscriptLine> transcriptLines)
+  private void writeTranscriptLines(HttpServletResponse response, ImmutableList<TranscriptLine> transcriptLines)
       throws IOException {
     response.setContentType("application/json;");
     Gson gson = new Gson();
