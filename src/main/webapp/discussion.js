@@ -149,7 +149,7 @@ async function fetchDiscussion() {
 
 
 /**
- *
+ * Rnders a comment and its replies, with a form to post a new reply.
  */
 class DiscussionComment extends HTMLElement {
   constructor(comment) {
@@ -174,10 +174,10 @@ class DiscussionComment extends HTMLElement {
 
     const replyForm = this.shadowRoot.querySelector(SELECTOR_REPLY_FORM);
 
-    this.shadowRoot.querySelector('#show-reply').onclick = () => {
+    this.shadowRoot.querySelector(SELECTOR_SHOW_REPLY).onclick = () => {
       $(replyForm).collapse('show');
     };
-    this.shadowRoot.querySelector('#cancel-reply').onclick = () => {
+    this.shadowRoot.querySelector(SELECTOR_CANCEL_REPLY).onclick = () => {
       $(replyForm).collapse('hide');
     };
     this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
