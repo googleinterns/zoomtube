@@ -32,12 +32,12 @@ const SLOT_REPLIES = 'replies';
 
 const SELECTOR_SHOW_REPLY = '#show-reply';
 const SELECTOR_REPLY_FORM = '#reply-form';
+const SELECTOR_CANCEL_REPLY = '#cancel-repy';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
 /**
- * Loads the user's authentication status and then loads the lecture
- * disucssion.
+ * Loads the lecture disucssion.
  */
 async function intializeDiscussion() {
   await loadDiscussion();
