@@ -113,13 +113,13 @@ function prepareComments(comments) {
   const commentKeys = {};
   for (const comment of comments) {
     comment.replies = [];
-    commentKeys[comment.key.id] = comment;
+    commentKeys[comment.commentKey.id] = comment;
   }
 
   const rootComments = [];
   for (const comment of comments) {
-    if (comment.parent.value) {
-      const parent = commentKeys[comment.parent.value.id];
+    if (comment.parentKey.value) {
+      const parent = commentKeys[comment.parentKey.value.id];
       parent.replies.push(comment);
     } else {
       // Top level comments don't have parents.
@@ -146,7 +146,7 @@ async function fetchDiscussion() {
  */
 function createComment(comment) {
   const element = document.createElement('li');
-  element.setAttribute(ATTR_ID, comment.key.id);
+  element.setAttribute(ATTR_ID, comment.commentKey.id);
 
   const content = document.createElement('span');
   content.innerText = `${comment.author.email} says ${comment.content}`;
