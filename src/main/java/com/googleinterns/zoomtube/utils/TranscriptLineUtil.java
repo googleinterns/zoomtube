@@ -24,8 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public class TranscriptLineUtil {
-  // TODO: Move these constants back to TranscriptServlet because
-  // that is where the XML is being parsed.
   public static final String KIND = "TranscriptLine";
   public static final String LECTURE = "lecture";
   public static final String START = "start";
@@ -55,10 +53,14 @@ public class TranscriptLineUtil {
   }
 
   /**
-   * Creates a transcript line entity using the attributes from {@code node} and {@code lectureId}.
+   * Creates a transcript line entity.
+   * 
+   * @param lectureId The id of the lecture that the transcript line is a part of.
+   * @param lineContent The text content of the transcript lien.
+   * @param lineStart The starting timestamp for the transcript line in seconds.
+   * @param lineDuration The duration for the transcript line in seconds.
+   * @param lineEnd The ending timestamp for the transcript line in seconds.
    */
-  // TODO: Update createEntity to take in the attributes rather than the nodes.
-  // TODO: add parameters. @param
   public static Entity createEntity(
       long lectureId, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
     Entity lineEntity = new Entity(KIND);

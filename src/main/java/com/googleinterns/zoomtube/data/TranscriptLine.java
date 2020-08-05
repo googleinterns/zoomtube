@@ -25,14 +25,19 @@ import java.util.Date;
 public abstract class TranscriptLine {
   /** The key for the transcript. */
   public abstract Key transcriptKey();
+
   /** The key for the lecture. */
   public abstract Key lectureKey();
+
   /** The starting Date for the transcript line. */
   public abstract Date start();
+
   /** The duration for the timestamp as a Date. */
   public abstract Date duration();
+
   /** The ending Date for the transcript line. */
   public abstract Date end();
+  
   /** The text content of the transcript line. */
   public abstract String content();
 

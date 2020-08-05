@@ -142,7 +142,7 @@ public final class TranscriptServletTest {
 
     servlet.doPost(request, response);
 
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B_AS_STRING);
+    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B_AS_LONG);
     int expectedQueryCount = (extractJson(SHORT_VIDEO_JSON)).size();
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
@@ -195,7 +195,7 @@ public final class TranscriptServletTest {
 
     servlet.doPost(request, response);
 
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C_AS_STRING);
+    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C_AS_LONG);
     int expectedQueryCount = (extractJson(LONG_VIDEO_JSON)).size();
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
@@ -249,12 +249,12 @@ public final class TranscriptServletTest {
     }
   }
 
-  private int entitiesInDatastoreCount(String lectureKeyId) {
+  private int entitiesInDatastoreCount(long lectureKeyId) {
     return datastore.prepare(filteredQuery(lectureKeyId)).countEntities(withLimit(100));
   }
 
-  private Query filteredQuery(String lectureId) {
-    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.LECTURE, Long.parseLong(lectureId));
+  private Query filteredQuery(long lectureId) {
+    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.LECTURE, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLineUtil.KIND).setFilter(lectureFilter);
