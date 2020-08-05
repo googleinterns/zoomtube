@@ -26,7 +26,7 @@ function timestampToString(timestamp) {
  * Returns the total number of seconds since the start of a video at a
  * certain {@code timestamp}.
  */
- function toSeconds(timestamp) {
+function timestampToSeconds(timestamp) {
   const ts = new Date(timestamp);
   const totalMilliseconds = ts.getTime();
   const totalSeconds = totalMilliseconds / 1000;
