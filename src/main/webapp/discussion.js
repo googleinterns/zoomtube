@@ -23,6 +23,13 @@ const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 
 /**
+ * Loads the lecture disucssion.
+ */
+async function intializeDiscussion() {
+  await loadDiscussion();
+}
+
+/**
  * Posts comment from {@code textarea} and reloads the discussion. If
  * {@code parentId} is provided, this posts a reply to the comment with
  * that id.
