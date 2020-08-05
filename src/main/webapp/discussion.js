@@ -13,7 +13,6 @@
 // limitations under the License.
 
 const ENDPOINT_DISCUSSION = '/discussion';
-const ENDPOINT_AUTH = '/auth';
 
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
@@ -22,51 +21,13 @@ const ATTR_ID = 'key-id';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
-const ELEMENT_AUTH_STATUS = document.querySelector('#auth-status');
-
-let AUTH_STATUS = null;
 
 /**
- * Loads the user's authentication status and then loads the lecture
- * disucssion.
+ * Loads the lecture disucssion.
  */
 async function intializeDiscussion() {
-  AUTH_STATUS = await getAuthStatus();
-  displayAuthStatus();
   await loadDiscussion();
 }
-
-/**
- * Fetches and returns the user's authentication status from the authentication
- * servlet.
- */
-async function getAuthStatus() {
-  const url = new URL(ENDPOINT_AUTH, window.location.origin);
-  const response = await fetch(url);
-  return await response.json();
-}
-
-
-/**
- * Displays authentication status and action links.  If a user is logged in,
- * this adds the user's email and a logout link.  Otherwise, this adds a login
- * link.
- */
-async function displayAuthStatus() {
-  const link = document.createElement('a');
-  if (AUTH_STATUS.loggedIn) {
-    link.href = AUTH_STATUS.logoutUrl.value;
-    link.innerText = 'logout';
-    ELEMENT_AUTH_STATUS.innerText =
-        `Logged in as ${AUTH_STATUS.user.value.email}. `;
-  } else {
-    link.href = AUTH_STATUS.loginUrl.value;
-    link.innerText = 'login';
-    ELEMENT_AUTH_STATUS.innerText = 'Not logged in. ';
-  }
-  ELEMENT_AUTH_STATUS.appendChild(link);
-}
-
 
 /**
  * Posts comment from {@code textarea} and reloads the discussion. If
@@ -160,15 +121,13 @@ function createComment(comment) {
   }
   repliesDiv.appendChild(repliesList);
 
-  if (AUTH_STATUS.loggedIn) {
-    const replyButton = document.createElement('button');
-    replyButton.innerText = 'Reply';
-    element.appendChild(replyButton);
-    replyButton.onclick = () => {
-      createReplySubmission(repliesDiv);
-      replyButton.remove();
-    };
-  }
+  const replyButton = document.createElement('button');
+  replyButton.innerText = 'Reply';
+  element.appendChild(replyButton);
+  replyButton.onclick = () => {
+    createReplySubmission(repliesDiv);
+    replyButton.remove();
+  };
   element.appendChild(repliesDiv);
 
   return element;
