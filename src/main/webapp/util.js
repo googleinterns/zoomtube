@@ -29,5 +29,6 @@ function timestampToString(timestamp) {
  function toSeconds(timestamp) {
   const ts = new Date(timestamp);
   const totalMilliseconds = ts.getTime();
-  return totalMilliseconds * 1000;
+  const totalSeconds = totalMilliseconds / 1000;
+  return totalSeconds;
 }
