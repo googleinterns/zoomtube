@@ -41,7 +41,7 @@ async function initialize() {
 
 /**
  * Calls functions that seek video (if {@code syncVideo} is true),
- * transcript, and discussion to {@code currentTime} (number of seconds 
+ * transcript, and discussion to {@code currentTime} (number of seconds
  * since video started playing).
  */
 function sync(currentTime, syncVideo = true) {
