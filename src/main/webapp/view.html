@@ -62,8 +62,10 @@
       <div class="replies">
         <div id="reply-form" class="collapse">
           <textarea class="form-control" id="reply-textarea" rows="3"></textarea>
-          <button class="btn btn-primary mb-2" type="button" id="post-reply">Post</button>
-          <button class="btn btn-secondary mb-2" type="button" id="cancel-reply">Cancel</button>
+          <div class="actions-bar">
+            <button class="btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post</button>
+            <button class="btn btn-sm btn-secondary mb-2" type="button" id="cancel-reply">Cancel</button>
+          </div>
         </div>
         <slot name="replies"></slot>
       </div>

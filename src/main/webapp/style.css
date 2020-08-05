@@ -119,6 +119,10 @@ body {
 
 /* View page */
 
+.actions-bar {
+  text-align: right;
+}
+
 .comment-content {
   border: 2px solid #aaa;
   border-radius: 5px;
@@ -160,6 +164,10 @@ body {
 #new-comment-form,
 #reply-form {
   width: 100%;
+}
+
+#reply-form {
+  margin-top: 20px;
 }
 
 #discussion-comments {
