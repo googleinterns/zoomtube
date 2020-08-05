@@ -13,7 +13,11 @@ html {
 
 #add-btn-cont {
   margin: 30px auto auto auto;
-  width: 200px;
+  text-align: center;
+}
+
+#add-btn-cont a {
+  font-size: 22px;
 }
 
 #add-btn-cont .btn,
@@ -116,6 +120,6 @@ html {
 
 #text {
   margin: auto;
-  margin-top: 150px;
-  width: 60%;
+  margin-top: 100px;
+  max-width: 45%;
 }
