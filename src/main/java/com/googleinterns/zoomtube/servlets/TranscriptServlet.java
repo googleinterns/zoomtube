@@ -82,61 +82,60 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Document document = getTranscriptXmlAsDocument(request).get();
-    putTranscriptLinesInDatastore(request, document);
+    String videoId = request.getParameter(PARAM_VIDEO_ID);
+    Document document = getTranscriptXmlAsDocument(videoId).get();
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    putTranscriptLinesInDatastore(lectureId, document);
   }
 
   /**
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
    * if there is a parsing error.
    *
-   * @param request Indicates the video to extract the transcript from.
+   * @param videoId Indicates the video to extract the transcript from.
    */
-  private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
-      throws IOException {
-    String videoId = request.getParameter(PARAM_VIDEO_ID);
+  private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
     String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + videoId;
 
-    final Document document;
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
+      Document document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
       document.getDocumentElement().normalize();
+      return Optional.of(document);
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: Alert the user.
       System.out.println("XML parsing error");
       return Optional.empty();
     }
-    return Optional.of(document);
   }
 
   /**
    * Puts each transcript line from {@code document} in datastore as its own entity.
    *
-   * @param request Indicates the lecture key to group the transcript lines under.
+   * @param lectureId Indicates the lecture id to group the transcript lines under.
    * @param document The XML file containing the transcript lines.
    */
-  private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+  private void putTranscriptLinesInDatastore(long lectureId, Document document) {
     NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
-      datastore.put(createLineEntity(node, lectureId));
+      datastore.put(createTranscriptLineEntity(node, lectureId));
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PreparedQuery preparedQuery = getLectureTranscriptQuery(request);
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
-    writeResponseAsJson(response, transcriptLines);
+    writeTranscriptLines(response, transcriptLines);
   }
 
   /**
-   * Returns the query for the lecture transcripts based on lecture id indicated in {@code request}.
+   * Returns the query for the lecture transcripts based on lecture id indicated in {@code
+   * lectureId}.
    */
-  private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+  private PreparedQuery getLectureTranscriptQuery(long lectureId) {
     Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
@@ -147,28 +146,32 @@ public class TranscriptServlet extends HttpServlet {
     return datastore.prepare(query);
   }
 
+  /**
+   * Returns the transcript lines in {@code preparedQuery}.
+   */
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity entity : preparedQuery.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromLineEntity(entity));
+    for (Entity transcriptLine : preparedQuery.asQueryResultIterable()) {
+      lineBuilder.add(TranscriptLine.fromLineEntity(transcriptLine));
     }
     return lineBuilder.build();
   }
 
   /**
-   * Writes {@code list} as Json to {@code response}.
+   * Writes {@code transcriptLines} as Json to {@code response}.
    */
-  private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> list)
-      throws IOException {
-    Gson gson = new Gson();
+  private void writeTranscriptLines(HttpServletResponse response,
+      ImmutableList<TranscriptLine> transcriptLines) throws IOException {
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(list));
+    Gson gson = new Gson();
+    response.getWriter().println(gson.toJson(transcriptLines));
   }
 
   /**
-   * Creates a line entity using the attributes from {@code node} and {@code lectureId}.
+   * Creates a transcript line entity using the attributes from {@code node}
+   * and {@code lectureId}.
    */
-  private Entity createLineEntity(Node node, long lectureId) {
+  private Entity createTranscriptLineEntity(Node node, long lectureId) {
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
