@@ -142,14 +142,14 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (!comment.parentKey.value) {
       // Only display timestamp on root comments.
-      timestampPrefix = `${timestampToString(comment.timestamp)} - `;
+      timestampPrefix = `${this.timestampToString(comment.timestamp)} - `;
     }
     const header = `${timestampPrefix}${username} on ${comment.created}`;
     this.setSlotSpan(SLOT_HEADER, header);
 
     this.setSlotSpan(SLOT_CONTENT, comment.content);
 
-    this.appendChild(createReplies(comment.replies));
+    this.appendChild(this.createReplies(comment.replies));
 
     const replyForm = this.shadowRoot.querySelector(SELECTOR_REPLY_FORM);
 
@@ -168,9 +168,12 @@ class DiscussionComment extends HTMLElement {
   /**
    * Coverts a Date representing a video timestamp into a string.
    */
-  // TODO Implement using a utility function.
+  // TODO: Implement using a utility function.
   timestampToString(timestamp) {
-    return '00:00';
+    const ts = new Date(timestamp);
+    const seconds = ts.getSeconds().toString().padStart(2, '0');
+    const minutes = ts.getSeconds().toString().padStart(2, '0');
+    return `${seconds}:${minutes}`;
   }
 
   /**
@@ -180,7 +183,7 @@ class DiscussionComment extends HTMLElement {
   createReplies(replies) {
     const replyDiv = document.createElement('div');
     replyDiv.slot = SLOT_REPLIES;
-    for (const reply of comment.replies) {
+    for (const reply of replies) {
       replyDiv.appendChild(new DiscussionComment(reply));
     }
     return replyDiv;
