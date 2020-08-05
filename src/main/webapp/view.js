@@ -32,24 +32,18 @@ async function initialize() {
   window.loadVideoApi();
   window.loadDiscussion();
   // TODO: Adjust time interval.
-  window.timer = window.setInterval(syncEverythingToVideo, 1000);
+  window.timer = window.setInterval(() => {
+    sync(window.videoPlayer.getCurrentTime(), false);
+  }, /* ms */ 1000);
   // TODO: Initialize the trancript section.
 }
 
-/**
- * Retrives the current time of the video and relays time to
- * {@code sync}.
- */
-function syncEverythingToVideo() {
-  const currentTime = window.videoPlayer.getCurrentTime();
-  sync(currentTime, false);
-}
 
 /**
- * Calls functions that seek video, transcript,
- * and discussion to {@code currentTime}.
+ * Calls functions that seek video (if {@code syncVideo} is true),
+ * transcript, and discussion to {@code currentTime}.
  */
-function sync(currentTime, syncVideo = false) {
+function sync(currentTime, syncVideo = true) {
   // If already synced to this time, don't sync again.
   if (lastSyncedTime == currentTime) {
     return;
