@@ -1,8 +1,7 @@
 /**
  * Sends a POST request to the transcript.
  */
-function loadTranscript() {
-  const params = new URLSearchParams(window.location.search);
-  console.log(params);
+function loadTranscript(paramQueryString) {
+  const params = new URLSearchParams(paramQueryString);
   fetch('/transcript', {method: 'POST', body: params});
 }

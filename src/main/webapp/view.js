@@ -28,7 +28,7 @@ initialize();
 async function initialize() {
   window.loadVideoApi();
   window.intializeDiscussion();
-  window.loadTranscript();
+  window.loadTranscript(window.location.search);
 }
 
 /**
