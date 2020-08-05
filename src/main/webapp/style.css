@@ -2,13 +2,42 @@
   font-family: 'Product Sans';
 }
 
-body {
-  margin-bottom: 60px !important;
+html,
+body,
+.fullpage {
+  height: 100vh;
+  max-height: 100vh;
+  max-width: 100vw;
+  width: 100vw;
+  overflow: hidden;
 }
 
-html {
-  min-height: 100%;
-  position: relative;
+.halfpage {
+  height: 100vh;
+  max-height: 100vh;
+  max-width: 50vw;
+  width: 50vw;
+  overflow: hidden;
+}
+
+#new-comment-row {
+  height: 200px;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+#new-comment-form {
+  width: 100%;
+}
+
+#discussion-comments {
+  height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+  overflow: scroll;
+}
+
+body {
+  margin-bottom: 60px !important;
 }
 
 #add-btn-cont {
