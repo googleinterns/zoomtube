@@ -15,7 +15,6 @@
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
 
-let timer;
 /** Timestamp that video, disccussion, and transcript were synced to. */
 let lastSyncedTime;
 
@@ -33,7 +32,7 @@ async function initialize() {
   window.loadVideoApi();
   window.loadDiscussion();
   // TODO: Adjust time interval.
-  timer = window.setInterval(getCurrentTime, 1000);
+  window.timer = window.setInterval(syncEverythingToVideo, 1000);
   // TODO: Initialize the trancript section.
 }
 
@@ -41,13 +40,8 @@ async function initialize() {
  * Retrives the current time of the video and relays time to
  * {@code sync}.
  */
-function getCurrentTime() {
+function syncEverythingToVideo() {
   const currentTime = window.videoPlayer.getCurrentTime();
-  // If already synced to this time, don't sync again.
-  if (lastSyncedTime == currentTime) {
-    return;
-  }
-  lastSyncedTime = currentTime;
   sync(currentTime, false);
 }
 
@@ -55,7 +49,12 @@ function getCurrentTime() {
  * Calls functions that seek video, transcript,
  * and discussion to {@code currentTime}.
  */
-function sync(currentTime, syncVideo) {
+function sync(currentTime, syncVideo = false) {
+  // If already synced to this time, don't sync again.
+  if (lastSyncedTime == currentTime) {
+    return;
+  }
+  lastSyncedTime = currentTime;
   if (syncVideo) {
     window.seekVideo(currentTime);
   }
