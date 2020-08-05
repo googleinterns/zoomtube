@@ -172,7 +172,7 @@ class DiscussionComment extends HTMLElement {
   timestampToString(timestamp) {
     const ts = new Date(timestamp);
     const seconds = ts.getSeconds().toString().padStart(2, '0');
-    const minutes = ts.getSeconds().toString().padStart(2, '0');
+    const minutes = ts.getMinutes().toString().padStart(2, '0');
     return `${minutes}:${seconds}`;
   }
 
