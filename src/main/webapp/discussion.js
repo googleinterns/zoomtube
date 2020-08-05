@@ -35,28 +35,13 @@ const SELECTOR_REPLY_FORM = '#reply-form';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
-let AUTH_STATUS = null;
-
 /**
  * Loads the user's authentication status and then loads the lecture
  * disucssion.
  */
 async function intializeDiscussion() {
-  AUTH_STATUS = await getAuthStatus();
   await loadDiscussion();
 }
-
-
-/**
- * Fetches and returns the user's authentication status from the authentication
- * servlet.
- */
-async function getAuthStatus() {
-  const url = new URL(ENDPOINT_AUTH, window.location.origin);
-  const response = await fetch(url);
-  return await response.json();
-}
-
 
 /**
  * Posts a new comment using the main post textarea.
@@ -65,14 +50,12 @@ async function postNewComment() {
   postAndReload(ELEMENT_POST_TEXTAREA);
 }
 
-
 /**
  * Posts a reply to a comment.
  */
 async function postReply(textarea, parentId) {
   postAndReload(textarea, parentId);
 }
-
 
 /**
  * Posts comment from {@code textarea} and reloads the discussion. If
