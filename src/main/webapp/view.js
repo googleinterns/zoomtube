@@ -31,20 +31,30 @@ initialize();
 async function initialize() {
   window.loadVideoApi();
   window.loadDiscussion();
+  // TODO: Adjust time interval.
   timer = window.setInterval(getCurrentTime, 1000);
   // TODO: Initialize the trancript section.
 }
 
+/** 
+ * Retrives the current time of the video and relays time to
+ * {@code sync}.
+ */
 function getCurrentTime() {
   const currentTime = window.videoPlayer.getCurrentTime();
-  sync(currentTime, false);
-}
-
-function sync(currentTime, syncVideo) {
+  // If already synced to this time, don't sync again.
   if (lastSyncedTime == currentTime) {
     return;
   }
   lastSyncedTime = currentTime;
+  sync(currentTime, false);
+}
+
+/** 
+ * Relays {@code currentTime} to functions that seek
+ * video, transcript, and discussion.
+ */
+function sync(currentTime, syncVideo) {
   if (syncVideo) {
     window.seekVideo(currentTime);
   }
