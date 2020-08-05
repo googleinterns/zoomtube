@@ -113,3 +113,9 @@ html {
   font-weight: 400;
   src: url('./fonts/product-sans/ProductSansRegular.ttf') format('truetype');
 }
+
+#text {
+  margin: auto;
+  margin-top: 150px;
+  width: 60%;
+}
