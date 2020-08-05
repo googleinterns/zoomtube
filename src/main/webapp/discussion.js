@@ -25,7 +25,7 @@ const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 /**
  * Loads the lecture disucssion.
  */
- async function intializeDiscussion() {
+async function intializeDiscussion() {
   await loadDiscussion();
 }
 
