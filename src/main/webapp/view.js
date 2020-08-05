@@ -51,8 +51,8 @@ function getCurrentTime() {
 }
 
 /** 
- * Relays {@code currentTime} to functions that seek
- * video, transcript, and discussion.
+ * Calls functions that seek video, transcript,
+ * and discussion to {@code currentTime}.
  */
 function sync(currentTime, syncVideo) {
   if (syncVideo) {
