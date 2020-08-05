@@ -53,9 +53,12 @@ import org.xml.sax.SAXException;
 @WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
   public static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
+  // TODO: Update PARAM_LECTURE with Lecture.KIND when this is merged.
   public static final String PARAM_LECTURE = "lecture";
+  // Attributes for extracting the lecture and video ids from the URL.
   public static final String PARAM_LECTURE_ID = "id";
   public static final String PARAM_VIDEO_ID = "video";
+  // Attributes for parsing the XML.
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
