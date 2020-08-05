@@ -19,7 +19,12 @@ function timestampToString(timestamp) {
   const ts = new Date(timestamp);
   const seconds = ts.getSeconds().toString().padStart(2, '0');
   const minutes = ts.getMinutes().toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
+  if (ts.getHours() == 0) {
+    return `${minutes}:${seconds}`;
+  }
+  // We don't pad hours because lectures won't need two digits for hours.
+  const hours = ts.getHours().toString();
+  return `${hours}:${minutes}:${seconds}`;
 }
 
 /**
