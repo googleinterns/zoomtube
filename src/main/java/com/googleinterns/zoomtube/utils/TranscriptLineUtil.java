@@ -54,7 +54,7 @@ public class TranscriptLineUtil {
 
   /**
    * Creates a transcript line entity.
-   * 
+   *
    * @param lectureId The id of the lecture that the transcript line is a part of.
    * @param lineContent The text content of the transcript lien.
    * @param lineStart The starting timestamp for the transcript line in seconds.

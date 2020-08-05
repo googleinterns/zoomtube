@@ -114,13 +114,13 @@ public class TranscriptServlet extends HttpServlet {
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(long lectureId, Document document) {
-    NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
-    for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-      Node node = nodeList.item(nodeIndex);
-      Element element = (Element) node;
-      String lineContent = node.getTextContent();
-      Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
-      Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
+    NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
+    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
+      Node transcriptNode = transcriptNodes.item(nodeIndex);
+      Element transcriptElement = (Element) transcriptNode;
+      String lineContent = transcriptNode.getTextContent();
+      Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+      Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
       Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
       datastore.put(TranscriptLineUtil.createEntity(
           lectureId, lineContent, lineStart, lineDuration, lineEnd));

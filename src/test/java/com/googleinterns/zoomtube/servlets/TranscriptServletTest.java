@@ -125,7 +125,8 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_A_AS_STRING);
 
     servlet.doGet(request, response);
 
@@ -138,7 +139,8 @@ public final class TranscriptServletTest {
   @Test
   public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_B_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_B_AS_STRING);
 
     servlet.doPost(request, response);
 
@@ -150,7 +152,8 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_storeAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_A_AS_STRING);
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
@@ -164,7 +167,8 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_storeAndRetrieveLongVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_A_AS_STRING);
 
     servlet.doPost(request, response);
     servlet.doGet(request, response);
@@ -178,7 +182,8 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_A_AS_STRING);
 
     servlet.doGet(request, response);
 
@@ -191,7 +196,8 @@ public final class TranscriptServletTest {
   @Test
   public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_C_AS_STRING);
 
     servlet.doPost(request, response);
 
@@ -205,7 +211,8 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B_AS_LONG);
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_C_AS_STRING);
 
     servlet.doGet(request, response);
 
@@ -219,7 +226,8 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putJsonInDatastore(SHORT_VIDEO_JSON, LECTURE_ID_B_AS_LONG);
     putJsonInDatastore(LONG_VIDEO_JSON, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID))
+        .thenReturn(LECTURE_ID_A_AS_STRING);
 
     servlet.doGet(request, response);
 
@@ -241,7 +249,7 @@ public final class TranscriptServletTest {
       Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
       lineEntity.setProperty(TranscriptLineUtil.LECTURE, lectureKey);
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
-      lineEntity.setProperty(TranscriptLineUtil.START,  /* start= */ new Date());
+      lineEntity.setProperty(TranscriptLineUtil.START, /* start= */ new Date());
       lineEntity.setProperty(TranscriptLineUtil.DURATION, /* duration= */ new Date());
       lineEntity.setProperty(TranscriptLineUtil.END, /* end= */ new Date());
       lineEntity.setProperty(TranscriptLineUtil.CONTENT, "test content");
