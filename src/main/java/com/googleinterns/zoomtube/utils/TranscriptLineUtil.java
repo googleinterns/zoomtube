@@ -23,13 +23,15 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
-public class TranscriptLineUtil {
+public final class TranscriptLineUtil {
   public static final String KIND = "TranscriptLine";
   public static final String LECTURE = "lecture";
   public static final String START = "start";
   public static final String DURATION = "duration";
   public static final String CONTENT = "content";
   public static final String END = "end";
+
+  private TranscriptLineUtil() {}
 
   /**
    * Creates and returns a TranscriptLine from a datastore {@code entity} using
