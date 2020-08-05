@@ -152,9 +152,9 @@ public final class TranscriptServletTest {
 
     transcriptServlet.doPost(request, response);
 
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B_AS_LONG);
-    int expectedQueryCount = (shortVideoTranscriptLines).size();
-    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
+    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B_AS_LONG);
+    int expectedQuery = (shortVideoTranscriptLines).size();
+    assertThat(actualQuery).isEqualTo(expectedQuery);
   }
 
   @Test
@@ -206,9 +206,9 @@ public final class TranscriptServletTest {
 
     transcriptServlet.doPost(request, response);
 
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C_AS_LONG);
-    int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
-    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
+    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_C_AS_LONG);
+    int expectedQuery = (transcriptLines(LONG_VIDEO_JSON)).size();
+    assertThat(actualQuery).isEqualTo(expectedQuery);
   }
 
   @Test
