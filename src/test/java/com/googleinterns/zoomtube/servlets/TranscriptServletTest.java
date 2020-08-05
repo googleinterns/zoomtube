@@ -59,7 +59,7 @@ public final class TranscriptServletTest {
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
 
-  private TranscriptServlet servlet;
+  private TranscriptServlet transcriptServlet;
   private DatastoreService datastore;
   private StringWriter lectureTranscript;
 
@@ -109,9 +109,9 @@ public final class TranscriptServletTest {
   @Before
   public void setUp() throws ServletException, IOException {
     localServiceHelper.setUp();
-    servlet = new TranscriptServlet();
+    transcriptServlet = new TranscriptServlet();
     datastore = DatastoreServiceFactory.getDatastoreService();
-    servlet.init(datastore);
+    transcriptServlet.init(datastore);
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
@@ -127,12 +127,11 @@ public final class TranscriptServletTest {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
-    servlet.doGet(request, response);
+    transcriptServlet.doGet(request, response);
 
-    String actualJson = lectureTranscript.toString();
-    List<TranscriptLine> expectedArrayList = shortVideoTranscriptLines;
-    List<TranscriptLine> actualJsonArray = transcriptLines(actualJson);
-    assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size());
+    List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
+    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
+    assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
   }
 
   @Test
@@ -140,11 +139,11 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_B);
 
-    servlet.doPost(request, response);
+    transcriptServlet.doPost(request, response);
 
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B);
-    int expectedQueryCount = (shortVideoTranscriptLines).size();
-    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
+    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B);
+    int expectedQuery = (shortVideoTranscriptLines).size();
+    assertThat(actualQuery).isEqualTo(expectedQuery);
   }
 
   @Test
@@ -152,13 +151,12 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
-    servlet.doPost(request, response);
-    servlet.doGet(request, response);
+    transcriptServlet.doPost(request, response);
+    transcriptServlet.doGet(request, response);
 
-    String actualJson = lectureTranscript.toString();
-    List<TranscriptLine> expectedArrayList = shortVideoTranscriptLines;
-    List<TranscriptLine> actualJsonArray = transcriptLines(actualJson);
-    assertThat(actualJsonArray).isEqualTo(expectedArrayList);
+    List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
+    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
+    assertThat(actualTranscriptLines).isEqualTo(expectedTranscriptLines);
   }
 
   @Test
@@ -166,13 +164,12 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
-    servlet.doPost(request, response);
-    servlet.doGet(request, response);
+    transcriptServlet.doPost(request, response);
+    transcriptServlet.doGet(request, response);
 
-    String actualJson = lectureTranscript.toString();
-    List<TranscriptLine> expectedArrayList = longVideoTranscriptLines;
-    List<TranscriptLine> actualJsonArray = transcriptLines(actualJson);
-    assertThat(actualJsonArray).isEqualTo(expectedArrayList);
+    List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
+    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
+    assertThat(actualTranscriptLines).isEqualTo(expectedTranscriptLines);
   }
 
   @Test
@@ -180,12 +177,11 @@ public final class TranscriptServletTest {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
-    servlet.doGet(request, response);
+    transcriptServlet.doGet(request, response);
 
-    String actualJson = lectureTranscript.toString();
-    List<TranscriptLine> expectedArrayList = longVideoTranscriptLines;
-    List<TranscriptLine> actualJsonArray = transcriptLines(actualJson);
-    assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size());
+    List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
+    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
+    assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
   }
 
   @Test
@@ -193,7 +189,7 @@ public final class TranscriptServletTest {
     when(request.getParameter(TranscriptServlet.PARAM_VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
-    servlet.doPost(request, response);
+    transcriptServlet.doPost(request, response);
 
     int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
     int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
@@ -207,11 +203,10 @@ public final class TranscriptServletTest {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_C);
 
-    servlet.doGet(request, response);
+    transcriptServlet.doGet(request, response);
 
-    String actualJson = lectureTranscript.toString();
-    List<TranscriptLine> actualJsonArray = transcriptLines(actualJson);
-    assertThat(actualJsonArray.size()).isEqualTo(0);
+    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
+    assertThat(actualTranscriptLines.size()).isEqualTo(0);
   }
 
   @Test
@@ -221,12 +216,11 @@ public final class TranscriptServletTest {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
     when(request.getParameter(TranscriptServlet.PARAM_LECTURE_ID)).thenReturn(LECTURE_ID_A);
 
-    servlet.doGet(request, response);
-
-    String actualJson = lectureTranscript.toString();
-    List<TranscriptLine> expectedArrayList = longVideoTranscriptLines;
-    List<TranscriptLine> actualJsonArray = transcriptLines(actualJson);
-    assertThat(actualJsonArray.size()).isEqualTo(expectedArrayList.size());
+    transcriptServlet.doGet(request, response);
+    
+    List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
+    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
+    assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
   }
 
   private static List<TranscriptLine> transcriptLines(String transcriptLinesJson) {
@@ -236,12 +230,12 @@ public final class TranscriptServletTest {
   }
 
 
-  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLineArray, String lectureKeyId) {
-    Key lectureKeyKey =
-        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureKeyId));
-    for (int i = 0; i < transcriptLineArray.size(); i++) {
+  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, String lectureId) {
+    Key lectureKey =
+        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
+    for (int i = 0; i < transcriptLines.size(); i++) {
       Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKeyKey);
+      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
       // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
       lineEntity.setProperty(TranscriptLine.PROP_START, /* start= */ "");
       lineEntity.setProperty(TranscriptLine.PROP_DURATION, /* duration= */ "");
@@ -250,15 +244,18 @@ public final class TranscriptServletTest {
     }
   }
 
-  private int entitiesInDatastoreCount(String lectureKeyId) {
-    return datastore.prepare(filteredQuery(lectureKeyId)).countEntities(withLimit(100));
+  private int entitiesInDatastoreCount(String lectureId) {
+    // A limit of 100 for the maximum number of entities counted is used because
+    // we can assume that for this test datastore, there won't be more than 100 entities
+    // for a lecture key.
+    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureId)).countEntities(withLimit(100));
   }
 
-  private Query filteredQuery(String lectureKeyId) {
-    Key lectureKeyKey =
-        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureKeyId));
+  private Query filteredQueryOfTranscriptLinesByLectureId(String lectureId) {
+    Key lectureKey =
+        KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, Long.parseLong(lectureId));
     Filter lectureKeyFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKeyKey);
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureKeyFilter);
   }
 }
