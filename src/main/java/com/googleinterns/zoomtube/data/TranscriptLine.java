@@ -23,22 +23,22 @@ import java.util.Date;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLine {
-  /** The key for the transcript. */
+  /** Returns the key for the transcript. */
   public abstract Key transcriptKey();
 
-  /** The key for the lecture. */
+  /** Returns the key for the lecture. */
   public abstract Key lectureKey();
 
-  /** The starting Date for the transcript line. */
+  /** Returns the starting Date for the transcript line. */
   public abstract Date start();
 
-  /** The duration for the timestamp as a Date. */
+  /** Returns the duration for the timestamp as a Date. */
   public abstract Date duration();
 
-  /** The ending Date for the transcript line. */
+  /** Returns the ending Date for the transcript line. */
   public abstract Date end();
-  
-  /** The text content of the transcript line. */
+
+  /** Returns the text content of the transcript line. */
   public abstract String content();
 
   /**
