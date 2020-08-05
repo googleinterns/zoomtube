@@ -42,10 +42,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.w3c.dom.Element;
 
 /**
  * Provides the transcript for a given lecture.
@@ -80,42 +80,40 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Document document = getTranscriptXmlAsDocument(request).get();
-    putTranscriptLinesInDatastore(request, document);
+    String videoId = request.getParameter(PARAM_VIDEO_ID);
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    Document document = getTranscriptXmlAsDocument(videoId).get();
+    putTranscriptLinesInDatastore(lectureId, document);
   }
 
   /**
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
    * if there is a parsing error.
    *
-   * @param request Indicates the video to extract the transcript from.
+   * @param videoId Indicates the video to extract the transcript from.
    */
-  private Optional<Document> getTranscriptXmlAsDocument(HttpServletRequest request)
-      throws IOException {
-    String videoId = request.getParameter(PARAM_VIDEO_ID);
+  private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
     String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
 
-    final Document document;
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
+      Document document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
       document.getDocumentElement().normalize();
+      return Optional.of(document);
     } catch (ParserConfigurationException | SAXException e) {
       // TODO: Alert the user.
       System.out.println("XML parsing error");
       return Optional.empty();
     }
-    return Optional.of(document);
   }
 
   /**
    * Puts each transcript line from {@code document} in datastore as its own entity.
    *
-   * @param request Indicates the lecture key to group the transcript lines under.
+   * @param lectureId Indicates the lecture id to group the transcript lines under.
    * @param document The XML file containing the transcript lines.
    */
-  private void putTranscriptLinesInDatastore(HttpServletRequest request, Document document) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+  private void putTranscriptLinesInDatastore(long lectureId, Document document) {
     NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
@@ -124,23 +122,24 @@ public class TranscriptServlet extends HttpServlet {
       Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
       Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
       Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
-      System.out.println(lineEnd);
-      datastore.put(TranscriptLineUtil.createEntity(lectureId, lineContent, lineStart, lineDuration, lineEnd));
+      datastore.put(TranscriptLineUtil.createEntity(
+          lectureId, lineContent, lineStart, lineDuration, lineEnd));
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PreparedQuery preparedQuery = getLectureTranscriptQuery(request);
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
-    writeResponseAsJson(response, transcriptLines);
+    writeTranscriptList(response, transcriptLines);
   }
 
   /**
-   * Returns the query for the lecture transcripts based on lecture id indicated in {@code request}.
+   * Returns the query for the lecture transcripts based on lecture id indicated in {@code
+   * lectureId}.
    */
-  private PreparedQuery getLectureTranscriptQuery(HttpServletRequest request) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+  private PreparedQuery getLectureTranscriptQuery(long lectureId) {
     Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
@@ -151,6 +150,9 @@ public class TranscriptServlet extends HttpServlet {
     return datastore.prepare(query);
   }
 
+  /**
+   * Returns the transcript lines in {@code preparedQuery}.
+   */
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity entity : preparedQuery.asQueryResultIterable()) {
@@ -160,12 +162,12 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Writes {@code list} as Json to {@code response}.
+   * Writes {@code transcriptLines} as Json to {@code response}.
    */
-  private void writeResponseAsJson(HttpServletResponse response, ImmutableList<TranscriptLine> list)
-      throws IOException {
+  private void writeTranscriptList(HttpServletResponse response,
+      ImmutableList<TranscriptLine> transcriptLines) throws IOException {
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(list));
+    response.getWriter().println(gson.toJson(transcriptLines));
   }
 }

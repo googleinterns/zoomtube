@@ -15,7 +15,6 @@
 
 const TRANSCRIPT_CONTAINER = 'transcript-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
-const MILLISECOND_CONVERTER = 1000;
 
 /**
  * Sends a POST request to the transcript.
@@ -67,9 +66,9 @@ function appendTextToList(transcriptLine, ulElement) {
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
+      startDate.getSeconds()}`;
   const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);

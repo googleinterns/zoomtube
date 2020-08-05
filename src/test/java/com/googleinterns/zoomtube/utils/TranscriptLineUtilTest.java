@@ -23,6 +23,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.TranscriptLine;
+import com.googleinterns.zoomtube.servlets.TranscriptServlet;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.w3c.dom.Element;
-import com.googleinterns.zoomtube.servlets.TranscriptServlet;
 
 @RunWith(JUnit4.class)
 public final class TranscriptLineUtilTest {
@@ -87,11 +87,13 @@ public final class TranscriptLineUtilTest {
     long durationAsLong = (long) 23.32;
     long lectureId = 1;
 
-    Entity actualEntity = TranscriptLineUtil.createEntity(lectureId, TEST_CONTENT, startDate, duration, endDate);
+    Entity actualEntity =
+        TranscriptLineUtil.createEntity(lectureId, TEST_CONTENT, startDate, duration, endDate);
     Key actualKey = KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId);
     Date actualStartDate = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
     Date actualEndDate = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
-    Date actualStartPlusDurationDate = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong + durationAsLong));
+    Date actualStartPlusDurationDate =
+        new Date(TimeUnit.SECONDS.toMillis(startDateAsLong + durationAsLong));
 
     assertThat(actualEntity.getProperty(TranscriptLineUtil.LECTURE)).isEqualTo(actualKey);
     assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
