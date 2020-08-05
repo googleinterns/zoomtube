@@ -3,8 +3,7 @@
 }
 
 html,
-body,
-.fullpage {
+body {
   height: 100vh;
   max-height: 100vh;
   max-width: 100vw;
@@ -13,11 +12,16 @@ body,
 }
 
 .halfpage {
-  height: 100vh;
-  max-height: 100vh;
+  height: calc(100vh - 56px);
+  max-height: calc(100vh - 56px);
   max-width: 50vw;
   width: 50vw;
   overflow: hidden;
+}
+
+#page {
+  display: flex;
+  justify-content: center;
 }
 
 #new-comment-row {

@@ -20,22 +20,23 @@
     <button type="button" class="btn btn-outline-primary">Logout</button>
   </nav>
 
-  <div class="halfpage" id="player-transcript">
-    <div id="player"></div>
-    <!-- Transcript div goes here. -->
-  </div>
-
-  <div class="halfpage" id="discussion">
-    <div id="new-comment-row">
-      <div id="new-comment-form" class="form-group">
-        <label for="post-textarea">Leave a Comment</label>
-        <textarea class="form-control" id="post-textarea" rows="2"></textarea>
-      </div>
-      <button class="btn btn-primary mb-2" type="button" onclick="postAndReload(ELEMENT_POST_TEXTAREA)">
-        Post Comment
-      </button>
+  <div id="page">
+    <div class="halfpage" id="player-transcript">
+      <div id="player"></div>
+      <!-- Transcript div goes here. -->
     </div>
-    <div class="container" id="discussion-comments"></div>
+    <div class="halfpage" id="discussion">
+      <div id="new-comment-row">
+        <div id="new-comment-form" class="form-group">
+          <label for="post-textarea">Leave a Comment</label>
+          <textarea class="form-control" id="post-textarea" rows="2"></textarea>
+        </div>
+        <button class="btn btn-primary mb-2" type="button" onclick="postAndReload(ELEMENT_POST_TEXTAREA)">
+          Post Comment
+        </button>
+      </div>
+      <div class="container" id="discussion-comments"></div>
+    </div>
   </div>
 </body>
 
