@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.Comment;
+import com.googleinterns.zoomtube.utils.CommentUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -80,7 +81,7 @@ public class DiscussionServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
-    assertThat(datastore.prepare(new Query(Comment.ENTITY_KIND)).countEntities(withLimit(1)))
+    assertThat(datastore.prepare(new Query(CommentUtil.KIND)).countEntities(withLimit(1)))
         .isEqualTo(0);
   }
 
@@ -97,14 +98,14 @@ public class DiscussionServletTest {
     servlet.doPost(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);
-    PreparedQuery query = datastore.prepare(new Query(Comment.ENTITY_KIND));
+    PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
     assertThat(query.countEntities(withLimit(2))).isEqualTo(1);
-    Comment comment = Comment.fromEntity(query.asSingleEntity());
-    assertThat(comment.lecture().getId()).isEqualTo(LECTURE_ID);
+    Comment comment = CommentUtil.createComment(query.asSingleEntity());
+    assertThat(comment.lectureKey().getId()).isEqualTo(LECTURE_ID);
     assertThat(comment.author().getEmail()).isEqualTo("author@example.com");
     assertThat(comment.content()).isEqualTo("Something unique");
-    assertThat(comment.parent().isPresent()).isTrue();
-    assertThat(comment.parent().get().getId()).isEqualTo(parentId);
+    assertThat(comment.parentKey().isPresent()).isTrue();
+    assertThat(comment.parentKey().get().getId()).isEqualTo(parentId);
   }
 
   @Test
@@ -117,9 +118,9 @@ public class DiscussionServletTest {
     servlet.doPost(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);
-    PreparedQuery query = datastore.prepare(new Query(Comment.ENTITY_KIND));
-    Comment comment = Comment.fromEntity(query.asSingleEntity());
-    assertThat(comment.parent().isPresent()).isFalse();
+    PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
+    Comment comment = CommentUtil.createComment(query.asSingleEntity());
+    assertThat(comment.parentKey().isPresent()).isFalse();
   }
 
   @Test
@@ -181,17 +182,17 @@ public class DiscussionServletTest {
   }
 
   private Entity createTestCommentEntity(int lectureId) {
-    Entity commentEntity = new Entity(Comment.ENTITY_KIND);
+    Entity commentEntity = new Entity(CommentUtil.KIND);
     Key lecture = KeyFactory.createKey(/* kind= */ "Lecture", lectureId);
-    commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
-    commentEntity.setProperty(Comment.PROP_PARENT, null);
-    commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
+    commentEntity.setProperty(CommentUtil.LECTURE, lecture);
+    commentEntity.setProperty(CommentUtil.PARENT, null);
+    commentEntity.setProperty(CommentUtil.TIMESTAMP, new Date(0));
     // Most properties here are not tested, but are required by the AutoValue class so must be
     // specified.
     commentEntity.setProperty(
-        Comment.PROP_AUTHOR, new User("untestedAuthor@example.com", "untested.com"));
-    commentEntity.setProperty(Comment.PROP_CONTENT, "Untested content");
-    commentEntity.setProperty(Comment.PROP_CREATED, new Date(Clock.systemUTC().millis()));
+        CommentUtil.AUTHOR, new User("untestedAuthor@example.com", "untested.com"));
+    commentEntity.setProperty(CommentUtil.CONTENT, "Untested content");
+    commentEntity.setProperty(CommentUtil.CREATED, new Date(Clock.systemUTC().millis()));
 
     return commentEntity;
   }
