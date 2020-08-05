@@ -36,7 +36,7 @@ async function initialize() {
   // TODO: Initialize the trancript section.
 }
 
-/** 
+/**
  * Retrives the current time of the video and relays time to
  * {@code sync}.
  */
@@ -50,7 +50,7 @@ function getCurrentTime() {
   sync(currentTime, false);
 }
 
-/** 
+/**
  * Calls functions that seek video, transcript,
  * and discussion to {@code currentTime}.
  */
