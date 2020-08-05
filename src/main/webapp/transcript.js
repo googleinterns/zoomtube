@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO: Implement
+/** Seeks transcript to {@code currentTime}. */
 function seekTranscript(currentTime) {
+  // TODO: Remove and implement.
   console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
 }
