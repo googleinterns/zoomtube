@@ -38,15 +38,12 @@ body {
   border-radius: 50px !important;
 }
 
-.btn:hover {
-  background-color: #4c8bf5 !important;
-}
-
 .navbar {
   background-color: #f3f3f3;
 }
 
-.btn-wide {
+.btn-wide,
+.btn-wider {
   font-size: 20px !important;
   height: 40px !important;
   padding: 0px !important;
@@ -54,9 +51,6 @@ body {
 }
 
 .btn-wider {
-  font-size: 20px !important;
-  height: 40px !important;
-  padding: 0px !important;
   width: 200px !important;
 }
 
@@ -114,10 +108,6 @@ body {
 #submit-btn-cont {
   margin: auto;
   text-align: center;
-}
-
-#submit-btn-cont .btn {
-  background-color: #4c8bf5 !important;
 }
 
 #text-cont {
