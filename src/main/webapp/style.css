@@ -11,6 +11,23 @@
   font-family: 'Product Sans';
 }
 
+.btn {
+  border-color: #4c8bf5 !important;
+  border-radius: 50px !important;
+}
+
+.btn-wide,
+.btn-wider {
+  font-size: 20px !important;
+  height: 40px !important;
+  padding: 0px !important;
+  width: 150px !important;
+}
+
+.btn-wider {
+  width: 200px !important;
+}
+
 body,
 html {
   height: 100vh;
@@ -33,28 +50,26 @@ body {
   width: 100%;
 }
 
-.btn {
-  border-color: #4c8bf5 !important;
-  border-radius: 50px !important;
-}
-
 .navbar {
   background-color: #f3f3f3;
 }
 
-.btn-wide,
-.btn-wider {
-  font-size: 20px !important;
-  height: 40px !important;
-  padding: 0px !important;
-  width: 150px !important;
-}
-
-.btn-wider {
-  width: 200px !important;
-}
-
 /* List page */
+
+#add-btn-cont {
+  margin: 30px auto auto auto;
+  width: 200px;
+}
+
+#add-btn-cont .btn,
+#submit-btn-cont .btn {
+  background-color: #4c8bf5 !important;
+}
+
+#add-btn-cont .btn:hover,
+#submit-btn-cont .btn:hover {
+  background-color: #579ff7 !important;
+}
 
 #header-text {
   font-weight: 700;
@@ -90,21 +105,6 @@ body {
   width: 70%;
 }
 
-#add-btn-cont {
-  margin: 30px auto auto auto;
-  width: 200px;
-}
-
-#add-btn-cont .btn,
-#submit-btn-cont .btn {
-  background-color: #4c8bf5 !important;
-}
-
-#add-btn-cont .btn:hover,
-#submit-btn-cont .btn:hover {
-  background-color: #579ff7 !important;
-}
-
 #submit-btn-cont {
   margin: auto;
   text-align: center;
@@ -135,23 +135,18 @@ body {
   margin-top: 20px;
 }
 
+#discussion-comments {
+  height: calc(100vh - 206px);
+  max-height: calc(100vh - 206px);
+  overflow: scroll;
+}
+
 .halfpage {
   height: calc(100vh - 56px);
   max-height: calc(100vh - 56px);
   max-width: 50vw;
   width: 50vw;
   overflow: hidden;
-}
-
-.replies {
-  border-left: #ddd solid 5px;
-  margin-left: 8px;
-  padding-left: 8px;
-}
-
-#page {
-  display: flex;
-  justify-content: center;
 }
 
 #new-comment-row {
@@ -165,12 +160,17 @@ body {
   width: 100%;
 }
 
+#page {
+  display: flex;
+  justify-content: center;
+}
+
 #reply-form {
   margin-top: 20px;
 }
 
-#discussion-comments {
-  height: calc(100vh - 206px);
-  max-height: calc(100vh - 206px);
-  overflow: scroll;
+.replies {
+  border-left: #ddd solid 5px;
+  margin-left: 8px;
+  padding-left: 8px;
 }
