@@ -21,9 +21,9 @@ html {
 #add-btn-cont,
 #view-btn-cont {
   align-items: center !important;
-  margin: 30px auto auto auto;
   display: flex !important;
   justify-content: center !important;
+  margin: 30px auto auto auto;
 }
 
 #add-btn-cont .btn,
