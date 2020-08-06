@@ -49,18 +49,18 @@ async function postNewComment() {
 }
 
 /**
- * Posts a reply to a comment.
+ * Posts the content of {@code inputField} as a reply to {@code parentId}.
  */
-async function postReply(textarea, parentId) {
-  postAndReload(textarea, parentId);
+async function postReply(inputField, parentId) {
+  postAndReload(inputField, parentId);
 }
 
 /**
- * Posts comment from {@code textarea} and reloads the discussion. If
+ * Posts comment from {@code inputField} and reloads the discussion. If
  * {@code parentId} is provided, this posts a reply to the comment with
  * that id.
  */
-async function postAndReload(textarea, parentId = undefined) {
+async function postAndReload(inputField, parentId = undefined) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
   if (parentId) {
@@ -69,9 +69,9 @@ async function postAndReload(textarea, parentId = undefined) {
 
   fetch(url, {
     method: 'POST',
-    body: textarea.value,
+    body: inputField.value,
   }).then(() => {
-    textarea.value = '';
+    inputField.value = '';
     loadDiscussion();
   });
 }
