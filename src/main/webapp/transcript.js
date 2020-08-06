@@ -60,7 +60,11 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  * and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
+  // TODO: Separate code into helper methods.
   const liElement = document.createElement('li');
+  liElement.class = 'mx-auto';
+  const contentDivElement = document.createElement('div');
+  contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1', 'font-weight-bold');
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
@@ -69,9 +73,9 @@ function appendTextToList(transcriptLine, ulElement) {
     `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
-  appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
+  appendParagraphToContainer(timestamp, contentDivElement, ['justify-content-start mb-1']);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
-  appendParagraphToContainer(transcriptLine.content, liElement, ['mx-auto']);
+  appendParagraphToContainer(transcriptLine.content, contentDivElement, ['ml-4 mb-1']);
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
 
