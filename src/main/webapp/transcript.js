@@ -60,22 +60,27 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  * and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
-  // TODO: Separate code into helper methods.
+  // TODO: Separate code into helper methods. or create a transcript line class
+  // add check if current transcript line or not.
   const liElement = document.createElement('li');
   liElement.class = 'mx-auto';
   const contentDivElement = document.createElement('div');
-  contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1', 'font-weight-bold');
+  contentDivElement.classList.add(
+      'd-flex', 'flex-row', 'mb-1', 'font-weight-bold');
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
+      startDate.getSeconds()}`;
   const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
-  appendParagraphToContainer(timestamp, contentDivElement, ['justify-content-start mb-1']);
+  appendParagraphToContainer(
+      timestamp, contentDivElement, ['justify-content-start', 'mb-1']);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
-  appendParagraphToContainer(transcriptLine.content, contentDivElement, ['ml-4 mb-1']);
+  appendParagraphToContainer(
+      transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+  liElement.appendChild(contentDivElement);
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
 
