@@ -104,3 +104,14 @@ function appendParagraphToContainer(text, container, classes = []) {
 function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
+
+/**
+ * Coverts a Date representing a video {@code timestamp} into a string.
+ */
+// TODO: Move function to timestamp.js
+function timestampToString(timestamp) {
+  const ts = new Date(timestamp);
+  const seconds = ts.getSeconds().toString().padStart(2, '0');
+  const minutes = ts.getMinutes().toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+}
