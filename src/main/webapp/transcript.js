@@ -57,17 +57,18 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 }
 
 /**
- * Creates an <li> element containing {@code transcriptLine}'s text, start time,
- * and end time and appends it to {@code ulElement}.
+ * Creates an <li> element containing {@code transcriptLine}'s text, start
+ * time, and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
   // TODO: Create a transcriptLine class to store the line content and
   // timestamp.
-  // TODO: Use the functions from utils.js to create the timestamps instead once
-  // it is merged into master.
+  // TODO: Use the functions from utils.js to create the timestamps 
+  // instead once it is merged into master.
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
-  const startTimestamp = `${startDate.getHours().toString().padStart(2, '0')}:${
+  const startTimestamp = `${startDate.getHours()
+    .toString().padStart(2, '0')}:${
     startDate.getMinutes().toString().padStart(
         2, '0')}:${startDate.getSeconds().toString().padStart(2, '0')}`;
   const endTimestamp = `${endDate.getHours().toString().padStart(2, '0')}:${
