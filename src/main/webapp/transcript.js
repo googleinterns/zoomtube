@@ -75,7 +75,7 @@ function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
   liElement.classList.add('align-self-center', 'mb-2');
   liElement.appendChild(contentDivElement);
-  hrElement = document.createElement('hr');
+  const hrElement = document.createElement('hr');
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
   liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
