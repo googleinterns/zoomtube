@@ -19,8 +19,8 @@ const ENDPOINT_TRANSCRIPT = '/transcript';
 /**
  * Sends a POST request to the transcript.
  */
-function loadTranscript(paramQueryString) {
-  const params = new URLSearchParams(paramQueryString);
+function loadTranscript(lectureQueryString) {
+  const params = new URLSearchParams(lectureQueryString);
   fetch('/transcript', {method: 'POST', body: params})
       .then(fetchTranscriptLines(lectureQueryString));
 }
@@ -32,7 +32,7 @@ function loadTranscript(paramQueryString) {
  * to fetch the transcript from.
  */
 function fetchTranscriptLines(lectureQueryString) {
-  fetch(ENDPOINT_TRANSCRIPT + '?' + lectureQueryString)
+  fetch(ENDPOINT_TRANSCRIPT + lectureQueryString)
       .then((response) => response.json())
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
