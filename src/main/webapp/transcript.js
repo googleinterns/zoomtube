@@ -19,10 +19,11 @@ const ENDPOINT_TRANSCRIPT = '/transcript';
 /**
  * Sends a POST request to the transcript.
  */
-function loadTranscript(lectureQueryString) {
+// TODO: Delete this method once TranscriptServlet's doPost()
+// is called in LectureServlet.
+function sendPostToTranscript(lectureQueryString) {
   const params = new URLSearchParams(lectureQueryString);
   fetch('/transcript', {method: 'POST', body: params})
-      .then(fetchTranscriptLines(lectureQueryString));
 }
 
 /**
