@@ -77,7 +77,6 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String videoId = request.getParameter(LectureUtil.VIDEO_ID);
-    System.out.println(videoId);
     Document document = getTranscriptXmlAsDocument(videoId).get();
     long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
     putTranscriptLinesInDatastore(lectureId, document);
