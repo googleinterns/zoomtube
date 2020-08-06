@@ -14,8 +14,27 @@
 
 package com.googleinterns.zoomtube.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
+import com.googleinterns.zoomtube.data.TranscriptLine;
+import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,44 +52,137 @@ import org.xml.sax.SAXException;
  * Provides the transcript for a given lecture.
  */
 public class TranscriptServlet extends HttpServlet {
-  private static final String TRANSCRIPT_XML_URL_TEMPLATE =
-      "http://video.google.com/timedtext?lang=en&v=";
-  private static final String START_ATTRIBUTE = "start";
-  private static final String DURATION_ATTRIBUTE = "dur";
-  private static final String TEXT_TAG = "text";
-  private static final String TEST_VIDEO_ID = "3ymwOvzhwHs";
+  private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
+  public static final String ATTR_START = "start";
+  public static final String ATTR_DURATION = "dur";
+  public static final String TAG_TEXT = "text";
+
+  private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
-    // TODO: Implement Transcript.
+    datastore = DatastoreServiceFactory.getDatastoreService();
+  }
+
+  /**
+   * Initializes the servlet with {@code testDatastore} created during testing.
+   *
+   * <p>The unit tests need access to the datastore to check that doPost() puts
+   * the entities in datastore.
+   */
+  @VisibleForTesting
+  void init(DatastoreService testDatastore) {
+    datastore = testDatastore;
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String videoId = request.getParameter(LectureUtil.VIDEO_ID);
+    Document document = getTranscriptXmlAsDocument(videoId).get();
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    putTranscriptLinesInDatastore(lectureId, document);
+  }
+
+  /**
+   * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
+   * if there is a parsing error.
+   *
+   * @param videoId Indicates the video to extract the transcript from.
+   */
+  private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
+    String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
+
+    try {
+      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
+      document.getDocumentElement().normalize();
+      return Optional.of(document);
+    } catch (ParserConfigurationException | SAXException e) {
+      // TODO: Alert the user.
+      System.out.println("XML parsing error");
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Puts each transcript line from {@code document} in datastore as its own entity.
+   *
+   * @param lectureId Indicates the lecture id to group the transcript lines under.
+   * @param document The XML file containing the transcript lines.
+   */
+  private void putTranscriptLinesInDatastore(long lectureId, Document document) {
+    NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
+    for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+      Node node = nodeList.item(nodeIndex);
+      datastore.put(createTranscriptLineEntity(node, lectureId));
+    }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Pass the video ID from another servlet.
-    String transcriptXMLUrl = TRANSCRIPT_XML_URL_TEMPLATE + TEST_VIDEO_ID;
-    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-    final DocumentBuilder documentBuilder;
-    final Document document;
-    try {
-      documentBuilder = documentBuilderFactory.newDocumentBuilder();
-      document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
-      document.getDocumentElement().normalize();
-    } catch (ParserConfigurationException | SAXException e) {
-      // TODO: Alert the user.
-      System.out.println("XML parsing error");
-      return;
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
+    ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
+    writeTranscriptLines(response, transcriptLines);
+  }
+
+  /**
+   * Returns the query for the lecture transcripts based on lecture id indicated in {@code
+   * lectureId}.
+   */
+  private PreparedQuery getLectureTranscriptQuery(long lectureId) {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    Filter lectureFilter =
+        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
+
+    Query query = new Query(TranscriptLine.ENTITY_KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
+    return datastore.prepare(query);
+  }
+
+  /**
+   * Returns the transcript lines in {@code preparedQuery}.
+   */
+  private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
+    ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
+    for (Entity transcriptLine : preparedQuery.asQueryResultIterable()) {
+      lineBuilder.add(TranscriptLine.fromLineEntity(transcriptLine));
     }
-    NodeList nodeList = document.getElementsByTagName(TEXT_TAG);
-    for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-      Node node = nodeList.item(nodeIndex);
-      Element element = (Element) node;
-      String lineStart = element.getAttribute(START_ATTRIBUTE);
-      String lineDuration = element.getAttribute(DURATION_ATTRIBUTE);
-      String lineContent = node.getTextContent();
-      // TODO: Remove print statement. It is currently here for display purposes.
-      System.out.println(lineStart + " " + lineDuration + " "
-          + " " + lineContent);
-    }
+    return lineBuilder.build();
+  }
+
+  /**
+   * Writes {@code transcriptLines} as Json to {@code response}.
+   */
+  private void writeTranscriptLines(HttpServletResponse response,
+      ImmutableList<TranscriptLine> transcriptLines) throws IOException {
+    response.setContentType("application/json;");
+    Gson gson = new Gson();
+    response.getWriter().println(gson.toJson(transcriptLines));
+  }
+
+  /**
+   * Creates a transcript line entity using the attributes from {@code node}
+   * and {@code lectureId}.
+   */
+  private Entity createTranscriptLineEntity(Node node, long lectureId) {
+    // TODO: Reorganize this so declaration is closer.
+    Element element = (Element) node;
+    String lineContent = node.getTextContent();
+    Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
+    Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
+    Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+    Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
+    lineEntity.setProperty(
+        TranscriptLine.PROP_LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
+    lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
+    lineEntity.setProperty(
+        TranscriptLine.PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
+    lineEntity.setProperty(TranscriptLine.PROP_DURATION,
+        new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
+    lineEntity.setProperty(
+        TranscriptLine.PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
+    return lineEntity;
   }
 }
