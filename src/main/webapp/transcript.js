@@ -62,11 +62,11 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 function appendTextToList(transcriptLine, ulElement) {
   // TODO: Separate code into helper methods. or create a transcript line class
   // add check if current transcript line or not.
+  ulElement.class = 'mx-auto'
   const liElement = document.createElement('li');
-  liElement.class = 'mx-auto';
+  liElement.classList.add('align-self-center', 'mb-2');
   const contentDivElement = document.createElement('div');
-  contentDivElement.classList.add(
-      'd-flex', 'flex-row', 'mb-1', 'font-weight-bold');
+  contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
@@ -77,11 +77,12 @@ function appendTextToList(transcriptLine, ulElement) {
 
   appendParagraphToContainer(
       timestamp, contentDivElement, ['justify-content-start', 'mb-1']);
-  liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
   appendParagraphToContainer(
       transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
   liElement.appendChild(contentDivElement);
-  liElement.appendChild(document.createElement('hr'));
+  hrElement = document.createElement('hr');
+  hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+  liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
 
   liElement.startDate = startDate;
