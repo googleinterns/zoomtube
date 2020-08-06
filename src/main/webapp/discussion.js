@@ -192,8 +192,8 @@ class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Creates a {@code DiscussionComment} for every reply to this comment, and adds
-   * them to a {@code div} in the replies slot of the DOM template.
+   * Creates a {@code DiscussionComment} for every reply to this comment, and
+   * adds them to a {@code div} in the replies slot of the DOM template.
    */
   addReplies(replies) {
     const replyDiv = document.createElement('div');
