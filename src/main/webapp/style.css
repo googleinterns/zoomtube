@@ -108,6 +108,13 @@ html {
 }
 
 /* Transcript */
+
+#transcript-lines-container {
+  /* TODO: Update height once the branch with the lecture view layout has been merged into master */
+  height: 30vh;
+  overflow: auto;
+}
+
 #transcript-lines-container ul {
   list-style-type: none;
 }
