@@ -32,11 +32,8 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-<<<<<<< HEAD
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
-=======
 import com.googleinterns.zoomtube.utils.LectureUtil;
->>>>>>> origin/master
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -151,7 +148,7 @@ public final class TranscriptServletTest {
   @Test
   public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.VIDEO_ID))
+    when(request.getParameter(LectureUtil.ID))
         .thenReturn(LECTURE_ID_B_AS_STRING);
 
     transcriptServlet.doPost(request, response);
@@ -164,7 +161,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_storeAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.VIDEO_ID))
+    when(request.getParameter(LectureUtil.ID))
         .thenReturn(LECTURE_ID_A_AS_STRING);
 
     transcriptServlet.doPost(request, response);
@@ -251,7 +248,7 @@ public final class TranscriptServletTest {
   }
 
   private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, long lectureId) {
-    Key lectureKey = KeyFactory.createKey(TranscriptLineUtil.LECTURE, lectureId);
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     for (int i = 0; i < transcriptLines.size(); i++) {
       Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
       lineEntity.setProperty(TranscriptLineUtil.LECTURE, lectureKey);

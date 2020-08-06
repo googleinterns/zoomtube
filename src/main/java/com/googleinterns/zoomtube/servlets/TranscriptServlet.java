@@ -77,6 +77,7 @@ public class TranscriptServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String videoId = request.getParameter(LectureUtil.VIDEO_ID);
+    System.out.println(videoId);
     Document document = getTranscriptXmlAsDocument(videoId).get();
     long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
     putTranscriptLinesInDatastore(lectureId, document);
@@ -136,7 +137,7 @@ public class TranscriptServlet extends HttpServlet {
    * lectureId}.
    */
   private PreparedQuery getLectureTranscriptQuery(long lectureId) {
-    Key lectureKey = KeyFactory.createKey(PARAM_LECTURE, lectureId);
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
 
