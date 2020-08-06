@@ -14,7 +14,6 @@
 
 package com.googleinterns.zoomtube.data;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
@@ -26,45 +25,17 @@ import java.util.Optional;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class Comment {
-  public static final String ENTITY_KIND = "Comment";
-  public static final String PROP_LECTURE = "lecture";
-  public static final String PROP_PARENT = "parent";
-  public static final String PROP_TIMESTAMP = "timestamp";
-  public static final String PROP_AUTHOR = "author";
-  public static final String PROP_CONTENT = "content";
-  public static final String PROP_CREATED = "created";
-
-  private static Comment create(Key key, Key lecture, Optional<Key> parent, Date timestamp,
-      User author, String content, Date created) {
-    return new AutoValue_Comment(key, lecture, parent, timestamp, author, content, created);
-  }
-
-  /**
-   * Creates a {@code Comment} from a datastore {@link com.google.appengine.api.datastore.Entity}
-   * using the property names defined in this class.
-   */
-  public static Comment fromEntity(Entity entity) {
-    Key key = entity.getKey();
-    Key lecture = (Key) entity.getProperty(PROP_LECTURE);
-    Optional<Key> parent = Optional.ofNullable((Key) entity.getProperty(PROP_PARENT));
-    Date timestamp = (Date) entity.getProperty(PROP_TIMESTAMP);
-    User author = (User) entity.getProperty(PROP_AUTHOR);
-    String content = (String) entity.getProperty(PROP_CONTENT);
-    Date created = (Date) entity.getProperty(PROP_CREATED);
-    return Comment.create(key, lecture, parent, timestamp, author, content, created);
-  }
-
   /** Returns the comment's Datastore entity key. */
-  public abstract Key key();
+  public abstract Key commentKey();
 
   /** Every comment is about a lecture, this returns the lecture's Datastore entity key. */
-  public abstract Key lecture();
+  public abstract Key lectureKey();
 
   /**
    * Returns the key of the comment this is a reply to, or {@code Optional.empty()} if this
    * isn't a reply.
    */
-  public abstract Optional<Key> parent();
+  public abstract Optional<Key> parentKey();
 
   /** Returns the timestamp in the video this comment is referencing. */
   public abstract Date timestamp();
@@ -79,4 +50,22 @@ public abstract class Comment {
 
   /** Returns the comment's creation date. */
   public abstract Date created();
+
+  public static Builder builder() {
+    return new AutoValue_Comment.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setCommentKey(Key commentKey);
+    public abstract Builder setLectureKey(Key lectureKey);
+    public abstract Builder setParentKey(Key parentKey);
+    public abstract Builder setParentKey(Optional<Key> parentKey);
+    public abstract Builder setTimestamp(Date timestamp);
+    public abstract Builder setAuthor(User author);
+    public abstract Builder setContent(String content);
+    public abstract Builder setCreated(Date created);
+
+    public abstract Comment build();
+  }
 }
