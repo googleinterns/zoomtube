@@ -22,7 +22,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-import com.googleinterns.zoomtube.servlets.TranscriptServlet;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +44,7 @@ public final class TranscriptLineUtilTest {
   private final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper((new LocalDatastoreServiceTestConfig()).setNoStorage(true));
   private static final String TEST_CONTENT = "test content";
+  private static final long LECTURE_ID_A = 1234;
 
   @Before
   public void setUp() {
@@ -58,10 +58,9 @@ public final class TranscriptLineUtilTest {
 
   @Test
   public void createTranscriptLine_transcriptLineSuccessfullyCreated() throws IOException {
-    long lectureId = 1234;
-    Date testDate = new Date();
-    Key testLectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
+    final Date testDate = new Date();
+    final Key testLectureKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
+    final Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
     lineEntity.setProperty(TranscriptLineUtil.LECTURE, testLectureKey);
     lineEntity.setProperty(TranscriptLineUtil.CONTENT, TEST_CONTENT);
     lineEntity.setProperty(TranscriptLineUtil.START, testDate);
@@ -79,16 +78,15 @@ public final class TranscriptLineUtilTest {
 
   @Test
   public void createEntity_entityAndPropertiesSuccessfullyCreated() throws IOException {
-    Float startDateAsFloat = 23.32F;
-    Float durationAsFloat = 23.32F;
-    Float endDateAsFloat = startDateAsFloat.floatValue() + durationAsFloat.floatValue();
-    long startDateAsLong = (long) 23.32;
-    long durationAsLong = (long) 23.32;
-    long lectureId = 1;
+    final Float startDateAsFloat = 23.32F;
+    final Float durationAsFloat = 23.32F;
+    final Float endDateAsFloat = startDateAsFloat.floatValue() + durationAsFloat.floatValue();
+    final long startDateAsLong = (long) 23.32;
+    final long durationAsLong = (long) 23.32;
 
     Entity actualEntity = TranscriptLineUtil.createEntity(
-        lectureId, TEST_CONTENT, startDateAsFloat, durationAsFloat, endDateAsFloat);
-    Key actualKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+        LECTURE_ID_A, TEST_CONTENT, startDateAsFloat, durationAsFloat, endDateAsFloat);
+    Key actualKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     Date actualStart = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
     Date actualDuration = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
     Date actualEnd = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong + durationAsLong));
