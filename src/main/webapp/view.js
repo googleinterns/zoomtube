@@ -15,7 +15,7 @@
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
 
-/** Timestamp that video, disccussion, and transcript were synced to. */
+/** Last timestamp that video, disccussion, and transcript were synced to. */
 let lastSyncedTime;
 
 /* exported LECTURE_ID */
@@ -25,19 +25,18 @@ window.VIDEO_ID = getVideoId();
 initialize();
 
 /**
- * Initializes the timer, video player, and discussion section
- * for the lecture view page.
+ * Initializes the timer, video player, discussion
+ * and transcript sections for the lecture view page.
  */
 async function initialize() {
   window.loadVideoApi();
-  window.loadDiscussion();
+  window.intializeDiscussion();
+  window.loadTranscript(window.location.search);
   // TODO: Adjust time interval.
   window.timer = window.setInterval(() => {
     sync(window.videoPlayer.getCurrentTime(), false);
   }, /* ms */ 1000);
-  // TODO: Initialize the trancript section.
 }
-
 
 /**
  * Calls functions that seek video (if {@code syncVideo} is true),
