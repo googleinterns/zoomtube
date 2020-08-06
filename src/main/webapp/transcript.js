@@ -48,6 +48,7 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
     transcriptContainer.removeChild(transcriptContainer.firstChild);
   }
   const ulElement = document.createElement('ul');
+  ulElement.class = 'mx-auto';
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
@@ -60,33 +61,31 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  * and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
-  // TODO: Separate code into helper methods. or create a transcript line class
-  // add check if current transcript line or not.
-  ulElement.class = 'mx-auto'
-  const liElement = document.createElement('li');
-  liElement.classList.add('align-self-center', 'mb-2');
-  const contentDivElement = document.createElement('div');
-  contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
+  // TODO: Create a transcriptLine class to store the line content and timestamp.
+  // TODO: Use the functions from utils.js to create the timestamps instead once it
+  // is merged into master.
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-      startDate.getSeconds()}`;
+    startDate.getSeconds()}`;
   const endTimestamp =
-      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
+  const contentDivElement = document.createElement('div');
+  contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
   appendParagraphToContainer(
       timestamp, contentDivElement, ['justify-content-start', 'mb-1']);
   appendParagraphToContainer(
       transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+  
+  const liElement = document.createElement('li');
+  liElement.classList.add('align-self-center', 'mb-2');
   liElement.appendChild(contentDivElement);
   hrElement = document.createElement('hr');
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
   liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
-
-  liElement.startDate = startDate;
-  liElement.endDate = endDate;
 }
 
 /**
