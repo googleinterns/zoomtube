@@ -14,7 +14,6 @@
 
 package com.googleinterns.zoomtube.data;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
