@@ -108,7 +108,7 @@ html {
 }
 
 /* Transcript */
-#transcript-container ul {
+#transcript-lines-container ul {
   list-style-type: none;
 }
 
