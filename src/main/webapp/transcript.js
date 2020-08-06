@@ -28,10 +28,13 @@ function loadTranscript(lectureQueryString) {
 /**
  * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
  *
- * <p>{@code lectureQueryString} indicates the video ID and the lecture ID
+ * <p> This function assumes that the transcript lines have already
+ * been added to the datastore. 
+ * 
+ * @param lectureQueryString Indicates the video ID and the lecture ID
  * to fetch the transcript from.
  */
-function fetchTranscriptLines(lectureQueryString) {
+function loadTranscript(lectureQueryString) {
   fetch(ENDPOINT_TRANSCRIPT + lectureQueryString)
       .then((response) => response.json())
       .then((transcriptLines) => {
