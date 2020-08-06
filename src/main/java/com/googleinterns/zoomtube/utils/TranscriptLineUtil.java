@@ -69,7 +69,7 @@ public final class TranscriptLineUtil {
     // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is
     // merged to this branch.
     lineEntity.setProperty(
-        LECTURE, KeyFactory.createKey(TranscriptServlet.PARAM_LECTURE, lectureId));
+        LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
     lineEntity.setProperty(CONTENT, lineContent);
     lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
     lineEntity.setProperty(DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));

@@ -30,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that deletes all of the transcript lines. */
 @WebServlet("/delete-transcript")
 public class DeleteTranscriptServlet extends HttpServlet {
+  private static String HOME_PATH = "/";
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(TranscriptLineUtil.KIND);
@@ -42,6 +44,6 @@ public class DeleteTranscriptServlet extends HttpServlet {
         .map(entity -> entity.getKey())
         .forEach(datastore::delete);
     System.out.println("DeleteTranscript doPost");
-    response.sendRedirect("/");
+    response.sendRedirect(HOME_PATH);
   }
 }

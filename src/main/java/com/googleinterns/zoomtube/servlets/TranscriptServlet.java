@@ -29,12 +29,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
+import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,15 +50,8 @@ import org.xml.sax.SAXException;
 /**
  * Provides the transcript for a given lecture.
  */
-@WebServlet("/transcript")
 public class TranscriptServlet extends HttpServlet {
-  public static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
-  // TODO: Update PARAM_LECTURE with Lecture.KIND when this is merged.
-  public static final String PARAM_LECTURE = "lecture";
-  // Attributes for extracting the lecture and video ids from the URL.
-  public static final String PARAM_LECTURE_ID = "id";
-  public static final String PARAM_VIDEO_ID = "video";
-  // Attributes for parsing the XML.
+  private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
@@ -83,9 +76,9 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String videoId = request.getParameter(PARAM_VIDEO_ID);
+    String videoId = request.getParameter(LectureUtil.VIDEO_ID);
     Document document = getTranscriptXmlAsDocument(videoId).get();
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
     putTranscriptLinesInDatastore(lectureId, document);
   }
 
@@ -132,7 +125,7 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
     PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
     writeTranscriptLines(response, transcriptLines);
