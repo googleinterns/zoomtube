@@ -229,6 +229,18 @@ public final class TranscriptServletTest {
     assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
   }
 
+  @Test
+  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
+    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
+
+    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, Long.parseLong(LECTURE_ID_C));
+
+    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
+    int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
+    assertThat(actualQueryCount).isEqualTo(expectedQueryCount); 
+  }
+
   private static List<TranscriptLine> transcriptLines(String transcriptLinesJson) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     return (ArrayList<TranscriptLine>) gson.fromJson(

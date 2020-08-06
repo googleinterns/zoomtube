@@ -28,6 +28,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
@@ -81,6 +82,18 @@ public class TranscriptServlet extends HttpServlet {
     Document document = getTranscriptXmlAsDocument(videoId).get();
     long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
     putTranscriptLinesInDatastore(lectureId, document);
+  }
+
+  /**
+   * Parses and stores the transcript lines in datastore given its {@code videoId} 
+   * and {@code lectureId}.
+   *
+   * <p>This method is called from the {@code LectureServlet} upon adding a lecture to 
+   * datastore.
+   */
+  public void parseAndStoreTranscript(String videoId, long lectureId) throws IOException {
+    Document document = getTranscriptXmlAsDocument(videoId).get();
+    putTranscriptLinesInDatastore(lectureId, document);    
   }
 
   /**
