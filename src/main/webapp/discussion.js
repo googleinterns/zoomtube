@@ -138,21 +138,34 @@ class DiscussionComment extends HTMLElement {
     const shadow = TEMPLATE_COMMENT.content.cloneNode(true);
     this.shadowRoot.appendChild(shadow);
 
+    this.setSlotSpan(SLOT_HEADER, this.getHeaderString(comment));
+    this.setSlotSpan(SLOT_CONTENT, comment.content);
+    this.addReplies(comment.replies);
+
+    this.addReplyEventListeners();
+  }
+
+  /**
+   * Returns a string containing the timestamp, author, and creation time of
+   * the {@code comment}.  The timestamp is not displayed for replies to
+   * other comments.
+   */
+  getHeaderString(comment) {
     const username = comment.author.email.split('@')[0];
     let timestampPrefix = '';
     if (!comment.parentKey.value) {
       // Only display timestamp on root comments.
       timestampPrefix = `${this.timestampToString(comment.timestamp)} - `;
     }
-    const header = `${timestampPrefix}${username} on ${comment.created}`;
-    this.setSlotSpan(SLOT_HEADER, header);
+    return `${timestampPrefix}${username} on ${comment.created}`;
+  }
 
-    this.setSlotSpan(SLOT_CONTENT, comment.content);
-
-    this.appendChild(this.createReplies(comment.replies));
-
+  /**
+   * Adds event listeners and handlers for the reply button and form.
+   * This makes the form open when "Reply" is pressed, submit when "Post reply" is pressed, and close when "Cancel" is pressed.
+   */
+  addReplyEventListeners() {
     const replyForm = this.shadowRoot.querySelector(SELECTOR_REPLY_FORM);
-
     this.shadowRoot.querySelector(SELECTOR_SHOW_REPLY).onclick = () => {
       $(replyForm).collapse('show');
     };
@@ -180,13 +193,13 @@ class DiscussionComment extends HTMLElement {
    * Creates a Discussion Comment for every reply to this comment, and adds
    * them to a {@code div} in the replies slot.
    */
-  createReplies(replies) {
+  addReplies(replies) {
     const replyDiv = document.createElement('div');
     replyDiv.slot = SLOT_REPLIES;
     for (const reply of replies) {
       replyDiv.appendChild(new DiscussionComment(reply));
     }
-    return replyDiv;
+    this.appendChild(replyDiv);
   }
 
   /**
