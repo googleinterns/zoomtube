@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Product Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/product-sans/ProductSansRegular.ttf') format('truetype');
+}
+
 * {
   font-family: 'Product Sans';
 }
@@ -13,10 +20,10 @@ html {
 
 #add-btn-cont,
 #view-btn-cont {
+  align-items: center !important;
   margin: 30px auto auto auto;
   display: flex !important;
   justify-content: center !important;
-  align-items: center !important;
 }
 
 #add-btn-cont .btn,
@@ -108,28 +115,21 @@ html {
   background-color: #4c8bf5 !important;
 }
 
-#text-cont {
-  padding-top: 25px;
-  margin: auto;
-  width: 50%;
-}
-
-@font-face {
-  font-family: 'Product Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: url('./fonts/product-sans/ProductSansRegular.ttf') format('truetype');
-}
-
 #text {
   margin: auto;
   margin-top: 100px;
   max-width: 45%;
 }
 
+#text-cont {
+  padding-top: 25px;
+  margin: auto;
+  width: 50%;
+}
+
 #view-btn-cont a {
+  color: #fff;
   font-size: 22px;
-  color: white;
 }
 
 #view-btn-cont .btn,
