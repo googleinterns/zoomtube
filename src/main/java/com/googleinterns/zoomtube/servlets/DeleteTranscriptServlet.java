@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/delete-transcript")
 public class DeleteTranscriptServlet extends HttpServlet {
   private static String HOME_PATH = "/";
-  
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(TranscriptLineUtil.KIND);
