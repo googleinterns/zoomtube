@@ -63,11 +63,13 @@ function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
+  /* eslint-disable indent */
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
+      startDate.getSeconds()}`;
   const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
+  /* eslint-enable indent */
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');

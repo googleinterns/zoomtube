@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -169,7 +170,7 @@ public class TranscriptServlet extends HttpServlet {
   private Entity createTranscriptLineEntity(Node node, long lectureId) {
     // TODO: Reorganize this so declaration is closer.
     Element element = (Element) node;
-    String lineContent = node.getTextContent();
+    String lineContent = StringEscapeUtils.unescapeXml(node.getTextContent());
     Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
     Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
     Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
