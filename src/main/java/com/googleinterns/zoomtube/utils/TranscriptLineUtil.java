@@ -30,8 +30,6 @@ public final class TranscriptLineUtil {
   public static final String CONTENT = "content";
   public static final String END = "end";
 
-  private TranscriptLineUtil() {}
-
   /**
    * Creates and returns a TranscriptLine from a datastore {@code entity} using
    * the property names defined in this class.
@@ -72,4 +70,6 @@ public final class TranscriptLineUtil {
     lineEntity.setProperty(END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
   }
+
+  private TranscriptLineUtil() {}
 }
