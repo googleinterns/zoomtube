@@ -65,8 +65,6 @@ public final class TranscriptLineUtil {
   public static Entity createEntity(
       long lectureId, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
     Entity lineEntity = new Entity(KIND);
-    // TODO: Change PARAM_LECTURE to Lecture.KIND once lectureServlet is
-    // merged to this branch.
     lineEntity.setProperty(LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
     lineEntity.setProperty(CONTENT, lineContent);
     lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
