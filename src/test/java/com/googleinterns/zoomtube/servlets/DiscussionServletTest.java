@@ -91,8 +91,8 @@ public class DiscussionServletTest {
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something
-    unique"))); when(request.getParameter(DiscussionServlet.PARAM_PARENT))
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
         .thenReturn(Integer.toString(parentId));
 
     servlet.doPost(request, response);
@@ -198,8 +198,8 @@ public class DiscussionServletTest {
   }
 
   private List<Comment> getCommentsFromJson(String json) {
-    Gson gson = new
-    GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create(); Type listType
-    = new TypeToken<ArrayList<Comment>>() {}.getType(); return gson.fromJson(json, listType);
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Type listType = new TypeToken<ArrayList<Comment>>() {}.getType();
+    return gson.fromJson(json, listType);
   }
 }
