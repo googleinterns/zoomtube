@@ -32,7 +32,9 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -165,16 +167,22 @@ public class TranscriptServlet extends HttpServlet {
    * and {@code lectureId}.
    */
   private Entity createTranscriptLineEntity(Node node, long lectureId) {
+    // TODO: Reorganize this so declaration is closer.
+    Element element = (Element) node;
+    String lineContent = node.getTextContent();
+    Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
+    Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
+    Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
     lineEntity.setProperty(
         TranscriptLine.PROP_LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
-    Element element = (Element) node;
-    String lineContent = node.getTextContent();
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
-    String lineStart = element.getAttribute(ATTR_START);
-    lineEntity.setProperty(TranscriptLine.PROP_START, lineStart);
-    String lineDuration = element.getAttribute(ATTR_DURATION);
-    lineEntity.setProperty(TranscriptLine.PROP_DURATION, lineDuration);
+    lineEntity.setProperty(
+        TranscriptLine.PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
+    lineEntity.setProperty(TranscriptLine.PROP_DURATION,
+        new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
+    lineEntity.setProperty(
+        TranscriptLine.PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
     return lineEntity;
   }
 }
