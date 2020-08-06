@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.AuthenticationStatus;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.ServletException;
