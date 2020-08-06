@@ -134,6 +134,7 @@ async function fetchDiscussion() {
 class DiscussionComment extends HTMLElement {
   constructor(comment) {
     super();
+    this.comment = comment;
     this.attachShadow({mode: 'open'});
     const shadow = TEMPLATE_COMMENT.content.cloneNode(true);
     this.shadowRoot.appendChild(shadow);
@@ -162,7 +163,8 @@ class DiscussionComment extends HTMLElement {
 
   /**
    * Adds event listeners and handlers for the reply button and form.
-   * This makes the form open when "Reply" is pressed, submit when "Post reply" is pressed, and close when "Cancel" is pressed.
+   * This makes the form open when "Reply" is pressed, submit when
+   * "Post" is pressed, and close when "Cancel" is pressed.
    */
   addReplyEventListeners() {
     const replyForm = this.shadowRoot.querySelector(SELECTOR_REPLY_FORM);
@@ -174,7 +176,7 @@ class DiscussionComment extends HTMLElement {
     };
     this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
-      postReply(textarea, comment.commentKey.id);
+      postReply(textarea, this.comment.commentKey.id);
     };
   }
 
