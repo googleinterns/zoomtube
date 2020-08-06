@@ -33,11 +33,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Comment;
+import com.googleinterns.zoomtube.utils.CommentUtil;
+import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.Date;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,8 +46,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Manages discussions for a lecture.
  */
-// TODO: References to Lecture kind string literal need to be updated once Lecture code is merged.
-@WebServlet("/discussion")
 public class DiscussionServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_LECTURE = "lecture";
   @VisibleForTesting static final String PARAM_PARENT = "parent";
@@ -63,34 +62,29 @@ public class DiscussionServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
-    Key lecture = KeyFactory.createKey(/* kind= */ "Lecture", lectureId);
-
+    Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     String parentIdString = request.getParameter(PARAM_PARENT);
     Key parent = null;
     if (parentIdString != null) {
       long parentId = Long.parseLong(parentIdString);
-      parent = KeyFactory.createKey(Comment.ENTITY_KIND, parentId);
+      parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
     }
-
     User author = userService.getCurrentUser();
     if (author == null) {
       response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
       return;
     }
-
     String content = CharStreams.toString(request.getReader());
+    // TODO: Get actual video timestamp from request.
+    // Use the start of the video for now.
+    Date timestamp = new Date(0);
+    Date dateNow = new Date(Clock.systemUTC().millis());
 
-    Entity commentEntity = new Entity(Comment.ENTITY_KIND);
-    commentEntity.setProperty(Comment.PROP_LECTURE, lecture);
-    commentEntity.setProperty(Comment.PROP_PARENT, parent);
-    // TODO: Add support for timestamped comments
-    commentEntity.setProperty(Comment.PROP_TIMESTAMP, new Date(0));
-    commentEntity.setProperty(Comment.PROP_AUTHOR, author);
-    commentEntity.setProperty(Comment.PROP_CONTENT, content);
-    // We set creation time to the time of the post request (now).
-    commentEntity.setProperty(Comment.PROP_CREATED, new Date(Clock.systemUTC().millis()));
-
-    datastore.put(commentEntity);
+    if (parent == null) {
+      datastore.put(CommentUtil.createEntity(lecture, timestamp, author, content, dateNow));
+    } else {
+      datastore.put(CommentUtil.createEntity(lecture, parent, timestamp, author, content, dateNow));
+    }
 
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
   }
@@ -100,18 +94,18 @@ public class DiscussionServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
-    Key lecture = KeyFactory.createKey(/* kind= */ "Lecture", lectureId);
-    Filter lectureFilter = new FilterPredicate(Comment.PROP_LECTURE, FilterOperator.EQUAL, lecture);
+    Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    Filter lectureFilter = new FilterPredicate(CommentUtil.LECTURE, FilterOperator.EQUAL, lecture);
 
-    Query query = new Query(Comment.ENTITY_KIND)
+    Query query = new Query(CommentUtil.KIND)
                       .setFilter(lectureFilter)
-                      .addSort(Comment.PROP_TIMESTAMP, SortDirection.ASCENDING)
-                      .addSort(Comment.PROP_CREATED, SortDirection.DESCENDING);
+                      .addSort(CommentUtil.TIMESTAMP, SortDirection.ASCENDING)
+                      .addSort(CommentUtil.CREATED, SortDirection.DESCENDING);
     PreparedQuery pq = datastore.prepare(query);
 
     ImmutableList.Builder<Comment> commentsBuilder = new ImmutableList.Builder<>();
     for (Entity entity : pq.asQueryResultIterable()) {
-      commentsBuilder.add(Comment.fromEntity(entity));
+      commentsBuilder.add(CommentUtil.createComment(entity));
     }
     ImmutableList<Comment> comments = commentsBuilder.build();
 

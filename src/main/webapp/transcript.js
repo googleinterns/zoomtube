@@ -15,16 +15,13 @@
 
 const TRANSCRIPT_CONTAINER = 'transcript-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
-const MILLISECOND_CONVERTER = 1000;
 
 /**
  * Sends a POST request to the transcript.
  */
-function sendPostToTranscript() {
-  // TODO: Update lectureQueryString with user input and URL Builder.
-  const lectureQueryString = 'id=123456789&video=Obgnr9pc820';
+function loadTranscript(lectureQueryString) {
   const params = new URLSearchParams(lectureQueryString);
-  fetch(ENDPOINT_TRANSCRIPT, {method: 'POST', body: params})
+  fetch('/transcript', {method: 'POST', body: params})
       .then(fetchTranscriptLines(lectureQueryString));
 }
 
@@ -35,7 +32,7 @@ function sendPostToTranscript() {
  * to fetch the transcript from.
  */
 function fetchTranscriptLines(lectureQueryString) {
-  fetch(ENDPOINT_TRANSCRIPT + '?' + lectureQueryString)
+  fetch(ENDPOINT_TRANSCRIPT + lectureQueryString)
       .then((response) => response.json())
       .then((transcriptLines) => {
         addMultipleTranscriptLinesToDom(transcriptLines);
@@ -67,9 +64,9 @@ function appendTextToList(transcriptLine, ulElement) {
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
+      startDate.getSeconds()}`;
   const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
