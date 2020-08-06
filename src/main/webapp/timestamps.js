@@ -16,14 +16,14 @@
  * Coverts a Date representing a video {@code timestamp} into a string.
  */
 function timestampToString(timestamp) {
-  const ts = new Date(timestamp);
-  const seconds = ts.getSeconds().toString().padStart(2, '0');
-  const minutes = ts.getMinutes().toString().padStart(2, '0');
-  if (ts.getHours() == 0) {
+  const date = new Date(timestamp);
+  const seconds = date.getSeconds().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  if (date.getHours() == 0) {
     return `${minutes}:${seconds}`;
   }
   // We don't pad hours because lectures won't need two digits for hours.
-  const hours = ts.getHours().toString();
+  const hours = date.getHours().toString();
   return `${hours}:${minutes}:${seconds}`;
 }
 
@@ -32,8 +32,8 @@ function timestampToString(timestamp) {
  * certain {@code timestamp}.
  */
 function timestampToSeconds(timestamp) {
-  const ts = new Date(timestamp);
-  const totalMilliseconds = ts.getTime();
+  const date = new Date(timestamp);
+  const totalMilliseconds = date.getTime();
   const totalSeconds = totalMilliseconds / 1000;
   return totalSeconds;
 }
