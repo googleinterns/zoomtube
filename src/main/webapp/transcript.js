@@ -56,30 +56,49 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 }
 
 /**
- * Creates an <li> element containing {@code transcriptLine}'s text and
- * start time, and appends it to {@code ulElement}.
+ * Creates an <li> element containing {@code transcriptLine}'s text, start time,
+ * and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
-  const infoDivElement = document.createElement('div');
+  const startDate = new Date(transcriptLine.start);
+  const endDate = new Date(transcriptLine.end);
+  const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
+    startDate.getSeconds()}`;
+  const endTimestamp =
+    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+  const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
-  appendPTagToContainer(transcriptLine.start, infoDivElement);
-  liElement.appendChild(infoDivElement);
-  appendPTagToContainer(transcriptLine.content, liElement);
+  appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
+  liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
+  appendParagraphToContainer(transcriptLine.content, liElement, ['mx-auto']);
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
+
+  liElement.startDate = startDate;
+  liElement.endDate = endDate;
 }
 
 /**
- * Creates a <p> tag to store the given {@code text} inside the
- * {@code container} and returns the <p> tag using the given text
+ * Creates a p tag to store the given {@code text} inside the
+ * {@code container}.
  *
- * <p>The <p> tag is returned so that the calling method can add additional
- * attributes to the tag.
+ * <p>Adds classes the the p tag if {@code classList} is provided.
  */
-function appendPTagToContainer(text, container) {
+function appendParagraphToContainer(text, container, classes = []) {
   const pTag = document.createElement('p');
   pTag.innerText = text;
   container.appendChild(pTag);
-  return pTag;
+
+  if (classes.length == 0) {
+    return;
+  }
+  pTag.classList.add(...classes);
+}
+
+/**
+ * Sends a POST request to delete all of the transcript lines from datastore.
+ */
+function deleteTranscript() {
+  fetch('/delete-transcript', {method: 'POST'});
 }

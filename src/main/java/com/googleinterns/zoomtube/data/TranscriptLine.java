@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+import java.util.Date;
 
 /** Contains data pertaining to a single line of transcript. */
 @GenerateTypeAdapter
@@ -28,26 +29,28 @@ public abstract class TranscriptLine {
   public static final String PROP_START = "start";
   public static final String PROP_DURATION = "duration";
   public static final String PROP_CONTENT = "content";
+  public static final String PROP_END = "end";
 
   /**
    * Creates a TranscriptLine object.
    *
    * @param transcriptKey The key for the transcript.
    * @param lectureKey The key for the lecture.
-   * @param start The starting timestamp for the lecture line in seconds.
-   * @param duration The number of seconds that the timestamp lasts for.
+   * @param start The starting Date for the transcript line.
+   * @param duration The duration for the timestamp as a Date.
+   * @param end The ending Date for the transcript line.
    * @param content The text content of the transcript line.
    */
-  // TODO: Update start to be a Date object and duration to be a long.
   public static TranscriptLine create(
-      Key transcriptKey, Key lectureKey, String start, String duration, String content) {
-    return new AutoValue_TranscriptLine(transcriptKey, lectureKey, start, duration, content);
+      Key transcriptKey, Key lectureKey, Date start, Date duration, Date end, String content) {
+    return new AutoValue_TranscriptLine(transcriptKey, lectureKey, start, duration, end, content);
   }
 
   public abstract Key transcriptKey();
   public abstract Key lectureKey();
-  public abstract String start();
-  public abstract String duration();
+  public abstract Date start();
+  public abstract Date duration();
+  public abstract Date end();
   public abstract String content();
 
   /**
@@ -58,9 +61,10 @@ public abstract class TranscriptLine {
   public static TranscriptLine fromLineEntity(Entity entity) {
     Key transcriptKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(PROP_LECTURE);
-    String start = (String) entity.getProperty(PROP_START);
-    String duration = (String) entity.getProperty(PROP_DURATION);
+    Date start = (Date) entity.getProperty(PROP_START);
+    Date duration = (Date) entity.getProperty(PROP_DURATION);
+    Date end = (Date) entity.getProperty(PROP_END);
     String content = (String) entity.getProperty(PROP_CONTENT);
-    return TranscriptLine.create(transcriptKey, lectureKey, start, duration, content);
+    return TranscriptLine.create(transcriptKey, lectureKey, start, duration, end, content);
   }
 }
