@@ -28,7 +28,7 @@ initialize();
 async function initialize() {
   window.loadVideoApi();
   window.intializeDiscussion();
-  // TODO: Initialize the trancript section.
+  window.loadTranscript(window.location.search);
 }
 
 /**
