@@ -148,9 +148,9 @@ public final class TranscriptServletTest {
 
     transcriptServlet.doPost(request, response);
 
-    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B);
-    int expectedQuery = (shortVideoTranscriptLines).size();
-    assertThat(actualQuery).isEqualTo(expectedQuery);
+    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B);
+    int expectedQueryCount = (shortVideoTranscriptLines).size();
+    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
 
   @Test
@@ -198,9 +198,9 @@ public final class TranscriptServletTest {
 
     transcriptServlet.doPost(request, response);
 
-    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_C);
-    int expectedQuery = (transcriptLines(LONG_VIDEO_JSON)).size();
-    assertThat(actualQuery).isEqualTo(expectedQuery);
+    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
+    int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
+    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
 
   @Test
@@ -239,7 +239,8 @@ public final class TranscriptServletTest {
   private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, long lectureId) {
 
     for (int i = 0; i < transcriptLines.size(); i++) {
-      Entity lineEntity = TranscriptLineUtil.createEntity(lectureId, "test content", /* start= */ 0F, /* duration= */ 0F, /* end= */ 0F);
+      Entity lineEntity = TranscriptLineUtil.createEntity(lectureId, "test content",
+          /* start= */ 0F, /* duration= */ 0F, /* end= */ 0F);
       datastore.put(lineEntity);
     }
   }
