@@ -86,10 +86,10 @@ public class LectureServlet extends HttpServlet {
    * properties in {@code lectureEntity}.
    */
   private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
-    Key lectureKey = lectureEntity.getKey();
-    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
     TranscriptServlet transcriptServlet = new TranscriptServlet();
     transcriptServlet.init();
+    Key lectureKey = lectureEntity.getKey();
+    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
     transcriptServlet.parseAndStoreTranscript(videoId, lectureKey);
   }
 
