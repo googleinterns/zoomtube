@@ -207,3 +207,9 @@ class DiscussionComment extends HTMLElement {
 
 // Custom element names must contain a hyphen.
 customElements.define('discussion-comment', DiscussionComment);
+
+/** Seeks discussion to {@code currentTime}. */
+function seekDiscussion(currentTime) {
+  // TODO: Remove and implement.
+  console.log('SEEKING DISCUSSION TO: ' + currentTime);
+}

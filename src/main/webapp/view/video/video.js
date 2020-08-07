@@ -14,9 +14,6 @@
 
 const SCRIPT = 'script';
 
-/* Used to control video. */
-let videoPlayer;
-
 /** Loads YouTube iFrame API. */
 async function loadVideoApi() {
   const videoApiScript = document.createElement(SCRIPT);
@@ -31,12 +28,13 @@ async function loadVideoApi() {
  */
 // TODO: Change height and width.
 function onYouTubeIframeAPIReady() {
-  videoPlayer = new window.YT.Player('player', {
+  window.videoPlayer = new window.YT.Player('player', {
     height: '390',
     width: '640',
     videoId: window.VIDEO_ID,
     events: {
       onReady: onPlayerReady,
+      onStateChange: startOrStopTimer,
     },
   });
 }
@@ -44,4 +42,19 @@ function onYouTubeIframeAPIReady() {
 /** {@code event} plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
+}
+
+/** Starts timer if {@code currentState} is playing, stops otherwise. */
+function startOrStopTimer(currentState) {
+  if (currentState.data == window.YT.PlayerState.PLAYING) {
+    window.startVideoSyncTimer();
+    return;
+  }
+  window.stopVideoSyncTimer();
+}
+
+/** Seeks video to {@code currentTime}. */
+function seekVideo(currentTime) {
+  // TODO: Removed and implement.
+  console.log('SEEKING VIDEO TO: ' + currentTime);
 }
