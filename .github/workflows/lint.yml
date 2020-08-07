@@ -15,19 +15,19 @@ jobs:
       run: make node_modules
     - name: Validate HTML
       if: always()
-      run: node_modules/html-validate/bin/html-validate.js src/main/webapp/*.html
+      run: node_modules/html-validate/bin/html-validate.js "src/main/webapp/**/*.html"
     - name: Validate CSS
       if: always()
-      run: node_modules/css-validator/bin/css-validator src/main/webapp/*.css
+      run: node_modules/css-validator/bin/css-validator src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/lectures/*.css
     - name: Validate JavaScript
       if: always()
-      run: node_modules/eslint/bin/eslint.js src/**/*.js
+      run: node_modules/eslint/bin/eslint.js "src/**/*.js"
     - name: Check HTML Formatting
       if: always()
-      run: node_modules/prettier/bin-prettier.js -c src/main/webapp/*.html
+      run: node_modules/prettier/bin-prettier.js -c src/main/webapp/**/*.html
     - name: Check CSS Formatting
       if: always()
-      run: node_modules/prettier/bin-prettier.js -c src/main/webapp/*.css
+      run: node_modules/prettier/bin-prettier.js -c src/main/webapp/**/*.css
     - name: Check JavaScript Formatting
       if: always()
       run: diff -u <(cat src/**/*.js) <(node_modules/clang-format/bin/linux_x64/clang-format --style=Google src/**/*.js)

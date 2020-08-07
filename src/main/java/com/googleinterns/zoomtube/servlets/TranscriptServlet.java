@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -162,7 +163,7 @@ public class TranscriptServlet extends HttpServlet {
    */
   private void writeTranscriptLines(HttpServletResponse response,
       ImmutableList<TranscriptLine> transcriptLines) throws IOException {
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(transcriptLines));
   }

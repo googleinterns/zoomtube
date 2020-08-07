@@ -61,12 +61,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
-  const startDate = new Date(transcriptLine.start);
-  const endDate = new Date(transcriptLine.end);
-  const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
-  const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+  const startTimestamp = window.timestampToString(transcriptLine.start);
+  const endTimestamp = window.timestampToString(transcriptLine.end);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
@@ -75,8 +71,9 @@ function appendTextToList(transcriptLine, ulElement) {
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
 
-  liElement.startDate = startDate;
-  liElement.endDate = endDate;
+  // Save the dates for seeking later.
+  liElement.startDate = new Date(transcriptLine.start);
+  liElement.endDate = new Date(transcriptLine.end);
 }
 
 /**
@@ -101,4 +98,10 @@ function appendParagraphToContainer(text, container, classes = []) {
  */
 function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
+}
+
+/** Seeks transcript to {@code currentTime}. */
+function seekTranscript(currentTime) {
+  // TODO: Remove and implement.
+  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
 }
