@@ -70,12 +70,9 @@ public final class TranscriptServletTest {
       (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private static final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper(datastoreConfig);
-  private static final String LECTURE_ID_A_AS_STRING = "123";
-  private static final long LECTURE_ID_A_AS_LONG = 123;
-  private static final String LECTURE_ID_B_AS_STRING = "345";
-  private static final long LECTURE_ID_B_AS_LONG = 345;
-  private static final String LECTURE_ID_C_AS_STRING = "234";
-  private static final long LECTURE_ID_C_AS_LONG = 234;
+  private static final String LECTURE_ID_A = "123";
+  private static final String LECTURE_ID_B = "345";
+  private static final String LECTURE_ID_C = "234";
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
@@ -134,8 +131,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, Long.parseLong(LECTURE_ID_A));
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
 
     transcriptServlet.doGet(request, response);
 
@@ -147,11 +144,11 @@ public final class TranscriptServletTest {
   @Test
   public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B_AS_STRING);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
 
     transcriptServlet.doPost(request, response);
 
-    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B_AS_LONG);
+    int actualQuery = entitiesInDatastoreCount(Long.parseLong(LECTURE_ID_B));
     int expectedQuery = (shortVideoTranscriptLines).size();
     assertThat(actualQuery).isEqualTo(expectedQuery);
   }
@@ -159,7 +156,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_storeAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
 
     transcriptServlet.doPost(request, response);
     transcriptServlet.doGet(request, response);
@@ -172,7 +169,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_storeAndRetrieveLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
 
     transcriptServlet.doPost(request, response);
     transcriptServlet.doGet(request, response);
@@ -184,8 +181,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, Long.parseLong(LECTURE_ID_A));
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
 
     transcriptServlet.doGet(request, response);
 
@@ -197,11 +194,11 @@ public final class TranscriptServletTest {
   @Test
   public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C_AS_STRING);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
 
     transcriptServlet.doPost(request, response);
 
-    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_C_AS_LONG);
+    int actualQuery = entitiesInDatastoreCount(Long.parseLong(LECTURE_ID_C));
     int expectedQuery = (transcriptLines(LONG_VIDEO_JSON)).size();
     assertThat(actualQuery).isEqualTo(expectedQuery);
   }
@@ -209,9 +206,9 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_onlyOtherLecturesInDatastore_GetNoLectures()
       throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B_AS_LONG);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C_AS_STRING);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, Long.parseLong(LECTURE_ID_B));
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, Long.parseLong(LECTURE_ID_A));
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
 
     transcriptServlet.doGet(request, response);
 
@@ -222,9 +219,9 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_twoLecturesInDatastore_returnsOneLecture()
       throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B_AS_LONG);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A_AS_LONG);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A_AS_STRING);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, Long.parseLong(LECTURE_ID_B));
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, Long.parseLong(LECTURE_ID_A));
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
 
     transcriptServlet.doGet(request, response);
 
