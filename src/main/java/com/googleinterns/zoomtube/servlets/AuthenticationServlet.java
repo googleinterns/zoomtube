@@ -51,7 +51,7 @@ public class AuthenticationServlet extends HttpServlet {
     }
 
     Gson gson = new Gson();
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(auth));
   }
 }
