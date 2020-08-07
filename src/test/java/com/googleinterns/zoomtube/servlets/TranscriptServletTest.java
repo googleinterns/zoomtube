@@ -70,7 +70,6 @@ public final class TranscriptServletTest {
   private static final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper(datastoreConfig);
   private static final String LECTURE_ID_A = "123";
-  // TODO: move to beforeclass
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
