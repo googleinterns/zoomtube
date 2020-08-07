@@ -76,6 +76,7 @@ public class LectureServlet extends HttpServlet {
     }
     Entity lectureEntity = getLectureEntityFromRequest(request);
     datastore.put(lectureEntity);
+    initializeTranscript(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
 
