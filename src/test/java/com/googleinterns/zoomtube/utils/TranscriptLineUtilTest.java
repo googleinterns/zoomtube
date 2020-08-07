@@ -86,11 +86,11 @@ public final class TranscriptLineUtilTest {
 
     Entity actualEntity = TranscriptLineUtil.createEntity(
         LECTURE_ID_A, TEST_CONTENT, startDateAsFloat, durationAsFloat, endDateAsFloat);
+    
     Key actualKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     Date actualStart = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
     Date actualDuration = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong));
     Date actualEnd = new Date(TimeUnit.SECONDS.toMillis(startDateAsLong + durationAsLong));
-
     assertThat(actualEntity.getProperty(TranscriptLineUtil.LECTURE)).isEqualTo(actualKey);
     assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
     assertThat(actualEntity.getProperty(TranscriptLineUtil.START)).isEqualTo(actualStart);
