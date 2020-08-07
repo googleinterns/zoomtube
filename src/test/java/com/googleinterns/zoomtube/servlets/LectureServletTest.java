@@ -62,8 +62,8 @@ public final class LectureServletTest {
   private LectureServlet servlet;
 
   private static final String LINK_INPUT = "link-input";
-  private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
-  private static final String TEST_ID = "wXhTHyIgQ_U";
+  private static final String TEST_LINK = "https://www.youtube.com/watch?v=3ymwOvzhwHs";
+  private static final String TEST_ID = "3ymwOvzhwHs";
 
   @Before
   public void setUp() throws ServletException {
@@ -85,7 +85,7 @@ public final class LectureServletTest {
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view.html?id=1&video-id=wXhTHyIgQ_U");
+    verify(response).sendRedirect("/view.html?id=1&video-id=3ymwOvzhwHs");
   }
 
   @Test
@@ -96,7 +96,7 @@ public final class LectureServletTest {
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view.html?id=1&video-id=wXhTHyIgQ_U");
+    verify(response).sendRedirect("/view.html?id=1&video-id=3ymwOvzhwHs");
   }
 
   @Test

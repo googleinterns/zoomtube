@@ -28,7 +28,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
