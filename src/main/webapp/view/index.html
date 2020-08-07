@@ -36,7 +36,7 @@
           <label for="post-textarea">Leave a Comment</label>
           <textarea class="form-control" id="post-textarea" rows="2"></textarea>
         </div>
-        <button class="btn btn-primary mb-2" type="button" onclick="postAndReload(ELEMENT_POST_TEXTAREA)">
+        <button class="btn btn-primary mb-2" type="button" onclick="postNewComment()">
           Post Comment
         </button>
       </div>
@@ -44,6 +44,40 @@
     </div>
   </div>
 </body>
+
+<template id="comment-template">
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="/global.css" />
+  <link rel="stylesheet" href="/view/lecture-view.css" />
+  <div class="comment">
+    <div>
+      <h1 class="comment-header"><slot name="header"></slot>&nbsp;</h1>
+      <div class="comment-content">
+        <div><slot name="content"></slot></div>
+        <div class="actions-bar">
+          <button type="button" class="btn btn-primary btn-sm" id="show-reply">
+            Reply
+          </button>
+        </div>
+      </div>
+      <div class="replies">
+        <div id="reply-form" class="collapse">
+          <textarea class="form-control" id="reply-textarea" rows="3"></textarea>
+          <div class="actions-bar">
+            <button class="btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post</button>
+            <button class="btn btn-sm btn-secondary mb-2" type="button" id="cancel-reply">Cancel</button>
+          </div>
+        </div>
+        <slot name="replies"></slot>
+      </div>
+    </div>
+  </div>
+</template>
 
 <script
   src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
