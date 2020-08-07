@@ -18,7 +18,7 @@ jobs:
       run: node_modules/html-validate/bin/html-validate.js "src/main/webapp/**/*.html"
     - name: Validate CSS
       if: always()
-      run: node_modules/css-validator/bin/css-validator src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/list/*.css
+      run: node_modules/css-validator/bin/css-validator src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/lectures/*.css
     - name: Validate JavaScript
       if: always()
       run: node_modules/eslint/bin/eslint.js "src/**/*.js"
