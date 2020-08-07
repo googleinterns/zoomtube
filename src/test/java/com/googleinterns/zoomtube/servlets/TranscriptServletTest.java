@@ -70,8 +70,11 @@ public final class TranscriptServletTest {
   private static final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper(datastoreConfig);
   private static final String LECTURE_ID_A = "123";
+  private static final Key LECTURE_KEY_A = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
   private static final String LECTURE_ID_B = "345";
+  private static final Key LECTURE_KEY_B = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_B);
   private static final String LECTURE_ID_C = "234";
+  private static final Key LECTURE_KEY_C = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_C);
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
@@ -141,11 +144,11 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
 
-    transcriptServlet.doPost(request, response);
+    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, LECTURE_KEY_B);
 
     int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B);
     int expectedQuery = (shortVideoTranscriptLines).size();
@@ -153,11 +156,11 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_doPost_storeAndRetrieveShortVideo() throws ServletException, IOException {
+  public void doGet_parseAndStoreTranscript_storeAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
 
-    transcriptServlet.doPost(request, response);
+    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, LECTURE_KEY_A);
     transcriptServlet.doGet(request, response);
 
     List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
@@ -166,11 +169,11 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_doPost_storeAndRetrieveLongVideo() throws ServletException, IOException {
+  public void doGet_parseAndStoreTranscript_storeAndRetrieveLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
 
-    transcriptServlet.doPost(request, response);
+    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, LECTURE_KEY_A);
     transcriptServlet.doGet(request, response);
 
     List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
@@ -191,11 +194,11 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
 
-    transcriptServlet.doPost(request, response);
+    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, LECTURE_KEY_C);
 
     int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
     int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
@@ -227,18 +230,6 @@ public final class TranscriptServletTest {
     List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
     List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
     assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
-  }
-
-  @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
-
-    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, Long.parseLong(LECTURE_ID_C));
-
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
-    int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
-    assertThat(actualQueryCount).isEqualTo(expectedQueryCount); 
   }
 
   private static List<TranscriptLine> transcriptLines(String transcriptLinesJson) {
