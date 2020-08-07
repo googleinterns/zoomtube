@@ -133,7 +133,8 @@ async function fetchDiscussion() {
  */
 class DiscussionComment extends HTMLElement {
   /**
-   * @param comment The comment from the servlet that this element should render.
+   * @param comment The comment from the servlet that this element should
+   *     render.
    */
   constructor(comment) {
     super();
