@@ -25,3 +25,9 @@ run: pretty
 
 deploy: pretty validate
 	mvn package appengine:deploy
+
+clean:
+	mvn clean
+
+setup_hooks:
+	git config --local core.hooksPath .githooks
