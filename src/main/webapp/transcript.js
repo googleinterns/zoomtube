@@ -30,8 +30,8 @@ function sendPostToTranscript(lectureQueryString) {
  * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
  *
  * <p> This function assumes that the transcript lines have already
- * been added to the datastore. 
- * 
+ * been added to the datastore.
+ *
  * @param lectureQueryString Indicates the video ID and the lecture ID
  * to fetch the transcript from.
  */
@@ -68,9 +68,9 @@ function appendTextToList(transcriptLine, ulElement) {
   const startDate = new Date(transcriptLine.start);
   const endDate = new Date(transcriptLine.end);
   const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
+      startDate.getSeconds()}`;
   const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
