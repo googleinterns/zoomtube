@@ -133,6 +133,10 @@ async function fetchDiscussion() {
  */
 class DiscussionComment extends HTMLElement {
   /**
+   * Creates an custom HTML element representing a comment.  This uses the
+   * template and slots defined by {@code TEMPLATE_COMMENT} to render the
+   * comment's content and replies.
+   *
    * @param comment The comment from the servlet that this element should
    *     render.
    */
