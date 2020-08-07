@@ -61,15 +61,9 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  */
 function appendTextToList(transcriptLine, ulElement) {
   const liElement = document.createElement('li');
-  const startDate = new Date(transcriptLine.start);
-  const endDate = new Date(transcriptLine.end);
-  /* eslint-disable indent */
-  const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-      startDate.getSeconds()}`;
-  const endTimestamp =
-      `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+  const startTimestamp = window.timestampToString(transcriptLine.start);
+  const endTimestamp = window.timestampToString(transcriptLine.end);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
-  /* eslint-enable indent */
 
   appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
   liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
@@ -77,8 +71,9 @@ function appendTextToList(transcriptLine, ulElement) {
   liElement.appendChild(document.createElement('hr'));
   ulElement.appendChild(liElement);
 
-  liElement.startDate = startDate;
-  liElement.endDate = endDate;
+  // Save the dates for seeking later.
+  liElement.startDate = new Date(transcriptLine.start);
+  liElement.endDate = new Date(transcriptLine.end);
 }
 
 /**
