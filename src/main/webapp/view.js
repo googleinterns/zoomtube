@@ -32,19 +32,6 @@ async function initialize() {
 }
 
 /**
- * Calls functions that seek video (if {@code syncVideo} is true),
- * transcript, and discussion to {@code currentTime} (number of seconds
- * since video started playing).
- */
-function sync(currentTime, syncVideo = true) {
-  if (syncVideo) {
-    window.seekVideo(currentTime);
-  }
-  window.seekTranscript(currentTime);
-  window.seekDiscussion(currentTime);
-}
-
-/**
  * Returns the lecture id obtained from the current page's URL parameters.
  */
 function getLectureId() {

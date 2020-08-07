@@ -47,22 +47,10 @@ function onPlayerReady(event) {
 /** Starts timer if {@code currentState} is playing, stops otherwise. */
 function startStopTimerOnStateChange(currentState) {
   if (currentState.data == window.YT.PlayerState.PLAYING) {
-    startTimer();
+    window.startTimer(window.videoPlayer.getCurrentTime());
     return;
   }
-  stopTimer();
-}
-
-/** Starts timer which calls {@code sync} with the current video time.  */
-function startTimer() {
-  window.timer = window.setInterval(() => {
-    window.sync(window.videoPlayer.getCurrentTime(), /* seekVideo= */ false);
-  }, /* ms= */ 1000);
-}
-
-/** Stops timer. */
-function stopTimer() {
-  clearInterval(window.timer);
+  window.stopTimer();
 }
 
 /** Seeks video to {@code currentTime}. */
