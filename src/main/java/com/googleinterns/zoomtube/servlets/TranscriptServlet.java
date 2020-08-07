@@ -64,17 +64,6 @@ public class TranscriptServlet extends HttpServlet {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
-  /**
-   * Initializes the servlet with {@code testDatastore} created during testing.
-   *
-   * <p>The unit tests need access to the datastore to check that doPost() puts
-   * the entities in datastore.
-   */
-  @VisibleForTesting
-  void init(DatastoreService testDatastore) {
-    datastore = testDatastore;
-  }
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String videoId = request.getParameter(LectureUtil.VIDEO_ID);
