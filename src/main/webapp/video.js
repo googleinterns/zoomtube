@@ -49,9 +49,9 @@ function startStopTimerOnStateChange(event) {
   const state = event.data;
   if (state == window.YT.PlayerState.PLAYING) {
     startTimer();
-  } else {
-    stopTimer();
+    return;
   }
+  stopTimer();
 }
 
 /** Starts timer.  */
