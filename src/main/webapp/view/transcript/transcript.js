@@ -61,8 +61,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  * time, and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
-  const startTimestamp = timestampToString(transcriptLine.start);
-  const endTimestamp = timestampToString(transcriptLine.end);
+  const startTimestamp = window.timestampToString(transcriptLine.start);
+  const endTimestamp = window.timestampToString(transcriptLine.end);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   const contentDivElement = document.createElement('div');
@@ -79,6 +79,8 @@ function appendTextToList(transcriptLine, ulElement) {
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
   liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
+  // Save the dates for seeking later.
+  liElement.startDate = new Date(transcriptLine.start);
 }
 
 /**
@@ -105,13 +107,8 @@ function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/**
- * Coverts a Date representing a video {@code timestamp} into a string.
- */
-// TODO: Move function to timestamp.js
-function timestampToString(timestamp) {
-  const ts = new Date(timestamp);
-  const seconds = ts.getSeconds().toString().padStart(2, '0');
-  const minutes = ts.getMinutes().toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
+/** Seeks transcript to {@code currentTime}. */
+function seekTranscript(currentTime) {
+  // TODO: Remove and implement.
+  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
 }

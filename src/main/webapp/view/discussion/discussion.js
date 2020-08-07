@@ -19,7 +19,7 @@ const PARAM_PARENT = 'parent';
 
 const ATTR_ID = 'key-id';
 
-const ELEMENT_DISCUSSION = document.querySelector('#discussion');
+const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 
 /**
@@ -152,4 +152,10 @@ function createReplySubmission(repliesDiv) {
   div.appendChild(submit);
 
   repliesDiv.prepend(div);
+}
+
+/** Seeks discussion to {@code currentTime}. */
+function seekDiscussion(currentTime) {
+  // TODO: Remove and implement.
+  console.log('SEEKING DISCUSSION TO: ' + currentTime);
 }
