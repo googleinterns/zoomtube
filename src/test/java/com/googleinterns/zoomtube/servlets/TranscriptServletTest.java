@@ -237,7 +237,6 @@ public final class TranscriptServletTest {
   }
 
   private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, long lectureId) {
-
     for (int i = 0; i < transcriptLines.size(); i++) {
       Entity lineEntity = TranscriptLineUtil.createEntity(lectureId, "test content",
           /* start= */ 0F, /* duration= */ 0F, /* end= */ 0F);

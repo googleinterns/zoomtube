@@ -115,7 +115,7 @@ public class TranscriptServlet extends HttpServlet {
     for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
       Node transcriptNode = transcriptNodes.item(nodeIndex);
       Element transcriptElement = (Element) transcriptNode;
-      String lineContent = transcriptNode.getTextContent();
+      String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
       Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
       Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
       Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();

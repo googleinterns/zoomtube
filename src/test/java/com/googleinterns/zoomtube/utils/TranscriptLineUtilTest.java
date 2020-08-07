@@ -82,9 +82,9 @@ public final class TranscriptLineUtilTest {
     final Float duration = 23.32F;
     final Float endDate = startDate.floatValue() + duration.floatValue();
 
-    Entity actualEntity = TranscriptLineUtil.createEntity(
-        LECTURE_ID_A, TEST_CONTENT, startDate, duration, endDate);
-    
+    Entity actualEntity =
+        TranscriptLineUtil.createEntity(LECTURE_ID_A, TEST_CONTENT, startDate, duration, endDate);
+
     assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
     Key actualKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     assertThat(actualEntity.getProperty(TranscriptLineUtil.LECTURE)).isEqualTo(actualKey);
@@ -92,7 +92,8 @@ public final class TranscriptLineUtilTest {
     assertThat(actualEntity.getProperty(TranscriptLineUtil.START)).isEqualTo(actualStart);
     Date actualDuration = new Date(TimeUnit.SECONDS.toMillis(startDate.longValue()));
     assertThat(actualEntity.getProperty(TranscriptLineUtil.DURATION)).isEqualTo(actualDuration);
-    Date actualEnd = new Date(TimeUnit.SECONDS.toMillis(startDate.longValue() + duration.longValue()));
+    Date actualEnd =
+        new Date(TimeUnit.SECONDS.toMillis(startDate.longValue() + duration.longValue()));
     // The end time is calculated as start time + duration.
     assertThat(actualEntity.getProperty(TranscriptLineUtil.END)).isEqualTo(actualEnd);
   }
