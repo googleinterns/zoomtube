@@ -1,0 +1,64 @@
+/* Layout */
+
+.halfpage {
+  height: calc(100vh - 56px);
+  max-height: calc(100vh - 56px);
+  max-width: 50vw;
+  width: 50vw;
+  overflow: hidden;
+}
+
+#page {
+  display: flex;
+  justify-content: center;
+}
+
+/* Discussion */
+
+.actions-bar {
+  text-align: right;
+}
+
+.comment-content {
+  border: 2px solid #aaa;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.comment-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 0;
+  margin-top: 20px;
+}
+
+#discussion-comments {
+  height: calc(100vh - 206px);
+  max-height: calc(100vh - 206px);
+  overflow: scroll;
+}
+
+#new-comment-row {
+  height: 150px;
+  max-height: 150px;
+  overflow: hidden;
+}
+
+#new-comment-form,
+#reply-form {
+  width: 100%;
+}
+
+#reply-form {
+  margin-top: 20px;
+}
+
+.replies {
+  border-left: #ddd solid 5px;
+  margin-left: 8px;
+  padding-left: 8px;
+}
+
+/* Transcript */
+
+/* Video */
