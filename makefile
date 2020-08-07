@@ -13,9 +13,9 @@ pretty: node_modules
 	find src/ -iname *.js | xargs $(CLANG_FORMAT) -i
 
 validate: node_modules
-	$(HTML_VALIDATE) src/main/webapp/*.html
-	$(CSS_VALIDATOR) src/main/webapp/*.css
-	$(ESLINT) src/**/*.js
+	$(HTML_VALIDATE) "src/main/webapp/**/*.html"
+	$(CSS_VALIDATOR) src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/list/*.css
+	$(ESLINT) "src/**/*.js"
 
 package:
 	mvn package
