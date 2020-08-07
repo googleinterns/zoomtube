@@ -29,7 +29,7 @@ function sendPostToTranscript(lectureQueryString) {
 /**
  * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
  *
- * <p> This function assumes that the transcript lines have already
+ * <p>This function assumes that the transcript lines have already
  * been added to the datastore.
  *
  * @param lectureQueryString Indicates the video ID and the lecture ID
