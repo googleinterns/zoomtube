@@ -111,7 +111,7 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Puts each transcript line from {@code document} in datastore as its own entity.
    *
-   * @param lectureKey Indicates the lecture id to group the transcript lines under.
+   * @param lectureKey Indicates the lecture key to group the transcript lines under.
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(Key lectureKey, Document document) {
