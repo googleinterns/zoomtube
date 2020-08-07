@@ -34,7 +34,7 @@ function onYouTubeIframeAPIReady() {
     videoId: window.VIDEO_ID,
     events: {
       onReady: onPlayerReady,
-      onStateChange: startStopTimerOnStateChange,
+      onStateChange: startOrStopTimer,
     },
   });
 }
@@ -45,12 +45,12 @@ function onPlayerReady(event) {
 }
 
 /** Starts timer if {@code currentState} is playing, stops otherwise. */
-function startStopTimerOnStateChange(currentState) {
+function startOrStopTimer(currentState) {
   if (currentState.data == window.YT.PlayerState.PLAYING) {
-    window.startTimer(window.videoPlayer.getCurrentTime());
+    window.startVideoSyncTimer();
     return;
   }
-  window.stopTimer();
+  window.stopVideoSyncTimer();
 }
 
 /** Seeks video to {@code currentTime}. */

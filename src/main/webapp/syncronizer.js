@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let timer;
+let videoSyncTimer;
 const TIME_INTERVAL = 1000;
 
 /**
- * Starts timer which broadcats {@code currentTime} every
+ * Starts timer which broadcasts current video time every
  * {@code TIME_INTERVAL} milliseconds.
  */
-function startTimer(currentTime) {
-  timer = window.setInterval(() => {
-    sync(currentTime);
+function startVideoSyncTimer() {
+  videoSyncTimer = window.setInterval(() => {
+    sync(window.videoPlayer.getCurrentTime());
   }, /* ms= */ TIME_INTERVAL);
 }
 
-/** Stops timer. */
-function stopTimer() {
-  clearInterval(timer);
+/** Stops video sync timer. */
+function stopVideoSyncTimer() {
+  clearInterval(videoSyncTimer);
 }
 
 /**
