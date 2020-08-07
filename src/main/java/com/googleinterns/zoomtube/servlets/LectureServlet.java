@@ -84,8 +84,6 @@ public class LectureServlet extends HttpServlet {
   private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
-    System.out.println(lectureKey);
-    System.out.println(videoId);
     TranscriptServlet transcriptServlet = new TranscriptServlet();
     transcriptServlet.init();
     transcriptServlet.parseAndStoreTranscript(videoId, lectureKey);

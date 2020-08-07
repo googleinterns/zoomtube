@@ -96,7 +96,6 @@ public class TranscriptServlet extends HttpServlet {
    */
   private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
     String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
-    System.out.println(transcriptXMLUrl);
 
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -117,11 +116,9 @@ public class TranscriptServlet extends HttpServlet {
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(Key lectureKey, Document document) {
-    System.out.println("HREER");
     NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
-      System.out.println("hfds");
       datastore.put(createTranscriptLineEntity(node, lectureKey));
     }
   }
