@@ -14,7 +14,7 @@ pretty: node_modules
 
 validate: node_modules
 	$(HTML_VALIDATE) "src/main/webapp/**/*.html"
-	$(CSS_VALIDATOR) src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/list/*.css
+	$(CSS_VALIDATOR) src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/lectures/*.css
 	$(ESLINT) "src/**/*.js"
 
 package:
