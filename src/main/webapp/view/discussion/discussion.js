@@ -156,7 +156,7 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (!comment.parentKey.value) {
       // Only display timestamp on root comments.
-      timestampPrefix = `${this.timestampToString(comment.timestamp)} - `;
+      timestampPrefix = `${window.timestampToString(comment.timestamp)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
@@ -178,17 +178,6 @@ class DiscussionComment extends HTMLElement {
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
       postReply(textarea, this.comment.commentKey.id);
     };
-  }
-
-  /**
-   * Coverts a Date representing a video timestamp into a string.
-   */
-  // TODO: Implement using a utility function.
-  timestampToString(timestamp) {
-    const ts = new Date(timestamp);
-    const seconds = ts.getSeconds().toString().padStart(2, '0');
-    const minutes = ts.getMinutes().toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
   }
 
   /**
