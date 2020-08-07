@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Returns list of Lectures. */
 public class LectureListServlet extends HttpServlet {
-  private static DatastoreService datastore;
+  private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
@@ -52,9 +52,9 @@ public class LectureListServlet extends HttpServlet {
     Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     List<Lecture> lectures = new ArrayList<>();
-    for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = LectureUtil.createLecture(lecture);
-      lectures.add(newLecture);
+    for (Entity lectureEntity : results.asIterable()) {
+      Lecture lecture = LectureUtil.createLecture(lectureEntity);
+      lectures.add(lecture);
     }
     return lectures;
   }

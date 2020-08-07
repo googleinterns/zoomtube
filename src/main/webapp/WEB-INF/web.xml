@@ -49,7 +49,7 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>view</web-resource-name>
-      <url-pattern>/view.html</url-pattern>
+      <url-pattern>/view/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>*</role-name>

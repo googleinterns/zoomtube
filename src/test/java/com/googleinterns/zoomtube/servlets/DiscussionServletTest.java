@@ -132,7 +132,7 @@ public class DiscussionServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     List<Comment> comments = getCommentsFromJson(content.toString());
     assertThat(comments.isEmpty()).isTrue();
   }
@@ -149,7 +149,7 @@ public class DiscussionServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     List<Comment> comments = getCommentsFromJson(content.toString());
     assertThat(comments.size()).isEqualTo(3);
   }
@@ -176,7 +176,7 @@ public class DiscussionServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     List<Comment> comments = getCommentsFromJson(content.toString());
     assertThat(comments.size()).isEqualTo(2);
   }

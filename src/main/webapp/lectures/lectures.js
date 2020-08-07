@@ -16,7 +16,7 @@
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
 
-const REDIRECT_PAGE = '/view.html';
+const REDIRECT_PAGE = '/view/';
 
 loadLectureList();
 

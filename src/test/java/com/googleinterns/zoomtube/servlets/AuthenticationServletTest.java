@@ -57,7 +57,7 @@ public class AuthenticationServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     String json = content.toString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
@@ -73,7 +73,7 @@ public class AuthenticationServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     String json = content.toString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
@@ -90,7 +90,7 @@ public class AuthenticationServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     String json = content.toString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
@@ -106,7 +106,7 @@ public class AuthenticationServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     String json = content.toString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
@@ -123,7 +123,7 @@ public class AuthenticationServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).setContentType("application/json;");
+    verify(response).setContentType("application/json");
     String json = content.toString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     AuthenticationStatus status = gson.fromJson(json, AuthenticationStatus.class);
