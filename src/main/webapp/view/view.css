@@ -61,4 +61,9 @@
 
 /* Transcript */
 
+#transcript-container {
+  overflow: scroll;
+  height: calc(100% - 390px);
+}
+
 /* Video */
