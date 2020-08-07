@@ -34,6 +34,7 @@ function onYouTubeIframeAPIReady() {
     videoId: window.VIDEO_ID,
     events: {
       onReady: onPlayerReady,
+      onStateChange: startStopTimerOnStateChange,
     },
   });
 }
@@ -41,6 +42,28 @@ function onYouTubeIframeAPIReady() {
 /** {@code event} plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
+}
+
+/** Starts timer if video is playing, stops otherwise. */
+function startStopTimerOnStateChange(event) {
+  const state = event.data;
+  if (state == YT.PlayerState.PLAYING) {
+    startTimer();
+  } else {
+    stopTimer();
+  }
+}
+
+/** Starts timer.  */
+function startTimer() {
+  window.timer = window.setInterval(() => {
+    window.sync(window.videoPlayer.getCurrentTime(), false);
+  }, /* ms */ 1000);
+}
+
+/** Stops timer. */
+function stopTimer() {
+  clearInterval(window.timer);
 }
 
 /** Seeks video to {@code currentTime}. */
