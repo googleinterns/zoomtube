@@ -20,7 +20,10 @@ const REDIRECT_PAGE = '/view/';
 
 loadLectureList();
 
-/** Fetches data from servlet and sets it in the lecture selection page. */
+/**
+ * Fetches data from LectureListServlet and sets it in the lecture selection
+ * page.
+ */
 async function loadLectureList() {
   const response = await fetch('/lecture-list');
   const jsonData = await response.json();
