@@ -71,11 +71,8 @@ public final class TranscriptServletTest {
       new LocalServiceTestHelper(datastoreConfig);
   private static final String LECTURE_ID_A = "123";
   // TODO: move to beforeclass
-  private static Key LECTURE_KEY_A;
   private static final String LECTURE_ID_B = "345";
-  private static Key LECTURE_KEY_B;
   private static final String LECTURE_ID_C = "234";
-  private static Key LECTURE_KEY_C;
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
@@ -125,10 +122,6 @@ public final class TranscriptServletTest {
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
-
-    LECTURE_KEY_A = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
-    LECTURE_KEY_B = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
-    LECTURE_KEY_C = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
   }
 
   @After
@@ -152,8 +145,9 @@ public final class TranscriptServletTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
+    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, LECTURE_KEY_B);
+    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB);
 
     int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B);
     int expectedQuery = (shortVideoTranscriptLines).size();
@@ -164,8 +158,9 @@ public final class TranscriptServletTest {
   public void doGet_parseAndStoreTranscript_storeAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
 
-    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, LECTURE_KEY_A);
+    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyA);
     transcriptServlet.doGet(request, response);
 
     List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
@@ -177,8 +172,9 @@ public final class TranscriptServletTest {
   public void doGet_parseAndStoreTranscript_storeAndRetrieveLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
 
-    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, LECTURE_KEY_A);
+    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyA);
     transcriptServlet.doGet(request, response);
 
     List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
@@ -202,8 +198,9 @@ public final class TranscriptServletTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
+    Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
 
-    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, LECTURE_KEY_C);
+    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC);
 
     int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
     int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
