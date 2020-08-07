@@ -149,7 +149,7 @@ public final class TranscriptServletTest {
 
     transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB);
 
-    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B);
+    int actualQuery = entitiesInDatastoreCount(lectureKeyB);
     int expectedQuery = (shortVideoTranscriptLines).size();
     assertThat(actualQuery).isEqualTo(expectedQuery);
   }
@@ -205,7 +205,7 @@ public final class TranscriptServletTest {
 
     transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC);
 
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
+    int actualQueryCount = entitiesInDatastoreCount(lectureKeyC);
     int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
@@ -258,16 +258,15 @@ public final class TranscriptServletTest {
     }
   }
 
-  private int entitiesInDatastoreCount(String lectureId) {
+  private int entitiesInDatastoreCount(Key lectureKey) {
     // A limit of 100 for the maximum number of entities counted is used because
     // we can assume that for this test datastore, there won't be more than 100 entities
     // for a lecture key.
-    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureId))
+    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKey))
         .countEntities(withLimit(100));
   }
 
-  private Query filteredQueryOfTranscriptLinesByLectureId(String lectureId) {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(lectureId));
+  private Query filteredQueryOfTranscriptLinesByLectureId(Key lectureKey) {
     Filter lectureKeyFilter =
         new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureKeyFilter);
