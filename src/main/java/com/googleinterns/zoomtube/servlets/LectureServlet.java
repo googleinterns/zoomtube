@@ -79,7 +79,7 @@ public class LectureServlet extends HttpServlet {
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
 
-  public void initializeTranscript(Entity lectureEntity) throws IOException {
+  private void initializeTranscript(Entity lectureEntity) throws IOException {
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
     TranscriptServlet transcriptServlet = new TranscriptServlet();

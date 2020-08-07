@@ -92,6 +92,8 @@ public class TranscriptServlet extends HttpServlet {
    * datastore.
    */
   public void parseAndStoreTranscript(String videoId, Key lectureKey) throws IOException {
+    System.out.println(videoId);
+    System.out.println(lectureKey);
     Document document = getTranscriptXmlAsDocument(videoId).get();
     putTranscriptLinesInDatastore(lectureKey, document);    
   }

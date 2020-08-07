@@ -70,11 +70,12 @@ public final class TranscriptServletTest {
   private static final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper(datastoreConfig);
   private static final String LECTURE_ID_A = "123";
-  private static final Key LECTURE_KEY_A = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
+  // TODO: move to beforeclass
+  private static Key LECTURE_KEY_A;
   private static final String LECTURE_ID_B = "345";
-  private static final Key LECTURE_KEY_B = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_B);
+  private static Key LECTURE_KEY_B;
   private static final String LECTURE_ID_C = "234";
-  private static final Key LECTURE_KEY_C = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_C);
+  private static Key LECTURE_KEY_C;
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
@@ -124,6 +125,10 @@ public final class TranscriptServletTest {
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
+
+    LECTURE_KEY_A = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
+    LECTURE_KEY_B = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
+    LECTURE_KEY_C = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
   }
 
   @After
