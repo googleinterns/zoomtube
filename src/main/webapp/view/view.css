@@ -62,8 +62,8 @@
 /* Transcript */
 
 #transcript-container {
-  overflow: scroll;
   height: calc(100% - 390px);
+  overflow: scroll;
 }
 
 /* Video */
