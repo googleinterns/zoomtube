@@ -82,8 +82,8 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Adds the transcript lines to datastore using the {@code lectureKey} and {@code videoId}
-   * properties in {@code lectureEntity}.
+   * Parses and stores the transcript lines to datastore using the {@code lectureKey}
+   * and {@code videoId} properties in {@code lectureEntity}.
    */
   private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
     TranscriptServlet transcriptServlet = new TranscriptServlet();

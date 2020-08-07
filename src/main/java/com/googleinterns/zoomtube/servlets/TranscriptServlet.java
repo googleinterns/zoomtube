@@ -172,7 +172,7 @@ public class TranscriptServlet extends HttpServlet {
    * and {@code lectureKey}.
    */
   private Entity createTranscriptLineEntity(Node node, Key lectureKey) {
-    // TODO: Reorganize this so declaration is closer.
+    // TODO: Reorganize this code block so the declaration is closer.
     Element element = (Element) node;
     String lineContent = node.getTextContent();
     Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
