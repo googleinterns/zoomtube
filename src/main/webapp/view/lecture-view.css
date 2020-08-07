@@ -60,10 +60,10 @@
 }
 
 /* Transcript */
+
 #transcript-container {
-    height: calc(100% - 390px);
-  }
-  
+  height: calc(100% - 390px);
+}
 
 #transcript-lines-container {
   /* TODO: Update height once the branch with the lecture view layout has been merged into master */
@@ -74,4 +74,3 @@
 #transcript-lines-container ul {
   list-style-type: none;
 }
-
