@@ -79,25 +79,23 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
+  public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException, ServletException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     servlet.doPost(request, response);
 
-    assertThat(datastoreService.prepare(new
-    Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
   @Test
-  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException {
+  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException, ServletException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
 
     // No lecture in datastoreService.
     servlet.doPost(request, response);
 
-    assertThat(datastoreService.prepare(new
-    Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/view.html?id=1&video-id=wXhTHyIgQ_U");
   }
 
@@ -124,19 +122,19 @@ public final class LectureServletTest {
     servlet.doGet(request, response);
 
     String json = content.toString();
-    Gson gson = new
-    GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create(); Type listType
-    = new TypeToken<ArrayList<Lecture>>() {}.getType(); ArrayList<Lecture> lectures =
-    gson.fromJson(json, listType); assertThat(lectures).hasSize(1);
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Type listType = new TypeToken<ArrayList<Lecture>>() {}.getType();
+    ArrayList<Lecture> lectures = gson.fromJson(json, listType);
+    assertThat(lectures).hasSize(1);
     assertThat(lectures.get(0).videoUrl()).isEqualTo(TEST_LINK);
   }
 
   @Test
   public void getVideoId_shouldFindAllIds() {
-    String video1 =
-    "http://www.youtube.com/watch?v=dQw4w9WgXcQ&a=GxdCwVVULXctT2lYDEPllDR0LRTutYfW"; String
-    video2 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ"; String video3 =
-    "http://youtu.be/dQw4w9WgXcQ"; String video4 = "http://www.youtube.com/embed/dQw4w9WgXcQ";
+    String video1 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ&a=GxdCwVVULXctT2lYDEPllDR0LRTutYfW";
+    String video2 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    String video3 = "http://youtu.be/dQw4w9WgXcQ";
+    String video4 = "http://www.youtube.com/embed/dQw4w9WgXcQ";
     String video5 = "http://www.youtube.com/v/dQw4w9WgXcQ";
     String video6 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ";
     String video7 = "http://www.youtube.com/watch?feature=player_embedded&v=dQw4w9WgXcQ";
