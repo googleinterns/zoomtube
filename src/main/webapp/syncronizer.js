@@ -15,9 +15,9 @@
 let timer;
 const TIME_INTERVAL = 1000;
 
-/** 
- * Starts timer which broadcats {@code currentTime} every 
- * {@code TIME_INTERVAL} milliseconds.  
+/**
+ * Starts timer which broadcats {@code currentTime} every
+ * {@code TIME_INTERVAL} milliseconds.
  */
 function startTimer(currentTime) {
   timer = window.setInterval(() => {
