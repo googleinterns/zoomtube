@@ -47,7 +47,7 @@ function onPlayerReady(event) {
 /** Starts timer if video is playing, stops otherwise. */
 function startStopTimerOnStateChange(event) {
   const state = event.data;
-  if (state == YT.PlayerState.PLAYING) {
+  if (state == window.YT.PlayerState.PLAYING) {
     startTimer();
   } else {
     stopTimer();
