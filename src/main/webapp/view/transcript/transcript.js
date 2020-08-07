@@ -99,3 +99,9 @@ function appendParagraphToContainer(text, container, classes = []) {
 function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
+
+/** Seeks transcript to {@code currentTime}. */
+function seekTranscript(currentTime) {
+  // TODO: Remove and implement.
+  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
+}
