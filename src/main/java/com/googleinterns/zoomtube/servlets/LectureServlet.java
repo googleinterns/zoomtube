@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Key;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
@@ -76,6 +77,13 @@ public class LectureServlet extends HttpServlet {
     Entity lectureEntity = getLectureEntityFromRequest(request);
     datastore.put(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
+  }
+
+  public void initializeTranscript(Entity lectureEntity) throws IOException {
+    Key lectureKey = lectureEntity.getKey();
+    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
+    TranscriptServlet transcriptServlet = new TranscriptServlet();
+    transcriptServlet.parseAndStoreTranscript(videoId, lectureKey);
   }
 
   @Override
