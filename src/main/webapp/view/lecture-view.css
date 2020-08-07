@@ -1,0 +1,32 @@
+/* Layout */
+
+.halfpage {
+  height: calc(100vh - 56px);
+  max-height: calc(100vh - 56px);
+  max-width: 50vw;
+  width: 50vw;
+  overflow: hidden;
+}
+
+#page {
+  display: flex;
+  justify-content: center;
+}
+
+/* Discussion */
+
+#discussion-comments {
+  height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+  overflow: scroll;
+}
+
+#new-comment-row {
+  height: 200px;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+#new-comment-form {
+  width: 100%;
+}
