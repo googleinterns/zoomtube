@@ -44,9 +44,9 @@ function onPlayerReady(event) {
   event.target.playVideo();
 }
 
-/** Starts timer if video is playing, stops otherwise. */
-function startStopTimerOnStateChange(event) {
-  const state = event.data;
+/** Starts timer if {@code currState} is playing, stops otherwise. */
+function startStopTimerOnStateChange(currState) {
+  const state = currState.data;
   if (state == window.YT.PlayerState.PLAYING) {
     startTimer();
     return;
@@ -54,7 +54,7 @@ function startStopTimerOnStateChange(event) {
   stopTimer();
 }
 
-/** Starts timer.  */
+/** Starts timer which calls {@code sync} with the current video time.  */
 function startTimer() {
   window.timer = window.setInterval(() => {
     window.sync(window.videoPlayer.getCurrentTime(), false);
