@@ -18,12 +18,12 @@ echo Prettifying
 make pretty
 
 echo Validate HTML
-node_modules/html-validate/bin/html-validate.js src/main/webapp/*.html
+node_modules/html-validate/bin/html-validate.js "src/main/webapp/**/*.html"
 retVal=$?
 check
 
 echo Validate CSS
-node_modules/css-validator/bin/css-validator src/main/webapp/*.css
+node_modules/css-validator/bin/css-validator src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/lectures/*.css
 retVal=$?
 check
 
