@@ -22,7 +22,7 @@ loadLectureList();
 
 /** Fetches data from servlet and sets it in the lecture selection page. */
 async function loadLectureList() {
-  const response = await fetch('/lecture');
+  const response = await fetch('/lecture-list');
   const jsonData = await response.json();
 
   const lectureList = document.getElementById('lecture-list');
