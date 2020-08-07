@@ -82,7 +82,7 @@ public class LectureServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<Lecture> lectures = getLectures();
     Gson gson = new Gson();
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(lectures));
   }
 
