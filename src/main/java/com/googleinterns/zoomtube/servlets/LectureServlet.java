@@ -81,6 +81,10 @@ public class LectureServlet extends HttpServlet {
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
 
+  /**
+   * Adds the transcript lines to datastore using the {@code lectureKey} and {@code videoId}
+   * properties in {@code lectureEntity}.
+   */
   private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
