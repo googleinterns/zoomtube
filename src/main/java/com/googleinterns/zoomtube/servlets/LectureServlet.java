@@ -17,9 +17,9 @@ package com.googleinterns.zoomtube.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Key;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
@@ -66,7 +66,8 @@ public class LectureServlet extends HttpServlet {
 
   @Override
   // TODO: Check if URL is valid.
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
     Optional<Entity> existingEntity = checkUrlInDatabase(optionalVideoUrl);
 
@@ -80,10 +81,13 @@ public class LectureServlet extends HttpServlet {
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
 
-  private void initializeTranscript(Entity lectureEntity) throws IOException {
+  private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
+    System.out.println(lectureKey);
+    System.out.println(videoId);
     TranscriptServlet transcriptServlet = new TranscriptServlet();
+    transcriptServlet.init();
     transcriptServlet.parseAndStoreTranscript(videoId, lectureKey);
   }
 

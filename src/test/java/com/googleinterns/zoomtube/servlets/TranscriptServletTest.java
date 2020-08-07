@@ -142,7 +142,8 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo()
+      throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
@@ -155,7 +156,8 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_parseAndStoreTranscript_storeAndRetrieveShortVideo() throws ServletException, IOException {
+  public void doGet_parseAndStoreTranscript_storeAndRetrieveShortVideo()
+      throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
     Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
@@ -169,7 +171,8 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_parseAndStoreTranscript_storeAndRetrieveLongVideo() throws ServletException, IOException {
+  public void doGet_parseAndStoreTranscript_storeAndRetrieveLongVideo()
+      throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
     Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
@@ -195,7 +198,8 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo()
+      throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));

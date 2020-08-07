@@ -77,15 +77,15 @@ public class TranscriptServlet extends HttpServlet {
   }
 
   /**
-   * Parses and stores the transcript lines in datastore given its {@code videoId} 
+   * Parses and stores the transcript lines in datastore given its {@code videoId}
    * and {@code lectureKey}.
    *
-   * <p>This method is called from the {@code LectureServlet} upon adding a lecture to 
+   * <p>This method is called from the {@code LectureServlet} upon adding a lecture to
    * datastore.
    */
   public void parseAndStoreTranscript(String videoId, Key lectureKey) throws IOException {
     Document document = getTranscriptXmlAsDocument(videoId).get();
-    putTranscriptLinesInDatastore(lectureKey, document);    
+    putTranscriptLinesInDatastore(lectureKey, document);
   }
 
   /**
@@ -96,6 +96,7 @@ public class TranscriptServlet extends HttpServlet {
    */
   private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
     String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
+    System.out.println(transcriptXMLUrl);
 
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -116,9 +117,11 @@ public class TranscriptServlet extends HttpServlet {
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(Key lectureKey, Document document) {
+    System.out.println("HREER");
     NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
       Node node = nodeList.item(nodeIndex);
+      System.out.println("hfds");
       datastore.put(createTranscriptLineEntity(node, lectureKey));
     }
   }
@@ -179,8 +182,7 @@ public class TranscriptServlet extends HttpServlet {
     Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
     Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
     Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-    lineEntity.setProperty(
-        TranscriptLine.PROP_LECTURE, lectureKey);
+    lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
     lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
     lineEntity.setProperty(
         TranscriptLine.PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
