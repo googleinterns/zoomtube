@@ -16,11 +16,13 @@ const ENDPOINT_DISCUSSION = '/discussion';
 
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
+const PARAM_TIMESTAMP = 'timestamp';
 
 const ATTR_ID = 'key-id';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
+const ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
 
 const TEMPLATE_COMMENT = document.querySelector('#comment-template');
 
@@ -34,6 +36,8 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
+let newCommentTimestampMillis = 0;
+
 /**
  * Loads the lecture disucssion.
  */
@@ -45,14 +49,14 @@ async function intializeDiscussion() {
  * Posts a new comment using the main post textarea.
  */
 async function postNewComment() {
-  postAndReload(ELEMENT_POST_TEXTAREA);
+  postAndReload(ELEMENT_POST_TEXTAREA, undefined, newCommentTimestampMillis);
 }
 
 /**
  * Posts the content of {@code inputField} as a reply to {@code parentId}.
  */
 async function postReply(inputField, parentId) {
-  postAndReload(inputField, parentId);
+  postAndReload(inputField, parentId, undefined);
 }
 
 /**
@@ -60,11 +64,15 @@ async function postReply(inputField, parentId) {
  * {@code parentId} is provided, this posts a reply to the comment with
  * that id.
  */
-async function postAndReload(inputField, parentId = undefined) {
+async function postAndReload(
+    inputField, parentId = undefined, timestamp = undefined) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  if (parentId) {
+  if (parentId !== undefined) {
     url.searchParams.append(PARAM_PARENT, parentId);
+  }
+  if (timestamp !== undefined) {
+    url.searchParams.append(PARAM_TIMESTAMP, timestamp);
   }
 
   fetch(url, {
@@ -126,6 +134,17 @@ async function fetchDiscussion() {
 
   const request = await fetch(url);
   return request.json();
+}
+
+/**
+ * Updates the timestamp displayed and sent by the new comment form.
+ *
+ * @param {number} time The new time in seconds to use.
+ */
+function updateNewCommentTimestamp(time) {
+  const timestamp = window.secondsToTimestamp(time);
+  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timestamp);
+  newCommentTimestampMillis = window.secondsToMilliseconds(time);
 }
 
 /**
@@ -218,6 +237,7 @@ customElements.define('discussion-comment', DiscussionComment);
 
 /** Seeks discussion to {@code currentTime}. */
 function seekDiscussion(currentTime) {
+  updateNewCommentTimestamp(currentTime);
   // TODO: Remove and implement.
   console.log('SEEKING DISCUSSION TO: ' + currentTime);
 }
