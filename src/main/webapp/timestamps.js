@@ -34,6 +34,30 @@ function timestampToString(timestamp) {
 function timestampToSeconds(timestamp) {
   const date = new Date(timestamp);
   const totalMilliseconds = date.getTime();
-  const totalSeconds = totalMilliseconds / 1000;
+  const totalSeconds = millisecondsToSeconds(totalMilliseconds);
   return totalSeconds;
+}
+
+/**
+ * Converts a number of {@code seconds} into a timestamp string.
+ */
+function secondsToTimestamp(seconds) {
+  const milliseconds = secondsToMilliseconds(seconds);
+  const date = (new Date()).setTime(milliseconds);
+  return date.toString();
+}
+
+/**
+ * Converts a number of {@code seconds} into a integer number of
+ * milliseconds.
+ */
+function secondsToMilliseconds(seconds) {
+  return Math.round(seconds * 1000);
+}
+
+/**
+ * Converts a number of {@code milliseconds} into seconds.
+ */
+function millisecondsToSeconds(milliseconds) {
+  return milliseconds / 1000;
 }
