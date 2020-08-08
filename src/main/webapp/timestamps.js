@@ -17,13 +17,13 @@
  */
 function timestampToString(timestamp) {
   const date = new Date(timestamp);
-  const seconds = date.getSeconds().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  if (date.getHours() == 0) {
+  const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+  const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+  if (date.getUTCHours() == 0) {
     return `${minutes}:${seconds}`;
   }
   // We don't pad hours because lectures won't need two digits for hours.
-  const hours = date.getHours().toString();
+  const hours = date.getUTCHours().toString();
   return `${hours}:${minutes}:${seconds}`;
 }
 
@@ -43,7 +43,7 @@ function timestampToSeconds(timestamp) {
  */
 function secondsToTimestamp(seconds) {
   const milliseconds = secondsToMilliseconds(seconds);
-  const date = (new Date()).setTime(milliseconds);
+  const date = new Date(milliseconds);
   return date.toString();
 }
 
