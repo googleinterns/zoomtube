@@ -52,7 +52,7 @@ public class LectureServlet extends HttpServlet {
   /* Name of input field used for lecture video link in lecture selection page. */
   private static final String LINK_INPUT = "link-input";
 
-  private static final String REDIRECT_URL = "/view/";
+  private static final String REDIRECT_URL = "/view";
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern;
