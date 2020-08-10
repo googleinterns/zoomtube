@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const ENDPOINT_LECTURE_LIST = '/lecture-list';
+
 /* Used to gather URL parameters. */
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
@@ -21,11 +23,11 @@ const REDIRECT_PAGE = '/view/';
 loadLectureList();
 
 /**
- * Fetches avaiable Lectures from LectureListServlet and sets them in the
- * lecture selection page.
+ * Fetches avaiable Lectures from {@code ENDPOINT_LECTURE_LIST}
+ * and sets them in the lecture selection page.
  */
 async function loadLectureList() {
-  const response = await fetch('/lecture-list');
+  const response = await fetch(ENDPOINT_LECTURE_LIST);
   const jsonData = await response.json();
 
   const lectureList = document.getElementById('lecture-list');
