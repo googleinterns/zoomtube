@@ -58,7 +58,6 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
-    if (currentTranscriptLine === 'undefined')
     appendTextToList(transcriptLine, ulElement);
   });
 }
@@ -88,6 +87,11 @@ function appendTextToList(transcriptLine, ulElement) {
   ulElement.appendChild(liElement);
   // Save the dates for seeking later.
   liElement.startDate = new Date(transcriptLine.start);
+  liElement.endDate = new Date(transcriptLine.end);
+  // Sets the current transcript line to be the first line.
+  if (currentTranscriptLine == undefined) {
+    currentTranscriptLine = liElement;
+  }
 }
 
 /**
@@ -114,7 +118,17 @@ function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to {@code currentTime}. */
+/** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-
+  // The transcript timestamp doesn't keep track of decimals for the seconds.
+  const roundedCurrentTime = Math.round(currentTime);
+  const currentTranscriptLineEndTimeInSeconds =
+      currentTranscriptLine.endDate.getTime() / 1000;
+  if (roundedCurrentTime < currentTranscriptLineEndTimeInSeconds) {
+    return;
+  }
+  // TODO: disable highlighting on the currentTranscriptLine
+  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  currentTranscriptLine.scrollIntoView();
+  // TODO: handle the case where the video isn't only playing.
 }

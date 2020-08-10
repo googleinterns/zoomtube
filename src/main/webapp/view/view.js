@@ -26,9 +26,9 @@ initialize();
  * and transcript sections for the lecture view page.
  */
 async function initialize() {
+  window.loadTranscript(window.location.search);
   window.loadVideoApi();
   window.intializeDiscussion();
-  window.loadTranscript(window.location.search);
 }
 
 /**
