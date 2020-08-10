@@ -26,7 +26,7 @@ public final class CommentUtil {
   public static final String KIND = "Comment";
   public static final String LECTURE = "lecture";
   public static final String PARENT = "parent";
-  public static final String TIMESTAMP = "timestamp";
+  public static final String TIMESTAMP_MILLISECONDS = "timestamp_milliseconds";
   public static final String AUTHOR = "author";
   public static final String CONTENT = "content";
   public static final String CREATED = "created";
@@ -38,7 +38,7 @@ public final class CommentUtil {
     Key commentKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
     @Nullable Key parentKey = (Key) entity.getProperty(PARENT);
-    Date timestamp = (Date) entity.getProperty(TIMESTAMP);
+    long timestamp = (long) entity.getProperty(TIMESTAMP_MILLISECONDS);
     User author = (User) entity.getProperty(AUTHOR);
     String content = (String) entity.getProperty(CONTENT);
     Date created = (Date) entity.getProperty(CREATED);
@@ -46,7 +46,7 @@ public final class CommentUtil {
     Comment.Builder builder = Comment.builder()
                                   .setCommentKey(commentKey)
                                   .setLectureKey(lectureKey)
-                                  .setTimestamp(timestamp)
+                                  .setTimestampMilliseconds(timestamp)
                                   .setAuthor(author)
                                   .setContent(content)
                                   .setCreated(created);
@@ -60,10 +60,10 @@ public final class CommentUtil {
    * Creates and returns an entity with the specified properties and no parent comment.
    */
   public static Entity createEntity(
-      Key lectureKey, Date timestamp, User author, String content, Date created) {
+      Key lectureKey, long timestampMilliseconds, User author, String content, Date created) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
-    entity.setProperty(TIMESTAMP, timestamp);
+    entity.setProperty(TIMESTAMP_MILLISECONDS, timestampMilliseconds);
     entity.setProperty(AUTHOR, author);
     entity.setProperty(CONTENT, content);
     entity.setProperty(CREATED, created);
@@ -73,12 +73,12 @@ public final class CommentUtil {
   /**
    * Creates and returns an entity with the specified properties, including a parent comment.
    */
-  public static Entity createEntity(
-      Key lectureKey, Key parentKey, Date timestamp, User author, String content, Date created) {
+  public static Entity createEntity(Key lectureKey, Key parentKey, long timestampMilliseconds,
+      User author, String content, Date created) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
     entity.setProperty(PARENT, parentKey);
-    entity.setProperty(TIMESTAMP, timestamp);
+    entity.setProperty(TIMESTAMP_MILLISECONDS, timestampMilliseconds);
     entity.setProperty(AUTHOR, author);
     entity.setProperty(CONTENT, content);
     entity.setProperty(CREATED, created);

@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -69,39 +70,38 @@ public final class TranscriptServletTest {
       (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private static final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper(datastoreConfig);
-  private static final String LECTURE_ID_A = "123";
-  private static final String LECTURE_ID_B = "345";
-  private static final String LECTURE_ID_C = "234";
+  private static final Long LECTURE_ID_A = 123L;
+  private static final Long LECTURE_ID_B = 345L;
+  private static final Long LECTURE_ID_C = 234L;
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
-      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
-      + "1},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:00 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:01 AM\",\"content\":"
-      + "\" \"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\","
-      + "\"id\":123},\"start\":\"Jan 1, 1970 12:00:02 AM\",\"duration\":\"Jan 1, 1970 12:00:01 AM\","
-      + "\"end\":\"Jan 1, 1970 12:00:03 AM\",\"content\":\"Hi\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\","
-      + "\"id\":3},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:05 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:06 AM\",\"content\":\"Okay\"}]";
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":{\"kind\":\"Lect"
+      + "ure\",\"id\":123},\"startTimestampMilliseconds\":400,\"durationMilliseconds\":1000,\"end"
+      + "TimestampMilliseconds\":1400,\"content\":\" \"},{\"transcriptKey\":{\"kind\":\"Transcrip"
+      + "tLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilli"
+      + "seconds\":2280,\"durationMilliseconds\":1000,\"endTimestampMilliseconds\":3280,\"content"
+      + "\":\"Hi\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lectureKey\":{\"k"
+      + "ind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":5040,\"durationMilliseconds"
+      + "\":1600,\"endTimestampMilliseconds\":6640,\"content\":\"Okay\"}]";
   private static final String LONG_VIDEO_JSON =
-      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1}"
-      + ",\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:01 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:03 AM\",\"end\":\"Jan 1, 1970 12:00:04 AM\",\"content\""
-      + ":\"All right, so here we are\\nin front of the elephants,\"},{\"transcriptKey\":{\"kind\":"
-      + "\"TranscriptLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123}"
-      + ",\"start\":\"Jan 1, 1970 12:00:04 AM\",\"duration\":\"Jan 1, 1970 12:00:04 AM\","
-      + "\"end\":\"Jan 1, 1970 12:00:09 AM\",\"content\":\"the cool thing about these "
-      + "guys\\nis that they have really,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},"
-      + "\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:09 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:03 AM\",\"end\":\"Jan 1, 1970 12:00:12 AM\",\"content\":"
-      + "\"really, really long trunks,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectureKey\""
-      + ":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:12 AM\",\"duration\":\"Jan "
-      + "1, 1970 12:00:04 AM\",\"end\":\"Jan 1, 1970 12:00:17 AM\",\"content\":\"and that's, "
-      + "that's cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectureKey\""
-      + ":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:17 AM\",\"duration\":"
-      + "\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:18 AM\",\"content\""
-      + ":\"And that's pretty much all there is to say.\"}]";
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":{\"kind\":\"Lect"
+      + "ure\",\"id\":123},\"startTimestampMilliseconds\":1300,\"durationMilliseconds\":3100,\"en"
+      + "dTimestampMilliseconds\":4400,\"content\":\"All right, so here we are\\nin front of the "
+      + "elephants,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lectureKey\":{"
+      + "\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":4400,\"durationMilliseco"
+      + "nds\":4766,\"endTimestampMilliseconds\":9166,\"content\":\"the cool thing about these gu"
+      + "ys\\nis that they have really,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\""
+      + ":3},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":9166"
+      + ",\"durationMilliseconds\":3534,\"endTimestampMilliseconds\":12700,\"content\":\"really, "
+      + "really long trunks,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectu"
+      + "reKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":12700,\"duratio"
+      + "nMilliseconds\":4300,\"endTimestampMilliseconds\":17000,\"content\":\"and that\\u0027s, "
+      + "that\\u0027s cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectur"
+      + "eKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":17000,\"duration"
+      + "Milliseconds\":1767,\"endTimestampMilliseconds\":18767,\"content\":\"And that\\u0027s pr"
+      + "etty much all there is to say.\"}]";
 
   private static List<TranscriptLine> shortVideoTranscriptLines;
   private static List<TranscriptLine> longVideoTranscriptLines;
@@ -115,9 +115,9 @@ public final class TranscriptServletTest {
   @Before
   public void setUp() throws ServletException, IOException {
     localServiceHelper.setUp();
-    transcriptServlet = new TranscriptServlet();
     datastore = DatastoreServiceFactory.getDatastoreService();
-    transcriptServlet.init(datastore);
+    transcriptServlet = new TranscriptServlet();
+    transcriptServlet.init();
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
@@ -131,7 +131,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -143,22 +143,23 @@ public final class TranscriptServletTest {
   @Test
   public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B.toString());
 
     transcriptServlet.doPost(request, response);
 
-    int actualQuery = entitiesInDatastoreCount(LECTURE_ID_B);
-    int expectedQuery = (shortVideoTranscriptLines).size();
-    assertThat(actualQuery).isEqualTo(expectedQuery);
+    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B);
+    int expectedQueryCount = (shortVideoTranscriptLines).size();
+    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
 
   @Test
   public void doGet_doPost_storeAndRetrieveShortVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doPost(request, response);
     transcriptServlet.doGet(request, response);
+    System.out.println(lectureTranscript.toString());
 
     List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
     List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
@@ -168,7 +169,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_doPost_storeAndRetrieveLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doPost(request, response);
     transcriptServlet.doGet(request, response);
@@ -181,7 +182,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -193,7 +194,7 @@ public final class TranscriptServletTest {
   @Test
   public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C.toString());
 
     transcriptServlet.doPost(request, response);
 
@@ -207,7 +208,7 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -220,7 +221,7 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -235,22 +236,15 @@ public final class TranscriptServletTest {
         transcriptLinesJson, (new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
-  private void putTranscriptLinesInDatastore(
-      List<TranscriptLine> transcriptLines, String lectureId) {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(lectureId));
+  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, long lectureId) {
     for (int i = 0; i < transcriptLines.size(); i++) {
-      Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
-      // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
-      lineEntity.setProperty(TranscriptLine.PROP_START, /* start= */ new Date());
-      lineEntity.setProperty(TranscriptLine.PROP_DURATION, /* duration= */ new Date());
-      lineEntity.setProperty(TranscriptLine.PROP_CONTENT, /* content= */ "");
-      lineEntity.setProperty(TranscriptLine.PROP_END, /* end= */ new Date());
+      Entity lineEntity = TranscriptLineUtil.createEntity(lectureId, "test content",
+          /* start= */ 0, /* duration= */ 0, /* end= */ 0);
       datastore.put(lineEntity);
     }
   }
 
-  private int entitiesInDatastoreCount(String lectureId) {
+  private int entitiesInDatastoreCount(long lectureId) {
     // A limit of 100 for the maximum number of entities counted is used because
     // we can assume that for this test datastore, there won't be more than 100 entities
     // for a lecture key.
@@ -258,10 +252,10 @@ public final class TranscriptServletTest {
         .countEntities(withLimit(100));
   }
 
-  private Query filteredQueryOfTranscriptLinesByLectureId(String lectureId) {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(lectureId));
-    Filter lectureKeyFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
-    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureKeyFilter);
+  private Query filteredQueryOfTranscriptLinesByLectureId(long lectureId) {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    Filter lectureFilter =
+        new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
+    return new Query(TranscriptLineUtil.KIND).setFilter(lectureFilter);
   }
 }

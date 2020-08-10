@@ -13,38 +13,21 @@
 // limitations under the License.
 
 /**
- * Coverts a Date representing a video {@code timestamp} into a string.
+ * Coverts a video {@code timestamp} in milliseconds into a string.
  */
 function timestampToString(timestamp) {
-  const date = new Date(timestamp);
-  const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-  const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+  const date = new Date();
+  date.setTime(timestamp);
+  const seconds = date.getUTCSeconds().toString().padStart(
+      /* targetLength= */ 2, /* padString= */ '0');
+  const minutes = date.getUTCMinutes().toString().padStart(
+      /* targetLength= */ 2, /* padString= */ '0');
   if (date.getUTCHours() == 0) {
     return `${minutes}:${seconds}`;
   }
   // We don't pad hours because lectures won't need two digits for hours.
   const hours = date.getUTCHours().toString();
   return `${hours}:${minutes}:${seconds}`;
-}
-
-/**
- * Returns the total number of seconds since the start of a video at a
- * certain {@code timestamp}.
- */
-function timestampToSeconds(timestamp) {
-  const date = new Date(timestamp);
-  const totalMilliseconds = date.getTime();
-  const totalSeconds = millisecondsToSeconds(totalMilliseconds);
-  return totalSeconds;
-}
-
-/**
- * Converts a number of {@code seconds} into a timestamp string.
- */
-function secondsToTimestamp(seconds) {
-  const milliseconds = secondsToMilliseconds(seconds);
-  const date = new Date(milliseconds);
-  return date.toString();
 }
 
 /**
