@@ -72,13 +72,13 @@ public final class LectureServletTest {
   private static final String TEST_ID = "wXhTHyIgQ_U";
 
   @Before
-  public void setUp() throws ServletException {
+  public void setUp() throws ServletException, IOException {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new LectureServlet();
     servlet.init();
     content = new StringWriter();
-    writer = new PrintWriter(content);
+    when(response.getWriter()).thenReturn(new PrintWriter(content));
   }
 
   @After
@@ -114,7 +114,6 @@ public final class LectureServletTest {
     datastoreService.put(lectureEntity);
     Long entityId = lectureEntity.getKey().getId();
     when(request.getParameter(LectureUtil.ID)).thenReturn(Long.toString(entityId));
-    when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);
 
@@ -130,7 +129,6 @@ public final class LectureServletTest {
   @Test
   public void doGet_noLectureInDatabase_shouldWriteNoLecture() throws IOException {
     when(request.getParameter(LectureUtil.ID)).thenReturn(/* lectureId= */ "1");
-    when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);
 
