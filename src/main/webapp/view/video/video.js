@@ -31,7 +31,7 @@ function onYouTubeIframeAPIReady() {
   window.videoPlayer = new window.YT.Player('player', {
     height: '390',
     width: '640',
-    videoId: window.LECTURE.videoId,
+    videoId: window.VIDEO_ID,
     events: {
       onReady: onPlayerReady,
       onStateChange: startOrStopTimer,
