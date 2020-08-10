@@ -16,7 +16,7 @@
  * Coverts a Date representing a video {@code timestamp} into a string.
  */
 function timestampToString(timestamp) {
-  const date = new Date()
+  const date = new Date();
   date.setTime(timestamp);
   const seconds = date.getUTCSeconds().toString().padStart(
       /* targetLength= */ 2, /* padString= */ '0');
