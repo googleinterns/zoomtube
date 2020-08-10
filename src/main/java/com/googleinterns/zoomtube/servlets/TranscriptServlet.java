@@ -32,10 +32,21 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.text.StringEscapeUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Provides the transcript for a given lecture.
@@ -62,6 +73,55 @@ public class TranscriptServlet extends HttpServlet {
   @VisibleForTesting
   void init(DatastoreService testDatastore) {
     datastore = testDatastore;
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String videoId = request.getParameter(LectureUtil.VIDEO_ID);
+    Document document = getTranscriptXmlAsDocument(videoId).get();
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    putTranscriptLinesInDatastore(lectureId, document);
+  }
+
+  /**
+   * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
+   * if there is a parsing error.
+   *
+   * @param videoId Indicates the video to extract the transcript from.
+   */
+  private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
+    String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
+
+    try {
+      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
+      document.getDocumentElement().normalize();
+      return Optional.of(document);
+    } catch (ParserConfigurationException | SAXException e) {
+      // TODO: Alert the user.
+      System.out.println("XML parsing error");
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Puts each transcript line from {@code document} in datastore as its own entity.
+   *
+   * @param lectureId Indicates the lecture id to group the transcript lines under.
+   * @param document The XML file containing the transcript lines.
+   */
+  private void putTranscriptLinesInDatastore(long lectureId, Document document) {
+    NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
+    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
+      Node transcriptNode = transcriptNodes.item(nodeIndex);
+      Element transcriptElement = (Element) transcriptNode;
+      String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
+      Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+      Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
+      Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+      datastore.put(TranscriptLineUtil.createEntity(
+          lectureId, lineContent, lineStart, lineDuration, lineEnd));
+    }
   }
 
   @Override
