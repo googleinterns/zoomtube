@@ -16,6 +16,8 @@
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 
+let currentTranscriptLine;
+
 /**
  * Sends a POST request to the transcript.
  */
@@ -56,6 +58,7 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
+    if (currentTranscriptLine === 'undefined')
     appendTextToList(transcriptLine, ulElement);
   });
 }
@@ -113,6 +116,5 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}. */
 function seekTranscript(currentTime) {
-  // TODO: Remove and implement.
-  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
+
 }
