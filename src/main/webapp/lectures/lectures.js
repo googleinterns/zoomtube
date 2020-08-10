@@ -39,7 +39,7 @@ async function loadLectureList() {
 
 /**
  * Creates and returns a <li> containing an <a> linking to {@code
- * lecture}'s video url and name.
+ * lecture}'s view page.
  */
 function createLectureListItem(lecture) {
   const lectureLink = document.createElement('a');
