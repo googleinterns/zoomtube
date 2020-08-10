@@ -12,33 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.googleinterns.zoomtube.servlets;
+package com.googleinterns.zoomtube.transcriptParser;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -48,31 +33,26 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/**
- * Provides the transcript for a given lecture.
- */
-public class TranscriptServlet extends HttpServlet {
+public class TranscriptParser {
   private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
 
+  private static TranscriptParser uniqueParser;
   private static DatastoreService datastore;
 
-  @Override
-  public void init() throws ServletException {
+  private TranscriptParser() {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
-  /**
-   * Initializes the servlet with {@code testDatastore} created during testing.
-   *
-   * <p>The unit tests need access to the datastore to check that doPost() puts
-   * the entities in datastore.
-   */
-  @VisibleForTesting
-  void init(DatastoreService testDatastore) {
-    datastore = testDatastore;
+  // TODO: Refactor getParser() to use double-checked locking if
+  // synchronization is expensive.
+  public static synchronized TranscriptParser getParser() {
+    if (uniqueParser == null) {
+      uniqueParser = new TranscriptParser();
+    }
+    return uniqueParser;
   }
 
   /**
@@ -120,50 +100,6 @@ public class TranscriptServlet extends HttpServlet {
       Node node = nodeList.item(nodeIndex);
       datastore.put(createTranscriptLineEntity(node, lectureKey));
     }
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
-    PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
-    ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
-    writeTranscriptLines(response, transcriptLines);
-  }
-
-  /**
-   * Returns the query for the lecture transcripts based on lecture id indicated in {@code
-   * lectureId}.
-   */
-  private PreparedQuery getLectureTranscriptQuery(long lectureId) {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
-
-    Query query = new Query(TranscriptLine.ENTITY_KIND)
-                      .setFilter(lectureFilter)
-                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
-    return datastore.prepare(query);
-  }
-
-  /**
-   * Returns the transcript lines in {@code preparedQuery}.
-   */
-  private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
-    ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
-    for (Entity transcriptLine : preparedQuery.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromLineEntity(transcriptLine));
-    }
-    return lineBuilder.build();
-  }
-
-  /**
-   * Writes {@code transcriptLines} as Json to {@code response}.
-   */
-  private void writeTranscriptLines(HttpServletResponse response,
-      ImmutableList<TranscriptLine> transcriptLines) throws IOException {
-    response.setContentType("application/json;");
-    Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(transcriptLines));
   }
 
   /**

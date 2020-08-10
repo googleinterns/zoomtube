@@ -79,7 +79,8 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException, ServletException {
+  public void doPost_urlAlreadyInDatabase_shouldReturnLecture()
+      throws IOException, ServletException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
     servlet.doPost(request, response);
@@ -89,7 +90,8 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException, ServletException {
+  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect()
+      throws IOException, ServletException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
 
     // No lecture in datastoreService.
