@@ -19,7 +19,7 @@ const PARAM_VIDEO_ID = 'video-id';
 window.LECTURE_ID = getLectureId();
 window.VIDEO_ID = getVideoId();
 
-getLecture(window.location.search).then((lecture) => {
+getLecture().then((lecture) => {
   window.LECTURE = lecture;
   initialize();
 });
@@ -34,7 +34,8 @@ async function initialize() {
   window.loadTranscript(window.location.search);
 }
 
-async function getLecture(lectureQueryString) {
+// TODO: ADD COMMENT
+async function getLecture() {
   const url = new URL('/lecture', window.location.origin);
   url.searchParams.append(PARAM_ID, window.LECTURE_ID);
   const response = await fetch(url);

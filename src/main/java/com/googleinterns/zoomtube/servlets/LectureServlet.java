@@ -91,7 +91,7 @@ public class LectureServlet extends HttpServlet {
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
     } catch (EntityNotFoundException entityNotFound) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
     }
   }
 

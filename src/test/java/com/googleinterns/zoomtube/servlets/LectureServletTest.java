@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -97,6 +98,26 @@ public final class LectureServletTest {
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/view/?id=1&video-id=wXhTHyIgQ_U");
+  }
+
+  @Test
+  public void doGet_lectureInDatabase_shouldWriteLecture() throws IOException {
+    Entity lectureEntity = LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID);
+    Key entityKey = lectureEntity.getKey();
+    datastoreService.put(lectureEntity);
+    StringWriter content = new StringWriter();
+    PrintWriter writer = new PrintWriter(content);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(Long.toString(entityKey.getId()));
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    String json = content.toString();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Lecture lecture = gson.fromJson(json, Lecture.class);
+    assertThat(lecture.lectureName()).isEqualTo("");
+    assertThat(lecture.videoUrl()).isEqualTo(TEST_LINK);
+    assertThat(lecture.videoId()).isEqualTo(TEST_ID);
   }
 
   @Test
