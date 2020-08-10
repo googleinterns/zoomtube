@@ -110,6 +110,7 @@ public class TranscriptServlet extends HttpServlet {
       float lineDurationSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
       // I couldn't find any official way to convert a float seconds to long milliseconds without
       // losing precision.
+      // 1000 represents the number of milliseconds in a second.
       long lineStartMilliseconds = Math.round(lineStartSeconds * 1000);
       long lineDurationMilliseconds = Math.round(lineDurationSeconds * 1000);
       long lineEnd = lineStartMilliseconds + lineDurationMilliseconds;
