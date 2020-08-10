@@ -30,11 +30,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -111,10 +111,16 @@ public class TranscriptServlet extends HttpServlet {
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(long lectureId, Document document) {
-    NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
-    for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-      Node node = nodeList.item(nodeIndex);
-      datastore.put(createTranscriptLineEntity(node, lectureId));
+    NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
+    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
+      Node transcriptNode = transcriptNodes.item(nodeIndex);
+      Element transcriptElement = (Element) transcriptNode;
+      String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
+      Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+      Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
+      Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+      datastore.put(TranscriptLineUtil.createEntity(
+          lectureId, lineContent, lineStart, lineDuration, lineEnd));
     }
   }
 
@@ -133,11 +139,11 @@ public class TranscriptServlet extends HttpServlet {
   private PreparedQuery getLectureTranscriptQuery(long lectureId) {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Filter lectureFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
+        new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
 
-    Query query = new Query(TranscriptLine.ENTITY_KIND)
+    Query query = new Query(TranscriptLineUtil.KIND)
                       .setFilter(lectureFilter)
-                      .addSort(TranscriptLine.PROP_START, SortDirection.ASCENDING);
+                      .addSort(TranscriptLineUtil.START, SortDirection.ASCENDING);
     return datastore.prepare(query);
   }
 
@@ -147,7 +153,7 @@ public class TranscriptServlet extends HttpServlet {
   private ImmutableList<TranscriptLine> getTranscriptLines(PreparedQuery preparedQuery) {
     ImmutableList.Builder<TranscriptLine> lineBuilder = new ImmutableList.Builder<>();
     for (Entity transcriptLine : preparedQuery.asQueryResultIterable()) {
-      lineBuilder.add(TranscriptLine.fromLineEntity(transcriptLine));
+      lineBuilder.add(TranscriptLineUtil.createTranscriptLine(transcriptLine));
     }
     return lineBuilder.build();
   }
@@ -157,32 +163,8 @@ public class TranscriptServlet extends HttpServlet {
    */
   private void writeTranscriptLines(HttpServletResponse response,
       ImmutableList<TranscriptLine> transcriptLines) throws IOException {
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     Gson gson = new Gson();
     response.getWriter().println(gson.toJson(transcriptLines));
-  }
-
-  /**
-   * Creates a transcript line entity using the attributes from {@code node}
-   * and {@code lectureId}.
-   */
-  private Entity createTranscriptLineEntity(Node node, long lectureId) {
-    // TODO: Reorganize this so declaration is closer.
-    Element element = (Element) node;
-    String lineContent = node.getTextContent();
-    Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
-    Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
-    Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
-    Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-    lineEntity.setProperty(
-        TranscriptLine.PROP_LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
-    lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
-    lineEntity.setProperty(
-        TranscriptLine.PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
-    lineEntity.setProperty(TranscriptLine.PROP_DURATION,
-        new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
-    lineEntity.setProperty(
-        TranscriptLine.PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
-    return lineEntity;
   }
 }

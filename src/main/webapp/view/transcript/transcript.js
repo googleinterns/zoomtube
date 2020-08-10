@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const TRANSCRIPT_CONTAINER = 'transcript-container';
+const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 
 /**
@@ -52,6 +52,7 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
     transcriptContainer.removeChild(transcriptContainer.firstChild);
   }
   const ulElement = document.createElement('ul');
+  ulElement.class = 'mx-auto';
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
@@ -60,27 +61,30 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 }
 
 /**
- * Creates an <li> element containing {@code transcriptLine}'s text, start time,
- * and end time and appends it to {@code ulElement}.
+ * Creates an <li> element containing {@code transcriptLine}'s text, start
+ * time, and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
-  const liElement = document.createElement('li');
-  const startDate = new Date(transcriptLine.start);
-  const endDate = new Date(transcriptLine.end);
-  const startTimestamp = `${startDate.getHours()}:${startDate.getMinutes()}:${
-    startDate.getSeconds()}`;
-  const endTimestamp =
-    `${endDate.getHours()}:${endDate.getMinutes()}:${endDate.getSeconds()}`;
+  const startTimestamp = window.timestampToString(transcriptLine.start);
+  const endTimestamp = window.timestampToString(transcriptLine.end);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
-  appendParagraphToContainer(timestamp, liElement, ['mx-auto']);
-  liElement.classList.add('d-flex', 'flex-row', 'justify-content-between');
-  appendParagraphToContainer(transcriptLine.content, liElement, ['mx-auto']);
-  liElement.appendChild(document.createElement('hr'));
-  ulElement.appendChild(liElement);
+  const contentDivElement = document.createElement('div');
+  contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
+  appendParagraphToContainer(
+      timestamp, contentDivElement, ['justify-content-start', 'mb-1']);
+  appendParagraphToContainer(
+      transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
 
-  liElement.startDate = startDate;
-  liElement.endDate = endDate;
+  const liElement = document.createElement('li');
+  liElement.classList.add('align-self-center', 'mb-2');
+  liElement.appendChild(contentDivElement);
+  const hrElement = document.createElement('hr');
+  hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+  liElement.appendChild(hrElement);
+  ulElement.appendChild(liElement);
+  // Save the dates for seeking later.
+  liElement.startDate = new Date(transcriptLine.start);
 }
 
 /**
@@ -105,4 +109,10 @@ function appendParagraphToContainer(text, container, classes = []) {
  */
 function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
+}
+
+/** Seeks transcript to {@code currentTime}. */
+function seekTranscript(currentTime) {
+  // TODO: Remove and implement.
+  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
 }

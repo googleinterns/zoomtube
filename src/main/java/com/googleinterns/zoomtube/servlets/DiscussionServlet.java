@@ -110,7 +110,7 @@ public class DiscussionServlet extends HttpServlet {
     ImmutableList<Comment> comments = commentsBuilder.build();
 
     Gson gson = new Gson();
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(comments));
   }
 }
