@@ -152,17 +152,14 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns URL redirecting to lecture view page with parameters {@code lectureId}
-   * and {@code videoId} found in {@code lectureEntity}.
+   * Returns URL redirecting to lecture view page with parameter {@code lectureId}
+   * found in {@code lectureEntity}.
    */
   private Optional<String> buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
 
     try {
-      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
-                                  .addParameter(LectureUtil.ID, lectureId)
-                                  .addParameter(LectureUtil.VIDEO_ID, videoId);
+      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(LectureUtil.ID, lectureId);
       return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
       // TODO: Send a response error.

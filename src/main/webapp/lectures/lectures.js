@@ -46,7 +46,6 @@ function createLectureListItem(lecture) {
 
   const url = new URL(REDIRECT_PAGE, window.location.origin);
   url.searchParams.append(PARAM_ID, lecture.key.id);
-  url.searchParams.append(PARAM_VIDEO_ID, lecture.videoId);
   lectureLink.href = url;
   lectureLink.className = 'list-group-item list-group-item-action';
 
