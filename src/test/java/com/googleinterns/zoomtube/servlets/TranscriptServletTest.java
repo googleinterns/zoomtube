@@ -116,9 +116,9 @@ public final class TranscriptServletTest {
   @Before
   public void setUp() throws ServletException, IOException {
     localServiceHelper.setUp();
-    transcriptServlet = new TranscriptServlet();
     datastore = DatastoreServiceFactory.getDatastoreService();
-    transcriptServlet.init(datastore);
+    transcriptServlet = new TranscriptServlet();
+    transcriptServlet.init();
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
