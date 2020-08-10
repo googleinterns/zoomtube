@@ -34,7 +34,7 @@ async function initialize() {
   window.loadTranscript(window.location.search);
 }
 
-// TODO: ADD COMMENT
+/** Returns lecture in database associated with {@code window.LECTURE_ID}. */
 async function getLecture() {
   const url = new URL('/lecture', window.location.origin);
   url.searchParams.append(PARAM_ID, window.LECTURE_ID);

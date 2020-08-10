@@ -120,7 +120,7 @@ public final class LectureServletTest {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Lecture lecture = gson.fromJson(json, Lecture.class);
     assertThat(lecture.key().getId()).isEqualTo(entityId);
-    assertThat(lecture.lectureName()).isEqualTo("");
+    assertThat(lecture.lectureName()).isEqualTo(/* lectureName= */ "");
     assertThat(lecture.videoUrl()).isEqualTo(TEST_LINK);
     assertThat(lecture.videoId()).isEqualTo(TEST_ID);
   }
