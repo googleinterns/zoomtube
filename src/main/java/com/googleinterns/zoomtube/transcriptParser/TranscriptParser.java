@@ -51,7 +51,7 @@ public final class TranscriptParser {
   /**
    * Returns the {@code TranscriptParser} instance if there is one. Else, creates
    * a new {@code TranscriptParser} and returns that.
-   * 
+   *
    * <p>Ensures that there is only one {@code TranscriptParser} is created.
    */
   // TODO: Refactor getParser() to use double-checked locking if

@@ -111,8 +111,7 @@ public final class TranscriptParserTest {
   }
 
   @Before
-  public void setUp()
-      throws ServletException, IOException {
+  public void setUp() throws IOException {
     localServiceHelper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
     lectureTranscript = new StringWriter();
@@ -126,8 +125,7 @@ public final class TranscriptParserTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo()
-      throws ServletException, IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
@@ -140,8 +138,7 @@ public final class TranscriptParserTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo()
-      throws ServletException, IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws IOException {
     when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
