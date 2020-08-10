@@ -61,6 +61,10 @@ public final class LectureListServletTest {
   private DatastoreService datastoreService;
   private LectureListServlet servlet;
 
+  /* Writer where response is written. */
+  StringWriter content;
+  PrintWriter writer;
+
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
   private static final String TEST_ID = "wXhTHyIgQ_U";
@@ -71,6 +75,8 @@ public final class LectureListServletTest {
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new LectureListServlet();
     servlet.init();
+    content = new StringWriter();
+    writer = new PrintWriter(content);
   }
 
   @After
@@ -80,8 +86,6 @@ public final class LectureListServletTest {
 
   @Test
   public void doGet_emptyDatabase_shouldReturnNoLecture() throws IOException {
-    StringWriter content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);
@@ -92,10 +96,7 @@ public final class LectureListServletTest {
 
   @Test
   public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
-    when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
-    StringWriter content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
     when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);

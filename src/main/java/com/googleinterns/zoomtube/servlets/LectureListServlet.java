@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Returns list of Lectures. */
+/** Obtains list of available Lectures stored in Datastore. */
 public class LectureListServlet extends HttpServlet {
   private DatastoreService datastore;
 
