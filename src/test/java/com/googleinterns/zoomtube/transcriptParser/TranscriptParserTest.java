@@ -114,9 +114,9 @@ public final class TranscriptParserTest {
   public void setUp()
       throws ServletException, IOException, NoSuchFieldException, IllegalAccessException {
     localServiceHelper.setUp();
-    Field uniqueParser = TranscriptParser.class.getDeclaredField("uniqueParser");
+    Field uniqueParser = TranscriptParser.class.getDeclaredField(/* fieldName= */ "uniqueParser");
     uniqueParser.setAccessible(true);
-    uniqueParser.set(null, null);
+    uniqueParser.set(/* Object= */ null, /* value= */ null);
     datastore = DatastoreServiceFactory.getDatastoreService();
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
