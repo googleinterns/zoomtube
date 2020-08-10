@@ -90,6 +90,7 @@ public final class LectureServletTest {
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
+    
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
