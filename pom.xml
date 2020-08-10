@@ -52,6 +52,12 @@
       <version>1.7.3</version>
     </dependency>
     <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value</artifactId>
+      <version>1.6.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>libraries-bom</artifactId>
       <version>8.0.0</version>

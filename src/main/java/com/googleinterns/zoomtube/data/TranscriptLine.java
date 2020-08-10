@@ -24,47 +24,42 @@ import java.util.Date;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLine {
-  public static final String ENTITY_KIND = "TranscriptLine";
-  public static final String PROP_LECTURE = "lecture";
-  public static final String PROP_START = "start";
-  public static final String PROP_DURATION = "duration";
-  public static final String PROP_CONTENT = "content";
-  public static final String PROP_END = "end";
-
-  /**
-   * Creates a TranscriptLine object.
-   *
-   * @param transcriptKey The key for the transcript.
-   * @param lectureKey The key for the lecture.
-   * @param start The starting Date for the transcript line.
-   * @param duration The duration for the timestamp as a Date.
-   * @param end The ending Date for the transcript line.
-   * @param content The text content of the transcript line.
-   */
-  public static TranscriptLine create(
-      Key transcriptKey, Key lectureKey, Date start, Date duration, Date end, String content) {
-    return new AutoValue_TranscriptLine(transcriptKey, lectureKey, start, duration, end, content);
-  }
-
+  /** Returns the key for the transcript. */
   public abstract Key transcriptKey();
+
+  /** Returns the key for the lecture. */
   public abstract Key lectureKey();
+
+  /** Returns the starting Date for the transcript line. */
   public abstract Date start();
+
+  /** Returns the duration for the timestamp as a Date. */
   public abstract Date duration();
+
+  /** Returns the ending Date for the transcript line. */
   public abstract Date end();
+
+  /** Returns the text content of the transcript line. */
   public abstract String content();
 
   /**
-   * Creates and returns a TranscriptLine from a datastore {@code entity} using
-   * the property names defined in this class.
+   * Returns a builder instance that can be used to create TranscriptLines.
    */
-  // TODO: Convert fromLineEntity into a builder and move it into a Utils class.
-  public static TranscriptLine fromLineEntity(Entity entity) {
-    Key transcriptKey = entity.getKey();
-    Key lectureKey = (Key) entity.getProperty(PROP_LECTURE);
-    Date start = (Date) entity.getProperty(PROP_START);
-    Date duration = (Date) entity.getProperty(PROP_DURATION);
-    Date end = (Date) entity.getProperty(PROP_END);
-    String content = (String) entity.getProperty(PROP_CONTENT);
-    return TranscriptLine.create(transcriptKey, lectureKey, start, duration, end, content);
+  public static Builder builder() {
+    return new AutoValue_TranscriptLine.Builder();
+  }
+
+  /**
+   * Returns a builder instance that can be used to create TranscriptLines.
+   */
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setTranscriptKey(Key transcriptKey);
+    public abstract Builder setLectureKey(Key lectureKey);
+    public abstract Builder setStart(Date start);
+    public abstract Builder setDuration(Date duration);
+    public abstract Builder setEnd(Date end);
+    public abstract Builder setContent(String content);
+    public abstract TranscriptLine build();
   }
 }
