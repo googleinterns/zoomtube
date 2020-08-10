@@ -111,7 +111,8 @@ public final class TranscriptParserTest {
   }
 
   @Before
-  public void setUp() throws ServletException, IOException, NoSuchFieldException, IllegalAccessException {
+  public void setUp()
+      throws ServletException, IOException, NoSuchFieldException, IllegalAccessException {
     localServiceHelper.setUp();
     Field uniqueParser = TranscriptParser.class.getDeclaredField("uniqueParser");
     uniqueParser.setAccessible(true);

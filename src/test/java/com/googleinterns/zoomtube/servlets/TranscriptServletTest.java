@@ -24,6 +24,10 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
@@ -50,10 +54,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import com.google.appengine.api.datastore.Query;	
-import com.google.appengine.api.datastore.Query.Filter;	
-import com.google.appengine.api.datastore.Query.FilterOperator;	
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 @RunWith(JUnit4.class)
 public final class TranscriptServletTest {
@@ -196,18 +196,18 @@ public final class TranscriptServletTest {
     }
   }
 
-  private int entitiesInDatastoreCount(long lectureId) {	
-    // A limit of 100 for the maximum number of entities counted is used because	
-    // we can assume that for this test datastore, there won't be more than 100 entities	
-    // for a lecture key.	
-    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureId))	
-        .countEntities(withLimit(100));	
-  }	
+  private int entitiesInDatastoreCount(long lectureId) {
+    // A limit of 100 for the maximum number of entities counted is used because
+    // we can assume that for this test datastore, there won't be more than 100 entities
+    // for a lecture key.
+    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureId))
+        .countEntities(withLimit(100));
+  }
 
-  private Query filteredQueryOfTranscriptLinesByLectureId(long lectureId) {	
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);	
-    Filter lectureFilter =	
-        new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);	
-    return new Query(TranscriptLineUtil.KIND).setFilter(lectureFilter);	
+  private Query filteredQueryOfTranscriptLinesByLectureId(long lectureId) {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    Filter lectureFilter =
+        new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
+    return new Query(TranscriptLineUtil.KIND).setFilter(lectureFilter);
   }
 }
