@@ -105,11 +105,17 @@ public class TranscriptServlet extends HttpServlet {
       Node transcriptNode = transcriptNodes.item(nodeIndex);
       Element transcriptElement = (Element) transcriptNode;
       String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
-      Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
-      Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
-      Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+
+      float lineStartSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+      float lineDurationSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
+      // I couldn't find any official way to convert a float seconds to long milliseconds without
+      // losing precision.
+      long lineStartMilliseconds = Math.round(lineStartSeconds * 1000);
+      long lineDurationMilliseconds = Math.round(lineDurationSeconds * 1000);
+      long lineEnd = lineStartMilliseconds + lineDurationMilliseconds;
+
       datastore.put(TranscriptLineUtil.createEntity(
-          lectureId, lineContent, lineStart, lineDuration, lineEnd));
+          lectureId, lineContent, lineStartMilliseconds, lineDurationMilliseconds, lineEnd));
     }
   }
 
@@ -130,9 +136,10 @@ public class TranscriptServlet extends HttpServlet {
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
 
-    Query query = new Query(TranscriptLineUtil.KIND)
-                      .setFilter(lectureFilter)
-                      .addSort(TranscriptLineUtil.START, SortDirection.ASCENDING);
+    Query query =
+        new Query(TranscriptLineUtil.KIND)
+            .setFilter(lectureFilter)
+            .addSort(TranscriptLineUtil.START_TIMESTAMP_MILLISECONDS, SortDirection.ASCENDING);
     return datastore.prepare(query);
   }
 
