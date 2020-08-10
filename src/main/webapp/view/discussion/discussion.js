@@ -241,6 +241,5 @@ function seekDiscussion(currentTimeSeconds) {
   const currentTimeMilliseconds =
       window.secondsToMilliseconds(currentTimeSeconds);
   updateNewCommentTimestamp(currentTimeMilliseconds);
-  // TODO: Remove and implement.
-  console.log('SEEKING DISCUSSION TO: ' + currentTime);
+  // TODO: Scroll to relevant comment.
 }
