@@ -67,6 +67,7 @@ public final class LectureServletTest {
   private PrintWriter writer;
 
   private static final String LINK_INPUT = "link-input";
+  private static final String TEST_NAME = "TestName";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
   private static final String TEST_ID = "wXhTHyIgQ_U";
 
@@ -108,7 +109,7 @@ public final class LectureServletTest {
 
   @Test
   public void doGet_lectureInDatabase_shouldWriteLecture() throws IOException {
-    Entity lectureEntity = LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID);
+    Entity lectureEntity = LectureUtil.createEntity(/* lectureName= */ TEST_NAME, TEST_LINK, TEST_ID);
     datastoreService.put(lectureEntity);
     Long entityId = lectureEntity.getKey().getId();
     when(request.getParameter(LectureUtil.ID)).thenReturn(Long.toString(entityId));
@@ -120,7 +121,7 @@ public final class LectureServletTest {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Lecture lecture = gson.fromJson(json, Lecture.class);
     assertThat(lecture.key().getId()).isEqualTo(entityId);
-    assertThat(lecture.lectureName()).isEqualTo(/* lectureName= */ "");
+    assertThat(lecture.lectureName()).isEqualTo(/* lectureName= */ TEST_NAME);
     assertThat(lecture.videoUrl()).isEqualTo(TEST_LINK);
     assertThat(lecture.videoId()).isEqualTo(TEST_ID);
   }

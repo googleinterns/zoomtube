@@ -14,6 +14,7 @@
 
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
+const ENDPOINT_LECTURE = '/lecture';
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
@@ -34,9 +35,12 @@ async function initialize() {
   window.loadTranscript(window.location.search);
 }
 
-/** Returns lecture in database associated with {@code window.LECTURE_ID}. */
+/** 
+ * Returns lecture in database associated with {@code window.LECTURE_ID} obtained from
+ * {@code ENDPOINT_LECTURE}. 
+ */
 async function getLecture() {
-  const url = new URL('/lecture', window.location.origin);
+  const url = new URL(ENDPOINT_LECTURE, window.location.origin);
   url.searchParams.append(PARAM_ID, window.LECTURE_ID);
   const response = await fetch(url);
   return response.json();
