@@ -109,7 +109,8 @@ public final class LectureServletTest {
 
   @Test
   public void doGet_lectureInDatabase_shouldWriteLecture() throws IOException {
-    Entity lectureEntity = LectureUtil.createEntity(/* lectureName= */ TEST_NAME, TEST_LINK, TEST_ID);
+    Entity lectureEntity =
+        LectureUtil.createEntity(/* lectureName= */ TEST_NAME, TEST_LINK, TEST_ID);
     datastoreService.put(lectureEntity);
     Long entityId = lectureEntity.getKey().getId();
     when(request.getParameter(LectureUtil.ID)).thenReturn(Long.toString(entityId));

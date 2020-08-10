@@ -35,9 +35,10 @@ async function initialize() {
   window.loadTranscript(window.location.search);
 }
 
-/** 
- * Returns lecture in database associated with {@code window.LECTURE_ID} obtained from
- * {@code ENDPOINT_LECTURE}. 
+/**
+ * Returns lecture in database associated with {@code window.LECTURE_ID}
+ * obtained from
+ * {@code ENDPOINT_LECTURE}.
  */
 async function getLecture() {
   const url = new URL(ENDPOINT_LECTURE, window.location.origin);
