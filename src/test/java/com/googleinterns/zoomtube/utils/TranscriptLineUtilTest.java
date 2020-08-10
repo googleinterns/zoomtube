@@ -81,7 +81,7 @@ public final class TranscriptLineUtilTest {
     final Float startDate = 23.32F;
     final Float duration = 23.32F;
     final Float endDate = startDate.floatValue() + duration.floatValue();
-    Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
+    final Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     Entity actualEntity =
         TranscriptLineUtil.createEntity(lectureKeyA, TEST_CONTENT, startDate, duration, endDate);
 
