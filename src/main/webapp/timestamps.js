@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * Coverts a Date representing a video {@code timestamp} into a string.
+ * Coverts a video {@code timestamp} in milliseconds into a string.
  */
 function timestampToString(timestamp) {
   const date = new Date();
