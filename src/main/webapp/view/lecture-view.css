@@ -63,5 +63,13 @@
 
 #transcript-container {
   height: calc(100% - 390px);
-  overflow: scroll;
+}
+
+#transcript-lines-container {
+  height: inherit;
+  overflow: auto;
+}
+
+#transcript-lines-container ul {
+  list-style-type: none;
 }
