@@ -62,6 +62,10 @@ public final class LectureServletTest {
   private DatastoreService datastoreService;
   private LectureServlet servlet;
 
+  /* Writer where response is written. */
+  private StringWriter content;
+  private PrintWriter writer;
+
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
   private static final String TEST_ID = "wXhTHyIgQ_U";
@@ -72,6 +76,8 @@ public final class LectureServletTest {
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new LectureServlet();
     servlet.init();
+    content = new StringWriter();
+    writer = new PrintWriter(content);
   }
 
   @After
@@ -103,11 +109,9 @@ public final class LectureServletTest {
   @Test
   public void doGet_lectureInDatabase_shouldWriteLecture() throws IOException {
     Entity lectureEntity = LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID);
-    Key entityKey = lectureEntity.getKey();
     datastoreService.put(lectureEntity);
-    StringWriter content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(Long.toString(entityKey.getId()));
+    Long entityId = lectureEntity.getKey().getId();
+    when(request.getParameter(LectureUtil.ID)).thenReturn(Long.toString(entityId));
     when(response.getWriter()).thenReturn(writer);
 
     servlet.doGet(request, response);
@@ -115,6 +119,7 @@ public final class LectureServletTest {
     String json = content.toString();
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Lecture lecture = gson.fromJson(json, Lecture.class);
+    assertThat(lecture.key().getId()).isEqualTo(entityId);
     assertThat(lecture.lectureName()).isEqualTo("");
     assertThat(lecture.videoUrl()).isEqualTo(TEST_LINK);
     assertThat(lecture.videoId()).isEqualTo(TEST_ID);
@@ -122,8 +127,6 @@ public final class LectureServletTest {
 
   @Test
   public void doGet_noLectureInDatabase_shouldWriteNoLecture() throws IOException {
-    StringWriter content = new StringWriter();
-    PrintWriter writer = new PrintWriter(content);
     when(request.getParameter(LectureUtil.ID)).thenReturn(/* lectureId= */ "1");
     when(response.getWriter()).thenReturn(writer);
 
@@ -131,6 +134,7 @@ public final class LectureServletTest {
 
     String json = content.toString();
     assertThat(json).isEmpty();
+    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
   }
 
   @Test
