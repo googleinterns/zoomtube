@@ -125,8 +125,10 @@ function seekTranscript(currentTime) {
   const currentTranscriptLineEndTimeInSeconds =
       currentTranscriptLine.endDate.getTime() / 1000;
   if (roundedCurrentTime < currentTranscriptLineEndTimeInSeconds) {
+    console.log('same timestamp');
     return;
   }
+  console.log('different timestamp');
   // TODO: disable highlighting on the currentTranscriptLine
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   currentTranscriptLine.scrollIntoView();
