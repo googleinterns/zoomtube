@@ -62,8 +62,8 @@ public final class LectureListServletTest {
   private LectureListServlet servlet;
 
   /* Writer where response is written. */
-  StringWriter content;
-  PrintWriter writer;
+  private StringWriter content;
+  private PrintWriter writer;
 
   private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";

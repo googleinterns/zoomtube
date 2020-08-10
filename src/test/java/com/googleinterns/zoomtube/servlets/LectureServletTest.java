@@ -121,6 +121,19 @@ public final class LectureServletTest {
   }
 
   @Test
+  public void doGet_noLectureInDatabase_shouldWriteNoLecture() throws IOException {
+    StringWriter content = new StringWriter();
+    PrintWriter writer = new PrintWriter(content);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(/* lectureId= */ "1");
+    when(response.getWriter()).thenReturn(writer);
+
+    servlet.doGet(request, response);
+
+    String json = content.toString();
+    assertThat(json).isEmpty();
+  }
+
+  @Test
   public void getVideoId_shouldFindAllIds() {
     String video1 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ&a=GxdCwVVULXctT2lYDEPllDR0LRTutYfW";
     String video2 = "http://www.youtube.com/watch?v=dQw4w9WgXcQ";
