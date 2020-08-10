@@ -46,7 +46,7 @@ public class TranscriptServlet extends HttpServlet {
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
 
-  private static DatastoreService datastore;
+  private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
