@@ -41,6 +41,9 @@ public final class TranscriptParser {
   private static TranscriptParser uniqueParser;
   private DatastoreService datastore;
 
+  /**
+   * Creates a {@code TranscriptParser} instance with a datastore.
+   */
   private TranscriptParser() {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
