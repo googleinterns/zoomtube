@@ -3,19 +3,10 @@
 function check {
   if [ $retVal -ne 0 ]
   then
-    echo "Failed, aborting commit"
+    echo "Failed, aborting commit. Please run \e[1mmake pretty\e[0m]."
     exit 1
   fi
 }
-
-echo Maven Build
-mvn clean
-mvn package
-retVal=$?
-check
-
-echo Prettifying
-make pretty
 
 echo Validate HTML
 node_modules/html-validate/bin/html-validate.js "src/main/webapp/**/*.html"
