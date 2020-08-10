@@ -82,18 +82,6 @@ public class LectureServlet extends HttpServlet {
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
   }
 
-  // /**
-  //  * Parses and stores the transcript lines in datastore using the {@code lectureKey}
-  //  * and {@code videoId} properties in {@code lectureEntity}.
-  //  */
-  // private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
-  //   TranscriptServlet transcriptServlet = new TranscriptServlet();
-  //   transcriptServlet.init();
-  //   Key lectureKey = lectureEntity.getKey();
-  //   String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
-  //   transcriptServlet.parseAndStoreTranscript(videoId, lectureKey);
-  // }
-
   /**
    * Parses and stores the transcript lines in datastore using the {@code lectureKey}
    * and {@code videoId} properties in {@code lectureEntity}.

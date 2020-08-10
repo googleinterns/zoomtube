@@ -40,7 +40,7 @@ public class TranscriptParser {
   public static final String TAG_TEXT = "text";
 
   private static TranscriptParser uniqueParser;
-  private static DatastoreService datastore;
+  private DatastoreService datastore;
 
   private TranscriptParser() {
     datastore = DatastoreServiceFactory.getDatastoreService();
