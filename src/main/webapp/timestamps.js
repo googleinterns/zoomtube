@@ -18,15 +18,15 @@
 function timestampToString(timestamp) {
   const date = new Date()
   date.setTime(timestamp);
-  const seconds = date.getSeconds().toString().padStart(
+  const seconds = date.getUTCSeconds().toString().padStart(
       /* targetLength= */ 2, /* padString= */ '0');
-  const minutes = date.getMinutes().toString().padStart(
+  const minutes = date.getUTCMinutes().toString().padStart(
       /* targetLength= */ 2, /* padString= */ '0');
-  if (date.getHours() == 0) {
+  if (date.getUTCHours() == 0) {
     return `${minutes}:${seconds}`;
   }
   // We don't pad hours because lectures won't need two digits for hours.
-  const hours = date.getHours().toString();
+  const hours = date.getUTCHours().toString();
   return `${hours}:${minutes}:${seconds}`;
 }
 
