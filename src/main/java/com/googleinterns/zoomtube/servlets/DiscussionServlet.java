@@ -38,9 +38,7 @@ import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.Date;
-import java.util.Optional;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -112,7 +110,7 @@ public class DiscussionServlet extends HttpServlet {
     ImmutableList<Comment> comments = commentsBuilder.build();
 
     Gson gson = new Gson();
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(comments));
   }
 }

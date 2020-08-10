@@ -1,0 +1,39 @@
+/* Text */
+
+#text {
+  margin: auto;
+  margin-top: 100px;
+  max-width: 45%;
+}
+
+#header-text {
+  font-weight: 700;
+  margin-bottom: 0 !important;
+}
+
+/* Buttons */
+
+#view-btn-cont {
+  align-items: center !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 30px auto auto auto;
+}
+
+#view-btn-cont a {
+  color: #fff;
+  font-size: 20px;
+}
+
+#view-btn-cont .btn,
+#view-btn-cont .btn:hover {
+  width: 250px !important;
+}
+
+#view-btn-cont .btn {
+  background-color: #4c8bf5 !important;
+}
+
+#view-btn-cont .btn:hover {
+  background-color: #579ff7 !important;
+}

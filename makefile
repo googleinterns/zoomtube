@@ -13,9 +13,9 @@ pretty: node_modules
 	find src/ -iname *.js | xargs $(CLANG_FORMAT) -i
 
 validate: node_modules
-	$(HTML_VALIDATE) src/main/webapp/*.html
-	$(CSS_VALIDATOR) src/main/webapp/*.css
-	$(ESLINT) src/**/*.js
+	$(HTML_VALIDATE) "src/main/webapp/**/*.html"
+	$(CSS_VALIDATOR) src/main/webapp/*.css src/main/webapp/view/*.css src/main/webapp/lectures/*.css
+	$(ESLINT) "src/**/*.js"
 
 package:
 	mvn package
@@ -25,3 +25,9 @@ run: pretty
 
 deploy: pretty validate
 	mvn package appengine:deploy
+
+clean:
+	mvn clean
+
+setup_hooks:
+	git config --local core.hooksPath .githooks

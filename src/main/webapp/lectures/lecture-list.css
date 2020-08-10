@@ -1,0 +1,85 @@
+html {
+  min-height: 100%;
+  position: relative;
+}
+
+/* List page */
+
+#add-btn-cont {
+  align-items: center !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 30px auto auto auto;
+}
+
+#add-btn-cont .btn,
+#submit-btn-cont .btn {
+  background-color: #4c8bf5 !important;
+}
+
+#add-btn-cont .btn,
+#add-btn-cont .btn:hover {
+  width: 200px !important;
+}
+
+#add-btn-cont .btn:hover,
+#submit-btn-cont .btn:hover {
+  background-color: #579ff7 !important;
+}
+
+#submit-btn-cont {
+  margin: auto;
+  width: 150px;
+}
+
+#submit-btn-cont .btn {
+  background-color: #4c8bf5 !important;
+}
+
+#text-cont {
+  padding-top: 25px;
+  margin: auto;
+  width: 50%;
+}
+
+/* Lecture list */
+
+#lecture-list {
+  margin: auto;
+  width: 65%;
+}
+
+#list-cont {
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  margin: 150px auto auto auto;
+  padding-bottom: 40px !important;
+  width: 650px;
+}
+
+.list-group-item {
+  border-radius: 5px !important;
+  margin-bottom: 5px !important;
+  margin-top: 5px !important;
+}
+
+/* Modal */
+
+#modal-form {
+  margin: auto;
+  width: 85%;
+}
+
+#modal-text {
+  margin: auto;
+  width: 70%;
+}
+
+#submit-btn-cont {
+  margin: auto;
+  width: 150px;
+}
+
+#submit-btn-cont .btn {
+  background-color: #4c8bf5 !important;
+}

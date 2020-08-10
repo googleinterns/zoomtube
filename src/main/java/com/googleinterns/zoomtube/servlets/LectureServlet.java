@@ -17,7 +17,6 @@ package com.googleinterns.zoomtube.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
@@ -51,7 +50,7 @@ public class LectureServlet extends HttpServlet {
   /* Name of input field used for lecture video link in lecture selection page. */
   private static final String LINK_INPUT = "link-input";
 
-  private static final String REDIRECT_URL = "/view.html";
+  private static final String REDIRECT_URL = "/view/";
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern;
@@ -83,7 +82,7 @@ public class LectureServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<Lecture> lectures = getLectures();
     Gson gson = new Gson();
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(lectures));
   }
 
