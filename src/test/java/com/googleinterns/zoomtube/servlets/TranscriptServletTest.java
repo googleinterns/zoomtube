@@ -103,8 +103,8 @@ public final class TranscriptServletTest {
 
   private static List<TranscriptLine> shortVideoTranscriptLines;
   private static List<TranscriptLine> longVideoTranscriptLines;
-  Key lectureKeyA;
-  Key lectureKeyB;
+  private static Key lectureKeyA;
+  private static Key lectureKeyB;
 
   @BeforeClass
   public static void createTranscriptLineLists() {

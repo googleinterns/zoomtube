@@ -16,15 +16,11 @@ package com.googleinterns.zoomtube.transcriptParser;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,7 +31,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class TranscriptParser {
+/** Parses the transcript XML and stores the lines in datastore. */
+public final class TranscriptParser {
   private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
