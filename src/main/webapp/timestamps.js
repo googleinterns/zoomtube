@@ -16,7 +16,8 @@
  * Coverts a Date representing a video {@code timestamp} into a string.
  */
 function timestampToString(timestamp) {
-  const date = new Date(timestamp);
+  const date = new Date()
+  date.setTime(timestamp);
   const seconds = date.getSeconds().toString().padStart(
       /* targetLength= */ 2, /* padString= */ '0');
   const minutes = date.getMinutes().toString().padStart(
@@ -33,9 +34,6 @@ function timestampToString(timestamp) {
  * Returns the total number of seconds since the start of a video at a
  * certain {@code timestamp}.
  */
-function timestampToSeconds(timestamp) {
-  const date = new Date(timestamp);
-  const totalMilliseconds = date.getTime();
-  const totalSeconds = totalMilliseconds / 1000;
-  return totalSeconds;
+function timestampToSeconds(timestampMilliseconds) {
+  return timestampMilliseconds / 1000;
 }
