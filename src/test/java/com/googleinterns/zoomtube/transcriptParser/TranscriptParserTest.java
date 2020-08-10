@@ -112,7 +112,7 @@ public final class TranscriptParserTest {
 
   @Before
   public void setUp()
-      throws ServletException, IOException, NoSuchFieldException, IllegalAccessException {
+      throws ServletException, IOException {
     localServiceHelper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
     lectureTranscript = new StringWriter();
