@@ -159,7 +159,6 @@ public final class TranscriptServletTest {
 
     transcriptServlet.doPost(request, response);
     transcriptServlet.doGet(request, response);
-    System.out.println(lectureTranscript.toString());
 
     List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
     List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
