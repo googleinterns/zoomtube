@@ -75,14 +75,6 @@ public class TranscriptServlet extends HttpServlet {
     datastore = testDatastore;
   }
 
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String videoId = request.getParameter(LectureUtil.VIDEO_ID);
-    Document document = getTranscriptXmlAsDocument(videoId).get();
-    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
-    putTranscriptLinesInDatastore(lectureId, document);
-  }
-
   /**
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
    * if there is a parsing error.
