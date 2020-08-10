@@ -32,7 +32,7 @@ function timestampToString(timestamp) {
 
 /**
  * Returns the total number of seconds since the start of a video at a
- * certain {@code timestamp}.
+ * certain {@code timestampMilliseconds}.
  */
 function timestampToSeconds(timestampMilliseconds) {
   return timestampMilliseconds / 1000;
