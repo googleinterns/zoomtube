@@ -1,8 +1,10 @@
 /* List page */
 
 #add-btn-cont {
+  align-items: center !important;
+  display: flex !important;
+  justify-content: center !important;
   margin: 30px auto auto auto;
-  width: 200px;
 }
 
 #add-btn-cont .btn,
@@ -18,20 +20,6 @@
 #add-btn-cont .btn:hover,
 #submit-btn-cont .btn:hover {
   background-color: #579ff7 !important;
-}
-
-#header-text {
-  font-weight: 700;
-  margin-bottom: 0 !important;
-}
-
-#submit-btn-cont {
-  margin: auto;
-  width: 150px;
-}
-
-#submit-btn-cont .btn {
-  background-color: #4c8bf5 !important;
 }
 
 #text-cont {
@@ -71,4 +59,13 @@
 #modal-text {
   margin: auto;
   width: 70%;
+}
+
+#submit-btn-cont {
+  margin: auto;
+  width: 150px;
+}
+
+#submit-btn-cont .btn {
+  background-color: #4c8bf5 !important;
 }
