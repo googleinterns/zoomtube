@@ -16,7 +16,6 @@ package com.googleinterns.zoomtube.utils;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
