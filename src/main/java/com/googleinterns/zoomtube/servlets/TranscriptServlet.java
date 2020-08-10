@@ -64,8 +64,6 @@ public class TranscriptServlet extends HttpServlet {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
-  }
-
   /**
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
    * if there is a parsing error.
