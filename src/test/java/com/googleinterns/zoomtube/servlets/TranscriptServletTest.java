@@ -72,8 +72,6 @@ public final class TranscriptServletTest {
   private static final String LECTURE_ID_A = "123";
   private static final String LECTURE_ID_B = "345";
   private static final String LECTURE_ID_C = "234";
-  private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
-  private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
@@ -141,50 +139,6 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo()
-      throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
-    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
-
-    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB);
-
-    int actualQuery = entitiesInDatastoreCount(lectureKeyB);
-    int expectedQuery = (shortVideoTranscriptLines).size();
-    assertThat(actualQuery).isEqualTo(expectedQuery);
-  }
-
-  @Test
-  public void doGet_parseAndStoreTranscript_storeAndRetrieveShortVideo()
-      throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
-    Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
-
-    transcriptServlet.parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyA);
-    transcriptServlet.doGet(request, response);
-
-    List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
-    assertThat(actualTranscriptLines).isEqualTo(expectedTranscriptLines);
-  }
-
-  @Test
-  public void doGet_parseAndStoreTranscript_storeAndRetrieveLongVideo()
-      throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
-    Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_A));
-
-    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyA);
-    transcriptServlet.doGet(request, response);
-
-    List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
-    assertThat(actualTranscriptLines).isEqualTo(expectedTranscriptLines);
-  }
-
-  @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
@@ -194,20 +148,6 @@ public final class TranscriptServletTest {
     List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
     List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
     assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
-  }
-
-  @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo()
-      throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
-    Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
-
-    transcriptServlet.parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC);
-
-    int actualQueryCount = entitiesInDatastoreCount(lectureKeyC);
-    int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
-    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
 
   @Test
@@ -256,19 +196,5 @@ public final class TranscriptServletTest {
       lineEntity.setProperty(TranscriptLine.PROP_END, /* end= */ new Date());
       datastore.put(lineEntity);
     }
-  }
-
-  private int entitiesInDatastoreCount(Key lectureKey) {
-    // A limit of 100 for the maximum number of entities counted is used because
-    // we can assume that for this test datastore, there won't be more than 100 entities
-    // for a lecture key.
-    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKey))
-        .countEntities(withLimit(100));
-  }
-
-  private Query filteredQueryOfTranscriptLinesByLectureId(Key lectureKey) {
-    Filter lectureKeyFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
-    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureKeyFilter);
   }
 }
