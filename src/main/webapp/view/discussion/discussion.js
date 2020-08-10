@@ -36,7 +36,7 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
-let newCommentTimestampMillis = 0;
+let newCommentTimestampMilliseconds = 0;
 
 /**
  * Loads the lecture disucssion.
@@ -49,7 +49,8 @@ async function intializeDiscussion() {
  * Posts a new comment using the main post textarea.
  */
 async function postNewComment() {
-  postAndReload(ELEMENT_POST_TEXTAREA, undefined, newCommentTimestampMillis);
+  postAndReload(
+      ELEMENT_POST_TEXTAREA, undefined, newCommentTimestampMilliseconds);
 }
 
 /**
@@ -139,12 +140,11 @@ async function fetchDiscussion() {
 /**
  * Updates the timestamp displayed and sent by the new comment form.
  *
- * @param {number} time The new time in seconds to use.
+ * @param {number} time The new time in milliseconds to use.
  */
-function updateNewCommentTimestamp(time) {
-  const timestamp = window.secondsToTimestamp(time);
-  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timestamp);
-  newCommentTimestampMillis = window.secondsToMilliseconds(time);
+function updateNewCommentTimestamp(timeMilliseconds) {
+  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMilliseconds);
+  newCommentTimestampMilliseconds = timeMilliseconds;
 }
 
 /**
@@ -237,8 +237,10 @@ class DiscussionComment extends HTMLElement {
 customElements.define('discussion-comment', DiscussionComment);
 
 /** Seeks discussion to {@code currentTime}. */
-function seekDiscussion(currentTime) {
-  updateNewCommentTimestamp(currentTime);
+function seekDiscussion(currentTimeSeconds) {
+  const currentTimeMilliseconds =
+      window.secondsToMilliseconds(currentTimeSeconds);
+  updateNewCommentTimestamp(currentTimeMilliseconds);
   // TODO: Remove and implement.
   console.log('SEEKING DISCUSSION TO: ' + currentTime);
 }
