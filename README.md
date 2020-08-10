@@ -34,6 +34,8 @@ This project uses the following tools:
 To run the project, you need to install `npm`, Maven, and the Google Cloud
 Platform SDK.
 
+Run `make setup_hooks` if you want to always run linter tests locally before committing your code.
+
 You can run a local test server using
 
 ```

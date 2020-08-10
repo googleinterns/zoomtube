@@ -19,6 +19,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.googleinterns.zoomtube.data.TranscriptLine;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -27,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,34 +99,16 @@ public class TranscriptParser {
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(Key lectureKey, Document document) {
-    NodeList nodeList = document.getElementsByTagName(TAG_TEXT);
-    for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
-      Node node = nodeList.item(nodeIndex);
-      datastore.put(createTranscriptLineEntity(node, lectureKey));
+    NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
+    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
+      Node transcriptNode = transcriptNodes.item(nodeIndex);
+      Element transcriptElement = (Element) transcriptNode;
+      String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
+      Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+      Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
+      Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+      datastore.put(TranscriptLineUtil.createEntity(
+          lectureKey, lineContent, lineStart, lineDuration, lineEnd));
     }
-  }
-
-  /**
-   * Creates a transcript line entity using the attributes from {@code node}
-   * and {@code lectureKey}.
-   */
-  private Entity createTranscriptLineEntity(Node node, Key lectureKey) {
-    // TODO: Reorganize this code block so the declaration is closer.
-    // (This is done and moved to TranscriptUtil.java in another pull request.)
-    Element element = (Element) node;
-    String lineContent = node.getTextContent();
-    Float lineStart = Float.parseFloat(element.getAttribute(ATTR_START));
-    Float lineDuration = Float.parseFloat(element.getAttribute(ATTR_DURATION));
-    Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
-    Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-    lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
-    lineEntity.setProperty(TranscriptLine.PROP_CONTENT, lineContent);
-    lineEntity.setProperty(
-        TranscriptLine.PROP_START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
-    lineEntity.setProperty(TranscriptLine.PROP_DURATION,
-        new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
-    lineEntity.setProperty(
-        TranscriptLine.PROP_END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
-    return lineEntity;
   }
 }

@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -35,12 +34,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -86,7 +83,7 @@ public final class LectureServletTest {
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view.html?id=1&video-id=3ymwOvzhwHs");
+    verify(response).sendRedirect("/view?id=1&video-id=3ymwOvzhwHs");
   }
 
   @Test
@@ -98,7 +95,7 @@ public final class LectureServletTest {
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view.html?id=1&video-id=3ymwOvzhwHs");
+    verify(response).sendRedirect("/view?id=1&video-id=3ymwOvzhwHs");
   }
 
   @Test

@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -170,7 +171,7 @@ public final class TranscriptParserTest {
 
   private Query filteredQueryOfTranscriptLinesByLectureId(Key lectureKey) {
     Filter lectureKeyFilter =
-        new FilterPredicate(TranscriptLine.PROP_LECTURE, FilterOperator.EQUAL, lectureKey);
-    return new Query(TranscriptLine.ENTITY_KIND).setFilter(lectureKeyFilter);
+        new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
+    return new Query(TranscriptLineUtil.KIND).setFilter(lectureKeyFilter);
   }
 }

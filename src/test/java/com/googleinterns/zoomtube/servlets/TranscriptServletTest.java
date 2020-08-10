@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -69,9 +70,9 @@ public final class TranscriptServletTest {
       (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
   private static final LocalServiceTestHelper localServiceHelper =
       new LocalServiceTestHelper(datastoreConfig);
-  private static final String LECTURE_ID_A = "123";
-  private static final String LECTURE_ID_B = "345";
-  private static final String LECTURE_ID_C = "234";
+  private static final Long LECTURE_ID_A = 123L;
+  private static final Long LECTURE_ID_B = 345L;
+  private static final Long LECTURE_ID_C = 234L;
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
@@ -95,14 +96,16 @@ public final class TranscriptServletTest {
       + "\"duration\":\"Jan 1, 1970 12:00:03 AM\",\"end\":\"Jan 1, 1970 12:00:12 AM\",\"content\":"
       + "\"really, really long trunks,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectureKey\""
       + ":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:12 AM\",\"duration\":\"Jan "
-      + "1, 1970 12:00:04 AM\",\"end\":\"Jan 1, 1970 12:00:17 AM\",\"content\":\"and that&#39;s, "
-      + "that&#39;s cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectureKey\""
+      + "1, 1970 12:00:04 AM\",\"end\":\"Jan 1, 1970 12:00:17 AM\",\"content\":\"and that's, "
+      + "that's cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectureKey\""
       + ":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:17 AM\",\"duration\":"
       + "\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:18 AM\",\"content\""
-      + ":\"And that&#39;s pretty much all there is to say.\"}]";
+      + ":\"And that's pretty much all there is to say.\"}]";
 
   private static List<TranscriptLine> shortVideoTranscriptLines;
   private static List<TranscriptLine> longVideoTranscriptLines;
+  Key lectureKeyA;
+  Key lectureKeyB;
 
   @BeforeClass
   public static void createTranscriptLineLists() {
@@ -119,6 +122,8 @@ public final class TranscriptServletTest {
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
+    lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
+    lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_B);
   }
 
   @After
@@ -128,8 +133,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyA);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -140,8 +145,8 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -153,9 +158,9 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_onlyOtherLecturesInDatastore_GetNoLectures()
       throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -166,9 +171,9 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_twoLecturesInDatastore_returnsOneLecture()
       throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
+    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -183,17 +188,10 @@ public final class TranscriptServletTest {
         transcriptLinesJson, (new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
-  private void putTranscriptLinesInDatastore(
-      List<TranscriptLine> transcriptLines, String lectureId) {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(lectureId));
+  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, Key lectureKey) {
     for (int i = 0; i < transcriptLines.size(); i++) {
-      Entity lineEntity = new Entity(TranscriptLine.ENTITY_KIND);
-      lineEntity.setProperty(TranscriptLine.PROP_LECTURE, lectureKey);
-      // Set dummy values because AutoValue needs all the values to create a TranscriptLine object.
-      lineEntity.setProperty(TranscriptLine.PROP_START, /* start= */ new Date());
-      lineEntity.setProperty(TranscriptLine.PROP_DURATION, /* duration= */ new Date());
-      lineEntity.setProperty(TranscriptLine.PROP_CONTENT, /* content= */ "");
-      lineEntity.setProperty(TranscriptLine.PROP_END, /* end= */ new Date());
+      Entity lineEntity = TranscriptLineUtil.createEntity(lectureKey, "test content",
+          /* start= */ 0F, /* duration= */ 0F, /* end= */ 0F);
       datastore.put(lineEntity);
     }
   }
