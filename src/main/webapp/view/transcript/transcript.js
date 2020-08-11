@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** @const {string} */
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 
-let currentTranscriptLine;
+let /** Object */ currentTranscriptLine;
 
 /**
  * Sends a POST request to the transcript.
@@ -119,13 +120,15 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
+  // TODO: Update this constant once the pull request updating Date to long
+  // is approved.
   const currentTimestamp =
       window.getDateInSeconds(currentTranscriptLine.endDate);
   if (currentTime <= currentTimestamp) {
     return;
   }
-  // TODO: disable highlighting on the currentTranscriptLine
+  // TODO: Disable highlighting on the currentTranscriptLine
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   currentTranscriptLine.scrollIntoView();
-  // TODO: handle the case where the video isn't only playing.
+  // TODO: Handle the case where the video isn't only playing.
 }

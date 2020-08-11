@@ -44,8 +44,10 @@ function timestampToSeconds(timestamp) {
 }
 
 /**
- * Returns the {@code date} in seconds.
+ * Returns the {@code date} in seconds {number}.
  */
+// TODO: Remove this method once the pull request updating
+// Date to long is approved.
 function getDateInSeconds(date) {
   return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS +
       date.getHours() * HOURS_TO_SECONDS;
