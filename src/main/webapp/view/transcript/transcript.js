@@ -117,16 +117,16 @@ function seekTranscript(currentTime) {
   console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
 }
 
-/** Bolds  */
-function addHighlight(transcriptLineLiElement) {
-  transcriptLineLiElement.classList.append('font-weight-bold');
+/** Add bolding to`transcriptLineLiElement` */
+function addBold(transcriptLineLiElement) {
+  transcriptLineLiElement.classList.add('font-weight-bold');
   // if the class is not in the list, nothing will happen
   // and there will not be an error.
   transcriptLineLiElement.classList.remove('text-muted');
 }
 
-/** Bolds  */
-function removeHighlight(transcriptLineLiElement) {
-  transcriptLineLiElement.classList.append('text-muted');
+/** Removes bolding from `transcriptLineLiElement` */
+function removeBold(transcriptLineLiElement) {
+  transcriptLineLiElement.classList.add('text-muted');
   transcriptLineLiElement.classList.remove('font-weight-bold');
 }
