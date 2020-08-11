@@ -78,29 +78,29 @@ public final class TranscriptServletTest {
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":{\"kind\":\"Lect"
-      + "ure\",\"id\":123},\"startTimestampMilliseconds\":400,\"durationMilliseconds\":1000,\"end"
-      + "TimestampMilliseconds\":1400,\"content\":\" \"},{\"transcriptKey\":{\"kind\":\"Transcrip"
-      + "tLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilli"
-      + "seconds\":2280,\"durationMilliseconds\":1000,\"endTimestampMilliseconds\":3280,\"content"
+      + "ure\",\"id\":123},\"startTimestampMs\":400,\"durationMs\":1000,\"end"
+      + "TimestampMs\":1400,\"content\":\" \"},{\"transcriptKey\":{\"kind\":\"Transcrip"
+      + "tLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs"
+      + "\":2280,\"durationMs\":1000,\"endTimestampMs\":3280,\"content"
       + "\":\"Hi\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lectureKey\":{\"k"
-      + "ind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":5040,\"durationMilliseconds"
-      + "\":1600,\"endTimestampMilliseconds\":6640,\"content\":\"Okay\"}]";
+      + "ind\":\"Lecture\",\"id\":123},\"startTimestampMs\":5040,\"durationMs"
+      + "\":1600,\"endTimestampMs\":6640,\"content\":\"Okay\"}]";
   private static final String LONG_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":{\"kind\":\"Lect"
-      + "ure\",\"id\":123},\"startTimestampMilliseconds\":1300,\"durationMilliseconds\":3100,\"en"
-      + "dTimestampMilliseconds\":4400,\"content\":\"All right, so here we are\\nin front of the "
+      + "ure\",\"id\":123},\"startTimestampMs\":1300,\"durationMs\":3100,\"en"
+      + "dTimestampMs\":4400,\"content\":\"All right, so here we are\\nin front of the "
       + "elephants,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lectureKey\":{"
-      + "\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":4400,\"durationMilliseco"
-      + "nds\":4766,\"endTimestampMilliseconds\":9166,\"content\":\"the cool thing about these gu"
+      + "\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":4400,\"durationMs"
+      + "\":4766,\"endTimestampMs\":9166,\"content\":\"the cool thing about these gu"
       + "ys\\nis that they have really,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\""
-      + ":3},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":9166"
-      + ",\"durationMilliseconds\":3534,\"endTimestampMilliseconds\":12700,\"content\":\"really, "
+      + ":3},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":9166"
+      + ",\"durationMs\":3534,\"endTimestampMs\":12700,\"content\":\"really, "
       + "really long trunks,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectu"
-      + "reKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":12700,\"duratio"
-      + "nMilliseconds\":4300,\"endTimestampMilliseconds\":17000,\"content\":\"and that\\u0027s, "
+      + "reKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":12700,\"duratio"
+      + "nMs\":4300,\"endTimestampMs\":17000,\"content\":\"and that\\u0027s, "
       + "that\\u0027s cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectur"
-      + "eKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMilliseconds\":17000,\"duration"
-      + "Milliseconds\":1767,\"endTimestampMilliseconds\":18767,\"content\":\"And that\\u0027s pr"
+      + "eKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":17000,\"duration"
+      + "Ms\":1767,\"endTimestampMs\":18767,\"content\":\"And that\\u0027s pr"
       + "etty much all there is to say.\"}]";
 
   private static List<TranscriptLine> shortVideoTranscriptLines;

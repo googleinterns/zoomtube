@@ -78,19 +78,18 @@ public class DiscussionServlet extends HttpServlet {
     String content = CharStreams.toString(request.getReader());
 
     // Default timestamp is the start of the video.
-    long timestampMilliseconds = 0;
+    long timestampMs = 0;
     if (request.getParameter(PARAM_TIMESTAMP) != null) {
-      timestampMilliseconds = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
+      timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
     }
-
+    
     Date dateNow = new Date(Clock.systemUTC().millis());
 
     if (parent == null) {
-      datastore.put(
-          CommentUtil.createEntity(lecture, timestampMilliseconds, author, content, dateNow));
+      datastore.put(CommentUtil.createEntity(lecture, timestampMs, author, content, dateNow));
     } else {
-      datastore.put(CommentUtil.createEntity(
-          lecture, parent, timestampMilliseconds, author, content, dateNow));
+      datastore.put(
+          CommentUtil.createEntity(lecture, parent, timestampMs, author, content, dateNow));
     }
 
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
@@ -106,7 +105,7 @@ public class DiscussionServlet extends HttpServlet {
 
     Query query = new Query(CommentUtil.KIND)
                       .setFilter(lectureFilter)
-                      .addSort(CommentUtil.TIMESTAMP_MILLISECONDS, SortDirection.ASCENDING)
+                      .addSort(CommentUtil.TIMESTAMP_MS, SortDirection.ASCENDING)
                       .addSort(CommentUtil.CREATED, SortDirection.DESCENDING);
     PreparedQuery pq = datastore.prepare(query);
 

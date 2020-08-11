@@ -29,13 +29,13 @@ public abstract class TranscriptLine {
   public abstract Key lectureKey();
 
   /** Returns the starting timestamp for the transcript line in milliseconds. */
-  public abstract long startTimestampMilliseconds();
+  public abstract long startTimestampMs();
 
   /** Returns the duration of the transcript line in milliseconds. */
-  public abstract long durationMilliseconds();
+  public abstract long durationMs();
 
   /** Returns the ending timestamp for the transcript line in milliseconds. */
-  public abstract long endTimestampMilliseconds();
+  public abstract long endTimestampMs();
 
   /** Returns the text content of the transcript line. */
   public abstract String content();
@@ -54,9 +54,9 @@ public abstract class TranscriptLine {
   public abstract static class Builder {
     public abstract Builder setTranscriptKey(Key transcriptKey);
     public abstract Builder setLectureKey(Key lectureKey);
-    public abstract Builder setStartTimestampMilliseconds(long startTimestampMilliseconds);
-    public abstract Builder setDurationMilliseconds(long durationMilliseconds);
-    public abstract Builder setEndTimestampMilliseconds(long endTimestampMilliseconds);
+    public abstract Builder setStartTimestampMs(long startTimestampMs);
+    public abstract Builder setDurationMs(long durationMs);
+    public abstract Builder setEndTimestampMs(long endTimestampMs);
     public abstract Builder setContent(String content);
     public abstract TranscriptLine build();
   }

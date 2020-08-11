@@ -111,12 +111,12 @@ public class TranscriptServlet extends HttpServlet {
       // I couldn't find any official way to convert a float seconds to long milliseconds without
       // losing precision.
       // 1000 represents the number of milliseconds in a second.
-      long lineStartMilliseconds = Math.round(lineStartSeconds * 1000);
-      long lineDurationMilliseconds = Math.round(lineDurationSeconds * 1000);
-      long lineEnd = lineStartMilliseconds + lineDurationMilliseconds;
+      long lineStartMs = Math.round(lineStartSeconds * 1000);
+      long lineDurationMs = Math.round(lineDurationSeconds * 1000);
+      long lineEndMs = lineStartMs + lineDurationMs;
 
       datastore.put(TranscriptLineUtil.createEntity(
-          lectureId, lineContent, lineStartMilliseconds, lineDurationMilliseconds, lineEnd));
+          lectureId, lineContent, lineStartMs, lineDurationMs, lineEndMs));
     }
   }
 
@@ -137,10 +137,9 @@ public class TranscriptServlet extends HttpServlet {
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
 
-    Query query =
-        new Query(TranscriptLineUtil.KIND)
-            .setFilter(lectureFilter)
-            .addSort(TranscriptLineUtil.START_TIMESTAMP_MILLISECONDS, SortDirection.ASCENDING);
+    Query query = new Query(TranscriptLineUtil.KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(TranscriptLineUtil.START_TIMESTAMP_MS, SortDirection.ASCENDING);
     return datastore.prepare(query);
   }
 

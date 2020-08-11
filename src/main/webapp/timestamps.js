@@ -13,11 +13,11 @@
 // limitations under the License.
 
 /**
- * Converts a video {@code timestamp} in milliseconds into a string.
+ * Converts a video {@code timestampMs} in milliseconds into a string.
  */
-function timestampToString(timestamp) {
+function timestampToString(timestampMs) {
   const date = new Date();
-  date.setTime(timestamp);
+  date.setTime(timestampMs);
   const seconds = date.getUTCSeconds().toString().padStart(
       /* targetLength= */ 2, /* padString= */ '0');
   const minutes = date.getUTCMinutes().toString().padStart(
@@ -31,16 +31,9 @@ function timestampToString(timestamp) {
 }
 
 /**
- * Converts a number of {@code seconds} into a integer number of
- * milliseconds.
+ * Returns the total number of seconds since the start of a video at a
+ * certain {@code timestampMs}.
  */
-function secondsToMilliseconds(seconds) {
-  return Math.round(seconds * 1000);
-}
-
-/**
- * Converts a number of {@code milliseconds} into seconds.
- */
-function millisecondsToSeconds(milliseconds) {
-  return milliseconds / 1000;
+function timestampToSeconds(timestampMs) {
+  return timestampMs / 1000;
 }
