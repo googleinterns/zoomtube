@@ -17,6 +17,10 @@
     <servlet-class>com.googleinterns.zoomtube.servlets.LectureServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>lecture-list</servlet-name>
+    <servlet-class>com.googleinterns.zoomtube.servlets.LectureListServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>transcript</servlet-name>
     <servlet-class>com.googleinterns.zoomtube.servlets.TranscriptServlet</servlet-class>
   </servlet>
@@ -32,6 +36,10 @@
   <servlet-mapping>
     <servlet-name>lecture</servlet-name>
     <url-pattern>/lecture</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>lecture-list</servlet-name>
+    <url-pattern>/lecture-list</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>transcript</servlet-name>
