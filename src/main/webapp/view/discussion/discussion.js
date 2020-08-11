@@ -276,8 +276,8 @@ function seekDiscussion(currentTimeSeconds) {
   if (nearbyComments.length == 0) {
     return;
   }
-  let scrollPaneTop = ELEMENT_DISCUSSION.getBoundingClientRect().top
-  let elementTop = nearbyComments[0].getBoundingClientRect().top;
-  let offset = scrollPaneTop - elementTop;
+  let scrollPaneTop = ELEMENT_DISCUSSION.offsetTop
+  let elementTop = nearbyComments[0].offsetTop;
+  let offset = elementTop - scrollPaneTop;
   ELEMENT_DISCUSSION.scrollTop = offset;
 }
