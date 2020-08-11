@@ -53,6 +53,7 @@ import org.xml.sax.SAXException;
  */
 public class TranscriptServlet extends HttpServlet {
   private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
+  private static final long MILLISECONDS_PER_SECOND = 1000;
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
@@ -110,9 +111,8 @@ public class TranscriptServlet extends HttpServlet {
       float lineDurationSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
       // I couldn't find any official way to convert a float seconds to long milliseconds without
       // losing precision.
-      // 1000 represents the number of milliseconds in a second.
-      long lineStartMs = Math.round(lineStartSeconds * 1000);
-      long lineDurationMs = Math.round(lineDurationSeconds * 1000);
+      long lineStartMs = Math.round(lineStartSeconds * MILLISECONDS_PER_SECOND);
+      long lineDurationMs = Math.round(lineDurationSeconds * MILLISECONDS_PER_SECOND);
       long lineEndMs = lineStartMs + lineDurationMs;
 
       datastore.put(TranscriptLineUtil.createEntity(
