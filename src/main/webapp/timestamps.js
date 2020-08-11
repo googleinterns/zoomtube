@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const MINUTES_TO_SECONDS = 60;
+const HOURS_TO_SECONDS = 360;
+
 /**
  * Coverts a Date representing a video {@code timestamp} into a string.
  */
@@ -45,5 +48,5 @@ function timestampToSeconds(timestamp) {
  * Returns the {@code date} in seconds.
  */
 function getDateInSeconds(date) {
-  return date.getSeconds() + date.getMinutes() * 60 + date.getHours() * 360
+  return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS + date.getHours() * HOURS_TO_SECONDS;
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -120,7 +119,7 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  const currentTimestamp = getDateInSeconds(currentTranscriptLine.endDate);
+  const currentTimestamp = window.getDateInSeconds(currentTranscriptLine.endDate);
   if (currentTime <= currentTimestamp) {
     return;
   }
