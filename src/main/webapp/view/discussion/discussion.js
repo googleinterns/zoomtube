@@ -262,6 +262,16 @@ class DiscussionComment extends HTMLElement {
     span.slot = name;
     this.appendChild(span);
   }
+
+  /**
+   * Scroll `ELEMENT_DISCUSSION` such that this element is at the top.
+   */
+  scrollToTopOfDiscussion() {
+    const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
+    const elementTop = this.offsetTop;
+    const offset = elementTop - scrollPaneTop;
+    ELEMENT_DISCUSSION.scrollTop = offset;
+  }
 }
 
 // Custom element names must contain a hyphen.
@@ -276,8 +286,5 @@ function seekDiscussion(currentTimeSeconds) {
   if (nearbyComments.length == 0) {
     return;
   }
-  const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
-  const elementTop = nearbyComments[0].offsetTop;
-  const offset = elementTop - scrollPaneTop;
-  ELEMENT_DISCUSSION.scrollTop = offset;
+  nearbyComments[0].scrollToTopOfDiscussion();
 }
