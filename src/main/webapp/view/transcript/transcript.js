@@ -13,7 +13,8 @@
 // limitations under the License.
 
 
-const /** @const {string} */ TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+const /** @const {string} */ TRANSCRIPT_CONTAINER =
+    'transcript-lines-container';
 const /** @const {string} */ ENDPOINT_TRANSCRIPT = '/transcript';
 
 let /** Element */ currentTranscriptLine;
