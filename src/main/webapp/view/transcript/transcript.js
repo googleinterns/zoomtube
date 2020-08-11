@@ -14,6 +14,8 @@
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
+const DEFAULT_FONT_WEIGHT = 'text-muted';
+const BOLD_FONT_WEIGHT = 'font-weight-bold';
 
 let /** Element */ currentTranscriptLine;
 
@@ -130,4 +132,16 @@ function seekTranscript(currentTime) {
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   currentTranscriptLine.scrollIntoView();
   // TODO: Handle the case where the video isn't only playing.
+}
+
+/** Bolds the text in `transcriptLineLiElement` */
+function addBold(transcriptLineLiElement) {
+  transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
+  transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
+}
+
+/** Removes bold from the text in `transcriptLineLiElement` */
+function removeBold(transcriptLineLiElement) {
+  transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
+  transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }
