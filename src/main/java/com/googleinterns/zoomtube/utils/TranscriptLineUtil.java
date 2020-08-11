@@ -16,7 +16,6 @@ package com.googleinterns.zoomtube.utils;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -61,9 +60,9 @@ public final class TranscriptLineUtil {
    * @param lineEnd The ending timestamp for the transcript line in seconds.
    */
   public static Entity createEntity(
-      long lectureId, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
+      Key lectureKey, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
     Entity lineEntity = new Entity(KIND);
-    lineEntity.setProperty(LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
+    lineEntity.setProperty(LECTURE, lectureKey);
     lineEntity.setProperty(CONTENT, lineContent);
     lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
     lineEntity.setProperty(DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));

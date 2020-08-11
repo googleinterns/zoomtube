@@ -69,7 +69,8 @@ public class TranscriptServlet extends HttpServlet {
     String videoId = request.getParameter(LectureUtil.VIDEO_ID);
     Document document = getTranscriptXmlAsDocument(videoId).get();
     long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
-    putTranscriptLinesInDatastore(lectureId, document);
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    putTranscriptLinesInDatastore(lectureKey, document);
   }
 
   /**
@@ -96,10 +97,10 @@ public class TranscriptServlet extends HttpServlet {
   /**
    * Puts each transcript line from {@code document} in datastore as its own entity.
    *
-   * @param lectureId Indicates the lecture id to group the transcript lines under.
+   * @param lectureKey Indicates the lecture key to group the transcript lines under.
    * @param document The XML file containing the transcript lines.
    */
-  private void putTranscriptLinesInDatastore(long lectureId, Document document) {
+  private void putTranscriptLinesInDatastore(Key lectureKey, Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
     for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
       Node transcriptNode = transcriptNodes.item(nodeIndex);
@@ -109,7 +110,7 @@ public class TranscriptServlet extends HttpServlet {
       Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
       Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
       datastore.put(TranscriptLineUtil.createEntity(
-          lectureId, lineContent, lineStart, lineDuration, lineEnd));
+          lectureKey, lineContent, lineStart, lineDuration, lineEnd));
     }
   }
 
