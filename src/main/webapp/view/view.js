@@ -20,6 +20,7 @@ const ENDPOINT_LECTURE = '/lecture';
 window.LECTURE_ID = getLectureId();
 window.VIDEO_ID = getVideoId();
 
+/** Sets {@code window.LECTURE} as Lecture for view page. */
 getLecture().then((lecture) => {
   window.LECTURE = lecture;
   initialize();
