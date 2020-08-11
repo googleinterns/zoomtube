@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const MINUTES_TO_SECONDS = 60;
+const HOURS_TO_SECONDS = 360;
+
 /**
  * Converts a video {@code timestampMs} in milliseconds into a string.
  */
@@ -36,4 +39,14 @@ function timestampToString(timestampMs) {
  */
 function timestampToSeconds(timestampMs) {
   return timestampMs / 1000;
+}
+
+/**
+ * @return {number} The {@code date} in seconds.
+ */
+// TODO: Remove this method once the pull request updating
+// Date to long is approved.
+function getDateInSeconds(date) {
+  return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS +
+      date.getHours() * HOURS_TO_SECONDS;
 }

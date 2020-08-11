@@ -16,7 +16,6 @@ package com.googleinterns.zoomtube.utils;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
@@ -59,9 +58,9 @@ public final class TranscriptLineUtil {
    * @param lineEnd The ending timestamp for the transcript line in milliseconds.
    */
   public static Entity createEntity(
-      long lectureId, String lineContent, long lineStartMs, long lineDurationMs, long lineEndMs) {
+      Key lectureKey, String lineContent, long lineStartMs, long lineDurationMs, long lineEndMs) {
     Entity lineEntity = new Entity(KIND);
-    lineEntity.setProperty(LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
+    lineEntity.setProperty(LECTURE, lectureKey);
     lineEntity.setProperty(CONTENT, lineContent);
     lineEntity.setProperty(START_TIMESTAMP_MS, lineStartMs);
     lineEntity.setProperty(DURATION_MS, lineDurationMs);

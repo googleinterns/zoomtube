@@ -81,9 +81,10 @@ public final class TranscriptLineUtilTest {
     final long start = 23320;
     final long duration = 1337;
     final long end = start + duration;
+    final Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
 
     Entity actualEntity =
-        TranscriptLineUtil.createEntity(LECTURE_ID_A, TEST_CONTENT, start, duration, end);
+        TranscriptLineUtil.createEntity(lectureKeyA, TEST_CONTENT, start, duration, end);
 
     assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
     Key actualKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);

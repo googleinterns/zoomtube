@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -73,8 +72,6 @@ public final class TranscriptServletTest {
   private static final Long LECTURE_ID_A = 123L;
   private static final Long LECTURE_ID_B = 345L;
   private static final Long LECTURE_ID_C = 234L;
-  private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
-  private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":{\"kind\":\"Lect"
@@ -105,6 +102,8 @@ public final class TranscriptServletTest {
 
   private static List<TranscriptLine> shortVideoTranscriptLines;
   private static List<TranscriptLine> longVideoTranscriptLines;
+  private static Key lectureKeyA;
+  private static Key lectureKeyB;
 
   @BeforeClass
   public static void createTranscriptLineLists() {
@@ -121,6 +120,8 @@ public final class TranscriptServletTest {
     lectureTranscript = new StringWriter();
     PrintWriter writer = new PrintWriter(lectureTranscript);
     when(response.getWriter()).thenReturn(writer);
+    lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
+    lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_B);
   }
 
   @After
@@ -130,7 +131,7 @@ public final class TranscriptServletTest {
 
   @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_A);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
@@ -138,49 +139,11 @@ public final class TranscriptServletTest {
     List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
     List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
     assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
-  }
-
-  @Test
-  public void doPost_persistDataInDatastoreForShortVideo() throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B.toString());
-
-    transcriptServlet.doPost(request, response);
-
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_B);
-    int expectedQueryCount = (shortVideoTranscriptLines).size();
-    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
-  }
-
-  @Test
-  public void doGet_doPost_storeAndRetrieveShortVideo() throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
-
-    transcriptServlet.doPost(request, response);
-    transcriptServlet.doGet(request, response);
-
-    List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
-    assertThat(actualTranscriptLines).isEqualTo(expectedTranscriptLines);
-  }
-
-  @Test
-  public void doGet_doPost_storeAndRetrieveLongVideo() throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
-
-    transcriptServlet.doPost(request, response);
-    transcriptServlet.doGet(request, response);
-
-    List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
-    assertThat(actualTranscriptLines).isEqualTo(expectedTranscriptLines);
   }
 
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
@@ -188,25 +151,13 @@ public final class TranscriptServletTest {
     List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
     List<TranscriptLine> actualTranscriptLines = transcriptLines(lectureTranscript.toString());
     assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
-  }
-
-  @Test
-  public void doPost_persistDataInDatastoreForLongVideo() throws ServletException, IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C.toString());
-
-    transcriptServlet.doPost(request, response);
-
-    int actualQueryCount = entitiesInDatastoreCount(LECTURE_ID_C);
-    int expectedQueryCount = (transcriptLines(LONG_VIDEO_JSON)).size();
-    assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
   }
 
   @Test
   public void doGet_onlyOtherLecturesInDatastore_GetNoLectures()
       throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C.toString());
 
     transcriptServlet.doGet(request, response);
@@ -218,8 +169,8 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_twoLecturesInDatastore_returnsOneLecture()
       throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, LECTURE_ID_B);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, LECTURE_ID_A);
+    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
+    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
@@ -235,9 +186,9 @@ public final class TranscriptServletTest {
         transcriptLinesJson, (new ArrayList<List<TranscriptLine>>().getClass()));
   }
 
-  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, long lectureId) {
+  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, Key lectureKey) {
     for (int i = 0; i < transcriptLines.size(); i++) {
-      Entity lineEntity = TranscriptLineUtil.createEntity(lectureId, "test content",
+      Entity lineEntity = TranscriptLineUtil.createEntity(lectureKey, "test content",
           /* start= */ 0, /* duration= */ 0, /* end= */ 0);
       datastore.put(lineEntity);
     }
