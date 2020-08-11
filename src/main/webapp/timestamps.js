@@ -44,7 +44,7 @@ function timestampToSeconds(timestamp) {
 }
 
 /**
- * Returns the {@code date} in seconds {number}.
+ * @return {number} The {@code date} in seconds.
  */
 // TODO: Remove this method once the pull request updating
 // Date to long is approved.

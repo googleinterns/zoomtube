@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** @const {string} */
-const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-const ENDPOINT_TRANSCRIPT = '/transcript';
 
-let /** Object */ currentTranscriptLine;
+const /** @const {string} */ TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+const /** @const {string} */ ENDPOINT_TRANSCRIPT = '/transcript';
+
+let /** Element */ currentTranscriptLine;
 
 /**
  * Sends a POST request to the transcript.
@@ -89,7 +89,7 @@ function appendTextToList(transcriptLine, ulElement) {
   liElement.startDate = new Date(transcriptLine.start);
   liElement.endDate = new Date(transcriptLine.end);
   // Sets the current transcript line to be the first line.
-  if (currentTranscriptLine == undefined) {
+  if (currentTranscriptLine == null) {
     currentTranscriptLine = liElement;
   }
 }
