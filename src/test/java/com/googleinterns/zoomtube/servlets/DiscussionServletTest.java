@@ -186,7 +186,7 @@ public class DiscussionServletTest {
     Key lecture = KeyFactory.createKey(/* kind= */ "Lecture", lectureId);
     commentEntity.setProperty(CommentUtil.LECTURE, lecture);
     commentEntity.setProperty(CommentUtil.PARENT, null);
-    commentEntity.setProperty(CommentUtil.TIMESTAMP_MILLISECONDS, 0);
+    commentEntity.setProperty(CommentUtil.TIMESTAMP_MS, 0);
     // Most properties here are not tested, but are required by the AutoValue class so must be
     // specified.
     commentEntity.setProperty(

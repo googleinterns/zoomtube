@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const MILLISECONDS_PER_SECOND = 1000;
+const MINUTES_TO_SECONDS = 60;
+const HOURS_TO_SECONDS = 360;
+
 /**
- * Converts a video {@code timestamp} in milliseconds into a string.
+ * Converts a video {@code timestampMs} in milliseconds into a string.
  */
-function timestampToString(timestamp) {
+function timestampToString(timestampMs) {
   const date = new Date();
-  date.setTime(timestamp);
+  date.setTime(timestampMs);
   const seconds = date.getUTCSeconds().toString().padStart(
       /* targetLength= */ 2, /* padString= */ '0');
   const minutes = date.getUTCMinutes().toString().padStart(
@@ -31,16 +35,19 @@ function timestampToString(timestamp) {
 }
 
 /**
- * Converts a number of {@code seconds} into a integer number of
- * milliseconds.
+ * Converts a number of `seconds` to an integer number of milliseconds.
  */
+// TODO: Remove once #158 is addressed.
 function secondsToMilliseconds(seconds) {
-  return Math.round(seconds * 1000);
+  return Math.round(seconds * MILLISECONDS_PER_SECOND);
 }
 
 /**
- * Converts a number of {@code milliseconds} into seconds.
+ * @return {number} The {@code date} in seconds.
  */
-function millisecondsToSeconds(milliseconds) {
-  return milliseconds / 1000;
+// TODO: Remove this method once the pull request updating
+// Date to long is approved.
+function getDateInSeconds(date) {
+  return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS +
+      date.getHours() * HOURS_TO_SECONDS;
 }

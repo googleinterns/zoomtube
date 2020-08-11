@@ -25,99 +25,27 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Optional;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.apache.commons.text.StringEscapeUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Provides the transcript for a given lecture.
  */
 public class TranscriptServlet extends HttpServlet {
-  private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
-  public static final String ATTR_START = "start";
-  public static final String ATTR_DURATION = "dur";
-  public static final String TAG_TEXT = "text";
-
   private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
     datastore = DatastoreServiceFactory.getDatastoreService();
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String videoId = request.getParameter(LectureUtil.VIDEO_ID);
-    Document document = getTranscriptXmlAsDocument(videoId).get();
-    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
-    putTranscriptLinesInDatastore(lectureId, document);
-  }
-
-  /**
-   * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
-   * if there is a parsing error.
-   *
-   * @param videoId Indicates the video to extract the transcript from.
-   */
-  private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
-    String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
-
-    try {
-      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
-      document.getDocumentElement().normalize();
-      return Optional.of(document);
-    } catch (ParserConfigurationException | SAXException e) {
-      // TODO: Alert the user.
-      System.out.println("XML parsing error");
-      return Optional.empty();
-    }
-  }
-
-  /**
-   * Puts each transcript line from {@code document} in datastore as its own entity.
-   *
-   * @param lectureId Indicates the lecture id to group the transcript lines under.
-   * @param document The XML file containing the transcript lines.
-   */
-  private void putTranscriptLinesInDatastore(long lectureId, Document document) {
-    NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
-    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
-      Node transcriptNode = transcriptNodes.item(nodeIndex);
-      Element transcriptElement = (Element) transcriptNode;
-      String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
-
-      float lineStartSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
-      float lineDurationSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
-      // I couldn't find any official way to convert a float seconds to long milliseconds without
-      // losing precision.
-      // 1000 represents the number of milliseconds in a second.
-      long lineStartMilliseconds = Math.round(lineStartSeconds * 1000);
-      long lineDurationMilliseconds = Math.round(lineDurationSeconds * 1000);
-      long lineEnd = lineStartMilliseconds + lineDurationMilliseconds;
-
-      datastore.put(TranscriptLineUtil.createEntity(
-          lectureId, lineContent, lineStartMilliseconds, lineDurationMilliseconds, lineEnd));
-    }
   }
 
   @Override
@@ -137,10 +65,9 @@ public class TranscriptServlet extends HttpServlet {
     Filter lectureFilter =
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
 
-    Query query =
-        new Query(TranscriptLineUtil.KIND)
-            .setFilter(lectureFilter)
-            .addSort(TranscriptLineUtil.START_TIMESTAMP_MILLISECONDS, SortDirection.ASCENDING);
+    Query query = new Query(TranscriptLineUtil.KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(TranscriptLineUtil.START_TIMESTAMP_MS, SortDirection.ASCENDING);
     return datastore.prepare(query);
   }
 

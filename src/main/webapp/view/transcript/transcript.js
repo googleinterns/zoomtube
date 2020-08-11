@@ -1,4 +1,3 @@
-
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +14,10 @@
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
+const DEFAULT_FONT_WEIGHT = 'text-muted';
+const BOLD_FONT_WEIGHT = 'font-weight-bold';
+
+let /** Element */ currentTranscriptLine;
 
 /**
  * Sends a POST request to the transcript.
@@ -66,9 +69,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  */
 function appendTextToList(transcriptLine, ulElement) {
   const startTimestamp =
-      window.timestampToString(transcriptLine.startTimestampMilliseconds);
-  const endTimestamp =
-      window.timestampToString(transcriptLine.endTimestampMilliseconds);
+      window.timestampToString(transcriptLine.startTimestampMs);
+  const endTimestamp = window.timestampToString(transcriptLine.endTimestampMs);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   const contentDivElement = document.createElement('div');
@@ -87,6 +89,11 @@ function appendTextToList(transcriptLine, ulElement) {
   ulElement.appendChild(liElement);
   // Save the dates for seeking later.
   liElement.startDate = new Date(transcriptLine.start);
+  liElement.endDate = new Date(transcriptLine.end);
+  // Sets the current transcript line to be the first line.
+  if (currentTranscriptLine == null) {
+    currentTranscriptLine = liElement;
+  }
 }
 
 /**
@@ -113,8 +120,29 @@ function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to {@code currentTime}. */
+/** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  // TODO: Remove and implement.
-  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
+  // TODO: Update this constant once the pull request updating Date to long
+  // is approved.
+  const currentTimestamp =
+      window.getDateInSeconds(currentTranscriptLine.endDate);
+  if (currentTime <= currentTimestamp) {
+    return;
+  }
+  // TODO: Disable highlighting on the currentTranscriptLine
+  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  currentTranscriptLine.scrollIntoView();
+  // TODO: Handle the case where the video isn't only playing.
+}
+
+/** Bolds the text in `transcriptLineLiElement` */
+function addBold(transcriptLineLiElement) {
+  transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
+  transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
+}
+
+/** Removes bold from the text in `transcriptLineLiElement` */
+function removeBold(transcriptLineLiElement) {
+  transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
+  transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }

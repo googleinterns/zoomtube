@@ -14,12 +14,17 @@
 
 const PARAM_ID = 'id';
 const PARAM_VIDEO_ID = 'video-id';
+const ENDPOINT_LECTURE = '/lecture';
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 window.VIDEO_ID = getVideoId();
 
-initialize();
+/** Sets {@code window.LECTURE} as Lecture for view page. */
+getLecture().then((lecture) => {
+  window.LECTURE = lecture;
+  initialize();
+});
 
 /**
  * Initializes the video player, discussion
@@ -29,6 +34,17 @@ async function initialize() {
   window.loadVideoApi();
   window.intializeDiscussion();
   window.loadTranscript(window.location.search);
+}
+
+/**
+ * Returns lecture in database associated with {@code window.LECTURE_ID}
+ * obtained from {@code ENDPOINT_LECTURE}.
+ */
+async function getLecture() {
+  const url = new URL(ENDPOINT_LECTURE, window.location.origin);
+  url.searchParams.append(PARAM_ID, window.LECTURE_ID);
+  const response = await fetch(url);
+  return response.json();
 }
 
 /**

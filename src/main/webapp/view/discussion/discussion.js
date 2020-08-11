@@ -39,7 +39,7 @@ const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 // 10 seconds.
 const TIME_TOLERANCE_MILLISECONDS = 10000;
 
-let newCommentTimestampMilliseconds = 0;
+let newCommentTimestampMs = 0;
 let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
 
 /**
@@ -54,14 +54,14 @@ async function intializeDiscussion() {
  */
 async function postNewComment() {
   postAndReload(
-      ELEMENT_POST_TEXTAREA, undefined, newCommentTimestampMilliseconds);
+      ELEMENT_POST_TEXTAREA, /* parent= */ undefined, newCommentTimestampMs);
 }
 
 /**
  * Posts the content of {@code inputField} as a reply to {@code parentId}.
  */
 async function postReply(inputField, parentId) {
-  postAndReload(inputField, parentId, undefined);
+  postAndReload(inputField, parentId);
 }
 
 /**
@@ -147,11 +147,11 @@ async function fetchDiscussion() {
 /**
  * Updates the timestamp displayed and sent by the new comment form.
  *
- * @param {number} time The new time in milliseconds to use.
+ * @param {number} timeMs The new time in milliseconds to use.
  */
-function updateNewCommentTimestamp(timeMilliseconds) {
-  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMilliseconds);
-  newCommentTimestampMilliseconds = timeMilliseconds;
+function updateNewCommentTimestamp(timeMs) {
+  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMs);
+  newCommentTimestampMs = timeMs;
 }
 
 /**
@@ -214,8 +214,7 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (!comment.parentKey.value) {
       // Only display timestamp on root comments.
-      timestampPrefix =
-          `${window.timestampToString(comment.timestampMilliseconds)} - `;
+      timestampPrefix = `${window.timestampToString(comment.timestampMs)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }

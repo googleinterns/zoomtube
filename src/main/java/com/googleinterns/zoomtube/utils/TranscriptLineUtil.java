@@ -16,17 +16,16 @@ package com.googleinterns.zoomtube.utils;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public final class TranscriptLineUtil {
   public static final String KIND = "TranscriptLine";
   public static final String LECTURE = "lecture";
-  public static final String START_TIMESTAMP_MILLISECONDS = "start_milliseconds";
-  public static final String DURATION_MILLISECONDS = "duration_milliseconds";
+  public static final String START_TIMESTAMP_MS = "start_ms";
+  public static final String DURATION_MS = "duration_ms";
   public static final String CONTENT = "content";
-  public static final String END_TIMESTAMP_MILLISECONDS = "end_milliseconds";
+  public static final String END_TIMESTAMP_MS = "end_ms";
 
   /**
    * Creates and returns a TranscriptLine from a datastore {@code entity} using
@@ -35,16 +34,16 @@ public final class TranscriptLineUtil {
   public static TranscriptLine createTranscriptLine(Entity entity) {
     Key transcriptKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
-    long start = (long) entity.getProperty(START_TIMESTAMP_MILLISECONDS);
-    long duration = (long) entity.getProperty(DURATION_MILLISECONDS);
-    long end = (long) entity.getProperty(END_TIMESTAMP_MILLISECONDS);
+    long start = (long) entity.getProperty(START_TIMESTAMP_MS);
+    long duration = (long) entity.getProperty(DURATION_MS);
+    long end = (long) entity.getProperty(END_TIMESTAMP_MS);
     String content = (String) entity.getProperty(CONTENT);
     return TranscriptLine.builder()
         .setTranscriptKey(transcriptKey)
         .setLectureKey(lectureKey)
-        .setStartTimestampMilliseconds(start)
-        .setDurationMilliseconds(duration)
-        .setEndTimestampMilliseconds(end)
+        .setStartTimestampMs(start)
+        .setDurationMs(duration)
+        .setEndTimestampMs(end)
         .setContent(content)
         .build();
   }
@@ -59,13 +58,13 @@ public final class TranscriptLineUtil {
    * @param lineEnd The ending timestamp for the transcript line in milliseconds.
    */
   public static Entity createEntity(
-      long lectureId, String lineContent, long lineStart, long lineDuration, long lineEnd) {
+      Key lectureKey, String lineContent, long lineStartMs, long lineDurationMs, long lineEndMs) {
     Entity lineEntity = new Entity(KIND);
-    lineEntity.setProperty(LECTURE, KeyFactory.createKey(LectureUtil.KIND, lectureId));
+    lineEntity.setProperty(LECTURE, lectureKey);
     lineEntity.setProperty(CONTENT, lineContent);
-    lineEntity.setProperty(START_TIMESTAMP_MILLISECONDS, lineStart);
-    lineEntity.setProperty(DURATION_MILLISECONDS, lineDuration);
-    lineEntity.setProperty(END_TIMESTAMP_MILLISECONDS, lineEnd);
+    lineEntity.setProperty(START_TIMESTAMP_MS, lineStartMs);
+    lineEntity.setProperty(DURATION_MS, lineDurationMs);
+    lineEntity.setProperty(END_TIMESTAMP_MS, lineEndMs);
     return lineEntity;
   }
 

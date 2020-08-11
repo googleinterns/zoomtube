@@ -58,21 +58,21 @@ public final class TranscriptLineUtilTest {
 
   @Test
   public void createTranscriptLine_transcriptLineSuccessfullyCreated() throws IOException {
-    final long testTimestamp = 123;
+    final long testTimestampMs = 123;
     final Key testLectureKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     final Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
     lineEntity.setProperty(TranscriptLineUtil.LECTURE, testLectureKey);
     lineEntity.setProperty(TranscriptLineUtil.CONTENT, TEST_CONTENT);
-    lineEntity.setProperty(TranscriptLineUtil.START_TIMESTAMP_MILLISECONDS, testTimestamp);
-    lineEntity.setProperty(TranscriptLineUtil.DURATION_MILLISECONDS, testTimestamp);
-    lineEntity.setProperty(TranscriptLineUtil.END_TIMESTAMP_MILLISECONDS, testTimestamp);
+    lineEntity.setProperty(TranscriptLineUtil.START_TIMESTAMP_MS, testTimestampMs);
+    lineEntity.setProperty(TranscriptLineUtil.DURATION_MS, testTimestampMs);
+    lineEntity.setProperty(TranscriptLineUtil.END_TIMESTAMP_MS, testTimestampMs);
 
     TranscriptLine actualLine = TranscriptLineUtil.createTranscriptLine(lineEntity);
 
     assertThat(actualLine.lectureKey()).isEqualTo(testLectureKey);
-    assertThat(actualLine.startTimestampMilliseconds()).isEqualTo(testTimestamp);
-    assertThat(actualLine.durationMilliseconds()).isEqualTo(testTimestamp);
-    assertThat(actualLine.endTimestampMilliseconds()).isEqualTo(testTimestamp);
+    assertThat(actualLine.startTimestampMs()).isEqualTo(testTimestampMs);
+    assertThat(actualLine.durationMs()).isEqualTo(testTimestampMs);
+    assertThat(actualLine.endTimestampMs()).isEqualTo(testTimestampMs);
     assertThat(actualLine.content()).isEqualTo(TEST_CONTENT);
   }
 
@@ -81,18 +81,16 @@ public final class TranscriptLineUtilTest {
     final long start = 23320;
     final long duration = 1337;
     final long end = start + duration;
+    final Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
 
     Entity actualEntity =
-        TranscriptLineUtil.createEntity(LECTURE_ID_A, TEST_CONTENT, start, duration, end);
+        TranscriptLineUtil.createEntity(lectureKeyA, TEST_CONTENT, start, duration, end);
 
     assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
     Key actualKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     assertThat(actualEntity.getProperty(TranscriptLineUtil.LECTURE)).isEqualTo(actualKey);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.START_TIMESTAMP_MILLISECONDS))
-        .isEqualTo(start);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.DURATION_MILLISECONDS))
-        .isEqualTo(duration);
-    assertThat(actualEntity.getProperty(TranscriptLineUtil.END_TIMESTAMP_MILLISECONDS))
-        .isEqualTo(end);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.START_TIMESTAMP_MS)).isEqualTo(start);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.DURATION_MS)).isEqualTo(duration);
+    assertThat(actualEntity.getProperty(TranscriptLineUtil.END_TIMESTAMP_MS)).isEqualTo(end);
   }
 }
