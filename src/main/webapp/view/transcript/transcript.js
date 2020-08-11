@@ -122,8 +122,6 @@ function seekTranscript(currentTime) {
 /** Bolds the text in `transcriptLineLiElement` */
 function addBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
-  // if the class is not in the list, nothing will happen
-  // and there will not be an error.
   transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
 }
 
