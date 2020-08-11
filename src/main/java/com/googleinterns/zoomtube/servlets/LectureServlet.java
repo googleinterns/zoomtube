@@ -17,7 +17,9 @@ package com.googleinterns.zoomtube.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
@@ -95,7 +97,16 @@ public class LectureServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Implement getting one lecture.
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    try {
+      Entity lectureEntity = datastore.get(lectureEntityKey);
+      Gson gson = new Gson();
+      response.setContentType("application/json");
+      response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
+    } catch (EntityNotFoundException entityNotFound) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
+    }
   }
 
   /**

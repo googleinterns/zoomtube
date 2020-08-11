@@ -20,6 +20,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -58,16 +60,22 @@ public final class LectureServletTest {
   private DatastoreService datastoreService;
   private LectureServlet servlet;
 
+  /* Writer where response is written. */
+  private StringWriter content;
+
   private static final String LINK_INPUT = "link-input";
+  private static final String TEST_NAME = "TestName";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=3ymwOvzhwHs";
   private static final String TEST_ID = "3ymwOvzhwHs";
 
   @Before
-  public void setUp() throws ServletException {
+  public void setUp() throws ServletException, IOException {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new LectureServlet();
     servlet.init();
+    content = new StringWriter();
+    when(response.getWriter()).thenReturn(new PrintWriter(content));
   }
 
   @After
@@ -80,7 +88,7 @@ public final class LectureServletTest {
       throws IOException, ServletException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
-    
+
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
@@ -97,6 +105,36 @@ public final class LectureServletTest {
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/view?id=1&video-id=3ymwOvzhwHs");
+  }
+
+  @Test
+  public void doGet_lectureInDatabase_shouldWriteLecture() throws IOException {
+    Entity lectureEntity =
+        LectureUtil.createEntity(/* lectureName= */ TEST_NAME, TEST_LINK, TEST_ID);
+    datastoreService.put(lectureEntity);
+    Long entityId = lectureEntity.getKey().getId();
+    when(request.getParameter(LectureUtil.ID)).thenReturn(Long.toString(entityId));
+
+    servlet.doGet(request, response);
+
+    String json = content.toString();
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Lecture lecture = gson.fromJson(json, Lecture.class);
+    assertThat(lecture.key().getId()).isEqualTo(entityId);
+    assertThat(lecture.lectureName()).isEqualTo(/* lectureName= */ TEST_NAME);
+    assertThat(lecture.videoUrl()).isEqualTo(TEST_LINK);
+    assertThat(lecture.videoId()).isEqualTo(TEST_ID);
+  }
+
+  @Test
+  public void doGet_noLectureInDatabase_shouldWriteNoLecture() throws IOException {
+    when(request.getParameter(LectureUtil.ID)).thenReturn(/* lectureId= */ "1");
+
+    servlet.doGet(request, response);
+
+    String json = content.toString();
+    assertThat(json).isEmpty();
+    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
   }
 
   @Test
