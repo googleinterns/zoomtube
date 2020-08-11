@@ -120,15 +120,10 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  // The transcript timestamp doesn't keep track of decimals for the seconds.
-  const roundedCurrentTime = Math.round(currentTime);
-  const currentTranscriptLineEndTimeInSeconds =
-      currentTranscriptLine.endDate.getTime() / 1000;
-  if (roundedCurrentTime < currentTranscriptLineEndTimeInSeconds) {
-    console.log('same timestamp');
+  const currentTimestamp = getDateInSeconds(currentTranscriptLine.endDate);
+  if (currentTime <= currentTimestamp) {
     return;
   }
-  console.log('different timestamp');
   // TODO: disable highlighting on the currentTranscriptLine
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   currentTranscriptLine.scrollIntoView();

@@ -39,3 +39,11 @@ function timestampToSeconds(timestamp) {
   const totalSeconds = totalMilliseconds / 1000;
   return totalSeconds;
 }
+
+
+/**
+ * Returns the {@code date} in seconds.
+ */
+function getDateInSeconds(date) {
+  return date.getSeconds() + date.getMinutes() * 60 + date.getHours() * 360
+}
