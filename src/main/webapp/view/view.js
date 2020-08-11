@@ -49,16 +49,6 @@ async function getLecture() {
 /**
  * Returns the lecture id obtained from the current page's URL parameters.
  */
-async function getLecture() {
-  const url = new URL(ENDPOINT_LECTURE, window.location.origin);
-  url.searchParams.append(PARAM_ID, window.LECTURE_ID);
-  const response = await fetch(url);
-  return response.json();
-}
-
-/**
- * Returns the lecture id obtained from the current page's URL parameters.
- */
 function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(PARAM_ID);
