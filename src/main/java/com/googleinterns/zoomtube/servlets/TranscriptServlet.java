@@ -64,6 +64,15 @@ public class TranscriptServlet extends HttpServlet {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String videoId = request.getParameter(LectureUtil.VIDEO_ID);
+    Document document = getTranscriptXmlAsDocument(videoId).get();
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    putTranscriptLinesInDatastore(lectureKey, document);
+  }
+
   /**
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
    * if there is a parsing error.
@@ -82,6 +91,26 @@ public class TranscriptServlet extends HttpServlet {
       // TODO: Alert the user.
       System.out.println("XML parsing error");
       return Optional.empty();
+    }
+  }
+
+  /**
+   * Puts each transcript line from {@code document} in datastore as its own entity.
+   *
+   * @param lectureKey Indicates the lecture key to group the transcript lines under.
+   * @param document The XML file containing the transcript lines.
+   */
+  private void putTranscriptLinesInDatastore(Key lectureKey, Document document) {
+    NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
+    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
+      Node transcriptNode = transcriptNodes.item(nodeIndex);
+      Element transcriptElement = (Element) transcriptNode;
+      String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
+      Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+      Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
+      Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+      datastore.put(TranscriptLineUtil.createEntity(
+          lectureKey, lineContent, lineStart, lineDuration, lineEnd));
     }
   }
 
