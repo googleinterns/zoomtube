@@ -81,9 +81,9 @@ public final class TranscriptLineUtilTest {
     final Float startDate = 23.32F;
     final Float duration = 23.32F;
     final Float endDate = startDate.floatValue() + duration.floatValue();
-
+    final Key lectureKeyA = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     Entity actualEntity =
-        TranscriptLineUtil.createEntity(LECTURE_ID_A, TEST_CONTENT, startDate, duration, endDate);
+        TranscriptLineUtil.createEntity(lectureKeyA, TEST_CONTENT, startDate, duration, endDate);
 
     assertThat(actualEntity.getProperty(TranscriptLineUtil.CONTENT)).isEqualTo(TEST_CONTENT);
     Key actualKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
