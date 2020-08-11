@@ -15,6 +15,8 @@
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
+const DEFAULT_FONT_WEIGHT = 'text-muted';
+const BOLD_FONT_WEIGHT = 'font-weight-bold';
 
 /**
  * Sends a POST request to the transcript.
@@ -117,16 +119,16 @@ function seekTranscript(currentTime) {
   console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
 }
 
-/** Add bolding to`transcriptLineLiElement` */
+/** Bolds the text in `transcriptLineLiElement` */
 function addBold(transcriptLineLiElement) {
-  transcriptLineLiElement.classList.add('font-weight-bold');
+  transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
   // if the class is not in the list, nothing will happen
   // and there will not be an error.
-  transcriptLineLiElement.classList.remove('text-muted');
+  transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
 }
 
-/** Removes bolding from `transcriptLineLiElement` */
+/** Removes bold from the text in `transcriptLineLiElement` */
 function removeBold(transcriptLineLiElement) {
-  transcriptLineLiElement.classList.add('text-muted');
-  transcriptLineLiElement.classList.remove('font-weight-bold');
+  transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
+  transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }
