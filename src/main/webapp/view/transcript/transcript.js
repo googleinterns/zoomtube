@@ -1,4 +1,3 @@
-
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +14,8 @@
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
+
+let /** Element */ currentTranscriptLine;
 
 /**
  * Sends a POST request to the transcript.
@@ -85,6 +86,11 @@ function appendTextToList(transcriptLine, ulElement) {
   ulElement.appendChild(liElement);
   // Save the dates for seeking later.
   liElement.startDate = new Date(transcriptLine.start);
+  liElement.endDate = new Date(transcriptLine.end);
+  // Sets the current transcript line to be the first line.
+  if (currentTranscriptLine == null) {
+    currentTranscriptLine = liElement;
+  }
 }
 
 /**
@@ -111,8 +117,17 @@ function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to {@code currentTime}. */
+/** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  // TODO: Remove and implement.
-  console.log('SEEKING TRANSCRIPT TO: ' + currentTime);
+  // TODO: Update this constant once the pull request updating Date to long
+  // is approved.
+  const currentTimestamp =
+      window.getDateInSeconds(currentTranscriptLine.endDate);
+  if (currentTime <= currentTimestamp) {
+    return;
+  }
+  // TODO: Disable highlighting on the currentTranscriptLine
+  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  currentTranscriptLine.scrollIntoView();
+  // TODO: Handle the case where the video isn't only playing.
 }
