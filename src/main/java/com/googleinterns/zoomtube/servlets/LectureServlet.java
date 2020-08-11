@@ -80,10 +80,7 @@ public class LectureServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<Lecture> lectures = getLectures();
-    Gson gson = new Gson();
-    response.setContentType("application/json");
-    response.getWriter().println(gson.toJson(lectures));
+    // TODO: Implement getting one lecture.
   }
 
   /**
@@ -118,18 +115,6 @@ public class LectureServlet extends HttpServlet {
     Optional<String> optionalVideoId = getVideoId(videoUrl);
     String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
     return LectureUtil.createEntity(lectureName, videoUrl, videoId);
-  }
-
-  /** Returns lectures stored in the database. */
-  private List<Lecture> getLectures() {
-    Query query = new Query(LectureUtil.KIND);
-    PreparedQuery results = datastore.prepare(query);
-    List<Lecture> lectures = new ArrayList<>();
-    for (Entity lecture : results.asIterable()) {
-      Lecture newLecture = LectureUtil.createLecture(lecture);
-      lectures.add(newLecture);
-    }
-    return lectures;
   }
 
   /**
