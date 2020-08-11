@@ -17,11 +17,15 @@ package com.googleinterns.zoomtube.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Lecture;
+import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -65,7 +69,8 @@ public class LectureServlet extends HttpServlet {
 
   @Override
   // TODO: Check if URL is valid.
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
     Optional<Entity> existingEntity = checkUrlInDatabase(optionalVideoUrl);
 
@@ -75,12 +80,33 @@ public class LectureServlet extends HttpServlet {
     }
     Entity lectureEntity = getLectureEntityFromRequest(request);
     datastore.put(lectureEntity);
+    initializeTranscript(lectureEntity);
     response.sendRedirect(buildRedirectUrl(lectureEntity).get());
+  }
+
+  /**
+   * Parses and stores the transcript lines in datastore using the {@code lectureKey}
+   * and {@code videoId} properties in {@code lectureEntity}.
+   */
+  private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
+    TranscriptParser transcriptParser = TranscriptParser.getParser();
+    Key lectureKey = lectureEntity.getKey();
+    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
+    transcriptParser.parseAndStoreTranscript(videoId, lectureKey);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Implement getting one lecture.
+    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    try {
+      Entity lectureEntity = datastore.get(lectureEntityKey);
+      Gson gson = new Gson();
+      response.setContentType("application/json");
+      response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
+    } catch (EntityNotFoundException entityNotFound) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
+    }
   }
 
   /**
