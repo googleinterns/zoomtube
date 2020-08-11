@@ -126,7 +126,7 @@ function deleteTranscript() {
 function seekTranscript(currentTime) {
   // TODO: Update this constant once the pull request updating Date to long
   // is approved.
-  console.log("ALDFDJKSJ");
+  console.log('ALDFDJKSJ');
   console.log(currentTranscriptLine.endTimestampSec);
   console.log(currentTime);
 
