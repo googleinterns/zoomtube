@@ -37,10 +37,10 @@ const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
 // 10 seconds.
-const TIME_TOLERANCE_MILLISECONDS = 10 * 1000;
+const TIME_TOLERANCE_MILLISECONDS = 10000;
 
 let newCommentTimestampMilliseconds = 0;
-let currentRootDiscussionComments = [];
+let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
 
 /**
  * Loads the lecture disucssion.
@@ -100,9 +100,9 @@ async function loadDiscussion() {
   const comments = await fetchDiscussion();
   const preparedComments = prepareComments(comments);
   for (const comment of preparedComments) {
-    const element = new DiscussionComment(comment);
-    currentRootDiscussionComments.push(element);
-    ELEMENT_DISCUSSION.appendChild(element);
+    const commentElement = new DiscussionComment(comment);
+    currentRootDiscussionComments.push(commentElement);
+    ELEMENT_DISCUSSION.appendChild(commentElement);
   }
 }
 
@@ -155,10 +155,10 @@ function updateNewCommentTimestamp(timeMilliseconds) {
 }
 
 /**
- * Returns an array of the {@code DiscussionComment}s within
- * {@code TIME_TOLERANCE_MILLISECONDS} milliseconds to the {@code
- * timestampMilliseconds}. This returns an empty array if no elements are
- * nearby.
+ * Returns an array of the `DiscussionComment`s within
+ * `TIME_TOLERANCE_MILLISECONDS` milliseconds to the `timestampMilliseconds`.
+ *
+ * <p>This returns an empty array if no elements are nearby.
  */
 function getNearbyDiscussionComments(timestampMilliseconds) {
   const nearby = [];
@@ -277,7 +277,7 @@ class DiscussionComment extends HTMLElement {
 // Custom element names must contain a hyphen.
 customElements.define('discussion-comment', DiscussionComment);
 
-/** Seeks discussion to {@code currentTime}. */
+/** Seeks discussion to `@code currentTime`. */
 function seekDiscussion(currentTimeSeconds) {
   const currentTimeMilliseconds =
       window.secondsToMilliseconds(currentTimeSeconds);
