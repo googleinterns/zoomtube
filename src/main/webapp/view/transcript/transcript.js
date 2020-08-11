@@ -120,12 +120,13 @@ function seekTranscript(currentTime) {
 /** Bolds  */
 function addHighlight(transcriptLineLiElement) {
   transcriptLineLiElement.classList.append('font-weight-bold');
- // if the class is not in the list, nothing will happen and there will not be an error.
-  transcriptLineElement.classList.remove('text-muted');
- }
+  // if the class is not in the list, nothing will happen
+  // and there will not be an error.
+  transcriptLineLiElement.classList.remove('text-muted');
+}
 
 /** Bolds  */
 function removeHighlight(transcriptLineLiElement) {
   transcriptLineLiElement.classList.append('text-muted');
-  transcriptLineElement.classList.remove('font-weight-bold');
+  transcriptLineLiElement.classList.remove('font-weight-bold');
 }
