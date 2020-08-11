@@ -36,7 +36,11 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
+// 10 seconds.
+const TIME_TOLERANCE_MILLISECONDS = 10 * 1000;
+
 let newCommentTimestampMilliseconds = 0;
+let currentRootDiscussionComments = [];
 
 /**
  * Loads the lecture disucssion.
@@ -91,11 +95,14 @@ async function postAndReload(
 async function loadDiscussion() {
   // Clear any existing comments before loading.
   ELEMENT_DISCUSSION.textContent = '';
+  currentRootDiscussionComments = [];
 
   const comments = await fetchDiscussion();
   const preparedComments = prepareComments(comments);
   for (const comment of preparedComments) {
-    ELEMENT_DISCUSSION.appendChild(new DiscussionComment(comment));
+    const element = new DiscussionComment(comment);
+    currentRootDiscussionComments.push(element);
+    ELEMENT_DISCUSSION.appendChild(element);
   }
 }
 
@@ -145,6 +152,30 @@ async function fetchDiscussion() {
 function updateNewCommentTimestamp(timeMilliseconds) {
   ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMilliseconds);
   newCommentTimestampMilliseconds = timeMilliseconds;
+}
+
+/**
+ * Returns an array of the {@code DiscussionComment}s within
+ * {@code TIME_TOLERANCE_MILLISECONDS} milliseconds to the {@code
+ * timestampMilliseconds}. This returns an empty array if no elements are
+ * nearby.
+ */
+function getNearbyDiscussionComments(timestampMilliseconds) {
+  const nearby = [];
+  // currentRootDiscussionComments is already sorted by timestamp.
+  for (const element of currentRootDiscussionComments) {
+    const commentTime = element.comment.timestampMilliseconds;
+    if (commentTime < timestampMilliseconds - TIME_TOLERANCE_MILLISECONDS) {
+      // Before the start of the range, continue to next.
+      continue;
+    }
+    if (commentTime > timestampMilliseconds + TIME_TOLERANCE_MILLISECONDS) {
+      // Outside of range, there will be no more.
+      break;
+    }
+    nearby.push(element);
+  }
+  return nearby;
 }
 
 /**
@@ -241,5 +272,12 @@ function seekDiscussion(currentTimeSeconds) {
   const currentTimeMilliseconds =
       window.secondsToMilliseconds(currentTimeSeconds);
   updateNewCommentTimestamp(currentTimeMilliseconds);
-  // TODO: Scroll to relevant comment.
+  const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
+  if (nearbyComments.length == 0) {
+    return;
+  }
+  let scrollPaneTop = ELEMENT_DISCUSSION.getBoundingClientRect().top
+  let elementTop = nearbyComments[0].getBoundingClientRect().top;
+  let offset = scrollPaneTop - elementTop;
+  ELEMENT_DISCUSSION.scrollTop = offset;
 }
