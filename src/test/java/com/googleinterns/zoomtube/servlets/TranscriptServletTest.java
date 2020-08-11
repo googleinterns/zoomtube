@@ -74,32 +74,31 @@ public final class TranscriptServletTest {
   private static final Long LECTURE_ID_C = 234L;
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
-      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
-      + "1},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:00 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:01 AM\",\"content\":"
-      + "\" \"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\","
-      + "\"id\":123},\"start\":\"Jan 1, 1970 12:00:02 AM\",\"duration\":\"Jan 1, 1970 12:00:01 AM\","
-      + "\"end\":\"Jan 1, 1970 12:00:03 AM\",\"content\":\"Hi\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\","
-      + "\"id\":3},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:05 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:06 AM\",\"content\":\"Okay\"}]";
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":{\"kind\":\"Lect"
+      + "ure\",\"id\":123},\"startTimestampMs\":400,\"durationMs\":1000,\"end"
+      + "TimestampMs\":1400,\"content\":\" \"},{\"transcriptKey\":{\"kind\":\"Transcrip"
+      + "tLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs"
+      + "\":2280,\"durationMs\":1000,\"endTimestampMs\":3280,\"content"
+      + "\":\"Hi\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},\"lectureKey\":{\"k"
+      + "ind\":\"Lecture\",\"id\":123},\"startTimestampMs\":5040,\"durationMs"
+      + "\":1600,\"endTimestampMs\":6640,\"content\":\"Okay\"}]";
   private static final String LONG_VIDEO_JSON =
-      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1}"
-      + ",\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:01 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:03 AM\",\"end\":\"Jan 1, 1970 12:00:04 AM\",\"content\""
-      + ":\"All right, so here we are\\nin front of the elephants,\"},{\"transcriptKey\":{\"kind\":"
-      + "\"TranscriptLine\",\"id\":2},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123}"
-      + ",\"start\":\"Jan 1, 1970 12:00:04 AM\",\"duration\":\"Jan 1, 1970 12:00:04 AM\","
-      + "\"end\":\"Jan 1, 1970 12:00:09 AM\",\"content\":\"the cool thing about these "
-      + "guys\\nis that they have really,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":3},"
-      + "\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:09 AM\","
-      + "\"duration\":\"Jan 1, 1970 12:00:03 AM\",\"end\":\"Jan 1, 1970 12:00:12 AM\",\"content\":"
-      + "\"really, really long trunks,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectureKey\""
-      + ":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:12 AM\",\"duration\":\"Jan "
-      + "1, 1970 12:00:04 AM\",\"end\":\"Jan 1, 1970 12:00:17 AM\",\"content\":\"and that's, "
-      + "that's cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectureKey\""
-      + ":{\"kind\":\"Lecture\",\"id\":123},\"start\":\"Jan 1, 1970 12:00:17 AM\",\"duration\":"
-      + "\"Jan 1, 1970 12:00:01 AM\",\"end\":\"Jan 1, 1970 12:00:18 AM\",\"content\""
-      + ":\"And that's pretty much all there is to say.\"}]";
+      "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":1},\"lectureKey\":{\"kind\":\"Lect"
+      + "ure\",\"id\":123},\"startTimestampMs\":1300,\"durationMs\":3100,\"en"
+      + "dTimestampMs\":4400,\"content\":\"All right, so here we are\\nin front of the "
+      + "elephants,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":2},\"lectureKey\":{"
+      + "\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":4400,\"durationMs"
+      + "\":4766,\"endTimestampMs\":9166,\"content\":\"the cool thing about these gu"
+      + "ys\\nis that they have really,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\""
+      + ":3},\"lectureKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":9166"
+      + ",\"durationMs\":3534,\"endTimestampMs\":12700,\"content\":\"really, "
+      + "really long trunks,\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":4},\"lectu"
+      + "reKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":12700,\"duratio"
+      + "nMs\":4300,\"endTimestampMs\":17000,\"content\":\"and that\\u0027s, "
+      + "that\\u0027s cool.\"},{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":5},\"lectur"
+      + "eKey\":{\"kind\":\"Lecture\",\"id\":123},\"startTimestampMs\":17000,\"duration"
+      + "Ms\":1767,\"endTimestampMs\":18767,\"content\":\"And that\\u0027s pr"
+      + "etty much all there is to say.\"}]";
 
   private static List<TranscriptLine> shortVideoTranscriptLines;
   private static List<TranscriptLine> longVideoTranscriptLines;
@@ -190,7 +189,7 @@ public final class TranscriptServletTest {
   private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, Key lectureKey) {
     for (int i = 0; i < transcriptLines.size(); i++) {
       Entity lineEntity = TranscriptLineUtil.createEntity(lectureKey, "test content",
-          /* start= */ 0F, /* duration= */ 0F, /* end= */ 0F);
+          /* start= */ 0, /* duration= */ 0, /* end= */ 0);
       datastore.put(lineEntity);
     }
   }

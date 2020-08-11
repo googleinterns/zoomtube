@@ -17,17 +17,15 @@ package com.googleinterns.zoomtube.utils;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /** Provides methods to create TranscriptLine Entities and TranscriptLine objects. */
 public final class TranscriptLineUtil {
   public static final String KIND = "TranscriptLine";
   public static final String LECTURE = "lecture";
-  public static final String START = "start";
-  public static final String DURATION = "duration";
+  public static final String START_TIMESTAMP_MS = "start_ms";
+  public static final String DURATION_MS = "duration_ms";
   public static final String CONTENT = "content";
-  public static final String END = "end";
+  public static final String END_TIMESTAMP_MS = "end_ms";
 
   /**
    * Creates and returns a TranscriptLine from a datastore {@code entity} using
@@ -36,16 +34,16 @@ public final class TranscriptLineUtil {
   public static TranscriptLine createTranscriptLine(Entity entity) {
     Key transcriptKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
-    Date start = (Date) entity.getProperty(START);
-    Date duration = (Date) entity.getProperty(DURATION);
-    Date end = (Date) entity.getProperty(END);
+    long start = (long) entity.getProperty(START_TIMESTAMP_MS);
+    long duration = (long) entity.getProperty(DURATION_MS);
+    long end = (long) entity.getProperty(END_TIMESTAMP_MS);
     String content = (String) entity.getProperty(CONTENT);
     return TranscriptLine.builder()
         .setTranscriptKey(transcriptKey)
         .setLectureKey(lectureKey)
-        .setStart(start)
-        .setDuration(duration)
-        .setEnd(end)
+        .setStartTimestampMs(start)
+        .setDurationMs(duration)
+        .setEndTimestampMs(end)
         .setContent(content)
         .build();
   }
@@ -55,18 +53,18 @@ public final class TranscriptLineUtil {
    *
    * @param lectureId The id of the lecture that the transcript line is a part of.
    * @param lineContent The text content of the transcript line.
-   * @param lineStart The starting timestamp for the transcript line in seconds.
-   * @param lineDuration The duration for the transcript line in seconds.
-   * @param lineEnd The ending timestamp for the transcript line in seconds.
+   * @param lineStart The starting timestamp for the transcript line in milliseconds.
+   * @param lineDuration The duration for the transcript line in milliseconds.
+   * @param lineEnd The ending timestamp for the transcript line in milliseconds.
    */
   public static Entity createEntity(
-      Key lectureKey, String lineContent, Float lineStart, Float lineDuration, Float lineEnd) {
+      Key lectureKey, String lineContent, long lineStartMs, long lineDurationMs, long lineEndMs) {
     Entity lineEntity = new Entity(KIND);
     lineEntity.setProperty(LECTURE, lectureKey);
     lineEntity.setProperty(CONTENT, lineContent);
-    lineEntity.setProperty(START, new Date(TimeUnit.SECONDS.toMillis(lineStart.longValue())));
-    lineEntity.setProperty(DURATION, new Date(TimeUnit.SECONDS.toMillis(lineDuration.longValue())));
-    lineEntity.setProperty(END, new Date(TimeUnit.SECONDS.toMillis(lineEnd.longValue())));
+    lineEntity.setProperty(START_TIMESTAMP_MS, lineStartMs);
+    lineEntity.setProperty(DURATION_MS, lineDurationMs);
+    lineEntity.setProperty(END_TIMESTAMP_MS, lineEndMs);
     return lineEntity;
   }
 

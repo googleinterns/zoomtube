@@ -164,7 +164,7 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (!comment.parentKey.value) {
       // Only display timestamp on root comments.
-      timestampPrefix = `${window.timestampToString(comment.timestamp)} - `;
+      timestampPrefix = `${window.timestampToString(comment.timestampMs)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }

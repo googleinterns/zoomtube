@@ -14,11 +14,9 @@
 
 package com.googleinterns.zoomtube.data;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.util.Date;
 
 /** Contains data pertaining to a single line of transcript. */
 @GenerateTypeAdapter
@@ -30,14 +28,14 @@ public abstract class TranscriptLine {
   /** Returns the key for the lecture. */
   public abstract Key lectureKey();
 
-  /** Returns the starting Date for the transcript line. */
-  public abstract Date start();
+  /** Returns the starting timestamp for the transcript line in milliseconds. */
+  public abstract long startTimestampMs();
 
-  /** Returns the duration for the timestamp as a Date. */
-  public abstract Date duration();
+  /** Returns the duration of the transcript line in milliseconds. */
+  public abstract long durationMs();
 
-  /** Returns the ending Date for the transcript line. */
-  public abstract Date end();
+  /** Returns the ending timestamp for the transcript line in milliseconds. */
+  public abstract long endTimestampMs();
 
   /** Returns the text content of the transcript line. */
   public abstract String content();
@@ -56,9 +54,9 @@ public abstract class TranscriptLine {
   public abstract static class Builder {
     public abstract Builder setTranscriptKey(Key transcriptKey);
     public abstract Builder setLectureKey(Key lectureKey);
-    public abstract Builder setStart(Date start);
-    public abstract Builder setDuration(Date duration);
-    public abstract Builder setEnd(Date end);
+    public abstract Builder setStartTimestampMs(long startTimestampMs);
+    public abstract Builder setDurationMs(long durationMs);
+    public abstract Builder setEndTimestampMs(long endTimestampMs);
     public abstract Builder setContent(String content);
     public abstract TranscriptLine build();
   }

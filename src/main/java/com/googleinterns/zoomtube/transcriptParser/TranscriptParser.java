@@ -34,6 +34,7 @@ import org.xml.sax.SAXException;
 /** Parses the transcript XML and stores the lines in datastore. */
 public final class TranscriptParser {
   private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
+  private static final long MILLISECONDS_PER_SECOND = 1000;
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
@@ -108,11 +109,17 @@ public final class TranscriptParser {
       Node transcriptNode = transcriptNodes.item(nodeIndex);
       Element transcriptElement = (Element) transcriptNode;
       String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
-      Float lineStart = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
-      Float lineDuration = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
-      Float lineEnd = lineStart.floatValue() + lineDuration.floatValue();
+
+      float lineStartSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+      float lineDurationSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
+      // I couldn't find any official way to convert a float seconds to long milliseconds without
+      // losing precision.
+      long lineStartMs = Math.round(lineStartSeconds * MILLISECONDS_PER_SECOND);
+      long lineDurationMs = Math.round(lineDurationSeconds * MILLISECONDS_PER_SECOND);
+      long lineEndMs = lineStartMs + lineDurationMs;
+
       datastore.put(TranscriptLineUtil.createEntity(
-          lectureKey, lineContent, lineStart, lineDuration, lineEnd));
+          lectureKey, lineContent, lineStartMs, lineDurationMs, lineEndMs));
     }
   }
 }
