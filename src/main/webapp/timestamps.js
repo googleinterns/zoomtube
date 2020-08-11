@@ -43,10 +43,10 @@ function timestampToSeconds(timestamp) {
   return totalSeconds;
 }
 
-
 /**
  * Returns the {@code date} in seconds.
  */
 function getDateInSeconds(date) {
-  return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS + date.getHours() * HOURS_TO_SECONDS;
+  return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS +
+      date.getHours() * HOURS_TO_SECONDS;
 }

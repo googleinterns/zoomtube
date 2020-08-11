@@ -119,7 +119,8 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  const currentTimestamp = window.getDateInSeconds(currentTranscriptLine.endDate);
+  const currentTimestamp =
+      window.getDateInSeconds(currentTranscriptLine.endDate);
   if (currentTime <= currentTimestamp) {
     return;
   }
