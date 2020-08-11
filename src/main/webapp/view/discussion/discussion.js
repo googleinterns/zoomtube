@@ -276,7 +276,7 @@ class DiscussionComment extends HTMLElement {
 // Custom element names must contain a hyphen.
 customElements.define('discussion-comment', DiscussionComment);
 
-/** Seeks discussion to `@code currentTime`. */
+/** Seeks discussion to `currentTimeSeconds`. */
 function seekDiscussion(currentTimeSeconds) {
   const currentTimeMilliseconds =
       window.secondsToMilliseconds(currentTimeSeconds);
