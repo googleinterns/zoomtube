@@ -66,9 +66,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  */
 function appendTextToList(transcriptLine, ulElement) {
   const startTimestamp =
-      window.timestampToString(transcriptLine.startTimestampMilliseconds);
-  const endTimestamp =
-      window.timestampToString(transcriptLine.endTimestampMilliseconds);
+      window.timestampToString(transcriptLine.startTimestampMs);
+  const endTimestamp = window.timestampToString(transcriptLine.endTimestampMs);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   const contentDivElement = document.createElement('div');

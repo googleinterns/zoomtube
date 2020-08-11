@@ -37,8 +37,8 @@ public abstract class Comment {
    */
   public abstract Optional<Key> parentKey();
 
-  /** Returns the timestamp in the video this comment is referencing. */
-  public abstract long timestampMilliseconds();
+  /** Returns the timestamp in milliseconds this comment is referencing in the video. */
+  public abstract long timestampMs();
 
   /**
    * Returns the comment's author.
@@ -61,7 +61,7 @@ public abstract class Comment {
     public abstract Builder setLectureKey(Key lectureKey);
     public abstract Builder setParentKey(Key parentKey);
     public abstract Builder setParentKey(Optional<Key> parentKey);
-    public abstract Builder setTimestampMilliseconds(long timestampMilliseconds);
+    public abstract Builder setTimestampMs(long timestampMs);
     public abstract Builder setAuthor(User author);
     public abstract Builder setContent(String content);
     public abstract Builder setCreated(Date created);
