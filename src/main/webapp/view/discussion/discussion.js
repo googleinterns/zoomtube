@@ -36,7 +36,7 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
-let newCommentTimestampMilliseconds = 0;
+let newCommentTimestampMs = 0;
 
 /**
  * Loads the lecture disucssion.
@@ -50,14 +50,14 @@ async function intializeDiscussion() {
  */
 async function postNewComment() {
   postAndReload(
-      ELEMENT_POST_TEXTAREA, undefined, newCommentTimestampMilliseconds);
+      ELEMENT_POST_TEXTAREA, /* parent= */ undefined, newCommentTimestampMs);
 }
 
 /**
  * Posts the content of {@code inputField} as a reply to {@code parentId}.
  */
 async function postReply(inputField, parentId) {
-  postAndReload(inputField, parentId, undefined);
+  postAndReload(inputField, parentId);
 }
 
 /**
@@ -140,11 +140,11 @@ async function fetchDiscussion() {
 /**
  * Updates the timestamp displayed and sent by the new comment form.
  *
- * @param {number} time The new time in milliseconds to use.
+ * @param {number} timeMs The new time in milliseconds to use.
  */
-function updateNewCommentTimestamp(timeMilliseconds) {
-  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMilliseconds);
-  newCommentTimestampMilliseconds = timeMilliseconds;
+function updateNewCommentTimestamp(timeMs) {
+  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMs);
+  newCommentTimestampMs = timeMs;
 }
 
 /**
@@ -238,7 +238,7 @@ customElements.define('discussion-comment', DiscussionComment);
 /** Seeks discussion to {@code currentTime}. */
 function seekDiscussion(currentTimeSeconds) {
   const currentTimeMilliseconds =
-      window.secondsToMilliseconds(currentTimeSeconds);
+      window.timestampToSeconds(currentTimeSeconds);
   updateNewCommentTimestamp(currentTimeMilliseconds);
   // TODO: Scroll to relevant comment.
 }
