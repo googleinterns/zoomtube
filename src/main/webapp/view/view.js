@@ -20,7 +20,6 @@ const ENDPOINT_LECTURE = '/lecture';
 window.LECTURE_ID = getLectureId();
 window.VIDEO_ID = getVideoId();
 
-// TODO: Ask if calling .then() on async is bad practice.
 getLecture().then((lecture) => {
   window.LECTURE = lecture;
   initialize();
