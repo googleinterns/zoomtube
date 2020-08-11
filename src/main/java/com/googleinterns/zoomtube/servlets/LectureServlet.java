@@ -152,8 +152,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns URL redirecting to lecture view page with parameter {@code lectureId}
-   * found in {@code lectureEntity}.
+   * Returns URL for the lecture view page for {@code lectureEntity}.
    */
   private Optional<String> buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
