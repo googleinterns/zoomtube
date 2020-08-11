@@ -36,12 +36,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -86,25 +84,27 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws IOException {
+  public void doPost_urlAlreadyInDatabase_shouldReturnLecture()
+      throws IOException, ServletException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
 
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view/?id=1&video-id=3ymwOvzhwHs");
+    verify(response).sendRedirect("/view?id=1&video-id=3ymwOvzhwHs");
   }
 
   @Test
-  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws IOException {
+  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect()
+      throws IOException, ServletException {
     when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
 
     // No lecture in datastoreService.
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view/?id=1&video-id=3ymwOvzhwHs");
+    verify(response).sendRedirect("/view?id=1&video-id=3ymwOvzhwHs");
   }
 
   @Test
