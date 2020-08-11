@@ -21,6 +21,7 @@ const ENDPOINT_TRANSCRIPT = '/transcript';
  */
 // TODO: Delete this method once TranscriptServlet's doPost()
 // is called in LectureServlet.
+// TODO: Add videoId as a param.
 function sendPostToTranscript(lectureQueryString) {
   const params = new URLSearchParams(lectureQueryString);
   fetch('/transcript', {method: 'POST', body: params});

@@ -19,7 +19,7 @@ const PARAM_ID = 'id';
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
-// TODO: Ask if calling .then() on async is bad practice.
+/** Sets {@code window.LECTURE} as Lecture for view page. */
 getLecture().then((lecture) => {
   window.LECTURE = lecture;
   initialize();
