@@ -237,8 +237,7 @@ customElements.define('discussion-comment', DiscussionComment);
 
 /** Seeks discussion to {@code currentTime}. */
 function seekDiscussion(currentTimeSeconds) {
-  const currentTimeMilliseconds =
-      window.timestampToSeconds(currentTimeSeconds);
-  updateNewCommentTimestamp(currentTimeMilliseconds);
+  const currentTimeMs = window.secondsToMilliseconds(currentTimeSeconds);
+  updateNewCommentTimestamp(currentTimeMs);
   // TODO: Scroll to relevant comment.
 }

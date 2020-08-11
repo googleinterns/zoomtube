@@ -82,7 +82,7 @@ public class DiscussionServlet extends HttpServlet {
     if (request.getParameter(PARAM_TIMESTAMP) != null) {
       timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
     }
-    
+
     Date dateNow = new Date(Clock.systemUTC().millis());
 
     if (parent == null) {
