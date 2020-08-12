@@ -90,6 +90,7 @@ function appendTextToList(transcriptLine, ulElement) {
   // Save the dates for seeking later.
   liElement.startTimestampMs = transcriptLine.startTimestampMs;
   liElement.endTimestampMs = transcriptLine.endTimestampMs;
+  liElement.
   // Sets the current transcript line to be the first line.
   if (currentTranscriptLine == null) {
     currentTranscriptLine = liElement;
@@ -144,11 +145,12 @@ function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }
 
-/** Scrolls `transcriptLine` to the top of
+/**
+ * Scrolls `transcriptLine` to the top of
  * `TRANSCRIPT_CONTAINER`.
  * */
 function scrollToTopOfTranscript(transcriptLine) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-  const offset = document.getElementsByTagName('ul')[0].offsetTop;
+  const offset = transcriptLine.parentElement.offsetTop;
   transcriptContainer.scrollTop = transcriptLine.offsetTop - offset;
 }
