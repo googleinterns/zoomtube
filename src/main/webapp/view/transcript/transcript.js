@@ -145,10 +145,9 @@ function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }
 
+/** Scrolls `transcriptLine` to the top of the page in `TRANSCRIPT_CONTAINER`. */
 function scrollTo(transcriptLine) {
-  // const TranscriptList = document.getElementsByTagName('ul')[0];
-  // console.log(TranscriptList.scrollTop);
-  // TranscriptList.scrollTop = transcriptLine.offsetTop;
-  // console.log(transcriptLine.offsetHeight);
-  // console.log(transcriptLine.offsetTop);
+  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
+  const offset = document.getElementsByTagName('ul')[0].offsetTop;
+  transcriptContainer.scrollTop = transcriptLine.offsetTop - offset;
 }
