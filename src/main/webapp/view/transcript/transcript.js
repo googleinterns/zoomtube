@@ -98,14 +98,12 @@ function seekTranscript(currentTime) {
     return;
   }
   // TODO: Disable highlighting on the currentTranscriptLine
-  TranscriptLine.currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  TranscriptLine.currentTranscriptLine.scrollIntoView();
+  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  currentTranscriptLine.scrollIntoView();
   // TODO: Handle the case where the video isn't only playing.
 }
 
 class TranscriptLine extends HTMLLIElement {
-  // TODO: Add type to constant.
-  static currentTranscriptLine = null;
 
   constructor(transcriptLine) {
     super();
@@ -127,7 +125,7 @@ class TranscriptLine extends HTMLLIElement {
     this.startDate = new Date(transcriptLine.start);
     this.endDate = new Date(transcriptLine.end);
     // Sets the current transcript line to be the first line.
-    if (TranscriptLine.currentTranscriptLine == null) {
+    if (currentTranscriptLine == null) {
       currentTranscriptLine = this;
     }
   }
