@@ -82,9 +82,12 @@ async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
   for (const param in params) {
+    // This is recommended by the style guide, but disallowed by linter.
+    /* eslint-disable no-prototype-builtins */
     if (params.hasOwnProperty(param)) {
       url.searchParams.append(param, params[param]);
     }
+    /* eslint-enable no-prototype-builtins */
   }
 
   fetch(url, {
@@ -137,7 +140,7 @@ function prepareComments(comments) {
     }
   }
   // Sort comments such that earliest timestamp is first.
-  rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value))
+  rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value));
   return rootComments;
 }
 
