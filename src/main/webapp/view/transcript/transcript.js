@@ -104,25 +104,24 @@ function seekTranscript(currentTime) {
 
 class TranscriptLine extends HTMLLIElement {
   // TODO: Add type to constant.
-  static currentTranscriptLine;
+  static currentTranscriptLine = null;
 
   constructor(transcriptLine) {
     super();
     const timestampRange = window.createTimestampRange(transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     const contentDivElement = this.createContentDiv();
     appendParagraphToContainer(
-      timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
+      timestampRange, contentDivElement, /* classes= */ ['justify-content-start', 'mb-1']);
     appendParagraphToContainer(
-      transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+      transcriptLine.content, contentDivElement, /* classes= */ ['ml-4', 'mb-1']);
 
     this.classList.add('align-self-center', 'mb-2');
     this.appendChild(contentDivElement);
     const hrElement = this.createHrElement();
     this.appendChild(hrElement);
-    // TODO: Add attributes
     // TODO: Update to use number once pull request #168 is merged.
-    liElement.startDate = new Date(transcriptLine.start);
-    liElement.endDate = new Date(transcriptLine.end);
+    this.startDate = new Date(transcriptLine.start);
+    this.endDate = new Date(transcriptLine.end);
     // Sets the current transcript line to be the first line.
     if (TranscriptLine.currentTranscriptLine == null) {
       currentTranscriptLine = this;
@@ -180,8 +179,8 @@ function appendTextToList(transcriptLine, ulElement) {
   // liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
   // Save the dates for seeking later.
-  liElement.startDate = new Date(transcriptLine.start);
-  liElement.endDate = new Date(transcriptLine.end);
+  // liElement.startDate = new Date(transcriptLine.start);
+  // liElement.endDate = new Date(transcriptLine.end);
   // Sets the current transcript line to be the first line.
   // if (currentTranscriptLine == null) {
   //   currentTranscriptLine = liElement;
