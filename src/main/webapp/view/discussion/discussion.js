@@ -17,8 +17,7 @@ const ENDPOINT_DISCUSSION = '/discussion';
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
 const PARAM_TIMESTAMP = 'timestamp';
-
-const ATTR_ID = 'key-id';
+const PARAM_TYPE = 'type';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
@@ -35,6 +34,11 @@ const SELECTOR_REPLY_FORM = '#reply-form';
 const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
+
+const COMMENT_TYPE_REPLY = 'REPLY';
+const COMMENT_TYPE_QUESTION = 'QUESTION';
+const COMMENT_TYPE_NOTE = 'NOTE';
+const COMMENT_TYPE_RESOURCE = 'RESOURCE';
 
 // 10 seconds.
 const TIME_TOLERANCE_MILLISECONDS = 10000;
@@ -53,31 +57,32 @@ async function intializeDiscussion() {
  * Posts a new comment using the main post textarea.
  */
 async function postNewComment() {
-  postAndReload(
-      ELEMENT_POST_TEXTAREA, /* parent= */ undefined, newCommentTimestampMs);
+  // TODO: Add support for submitting types other than QUESTION.
+  postAndReload(ELEMENT_POST_TEXTAREA, {
+    [PARAM_TIMESTAMP]: newCommentTimestampMs,
+    [PARAM_TYPE]: COMMENT_TYPE_QUESTION,
+  });
 }
 
 /**
  * Posts the content of {@code inputField} as a reply to {@code parentId}.
  */
 async function postReply(inputField, parentId) {
-  postAndReload(inputField, parentId);
+  postAndReload(inputField, {
+    [PARAM_PARENT]: parentId,
+    [PARAM_TYPE]: COMMENT_TYPE_REPLY,
+  });
 }
 
 /**
- * Posts comment from {@code inputField} and reloads the discussion. If
- * {@code parentId} is provided, this posts a reply to the comment with
- * that id.
+ * Posts comment from `inputField` and reloads the discussion. Adds query
+ * parameters from `params` to the request.
  */
-async function postAndReload(
-    inputField, parentId = undefined, timestamp = undefined) {
+async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  if (parentId !== undefined) {
-    url.searchParams.append(PARAM_PARENT, parentId);
-  }
-  if (timestamp !== undefined) {
-    url.searchParams.append(PARAM_TIMESTAMP, timestamp);
+  for (const param of params.keys()) {
+    url.searchParams.append(param, params[param]);
   }
 
   fetch(url, {
