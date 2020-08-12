@@ -145,7 +145,7 @@ class TranscriptLine extends HTMLLIElement {
   }
 
   /** Creates and returns a div element with style added. */
-  // TODO: Delete this method after the creation of a transcript line 
+  // TODO: Delete this method after the creation of a transcript line
   // on the DOM is to use slots.
   createStyledDivElement() {
     const contentDivElement = document.createElement('div');
@@ -154,7 +154,7 @@ class TranscriptLine extends HTMLLIElement {
   }
 
   /** Creates and returns a hr element with style added. */
-  // TODO: Delete this method after the creation of a transcript line 
+  // TODO: Delete this method after the creation of a transcript line
   // on the DOM is to use slots.
   createStyledHrElement() {
     const hrElement = document.createElement('hr');
