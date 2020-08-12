@@ -59,7 +59,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
-    appendTextToList(transcriptLine, ulElement);
+    // appendTextToList(transcriptLine, ulElement);
+    ulElement.appendChild(new TranscriptLine(transcriptLine));
   });
 }
 
@@ -97,8 +98,8 @@ function seekTranscript(currentTime) {
     return;
   }
   // TODO: Disable highlighting on the currentTranscriptLine
-  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  currentTranscriptLine.scrollIntoView();
+  TranscriptLine.currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  TranscriptLine.currentTranscriptLine.scrollIntoView();
   // TODO: Handle the case where the video isn't only playing.
 }
 
@@ -108,12 +109,15 @@ class TranscriptLine extends HTMLLIElement {
 
   constructor(transcriptLine) {
     super();
-    const timestampRange = window.createTimestampRange(transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
+    const timestampRange = window.createTimestampRange(
+        transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     const contentDivElement = this.createContentDiv();
     appendParagraphToContainer(
-      timestampRange, contentDivElement, /* classes= */ ['justify-content-start', 'mb-1']);
+        timestampRange, contentDivElement,
+        /* classes= */['justify-content-start', 'mb-1']);
     appendParagraphToContainer(
-      transcriptLine.content, contentDivElement, /* classes= */ ['ml-4', 'mb-1']);
+        transcriptLine.content, contentDivElement,
+        /* classes= */['ml-4', 'mb-1']);
 
     this.classList.add('align-self-center', 'mb-2');
     this.appendChild(contentDivElement);
@@ -151,7 +155,6 @@ class TranscriptLine extends HTMLLIElement {
     hrElement.classList.add('my-1', 'align-middle', 'mr-5');
     return hrElement;
   }
-
 }
 
 /**
@@ -161,8 +164,9 @@ class TranscriptLine extends HTMLLIElement {
 function appendTextToList(transcriptLine, ulElement) {
   // const startTimestamp =
   //     window.timestampToString(transcriptLine.startTimestampMs);
-  // const endTimestamp = window.timestampToString(transcriptLine.endTimestampMs);
-  // const timestamp = `${startTimestamp} - ${endTimestamp}`;
+  // const endTimestamp =
+  // window.timestampToString(transcriptLine.endTimestampMs); const timestamp =
+  // `${startTimestamp} - ${endTimestamp}`;
 
   // const contentDivElement = document.createElement('div');
   // contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
@@ -177,7 +181,7 @@ function appendTextToList(transcriptLine, ulElement) {
   // const hrElement = document.createElement('hr');
   // hrElement.classList.add('my-1', 'align-middle', 'mr-5');
   // liElement.appendChild(hrElement);
-  ulElement.appendChild(liElement);
+  // ulElement.appendChild(liElement);
   // Save the dates for seeking later.
   // liElement.startDate = new Date(transcriptLine.start);
   // liElement.endDate = new Date(transcriptLine.end);
@@ -186,3 +190,4 @@ function appendTextToList(transcriptLine, ulElement) {
   //   currentTranscriptLine = liElement;
   // }
 }
+customElements.define('transcript-line', TranscriptLine, {extends: 'li'});
