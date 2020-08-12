@@ -24,6 +24,7 @@ let /** Element */ currentTranscriptLine;
  */
 // TODO: Delete this method once TranscriptServlet's doPost()
 // is called in LectureServlet.
+// TODO: Add videoId as a param.
 function sendPostToTranscript(lectureQueryString) {
   const params = new URLSearchParams(lectureQueryString);
   fetch('/transcript', {method: 'POST', body: params});
@@ -87,9 +88,8 @@ function appendTextToList(transcriptLine, ulElement) {
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
   liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
-  // Save the dates for seeking later.
-  liElement.startDate = new Date(transcriptLine.start);
-  liElement.endDate = new Date(transcriptLine.end);
+  liElement.startTimestampMs = transcriptLine.startTimestampMs;
+  liElement.endTimestampMs = transcriptLine.endTimestampMs;
   // Sets the current transcript line to be the first line.
   if (currentTranscriptLine == null) {
     currentTranscriptLine = liElement;
@@ -122,17 +122,13 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  // TODO: Update this constant once the pull request updating Date to long
-  // is approved.
-  const currentTimestamp =
-      window.getDateInSeconds(currentTranscriptLine.endDate);
-  if (currentTime <= currentTimestamp) {
+  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  if (currentTimeMs <= currentTranscriptLine.endTimestampMs) {
     return;
   }
   removeBold(currentTranscriptLine);
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  // TODO: Update scrollIntoView once #176 is merged.
-  currentTranscriptLine.scrollIntoView();
+  scrollToTopOfTranscript(currentTranscriptLine);
   addBold(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
 }
@@ -147,4 +143,13 @@ function addBold(transcriptLineLiElement) {
 function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
+}
+
+/**
+ * Scrolls `transcriptLine` to the top of the transcript area.
+ * */
+function scrollToTopOfTranscript(transcriptLine) {
+  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
+  const ulElementOffset = transcriptLine.parentElement.offsetTop;
+  transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
