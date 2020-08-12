@@ -149,6 +149,6 @@ function removeBold(transcriptLineLiElement) {
  * */
 function scrollToTopOfTranscript(transcriptLine) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-  const offset = transcriptLine.parentElement.offsetTop;
-  transcriptContainer.scrollTop = transcriptLine.offsetTop - offset;
+  const ulElementOffset = transcriptLine.parentElement.offsetTop;
+  transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
