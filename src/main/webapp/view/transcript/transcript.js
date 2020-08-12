@@ -109,19 +109,19 @@ function seekTranscript(currentTime) {
 class TranscriptLine extends HTMLLIElement {
   constructor(transcriptLine) {
     super();
+    // TODO: Refactor creation of DOM elements to use slots instead.
     const timestampRange = window.createTimestampRange(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-    const contentDivElement = this.createContentDiv();
+    const contentDivElement = this.createStyledDivElement();
     appendParagraphToContainer(
         timestampRange, contentDivElement,
         /* classes= */['justify-content-start', 'mb-1']);
     appendParagraphToContainer(
         transcriptLine.content, contentDivElement,
         /* classes= */['ml-4', 'mb-1']);
-
     this.classList.add('align-self-center', 'mb-2');
     this.appendChild(contentDivElement);
-    const hrElement = this.createHrElement();
+    const hrElement = this.createStyledHrElement();
     this.appendChild(hrElement);
     // TODO: Update to use number once pull request #168 is merged.
     this.startDate = new Date(transcriptLine.start);
@@ -143,14 +143,20 @@ class TranscriptLine extends HTMLLIElement {
     this.classList.add(DEFAULT_FONT_WEIGHT);
     this.classList.remove(BOLD_FONT_WEIGHT);
   }
-  // TODO: create own class??
-  createContentDiv() {
+
+  /** Creates and returns a div element with style added. */
+  // TODO: Delete this method after the creation of a transcript line 
+  // on the DOM is to use slots.
+  createStyledDivElement() {
     const contentDivElement = document.createElement('div');
     contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
     return contentDivElement;
   }
 
-  createHrElement() {
+  /** Creates and returns a hr element with style added. */
+  // TODO: Delete this method after the creation of a transcript line 
+  // on the DOM is to use slots.
+  createStyledHrElement() {
     const hrElement = document.createElement('hr');
     hrElement.classList.add('my-1', 'align-middle', 'mr-5');
     return hrElement;
