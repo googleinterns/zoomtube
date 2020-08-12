@@ -146,7 +146,7 @@ function removeBold(transcriptLineLiElement) {
 }
 
 /** Scrolls `transcriptLine` to the top of
- * `TRANSCRIPT_CONTAINER`. 
+ * `TRANSCRIPT_CONTAINER`.
  * */
 function scrollToTopOfTranscript(transcriptLine) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
