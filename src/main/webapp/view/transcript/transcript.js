@@ -129,7 +129,7 @@ function seekTranscript(currentTime) {
   // TODO: Disable highlighting on the currentTranscriptLine
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   // currentTranscriptLine.scrollIntoView();
-  scrollTo(currentTranscriptLine);
+  scrollToTopOfTranscript(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
 }
 
@@ -145,8 +145,10 @@ function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }
 
-/** Scrolls `transcriptLine` to the top of the page in `TRANSCRIPT_CONTAINER`. */
-function scrollTo(transcriptLine) {
+/** Scrolls `transcriptLine` to the top of the page in 
+ * `TRANSCRIPT_CONTAINER`. 
+ * */
+function scrollToTopOfTranscript(transcriptLine) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
   const offset = document.getElementsByTagName('ul')[0].offsetTop;
   transcriptContainer.scrollTop = transcriptLine.offsetTop - offset;
