@@ -19,7 +19,6 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.googleinterns.zoomtube.data.Comment;
 import java.util.Date;
-import javax.annotation.Nullable;
 
 /** Provides methods to create Comment Entities and Comments. */
 public final class CommentUtil {
@@ -30,6 +29,7 @@ public final class CommentUtil {
   public static final String AUTHOR = "author";
   public static final String CONTENT = "content";
   public static final String CREATED = "created";
+  public static final String TYPE = "type";
 
   /**
    * Creates and returns a Comment using the properties of {@code entity}.
@@ -37,21 +37,24 @@ public final class CommentUtil {
   public static Comment createComment(Entity entity) {
     Key commentKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
-    @Nullable Key parentKey = (Key) entity.getProperty(PARENT);
-    long timestampMs = (long) entity.getProperty(TIMESTAMP_MS);
     User author = (User) entity.getProperty(AUTHOR);
     String content = (String) entity.getProperty(CONTENT);
     Date created = (Date) entity.getProperty(CREATED);
+    Comment.Type type = Comment.Type.valueOf((String) entity.getProperty(TYPE));
 
     Comment.Builder builder = Comment.builder()
                                   .setCommentKey(commentKey)
                                   .setLectureKey(lectureKey)
-                                  .setTimestampMs(timestampMs)
                                   .setAuthor(author)
                                   .setContent(content)
-                                  .setCreated(created);
-    if (parentKey != null) {
+                                  .setCreated(created)
+                                  .setType(type);
+    if (type == Comment.Type.REPLY) {
+      Key parentKey = (Key) entity.getProperty(PARENT);
       builder.setParentKey(parentKey);
+    } else {
+      long timestampMs = (long) entity.getProperty(TIMESTAMP_MS);
+      builder.setTimestampMs(timestampMs);
     }
     return builder.build();
   }
@@ -59,29 +62,30 @@ public final class CommentUtil {
   /**
    * Creates and returns an entity with the specified properties and no parent comment.
    */
-  public static Entity createEntity(
-      Key lectureKey, long timestampMs, User author, String content, Date created) {
+  public static Entity createRootEntity(Key lectureKey, long timestampMs, User author,
+      String content, Date created, Comment.Type type) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
     entity.setProperty(TIMESTAMP_MS, timestampMs);
     entity.setProperty(AUTHOR, author);
     entity.setProperty(CONTENT, content);
     entity.setProperty(CREATED, created);
+    entity.setProperty(TYPE, type.toString());
     return entity;
   }
 
   /**
-   * Creates and returns an entity with the specified properties, including a parent comment.
+   * Creates and returns an entity with the specified properties as a reply to a parent comment.
    */
-  public static Entity createEntity(
-      Key lectureKey, Key parentKey, long timestampMs, User author, String content, Date created) {
+  public static Entity createReplyEntity(
+      Key lectureKey, Key parentKey, User author, String content, Date created) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
     entity.setProperty(PARENT, parentKey);
-    entity.setProperty(TIMESTAMP_MS, timestampMs);
     entity.setProperty(AUTHOR, author);
     entity.setProperty(CONTENT, content);
     entity.setProperty(CREATED, created);
+    entity.setProperty(TYPE, Comment.Type.REPLY.toString());
     return entity;
   }
 

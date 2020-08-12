@@ -23,6 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.Comment;
 import com.googleinterns.zoomtube.utils.CommentUtil;
+import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,11 +87,13 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_storesCommentWithAllProperties() throws ServletException, IOException {
+  public void doPost_reply_storesCommentWithAllProperties() throws ServletException, IOException {
     final int parentId = 32;
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TYPE))
+        .thenReturn(Comment.Type.REPLY.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
     when(request.getParameter(DiscussionServlet.PARAM_PARENT))
         .thenReturn(Integer.toString(parentId));
@@ -106,12 +109,18 @@ public class DiscussionServletTest {
     assertThat(comment.content()).isEqualTo("Something unique");
     assertThat(comment.parentKey().isPresent()).isTrue();
     assertThat(comment.parentKey().get().getId()).isEqualTo(parentId);
+    assertThat(comment.type()).isEqualTo(Comment.Type.REPLY);
   }
 
   @Test
-  public void doPost_rootCommentHasNoParent() throws ServletException, IOException {
+  public void doPost_rootComment_storesTypeAndTimestamp() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
+    long timestamp = 123;
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP))
+        .thenReturn(Long.toString(timestamp));
+    when(request.getParameter(DiscussionServlet.PARAM_TYPE))
+        .thenReturn(Comment.Type.QUESTION.toString());
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader("Random untested content")));
 
@@ -121,6 +130,9 @@ public class DiscussionServletTest {
     PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
     Comment comment = CommentUtil.createComment(query.asSingleEntity());
     assertThat(comment.parentKey().isPresent()).isFalse();
+    assertThat(comment.timestampMs().isPresent()).isTrue();
+    assertThat(comment.timestampMs().get()).isEqualTo(timestamp);
+    assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION);
   }
 
   @Test
@@ -182,19 +194,14 @@ public class DiscussionServletTest {
   }
 
   private Entity createTestCommentEntity(int lectureId) {
-    Entity commentEntity = new Entity(CommentUtil.KIND);
-    Key lecture = KeyFactory.createKey(/* kind= */ "Lecture", lectureId);
-    commentEntity.setProperty(CommentUtil.LECTURE, lecture);
-    commentEntity.setProperty(CommentUtil.PARENT, null);
-    commentEntity.setProperty(CommentUtil.TIMESTAMP_MS, 0);
-    // Most properties here are not tested, but are required by the AutoValue class so must be
-    // specified.
-    commentEntity.setProperty(
-        CommentUtil.AUTHOR, new User("untestedAuthor@example.com", "untested.com"));
-    commentEntity.setProperty(CommentUtil.CONTENT, "Untested content");
-    commentEntity.setProperty(CommentUtil.CREATED, new Date(Clock.systemUTC().millis()));
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    long timestampMs = 123;
+    User author = new User("test@example.com", "example.com");
+    String content = "Test content";
+    Date dateNow = new Date();
+    Comment.Type type = Comment.Type.QUESTION;
 
-    return commentEntity;
+    return CommentUtil.createRootEntity(lectureKey, timestampMs, author, content, dateNow, type);
   }
 
   private List<Comment> getCommentsFromJson(String json) {

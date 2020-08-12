@@ -46,20 +46,20 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createComment_shouldReturnCommentFromEntity() throws IOException {
+  public void createComment_reply_shouldReturnCommentFromEntity() throws IOException {
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, 12345);
     Key parent = KeyFactory.createKey(CommentUtil.KIND, 67890);
-    long timestampMs = 123;
     User author = new User("test@example.com", "example.com");
     String content = "Test content";
     Date dateNow = new Date();
     Entity entity = new Entity(CommentUtil.KIND);
+    Comment.Type type = Comment.Type.REPLY;
     entity.setProperty(CommentUtil.LECTURE, lecture);
     entity.setProperty(CommentUtil.PARENT, parent);
-    entity.setProperty(CommentUtil.TIMESTAMP_MS, timestampMs);
     entity.setProperty(CommentUtil.AUTHOR, author);
     entity.setProperty(CommentUtil.CONTENT, content);
     entity.setProperty(CommentUtil.CREATED, dateNow);
+    entity.setProperty(CommentUtil.TYPE, type.toString());
 
     Comment comment = CommentUtil.createComment(entity);
 
@@ -67,46 +67,77 @@ public final class CommentUtilTest {
     assertThat(comment.lectureKey()).isEqualTo(lecture);
     assertThat(comment.parentKey().isPresent()).isTrue();
     assertThat(comment.parentKey().get()).isEqualTo(parent);
-    assertThat(comment.timestampMs()).isEqualTo(timestampMs);
     assertThat(comment.author()).isEqualTo(author);
     assertThat(comment.content()).isEqualTo(content);
     assertThat(comment.created()).isEqualTo(dateNow);
+    assertThat(comment.type()).isEqualTo(type);
   }
 
   @Test
-  public void createEntity_noParent_shouldReturnEntityWithProperties_noParent() throws IOException {
+  public void createComment_root_shouldReturnCommentFromEntity() throws IOException {
+    Key lecture = KeyFactory.createKey(LectureUtil.KIND, 12345);
+    long timestamp = 123;
+    User author = new User("test@example.com", "example.com");
+    String content = "Test content";
+    Date dateNow = new Date();
+    Entity entity = new Entity(CommentUtil.KIND);
+    Comment.Type type = Comment.Type.QUESTION;
+    entity.setProperty(CommentUtil.LECTURE, lecture);
+    entity.setProperty(CommentUtil.TIMESTAMP_MS, timestamp);
+    entity.setProperty(CommentUtil.AUTHOR, author);
+    entity.setProperty(CommentUtil.CONTENT, content);
+    entity.setProperty(CommentUtil.CREATED, dateNow);
+    entity.setProperty(CommentUtil.TYPE, type.toString());
+
+    Comment comment = CommentUtil.createComment(entity);
+
+    assertThat(comment.commentKey()).isEqualTo(entity.getKey());
+    assertThat(comment.lectureKey()).isEqualTo(lecture);
+    assertThat(comment.parentKey().isPresent()).isFalse();
+    assertThat(comment.timestampMs().isPresent()).isTrue();
+    assertThat(comment.timestampMs().get()).isEqualTo(timestamp);
+    assertThat(comment.author()).isEqualTo(author);
+    assertThat(comment.content()).isEqualTo(content);
+    assertThat(comment.created()).isEqualTo(dateNow);
+    assertThat(comment.type()).isEqualTo(type);
+  }
+
+  @Test
+  public void createRootEntity_shouldReturnEntityWithProperties() throws IOException {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 12345);
     long timestampMs = 123;
     User author = new User("test@example.com", "example.com");
     String content = "Test content";
     Date dateNow = new Date();
+    Comment.Type type = Comment.Type.QUESTION;
 
-    Entity entity = CommentUtil.createEntity(lectureKey, timestampMs, author, content, dateNow);
+    Entity entity =
+        CommentUtil.createRootEntity(lectureKey, timestampMs, author, content, dateNow, type);
 
     assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lectureKey);
     assertThat(entity.getProperty(CommentUtil.TIMESTAMP_MS)).isEqualTo(timestampMs);
     assertThat(entity.getProperty(CommentUtil.AUTHOR)).isEqualTo(author);
     assertThat(entity.getProperty(CommentUtil.CONTENT)).isEqualTo(content);
     assertThat(entity.getProperty(CommentUtil.CREATED)).isEqualTo(dateNow);
+    assertThat(Comment.Type.valueOf((String) entity.getProperty(CommentUtil.TYPE))).isEqualTo(type);
   }
 
   @Test
-  public void createEntity_withParent_shouldReturnEntityWithProperties() throws IOException {
+  public void createReplyEntity_shouldReturnEntityWithProperties() throws IOException {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 12345);
     Key parentKey = KeyFactory.createKey(CommentUtil.KIND, 67890);
-    long timestampMs = 123;
     User author = new User("test@example.com", "example.com");
     String content = "Test content";
     Date dateNow = new Date();
 
-    Entity entity =
-        CommentUtil.createEntity(lectureKey, parentKey, timestampMs, author, content, dateNow);
+    Entity entity = CommentUtil.createReplyEntity(lectureKey, parentKey, author, content, dateNow);
 
     assertThat(entity.getProperty(CommentUtil.LECTURE)).isEqualTo(lectureKey);
     assertThat(entity.getProperty(CommentUtil.PARENT)).isEqualTo(parentKey);
-    assertThat(entity.getProperty(CommentUtil.TIMESTAMP_MS)).isEqualTo(timestampMs);
     assertThat(entity.getProperty(CommentUtil.AUTHOR)).isEqualTo(author);
     assertThat(entity.getProperty(CommentUtil.CONTENT)).isEqualTo(content);
     assertThat(entity.getProperty(CommentUtil.CREATED)).isEqualTo(dateNow);
+    assertThat(Comment.Type.valueOf((String) entity.getProperty(CommentUtil.TYPE)))
+        .isEqualTo(Comment.Type.REPLY);
   }
 }
