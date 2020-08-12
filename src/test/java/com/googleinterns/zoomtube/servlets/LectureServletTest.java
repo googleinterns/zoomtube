@@ -88,7 +88,7 @@ public final class LectureServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing name parameter.");
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_MISSING_NAME);
   }
 
   @Test
@@ -97,7 +97,7 @@ public final class LectureServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing link parameter.");
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_MISSING_LINK);
   }
 
   @Test
@@ -107,7 +107,7 @@ public final class LectureServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid video link.");
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_INVALID_LINK);
   }
 
   @Test
@@ -140,7 +140,7 @@ public final class LectureServletTest {
   public void doGet_missingLecture_badRequest() throws IOException {
     servlet.doGet(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id parameter.");
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_MISSING_ID);
   }
 
   @Test
@@ -170,7 +170,7 @@ public final class LectureServletTest {
 
     String json = content.toString();
     assertThat(json).isEmpty();
-    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
+    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, LectureServlet.ERROR_LECTURE_NOT_FOUND);
   }
 
   @Test

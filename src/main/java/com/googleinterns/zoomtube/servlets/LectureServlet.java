@@ -53,6 +53,14 @@ public class LectureServlet extends HttpServlet {
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
 
+
+  @VisibleForTesting static final String ERROR_MISSING_NAME = "Missing name parameter.";
+  @VisibleForTesting static final String ERROR_MISSING_LINK = "Missing link parameter.";
+  @VisibleForTesting static final String ERROR_MISSING_ID = "Missing id parameter.";
+  @VisibleForTesting static final String ERROR_INVALID_LINK = "Invalid video link.";
+  @VisibleForTesting static final String ERROR_FAILED_REDIRECT = "Failed to create redirect URL.";
+  @VisibleForTesting static final String ERROR_LECTURE_NOT_FOUND = "Lecture not found in database.";
+
   private static final String REDIRECT_URL = "/view";
 
   /* Pattern used to create a matcher for a video ID. */
@@ -71,20 +79,20 @@ public class LectureServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     if (request.getParameter(PARAM_NAME) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing name parameter.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_NAME);
       return;
     }
     String lectureName = request.getParameter(PARAM_NAME);
 
     if (request.getParameter(PARAM_LINK) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing link parameter.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_LINK);
       return;
     }
     String videoUrl = request.getParameter(PARAM_LINK);
 
     Optional<String> videoId = getVideoId(videoUrl);
     if (!videoId.isPresent()) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid video link.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_INVALID_LINK);
       return;
     }
 
@@ -101,7 +109,7 @@ public class LectureServlet extends HttpServlet {
 
     if (!redirectUrl.isPresent()) {
       response.sendError(
-          HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to create redirect URL.");
+          HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ERROR_FAILED_REDIRECT);
       return;
     }
     response.sendRedirect(redirectUrl.get());
@@ -121,7 +129,7 @@ public class LectureServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     if (request.getParameter(PARAM_ID) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id parameter.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_ID);
       return;
     }
     long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
@@ -132,7 +140,7 @@ public class LectureServlet extends HttpServlet {
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
     } catch (EntityNotFoundException entityNotFound) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, ERROR_LECTURE_NOT_FOUND);
     }
   }
 
@@ -172,7 +180,7 @@ public class LectureServlet extends HttpServlet {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
 
     try {
-      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(LectureUtil.ID, lectureId);
+      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(PARAM_ID, lectureId);
       return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
       return Optional.empty();
