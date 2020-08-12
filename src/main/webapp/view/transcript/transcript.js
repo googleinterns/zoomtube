@@ -145,7 +145,7 @@ function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }
 
-/** Scrolls `transcriptLine` to the top of the page in 
+/** Scrolls `transcriptLine` to the top of
  * `TRANSCRIPT_CONTAINER`. 
  * */
 function scrollToTopOfTranscript(transcriptLine) {
