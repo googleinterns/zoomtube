@@ -149,6 +149,9 @@ function removeBold(transcriptLineLiElement) {
 }
 
 function scrollTo(transcriptLine) {
-  const TranscriptList = document.getElementsByTagName('ul')[0];
-  TranscriptList.scrollTop = transcriptLine.offsetHeight;
+  // const TranscriptList = document.getElementsByTagName('ul')[0];
+  // console.log(TranscriptList.scrollTop);
+  // TranscriptList.scrollTop = transcriptLine.offsetTop;
+  // console.log(transcriptLine.offsetHeight);
+  // console.log(transcriptLine.offsetTop);
 }
