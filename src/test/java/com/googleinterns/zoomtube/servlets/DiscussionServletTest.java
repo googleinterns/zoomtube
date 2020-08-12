@@ -130,7 +130,6 @@ public class DiscussionServletTest {
     PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
     Comment comment = CommentUtil.createComment(query.asSingleEntity());
     assertThat(comment.parentKey().isPresent()).isFalse();
-    assertThat(comment.timestampMs().isPresent()).isTrue();
     assertThat(comment.timestampMs().get()).isEqualTo(TIMESTAMP_MS);
     assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION);
   }
@@ -196,11 +195,10 @@ public class DiscussionServletTest {
   private Entity createTestCommentEntity(int lectureId) {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     User author = new User("test@example.com", "example.com");
-    String content = "Test content";
     Date dateNow = new Date();
-    Comment.Type type = Comment.Type.QUESTION;
 
-    return CommentUtil.createRootEntity(lectureKey, TIMESTAMP_MS, author, content, dateNow, type);
+    return CommentUtil.createRootEntity(
+        lectureKey, TIMESTAMP_MS, author, "Test content", dateNow, Comment.Type.QUESTION);
   }
 
   private List<Comment> getCommentsFromJson(String json) {
