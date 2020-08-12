@@ -126,7 +126,7 @@ function prepareComments(comments) {
 
   const rootComments = [];
   for (const comment of comments) {
-    if (comment.parentKey.value) {
+    if (comment.type === COMMENT_TYPE_REPLY) {
       const parent = commentKeys[comment.parentKey.value.id];
       parent.replies.push(comment);
     } else {
@@ -169,7 +169,7 @@ function getNearbyDiscussionComments(timestampMilliseconds) {
   const nearby = [];
   // currentRootDiscussionComments is already sorted by timestamp.
   for (const element of currentRootDiscussionComments) {
-    const commentTime = element.comment.timestampMilliseconds;
+    const commentTime = element.comment.timestampMs.value;
     if (commentTime < timestampMilliseconds - TIME_TOLERANCE_MILLISECONDS) {
       // Before the start of the range, continue to next.
       continue;
@@ -217,9 +217,9 @@ class DiscussionComment extends HTMLElement {
   getHeaderString(comment) {
     const username = comment.author.email.split('@')[0];
     let timestampPrefix = '';
-    if (!comment.parentKey.value) {
-      // Only display timestamp on root comments.
-      timestampPrefix = `${window.timestampToString(comment.timestampMs)} - `;
+    if (comment.type !== COMMENT_TYPE_REPLY) {
+      // Don't show timestamp on replies.
+      timestampPrefix = `${window.timestampToString(comment.timestampMs.value)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
