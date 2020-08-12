@@ -87,7 +87,6 @@ function appendTextToList(transcriptLine, ulElement) {
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
   liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
-  // Save the dates for seeking later.
   liElement.startTimestampMs = transcriptLine.startTimestampMs;
   liElement.endTimestampMs = transcriptLine.endTimestampMs;
   // Sets the current transcript line to be the first line.
