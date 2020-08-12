@@ -55,6 +55,6 @@ function getDateInSeconds(date) {
 /**
  * Converts `seconds` to milliseconds.
  */
-function secondsToMs(seconds) {
+function secondsToMilliseconds(seconds) {
   return seconds * MILLISECONDS_CONVERTER;
 }

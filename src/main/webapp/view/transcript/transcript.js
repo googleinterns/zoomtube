@@ -122,12 +122,10 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  const msCurrentTime = window.secondsToMs(currentTime);
-
+  const msCurrentTime = window.secondsToMilliseconds(currentTime);
   if (msCurrentTime <= currentTranscriptLine.endTimestampMs) {
     return;
   }
-
   // TODO: Disable highlighting on the currentTranscriptLine
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   currentTranscriptLine.scrollIntoView();
