@@ -17,7 +17,7 @@ const MINUTES_TO_SECONDS = 60;
 const HOURS_TO_SECONDS = 360;
 
 /**
- * Converts a video {@code timestampMs} in milliseconds into a string.
+ * Converts a {@code timestampMs} in milliseconds into a string.
  */
 function timestampToString(timestampMs) {
   const date = new Date();
@@ -35,7 +35,7 @@ function timestampToString(timestampMs) {
 }
 
 /**
- * Converts a number of `seconds` to an integer number of milliseconds.
+ * Converts `seconds` to milliseconds.
  */
 // TODO: Remove once #158 is addressed.
 function secondsToMilliseconds(seconds) {

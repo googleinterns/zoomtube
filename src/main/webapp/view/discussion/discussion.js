@@ -41,7 +41,7 @@ const COMMENT_TYPE_NOTE = 'NOTE';
 const COMMENT_TYPE_RESOURCE = 'RESOURCE';
 
 // 10 seconds.
-const TIME_TOLERANCE_MILLISECONDS = 10000;
+const TIME_TOLERANCE_MS = 10000;
 
 let newCommentTimestampMs = 0;
 let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
@@ -167,23 +167,23 @@ function updateNewCommentTimestamp(timeMs) {
 }
 
 /**
- * Returns an array of the `DiscussionComment`s within
- * `TIME_TOLERANCE_MILLISECONDS` milliseconds to the `timestampMilliseconds`.
+ * Returns an array of the `DiscussionComment`s with timestamps near
+ * `timestampMs`. This returns an empty array if no elements are nearby.
  *
- * <p>This returns an empty array if no elements are nearby.
+ * <p>A comment is nearby if it is within `TIME_TOLERANCE_MS`.
  */
-function getNearbyDiscussionComments(timestampMilliseconds) {
+function getNearbyDiscussionComments(timestampMs) {
   const nearby = [];
   // currentRootDiscussionComments is already sorted by timestamp.
   for (const element of currentRootDiscussionComments) {
     const commentTime = element.comment.timestampMs.value;
-    if (commentTime < timestampMilliseconds - TIME_TOLERANCE_MILLISECONDS) {
+    if (commentTime < timestampMs - TIME_TOLERANCE_MS) {
       // Before the start of the range, continue to next.
       continue;
     }
-    if (commentTime > timestampMilliseconds + TIME_TOLERANCE_MILLISECONDS) {
+    if (commentTime > timestampMs + TIME_TOLERANCE_MS) {
       // Outside of range, there will be no more.
-      break;
+      return nearby;
     }
     nearby.push(element);
   }
@@ -276,7 +276,7 @@ class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Scroll `ELEMENT_DISCUSSION` such that this element is at the top.
+   * Scroll such that this element is at the top of the discussion area.
    */
   scrollToTopOfDiscussion() {
     const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
