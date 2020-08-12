@@ -36,6 +36,8 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
+// TODO: Refactor these global variables into a namespace, module, or class.
+// See: #191.
 let newCommentTimestampMs = 0;
 
 /**
