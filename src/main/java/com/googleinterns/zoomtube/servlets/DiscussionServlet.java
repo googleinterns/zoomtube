@@ -63,24 +63,43 @@ public class DiscussionServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    if (request.getParameter(PARAM_LECTURE) == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+      return;
+    }
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+
     User author = userService.getCurrentUser();
     if (author == null) {
       response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
       return;
     }
+
+    if (request.getParameter(PARAM_TYPE) == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing comment type parameter.");
+      return;
+    }
+    Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
+
+    // TODO: Require non-zero content length. See: #183.
     String content = CharStreams.toString(request.getReader());
     Date dateNow = new Date(Clock.systemUTC().millis());
 
-    // TODO: Check that required parameters are provided, otherwise .sendError. See: #178.
     final Entity commentEntity;
-    Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
     if (type == Comment.Type.REPLY) {
+      if (request.getParameter(PARAM_PARENT) == null) {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parent parameter for reply comment.");
+        return;
+      }
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
       Key parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
       commentEntity = CommentUtil.createReplyEntity(lecture, parent, author, content, dateNow);
     } else {
+      if (request.getParameter(PARAM_TYPE) == null) {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing timestamp parameter for root comment.");
+        return;
+      }
       long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
       commentEntity =
           CommentUtil.createRootEntity(lecture, timestampMs, author, content, dateNow, type);
@@ -94,6 +113,10 @@ public class DiscussionServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+    if (request.getParameter(PARAM_LECTURE) == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+      return;
+    }
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Filter lectureFilter = new FilterPredicate(CommentUtil.LECTURE, FilterOperator.EQUAL, lecture);
