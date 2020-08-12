@@ -81,7 +81,7 @@ function appendTextToList(transcriptLine, ulElement) {
       transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
 
   const liElement = document.createElement('li');
-  liElement.classList.add('align-self-center', 'mb-2');
+  liElement.classList.add('align-self-center', 'mb-2', DEFAULT_FONT_WEIGHT);
   liElement.appendChild(contentDivElement);
   const hrElement = document.createElement('hr');
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
@@ -129,7 +129,7 @@ function seekTranscript(currentTime) {
   if (currentTime <= currentTimestamp) {
     return;
   }
-  removeBold(transcriptLineLiElement);
+  removeBold(currentTranscriptLine);
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   // TODO: Update scrollIntoView once #176 is merged.
   currentTranscriptLine.scrollIntoView();
