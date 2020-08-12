@@ -66,10 +66,11 @@
 }
 
 #transcript-lines-container {
-  height: inherit;
+  height: 90%;
   overflow: auto;
 }
 
 #transcript-lines-container ul {
+  height: 100%;
   list-style-type: none;
 }
