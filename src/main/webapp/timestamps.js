@@ -13,8 +13,6 @@
 // limitations under the License.
 
 const MILLISECONDS_PER_SECOND = 1000;
-const MINUTES_TO_SECONDS = 60;
-const HOURS_TO_SECONDS = 360;
 
 /**
  * Converts a {@code timestampMs} in milliseconds into a string.
@@ -40,14 +38,4 @@ function timestampToString(timestampMs) {
 // TODO: Remove once #158 is addressed.
 function secondsToMilliseconds(seconds) {
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
-}
-
-/**
- * @return {number} The {@code date} in seconds.
- */
-// TODO: Remove this method once the pull request updating
-// Date to long is approved.
-function getDateInSeconds(date) {
-  return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS +
-      date.getHours() * HOURS_TO_SECONDS;
 }

@@ -39,6 +39,8 @@ const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
 
+// TODO: Refactor these global variables into a namespace, module, or class.
+// See: #191.
 let newCommentTimestampMs = 0;
 let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
 
