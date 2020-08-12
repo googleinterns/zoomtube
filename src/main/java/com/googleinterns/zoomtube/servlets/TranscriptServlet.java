@@ -53,6 +53,7 @@ import org.xml.sax.SAXException;
  */
 public class TranscriptServlet extends HttpServlet {
   private DatastoreService datastore;
+  @VisibleForTesting static final String PARAM_ID = "id";
 
   @Override
   public void init() throws ServletException {
@@ -61,7 +62,11 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    if (request.getParameter(PARAM_ID) == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id parameter.");
+      return;
+    }
+    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
     PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
     writeTranscriptLines(response, transcriptLines);

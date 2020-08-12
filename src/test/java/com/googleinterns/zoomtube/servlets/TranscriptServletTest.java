@@ -16,6 +16,7 @@ package com.googleinterns.zoomtube.servlets;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -127,6 +128,13 @@ public final class TranscriptServletTest {
   @After
   public void tearDown() {
     localServiceHelper.tearDown();
+  }
+
+  @Test
+  public void doGet_missingId_badRequest() throws ServletException, IOException {
+    transcriptServlet.doGet(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id parameter.");
   }
 
   @Test
