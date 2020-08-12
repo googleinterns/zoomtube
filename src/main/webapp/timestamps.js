@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const MILLISECONDS_CONVERTER = 1000;
+const MILLISECONDS_PER_SECOND = 1000;
 
 /**
- * Converts a video {@code timestampMs} in milliseconds into a string.
+ * Converts a {@code timestampMs} in milliseconds into a string.
  */
 function timestampToString(timestampMs) {
   const date = new Date();
@@ -33,16 +33,9 @@ function timestampToString(timestampMs) {
 }
 
 /**
- * Returns the total number of seconds since the start of a video at a
- * certain {@code timestampMs}.
+ * Converts `seconds` to milliseconds.
  */
-function timestampToSeconds(timestampMs) {
-  return timestampMs / 1000;
-}
-
-/**
- * Converts `seconds` into milliseconds.
- */
+// TODO: Remove once #158 is addressed.
 function secondsToMilliseconds(seconds) {
-  return seconds * MILLISECONDS_CONVERTER;
+  return Math.round(seconds * MILLISECONDS_PER_SECOND);
 }
