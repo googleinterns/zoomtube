@@ -90,7 +90,6 @@ function appendTextToList(transcriptLine, ulElement) {
   // Save the dates for seeking later.
   liElement.startTimestampMs = transcriptLine.startTimestampMs;
   liElement.endTimestampMs = transcriptLine.endTimestampMs;
-  liElement.
   // Sets the current transcript line to be the first line.
   if (currentTranscriptLine == null) {
     currentTranscriptLine = liElement;
