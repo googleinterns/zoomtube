@@ -64,39 +64,6 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 }
 
 /**
- * Creates an <li> element containing {@code transcriptLine}'s text, start
- * time, and end time and appends it to {@code ulElement}.
- */
-function appendTextToList(transcriptLine, ulElement) {
-  const startTimestamp =
-      window.timestampToString(transcriptLine.startTimestampMs);
-  const endTimestamp = window.timestampToString(transcriptLine.endTimestampMs);
-  const timestamp = `${startTimestamp} - ${endTimestamp}`;
-
-  const contentDivElement = document.createElement('div');
-  contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
-  appendParagraphToContainer(
-      timestamp, contentDivElement, ['justify-content-start', 'mb-1']);
-  appendParagraphToContainer(
-      transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
-
-  const liElement = document.createElement('li');
-  liElement.classList.add('align-self-center', 'mb-2');
-  liElement.appendChild(contentDivElement);
-  const hrElement = document.createElement('hr');
-  hrElement.classList.add('my-1', 'align-middle', 'mr-5');
-  liElement.appendChild(hrElement);
-  ulElement.appendChild(liElement);
-  // Save the dates for seeking later.
-  liElement.startDate = new Date(transcriptLine.start);
-  liElement.endDate = new Date(transcriptLine.end);
-  // Sets the current transcript line to be the first line.
-  if (currentTranscriptLine == null) {
-    currentTranscriptLine = liElement;
-  }
-}
-
-/**
  * Creates a p tag to store the given {@code text} inside the
  * {@code container}.
  *
@@ -135,14 +102,88 @@ function seekTranscript(currentTime) {
   // TODO: Handle the case where the video isn't only playing.
 }
 
-/** Bolds the text in `transcriptLineLiElement` */
-function addBold(transcriptLineLiElement) {
-  transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
-  transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
+class TranscriptLine extends HTMLLIElement {
+  // TODO: Add type to constant.
+  static currentTranscriptLine;
+
+  constructor(transcriptLine) {
+    super();
+    const timestampRange = window.createTimestampRange(transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
+    const contentDivElement = this.createContentDiv();
+    appendParagraphToContainer(
+      timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
+    appendParagraphToContainer(
+      transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+
+    this.classList.add('align-self-center', 'mb-2');
+    this.appendChild(contentDivElement);
+    const hrElement = this.createHrElement();
+    this.appendChild(hrElement);
+    // TODO: Add attributes
+    // TODO: Update to use number once pull request #168 is merged.
+    liElement.startDate = new Date(transcriptLine.start);
+    liElement.endDate = new Date(transcriptLine.end);
+    // Sets the current transcript line to be the first line.
+    if (TranscriptLine.currentTranscriptLine == null) {
+      currentTranscriptLine = this;
+    }
+  }
+
+  /** Bolds the text. */
+  addBold() {
+    this.classList.add(BOLD_FONT_WEIGHT);
+    this.classList.remove(DEFAULT_FONT_WEIGHT);
+  }
+
+  /** Removes bold from the text. */
+  removeBold() {
+    this.classList.add(DEFAULT_FONT_WEIGHT);
+    this.classList.remove(BOLD_FONT_WEIGHT);
+  }
+  // TODO: create own class??
+  createContentDiv() {
+    const contentDivElement = document.createElement('div');
+    contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
+    return contentDivElement;
+  }
+
+  createHrElement() {
+    const hrElement = document.createElement('hr');
+    hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+    return hrElement;
+  }
+
 }
 
-/** Removes bold from the text in `transcriptLineLiElement` */
-function removeBold(transcriptLineLiElement) {
-  transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
-  transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
+/**
+ * Creates an <li> element containing {@code transcriptLine}'s text, start
+ * time, and end time and appends it to {@code ulElement}.
+ */
+function appendTextToList(transcriptLine, ulElement) {
+  // const startTimestamp =
+  //     window.timestampToString(transcriptLine.startTimestampMs);
+  // const endTimestamp = window.timestampToString(transcriptLine.endTimestampMs);
+  // const timestamp = `${startTimestamp} - ${endTimestamp}`;
+
+  // const contentDivElement = document.createElement('div');
+  // contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
+  // appendParagraphToContainer(
+  //     timestamp, contentDivElement, ['justify-content-start', 'mb-1']);
+  // appendParagraphToContainer(
+  //     transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+
+  // const liElement = document.createElement('li');
+  // liElement.classList.add('align-self-center', 'mb-2');
+  // liElement.appendChild(contentDivElement);
+  // const hrElement = document.createElement('hr');
+  // hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+  // liElement.appendChild(hrElement);
+  ulElement.appendChild(liElement);
+  // Save the dates for seeking later.
+  liElement.startDate = new Date(transcriptLine.start);
+  liElement.endDate = new Date(transcriptLine.end);
+  // Sets the current transcript line to be the first line.
+  // if (currentTranscriptLine == null) {
+  //   currentTranscriptLine = liElement;
+  // }
 }

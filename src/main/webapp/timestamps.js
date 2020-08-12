@@ -50,3 +50,11 @@ function getDateInSeconds(date) {
   return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS +
       date.getHours() * HOURS_TO_SECONDS;
 }
+
+// TODO: Add method header.
+createTimestampRange(startTimestampMs, endTimestampMs) {
+  const startTimestamp =
+    window.timestampToString(startTimestampMs);
+  const endTimestamp = window.timestampToString(endTimestampMs);
+  return `${startTimestamp} - ${endTimestamp}`;
+}
