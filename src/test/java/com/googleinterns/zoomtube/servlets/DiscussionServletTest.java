@@ -53,8 +53,8 @@ public class DiscussionServletTest {
 
   private static final int LECTURE_ID = 1;
   private static final String LECTURE_ID_STR = "1";
-  private static final long TIMESTAMP = 123;
-  private static final String TIMESTAMP_STRING = Long.toString(TIMESTAMP);
+  private static final long TIMESTAMP_MS = 123;
+  private static final String TIMESTAMP_MS_STRING = Long.toString(TIMESTAMP_MS);
   private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
       new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
@@ -119,7 +119,7 @@ public class DiscussionServletTest {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP))
-        .thenReturn(TIMESTAMP_STRING);
+        .thenReturn(TIMESTAMP_MS_STRING);
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.QUESTION.toString());
     when(request.getReader())
@@ -132,7 +132,7 @@ public class DiscussionServletTest {
     Comment comment = CommentUtil.createComment(query.asSingleEntity());
     assertThat(comment.parentKey().isPresent()).isFalse();
     assertThat(comment.timestampMs().isPresent()).isTrue();
-    assertThat(comment.timestampMs().get()).isEqualTo(TIMESTAMP);
+    assertThat(comment.timestampMs().get()).isEqualTo(TIMESTAMP_MS);
     assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION);
   }
 
@@ -201,7 +201,7 @@ public class DiscussionServletTest {
     Date dateNow = new Date();
     Comment.Type type = Comment.Type.QUESTION;
 
-    return CommentUtil.createRootEntity(lectureKey, TIMESTAMP, author, content, dateNow, type);
+    return CommentUtil.createRootEntity(lectureKey, TIMESTAMP_MS, author, content, dateNow, type);
   }
 
   private List<Comment> getCommentsFromJson(String json) {
