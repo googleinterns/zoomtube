@@ -134,13 +134,14 @@ public final class TranscriptServletTest {
   public void doGet_missingId_badRequest() throws ServletException, IOException {
     transcriptServlet.doGet(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id parameter.");
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, TranscriptServlet.ERROR_MISSING_ID);
   }
 
   @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -152,7 +153,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -166,7 +167,7 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_C.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -179,7 +180,7 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 

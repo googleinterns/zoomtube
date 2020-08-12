@@ -32,7 +32,7 @@ getLecture().then((lecture) => {
 async function initialize() {
   window.loadVideoApi();
   window.intializeDiscussion();
-  window.loadTranscript(window.location.search);
+  window.loadTranscript();
 }
 
 /**
