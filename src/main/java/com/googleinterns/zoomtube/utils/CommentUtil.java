@@ -50,9 +50,11 @@ public final class CommentUtil {
                                   .setCreated(created)
                                   .setType(type);
     if (type == Comment.Type.REPLY) {
+      // Only replies have parents.
       Key parentKey = (Key) entity.getProperty(PARENT);
       builder.setParentKey(parentKey);
     } else {
+      // Only root comments have timestamps.
       long timestampMs = (long) entity.getProperty(TIMESTAMP_MS);
       builder.setTimestampMs(timestampMs);
     }

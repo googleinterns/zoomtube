@@ -73,6 +73,7 @@ public class DiscussionServlet extends HttpServlet {
     String content = CharStreams.toString(request.getReader());
     Date dateNow = new Date(Clock.systemUTC().millis());
 
+    // TODO: Check that required parameters are provided, otherwise .sendError. See: #178.
     final Entity commentEntity;
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
     if (type == Comment.Type.REPLY) {
