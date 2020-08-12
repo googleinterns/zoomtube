@@ -129,9 +129,11 @@ function seekTranscript(currentTime) {
   if (currentTime <= currentTimestamp) {
     return;
   }
-  // TODO: Disable highlighting on the currentTranscriptLine
+  removeBold(transcriptLineLiElement);
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  // TODO: Update scrollIntoView once #176 is merged.
   currentTranscriptLine.scrollIntoView();
+  addBold(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
 }
 
