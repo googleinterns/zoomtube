@@ -120,7 +120,7 @@ public final class LectureServletTest {
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view?id=1&video-id=3ymwOvzhwHs");
+    verify(response).sendRedirect("/view?id=1");
   }
 
   @Test
@@ -133,7 +133,7 @@ public final class LectureServletTest {
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
-    verify(response).sendRedirect("/view?id=1&video-id=3ymwOvzhwHs");
+    verify(response).sendRedirect("/view?id=1");
   }
 
   @Test
