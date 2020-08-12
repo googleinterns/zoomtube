@@ -53,7 +53,7 @@ function getDateInSeconds(date) {
 }
 
 /**
- * Converts `seconds` to milliseconds.
+ * Converts `seconds` into milliseconds.
  */
 function secondsToMilliseconds(seconds) {
   return seconds * MILLISECONDS_CONVERTER;
