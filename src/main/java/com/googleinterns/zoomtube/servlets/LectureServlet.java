@@ -83,7 +83,7 @@ public class LectureServlet extends HttpServlet {
     String videoUrl = request.getParameter(PARAM_LINK);
 
     Optional<String> videoId = getVideoId(videoUrl);
-    if (videoId.isEmpty()) {
+    if (!videoId.isPresent()) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid video link.");
       return;
     }
@@ -99,7 +99,7 @@ public class LectureServlet extends HttpServlet {
       redirectUrl = buildRedirectUrl(lectureEntity);
     }
 
-    if (redirectUrl.isEmpty()) {
+    if (!redirectUrl.isPresent()) {
       response.sendError(
           HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to create redirect URL.");
       return;
