@@ -54,7 +54,6 @@ public class DiscussionServletTest {
   private static final int LECTURE_ID = 1;
   private static final String LECTURE_ID_STR = "1";
   private static final long TIMESTAMP_MS = 123;
-  private static final String TIMESTAMP_MS_STRING = Long.toString(TIMESTAMP_MS);
   private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
       new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
@@ -119,7 +118,7 @@ public class DiscussionServletTest {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP))
-        .thenReturn(TIMESTAMP_MS_STRING);
+        .thenReturn(Long.toString(TIMESTAMP_MS));
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.QUESTION.toString());
     when(request.getReader())
