@@ -128,7 +128,6 @@ function seekTranscript(currentTime) {
   }
   // TODO: Disable highlighting on the currentTranscriptLine
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  // currentTranscriptLine.scrollIntoView();
   scrollToTopOfTranscript(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
 }
