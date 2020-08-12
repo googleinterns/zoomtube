@@ -89,6 +89,55 @@ public class DiscussionServletTest {
   }
 
   @Test
+  public void doPost_missingLecture_badRequest() throws ServletException, IOException {
+    testServices.setEnvIsLoggedIn(true);
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+  }
+
+  @Test
+  public void doPost_missingType_badRequest() throws ServletException, IOException {
+    testServices.setEnvIsLoggedIn(true);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, "Missing comment type parameter.");
+  }
+
+  @Test
+  public void doPost_missingReplyParent_badRequest() throws ServletException, IOException {
+    testServices.setEnvIsLoggedIn(true);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TYPE))
+        .thenReturn(Comment.Type.REPLY.toString());
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, "Missing parent parameter for reply comment.");
+  }
+
+  @Test
+  public void doPost_missingRootTimestamp_badRequest() throws ServletException, IOException {
+    testServices.setEnvIsLoggedIn(true);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TYPE))
+        .thenReturn(Comment.Type.QUESTION.toString());
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, "Missing timestamp parameter for root comment.");
+  }
+
+  @Test
   public void doPost_reply_storesCommentWithAllProperties() throws ServletException, IOException {
     final int parentId = 32;
     testServices.setEnvIsLoggedIn(true);
@@ -118,8 +167,7 @@ public class DiscussionServletTest {
   public void doPost_rootComment_storesTypeAndTimestamp() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
-    when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP))
-        .thenReturn(TIMESTAMP_MS_STRING);
+    when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP)).thenReturn(TIMESTAMP_MS_STRING);
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.QUESTION.toString());
     when(request.getReader())
@@ -134,6 +182,15 @@ public class DiscussionServletTest {
     assertThat(comment.timestampMs().isPresent()).isTrue();
     assertThat(comment.timestampMs().get()).isEqualTo(TIMESTAMP_MS);
     assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION);
+  }
+
+  @Test
+  public void doGet_missingLecture_badRequest() throws ServletException, IOException {
+    testServices.setEnvIsLoggedIn(true);
+
+    servlet.doGet(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
   }
 
   @Test

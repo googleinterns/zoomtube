@@ -89,15 +89,17 @@ public class DiscussionServlet extends HttpServlet {
     final Entity commentEntity;
     if (type == Comment.Type.REPLY) {
       if (request.getParameter(PARAM_PARENT) == null) {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parent parameter for reply comment.");
+        response.sendError(
+            HttpServletResponse.SC_BAD_REQUEST, "Missing parent parameter for reply comment.");
         return;
       }
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
       Key parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
       commentEntity = CommentUtil.createReplyEntity(lecture, parent, author, content, dateNow);
     } else {
-      if (request.getParameter(PARAM_TYPE) == null) {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing timestamp parameter for root comment.");
+      if (request.getParameter(PARAM_TIMESTAMP) == null) {
+        response.sendError(
+            HttpServletResponse.SC_BAD_REQUEST, "Missing timestamp parameter for root comment.");
         return;
       }
       long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
