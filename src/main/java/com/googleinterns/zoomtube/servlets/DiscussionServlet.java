@@ -52,6 +52,15 @@ public class DiscussionServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_TIMESTAMP = "timestamp";
   @VisibleForTesting static final String PARAM_TYPE = "type";
 
+  @VisibleForTesting static final String ERROR_MISSING_LECTURE = "Missing lecture parameter.";
+  @VisibleForTesting
+  static final String ERROR_MISSING_COMMENT_TYPE = "Missing comment type parameter.";
+  @VisibleForTesting
+  static final String ERROR_MISSING_PARENT = "Missing parent parameter for reply comment.";
+  @VisibleForTesting
+  static final String ERROR_MISSING_TIMESTAMP = "Missing timestamp parameter for root comment.";
+  @VisibleForTesting static final String ERROR_NOT_LOGGED_IN = "You are not logged in.";
+
   private UserService userService;
   private DatastoreService datastore;
 
@@ -64,7 +73,7 @@ public class DiscussionServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     if (request.getParameter(PARAM_LECTURE) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_LECTURE);
       return;
     }
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
@@ -72,12 +81,12 @@ public class DiscussionServlet extends HttpServlet {
 
     User author = userService.getCurrentUser();
     if (author == null) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
+      response.sendError(HttpServletResponse.SC_FORBIDDEN, ERROR_NOT_LOGGED_IN);
       return;
     }
 
     if (request.getParameter(PARAM_TYPE) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing comment type parameter.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_COMMENT_TYPE);
       return;
     }
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
@@ -89,8 +98,7 @@ public class DiscussionServlet extends HttpServlet {
     final Entity commentEntity;
     if (type == Comment.Type.REPLY) {
       if (request.getParameter(PARAM_PARENT) == null) {
-        response.sendError(
-            HttpServletResponse.SC_BAD_REQUEST, "Missing parent parameter for reply comment.");
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_PARENT);
         return;
       }
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
@@ -98,8 +106,7 @@ public class DiscussionServlet extends HttpServlet {
       commentEntity = CommentUtil.createReplyEntity(lecture, parent, author, content, dateNow);
     } else {
       if (request.getParameter(PARAM_TIMESTAMP) == null) {
-        response.sendError(
-            HttpServletResponse.SC_BAD_REQUEST, "Missing timestamp parameter for root comment.");
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_TIMESTAMP);
         return;
       }
       long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
@@ -116,7 +123,7 @@ public class DiscussionServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     if (request.getParameter(PARAM_LECTURE) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_LECTURE);
       return;
     }
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));

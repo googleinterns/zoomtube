@@ -83,7 +83,8 @@ public class DiscussionServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
+    verify(response).sendError(
+        HttpServletResponse.SC_FORBIDDEN, DiscussionServlet.ERROR_NOT_LOGGED_IN);
     assertThat(datastore.prepare(new Query(CommentUtil.KIND)).countEntities(withLimit(1)))
         .isEqualTo(0);
   }
@@ -94,7 +95,8 @@ public class DiscussionServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, DiscussionServlet.ERROR_MISSING_LECTURE);
   }
 
   @Test
@@ -106,7 +108,7 @@ public class DiscussionServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, "Missing comment type parameter.");
+        HttpServletResponse.SC_BAD_REQUEST, DiscussionServlet.ERROR_MISSING_COMMENT_TYPE);
   }
 
   @Test
@@ -120,7 +122,7 @@ public class DiscussionServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, "Missing parent parameter for reply comment.");
+        HttpServletResponse.SC_BAD_REQUEST, DiscussionServlet.ERROR_MISSING_PARENT);
   }
 
   @Test
@@ -134,7 +136,7 @@ public class DiscussionServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, "Missing timestamp parameter for root comment.");
+        HttpServletResponse.SC_BAD_REQUEST, DiscussionServlet.ERROR_MISSING_TIMESTAMP);
   }
 
   @Test
@@ -190,7 +192,8 @@ public class DiscussionServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, DiscussionServlet.ERROR_MISSING_LECTURE);
   }
 
   @Test
