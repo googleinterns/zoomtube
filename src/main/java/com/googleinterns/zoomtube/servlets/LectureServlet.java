@@ -48,11 +48,13 @@ public class LectureServlet extends HttpServlet {
       + "watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|"
       + "embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
+  private static final String PARAM_ID = "id";
+
   /* Name of input field used for lecture name in lecture selection page. */
-  private static final String NAME_INPUT = "name-input";
+  private static final String PARAM_NAME = "name-input";
 
   /* Name of input field used for lecture video link in lecture selection page. */
-  private static final String LINK_INPUT = "link-input";
+  private static final String PARAM_LINK = "link-input";
 
   private static final String REDIRECT_URL = "/view";
 
@@ -71,17 +73,41 @@ public class LectureServlet extends HttpServlet {
   // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
-    Optional<Entity> existingEntity = checkUrlInDatabase(optionalVideoUrl);
-
-    if (existingEntity.isPresent()) {
-      response.sendRedirect(buildRedirectUrl(existingEntity.get()).get());
+    if (request.getParameter(PARAM_NAME) == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing name parameter.");
       return;
     }
-    Entity lectureEntity = getLectureEntityFromRequest(request);
-    datastore.put(lectureEntity);
-    initializeTranscript(lectureEntity);
-    response.sendRedirect(buildRedirectUrl(lectureEntity).get());
+    String lectureName = request.getParameter(PARAM_NAME);
+
+    if (request.getParameter(PARAM_LINK) == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing link parameter.");
+      return;
+    }
+    String videoUrl = request.getParameter(PARAM_LINK);
+
+    Optional<String> videoId = getVideoId(videoUrl);
+    if (videoId.isEmpty()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid video link.");
+      return;
+    }
+
+    Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
+    final Optional<String> redirectUrl;
+    if (existingEntity.isPresent()) {
+      redirectUrl = buildRedirectUrl(existingEntity.get());
+    } else {
+      Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
+      datastore.put(lectureEntity);
+      initializeTranscript(lectureEntity);
+      redirectUrl = buildRedirectUrl(lectureEntity);
+    }
+
+    if (redirectUrl.isEmpty()) {
+      response.sendError(
+          HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to create redirect URL.");
+      return;
+    }
+    response.sendRedirect(redirectUrl.get());
   }
 
   /**
@@ -97,7 +123,11 @@ public class LectureServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    if (request.getParameter(PARAM_ID) == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id parameter.");
+      return;
+    }
+    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
     Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     try {
       Entity lectureEntity = datastore.get(lectureEntityKey);
@@ -110,49 +140,21 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns the Entity in database that has {@code url}, or
+   * Returns the {@code Entity} in database that has {@code videoUrl}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
-  private Optional<Entity> checkUrlInDatabase(Optional<String> videoUrl) {
-    if (!videoUrl.isPresent()) {
-      return Optional.empty();
-    }
-
+  // TODO: Use a filter to avoid fetching all lectures.  See: #185.
+  private Optional<Entity> checkUrlInDatabase(String videoUrl) {
     Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
-    String url = videoUrl.get();
     for (Entity lecture : resultsIterable) {
-      if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
+      if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(videoUrl)) {
         return Optional.of(lecture);
       }
     }
     return Optional.empty();
-  }
-
-  /** Returns {@code lectureEntity} using parameters found in {@code request}. */
-  // TODO: Send errors as a response if fields are empty.
-  private Entity getLectureEntityFromRequest(HttpServletRequest request) {
-    Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
-    String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
-    Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
-    String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
-    Optional<String> optionalVideoId = getVideoId(videoUrl);
-    String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
-    return LectureUtil.createEntity(lectureName, videoUrl, videoId);
-  }
-
-  /**
-   * Returns the value of {@code name} from the {@code request} form.
-   * If the {@code name} cannot be found, return {@code Optional.empty()}.
-   */
-  private Optional<String> getParameter(HttpServletRequest request, String name) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return Optional.empty();
-    }
-    return Optional.of(value);
   }
 
   @VisibleForTesting
@@ -167,7 +169,8 @@ public class LectureServlet extends HttpServlet {
 
   /**
    * Returns URL redirecting to lecture view page with parameters {@code lectureId}
-   * and {@code videoId} found in {@code lectureEntity}.
+   * and {@code videoId} found in {@code lectureEntity}. Returns {@code Optional.empty()} if the URL
+   * couldn't be built.
    */
   private Optional<String> buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
@@ -179,7 +182,6 @@ public class LectureServlet extends HttpServlet {
                                   .addParameter(LectureUtil.VIDEO_ID, videoId);
       return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
-      // TODO: Send a response error.
       return Optional.empty();
     }
   }
