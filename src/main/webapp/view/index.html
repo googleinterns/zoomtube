@@ -81,6 +81,24 @@
   </div>
 </template>
 
+<template id="transcript-line-template">
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="/global.css" />
+  <link rel="stylesheet" href="/view/lecture-view.css" />
+  <li class="align-self-center mb-2">
+    <div class="d-flex flex-row mb-1">
+      <slot name="timestamp-range" class="justify-content-start mb-1"></slot>
+      <slot name="transcript-line-content" class="ml-4 mb-1"></slot>
+    </div>
+    <hr class="my-1 align-middle mr-5">
+  </li>
+</template>
+
 <script
   src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
   integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
