@@ -97,10 +97,7 @@ public class DiscussionServlet extends HttpServlet {
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Filter lectureFilter = new FilterPredicate(CommentUtil.LECTURE, FilterOperator.EQUAL, lecture);
 
-    Query query = new Query(CommentUtil.KIND)
-                      .setFilter(lectureFilter)
-                      .addSort(CommentUtil.TIMESTAMP_MS, SortDirection.ASCENDING)
-                      .addSort(CommentUtil.CREATED, SortDirection.DESCENDING);
+    Query query = new Query(CommentUtil.KIND).setFilter(lectureFilter);
     PreparedQuery pq = datastore.prepare(query);
 
     ImmutableList.Builder<Comment> commentsBuilder = new ImmutableList.Builder<>();

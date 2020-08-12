@@ -81,8 +81,10 @@ async function postReply(inputField, parentId) {
 async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  for (const param of params.keys()) {
-    url.searchParams.append(param, params[param]);
+  for (const param in params) {
+    if (params.hasOwnProperty(param)) {
+      url.searchParams.append(param, params[param]);
+    }
   }
 
   fetch(url, {
@@ -134,6 +136,8 @@ function prepareComments(comments) {
       rootComments.push(comment);
     }
   }
+  // Sort comments such that earliest timestamp is first.
+  rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value))
   return rootComments;
 }
 
@@ -219,7 +223,8 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (comment.type !== COMMENT_TYPE_REPLY) {
       // Don't show timestamp on replies.
-      timestampPrefix = `${window.timestampToString(comment.timestampMs.value)} - `;
+      timestampPrefix =
+          `${window.timestampToString(comment.timestampMs.value)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
