@@ -88,7 +88,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_reply_storesCommentWithAllProperties() throws ServletException, IOException {
+  public void doPost_storesCommentWithCommonProperties() throws ServletException, IOException {
     final int parentId = 32;
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
@@ -108,9 +108,28 @@ public class DiscussionServletTest {
     assertThat(comment.lectureKey().getId()).isEqualTo(LECTURE_ID);
     assertThat(comment.author().getEmail()).isEqualTo("author@example.com");
     assertThat(comment.content()).isEqualTo("Something unique");
-    assertThat(comment.parentKey().isPresent()).isTrue();
     assertThat(comment.parentKey().get().getId()).isEqualTo(parentId);
     assertThat(comment.type()).isEqualTo(Comment.Type.REPLY);
+  }
+
+  @Test
+  public void doPost_reply_storesCommentWithParent() throws ServletException, IOException {
+    final int parentId = 32;
+    testServices.setEnvIsLoggedIn(true);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TYPE))
+        .thenReturn(Comment.Type.REPLY.toString());
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
+        .thenReturn(Integer.toString(parentId));
+
+    servlet.doPost(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);
+    PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
+    assertThat(query.countEntities(withLimit(2))).isEqualTo(1);
+    Comment comment = CommentUtil.createComment(query.asSingleEntity());
+    assertThat(comment.parentKey().get().getId()).isEqualTo(parentId);
   }
 
   @Test
