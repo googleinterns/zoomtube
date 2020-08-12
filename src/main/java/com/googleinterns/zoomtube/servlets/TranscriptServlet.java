@@ -31,7 +31,6 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

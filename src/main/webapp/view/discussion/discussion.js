@@ -155,8 +155,8 @@ function updateNewCommentTimestamp(timeMs) {
 }
 
 /**
- * Returns an array of the `DiscussionComment`s with timestamps near `timestampMs`.
- * This returns an empty array if no elements are nearby.
+ * Returns an array of the `DiscussionComment`s with timestamps near
+ * `timestampMs`. This returns an empty array if no elements are nearby.
  *
  * <p>A comment is nearby if it is within `TIME_TOLERANCE_MS`.
  */
