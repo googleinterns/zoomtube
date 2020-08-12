@@ -24,13 +24,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
-import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,13 +45,13 @@ public class LectureServlet extends HttpServlet {
       + "watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|"
       + "embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
-  private static final String PARAM_ID = "id";
+  @VisibleForTesting static final String PARAM_ID = "id";
 
   /* Name of input field used for lecture name in lecture selection page. */
-  private static final String PARAM_NAME = "name-input";
+  @VisibleForTesting static final String PARAM_NAME = "name-input";
 
   /* Name of input field used for lecture video link in lecture selection page. */
-  private static final String PARAM_LINK = "link-input";
+  @VisibleForTesting static final String PARAM_LINK = "link-input";
 
   private static final String REDIRECT_URL = "/view";
 
