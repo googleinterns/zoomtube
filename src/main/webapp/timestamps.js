@@ -14,6 +14,7 @@
 
 const MINUTES_TO_SECONDS = 60;
 const HOURS_TO_SECONDS = 360;
+const MILLISECONDS_CONVERTER = 1000;
 
 /**
  * Converts a video {@code timestampMs} in milliseconds into a string.
@@ -49,4 +50,11 @@ function timestampToSeconds(timestampMs) {
 function getDateInSeconds(date) {
   return date.getSeconds() + date.getMinutes() * MINUTES_TO_SECONDS +
       date.getHours() * HOURS_TO_SECONDS;
+}
+
+/**
+ * Converts `seconds` to milliseconds.
+ */
+function secondsToMs(seconds) {
+  return seconds * MILLISECONDS_CONVERTER;
 }

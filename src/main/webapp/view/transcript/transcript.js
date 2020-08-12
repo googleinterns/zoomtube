@@ -88,10 +88,8 @@ function appendTextToList(transcriptLine, ulElement) {
   liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
   // Save the dates for seeking later.
-  liElement.startTimestampSec =
-      window.timestampToSeconds(transcriptLine.startTimestampMs);
-  liElement.endTimestampSec =
-      window.timestampToSeconds(transcriptLine.endTimestampMs);
+  liElement.startTimestampMs = transcriptLine.startTimestampMs;
+  liElement.endTimestampMs = transcriptLine.endTimestampMs;
   // Sets the current transcript line to be the first line.
   if (currentTranscriptLine == null) {
     currentTranscriptLine = liElement;
@@ -124,14 +122,12 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  // TODO: Update this constant once the pull request updating Date to long
-  // is approved.
-  console.log('Timestamp to seonds ' + currentTranscriptLine.endTimestampSec);
-  console.log('currenttime ' + currentTime);
+  const msCurrentTime = window.secondsToMs(currentTime);
 
-  if (currentTranscriptLine.endTimestampSec <= currentTime) {
+  if (msCurrentTime <= currentTranscriptLine.endTimestampMs) {
     return;
   }
+
   // TODO: Disable highlighting on the currentTranscriptLine
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   currentTranscriptLine.scrollIntoView();
