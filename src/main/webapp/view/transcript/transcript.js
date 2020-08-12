@@ -20,16 +20,6 @@ const BOLD_FONT_WEIGHT = 'font-weight-bold';
 let /** Element */ currentTranscriptLine;
 
 /**
- * Sends a POST request to the transcript.
- */
-// TODO: Delete this method once TranscriptServlet's doPost()
-// is called in LectureServlet.
-function sendPostToTranscript(lectureQueryString) {
-  const params = new URLSearchParams(lectureQueryString);
-  fetch('/transcript', {method: 'POST', body: params});
-}
-
-/**
  * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
  *
  * <p>This function assumes that the transcript lines have already
