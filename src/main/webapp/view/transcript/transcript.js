@@ -102,9 +102,11 @@ function seekTranscript(currentTime) {
   currentTranscriptLine.scrollIntoView();
   // TODO: Handle the case where the video isn't only playing.
 }
-
+/**
+ * Creates an <li> element containing {@code transcriptLine}'s text, start
+ * time, and end time and appends it to {@code ulElement}.
+ */
 class TranscriptLine extends HTMLLIElement {
-
   constructor(transcriptLine) {
     super();
     const timestampRange = window.createTimestampRange(
@@ -155,37 +157,4 @@ class TranscriptLine extends HTMLLIElement {
   }
 }
 
-/**
- * Creates an <li> element containing {@code transcriptLine}'s text, start
- * time, and end time and appends it to {@code ulElement}.
- */
-function appendTextToList(transcriptLine, ulElement) {
-  // const startTimestamp =
-  //     window.timestampToString(transcriptLine.startTimestampMs);
-  // const endTimestamp =
-  // window.timestampToString(transcriptLine.endTimestampMs); const timestamp =
-  // `${startTimestamp} - ${endTimestamp}`;
-
-  // const contentDivElement = document.createElement('div');
-  // contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
-  // appendParagraphToContainer(
-  //     timestamp, contentDivElement, ['justify-content-start', 'mb-1']);
-  // appendParagraphToContainer(
-  //     transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
-
-  // const liElement = document.createElement('li');
-  // liElement.classList.add('align-self-center', 'mb-2');
-  // liElement.appendChild(contentDivElement);
-  // const hrElement = document.createElement('hr');
-  // hrElement.classList.add('my-1', 'align-middle', 'mr-5');
-  // liElement.appendChild(hrElement);
-  // ulElement.appendChild(liElement);
-  // Save the dates for seeking later.
-  // liElement.startDate = new Date(transcriptLine.start);
-  // liElement.endDate = new Date(transcriptLine.end);
-  // Sets the current transcript line to be the first line.
-  // if (currentTranscriptLine == null) {
-  //   currentTranscriptLine = liElement;
-  // }
-}
 customElements.define('transcript-line', TranscriptLine, {extends: 'li'});
