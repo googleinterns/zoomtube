@@ -112,10 +112,14 @@ function deleteTranscript() {
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
-  if (currentTimeMs <= currentTranscriptLine.endTimestampMs) {
+  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
-  } else if (currentTime > currentTranscriptLine.startTimestampMs && isBolded(currentTranscriptLine)) {
-    removeBold(currentTranscriptLine);
+  }
+  if (currentTranscriptLine.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= currentTranscriptLine.endTimestampMs) {
+    if (!isBolded(currentTranscriptLine)) {
+      addBold(currentTranscriptLine);
+    }
     return;
   }
   removeBold(currentTranscriptLine);
@@ -140,6 +144,11 @@ function removeBold(transcriptLineLiElement) {
 /** Checks if `transcriptLineLiElement` is bolded. */
 function isBolded(transcriptLineLiElement) {
   return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
+}
+
+function isWithinCurrentTimeRange(currentTimeMs) {
+  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
+  currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
 
 /**
