@@ -149,7 +149,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns the {@code Entity} in database that has {@code videoUrl}, or
+   * Returns the Entity in database that has {@code url}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
   // TODO: Use a filter to avoid fetching all lectures.  See: #185.
