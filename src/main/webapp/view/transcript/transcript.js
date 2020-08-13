@@ -173,7 +173,7 @@ function isBeforeTheFirstTranscriptLine(currentTimeMs) {
  */
 function getNextTranscriptLine(currentTimeMs) {
   // TODO: Implement this function.
-  console.log(currentTime);
+  console.log(currentTimeMs);
 }
 
 /**
