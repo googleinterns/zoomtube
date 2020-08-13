@@ -138,9 +138,10 @@ function addBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
 }
 
-/** Removes bold from the text in `transcriptLineLiElement` if it
+/**
+ * Removes bold from the text in `transcriptLineLiElement` if it
  * is currently bolded.
-*/
+ */
 function removeBold(transcriptLineLiElement) {
   if (!isBolded(transcriptLineLiElement)) {
     return;
