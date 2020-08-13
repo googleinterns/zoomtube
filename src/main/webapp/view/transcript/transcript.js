@@ -112,28 +112,20 @@ function deleteTranscript() {
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  if (isBeforeTheFirstTranscriptLine(currentTimeMs)) {
+    return;
+  }
   if (isWithinCurrentTimeRange(currentTimeMs)) {
     if (!isBolded(currentTranscriptLine)) {
       addBold(currentTranscriptLine);
     }
     return;
   }
-  if (isBeforeTheFirstTranscriptLine(currentTimeMs)) {
-    return;
-  }
-  let nextTranscript;
-  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
-    nextTranscript = currentTranscriptLine.previousSibling;
-  } else {
-    nextTranscript = currentTranscriptLine.nextElementSibling;
-  }
-
-  // not within range,
+  let nextTranscript = getNextTranscriptLine(currentTimeMs);
   removeBold(currentTranscriptLine);
   currentTranscriptLine = nextTranscript;
   scrollToTopOfTranscript(currentTranscriptLine);
   addBold(currentTranscriptLine);
-  // TODO: Handle the case where the video isn't only playing.
 }
 
 /** Bolds the text in `transcriptLineLiElement` */
@@ -165,6 +157,14 @@ function isWithinCurrentTimeRange(currentTimeMs) {
 function isBeforeTheFirstTranscriptLine(currentTimeMs) {
   const firstTranscriptLine = document.getElementsByTagName('li')[0];
   return currentTimeMs < firstTranscriptLine.startTimestampMs;
+}
+
+function getNextTranscriptLine(currentTimeMs) {
+  let nextTranscript = currentTranscriptLine.nextElementSibling;
+  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
+    nextTranscript = currentTranscriptLine.previousSibling;
+  }
+  return nextTranscript;
 }
 
 /**
