@@ -128,7 +128,7 @@ function seekTranscript(currentTime) {
 
 /** Bolds the text in `transcriptLineLiElement` */
 function addBold(transcriptLineLiElement) {
-  if (isBolded) {
+  if (isBolded(transcriptLineLiElement)) {
     return;
   }
   transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
@@ -137,7 +137,7 @@ function addBold(transcriptLineLiElement) {
 
 /** Removes bold from the text in `transcriptLineLiElement` */
 function removeBold(transcriptLineLiElement) {
-  if (!isBolded) {
+  if (!isBolded(transcriptLineLiElement)) {
     return;
   }
   transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
