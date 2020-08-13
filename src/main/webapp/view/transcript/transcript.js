@@ -148,12 +148,16 @@ function isBolded(transcriptLineLiElement) {
 /**
  * Checks if `currentTimeMs` is within the time range for
  * the current transcript line.
- * */
+ */
 function isWithinCurrentTimeRange(currentTimeMs) {
   return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
       currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
 
+/**
+ * Checks if `currentTimeMs` is before the starting timestamp of 
+ * the first transcript line.
+ */
 function isBeforeTheFirstTranscriptLine(currentTimeMs) {
   const firstTranscriptLine = document.getElementsByTagName('li')[0];
   return currentTimeMs < firstTranscriptLine.startTimestampMs;
