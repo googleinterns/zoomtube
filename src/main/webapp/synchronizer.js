@@ -13,6 +13,7 @@
 // limitations under the License.
 
 let videoSyncTimer;
+let lastTime = 0; // Video starts at 0.
 const TIME_INTERVAL = 100;
 
 /**
@@ -30,6 +31,10 @@ function startVideoSyncTimer() {
  * (number of seconds since video started playing).
  */
 function sync(currentTime) {
+  if (currentTime == lastTime) {
+    return;
+  }
+  lastTime = currentTime;
   window.seekTranscript(currentTime);
   window.seekDiscussion(currentTime);
 }
