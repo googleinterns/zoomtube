@@ -124,7 +124,7 @@ public class DiscussionServlet extends HttpServlet {
     } else {
       // Root (non-reply) comments need a timestamp.
       if (request.getParameter(PARAM_TIMESTAMP) == null) {
-        return Optional.of(ERROR_MISSING_PARENT);
+        return Optional.of(ERROR_MISSING_TIMESTAMP);
       }
     }
     return Optional.empty();
@@ -135,6 +135,7 @@ public class DiscussionServlet extends HttpServlet {
     Optional<String> error = validateGetRequest(request);
     if (error.isPresent()) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
+      return;
     }
 
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
