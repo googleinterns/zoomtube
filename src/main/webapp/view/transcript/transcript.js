@@ -126,7 +126,10 @@ function seekTranscript(currentTime) {
   // TODO: Handle the case where the video isn't only playing.
 }
 
-/** Bolds the text in `transcriptLineLiElement` */
+/** 
+ * Bolds the text in `transcriptLineLiElement` if it is not already
+ * bolded.
+ */
 function addBold(transcriptLineLiElement) {
   if (isBolded(transcriptLineLiElement)) {
     return;
@@ -135,7 +138,9 @@ function addBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
 }
 
-/** Removes bold from the text in `transcriptLineLiElement` */
+/** Removes bold from the text in `transcriptLineLiElement` if it
+ * is currently bolded.
+*/
 function removeBold(transcriptLineLiElement) {
   if (!isBolded(transcriptLineLiElement)) {
     return;
