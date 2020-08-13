@@ -149,16 +149,22 @@ function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
 }
 
-/** Returns true if`transcriptLineLiElement` is bolded. */
+/** Returns true if `transcriptLineLiElement` is bolded. */
 function isBolded(transcriptLineLiElement) {
   return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
 }
 
 /**
  * Returns true if `currentTimeMs` is within the time range for
- * the current transcript line.
+ * 'transcriptLine'
+ * 
+ * <p>If `transcriptLine` is undefined, `currentTimeMs` is checked to be
+ * within the current transcript line instead.
  */
-function isWithinCurrentTimeRange(currentTimeMs) {
+function isWithinCurrentTimeRange(currentTimeMs, transcriptLine) {
+  if (transcriptLine === undefined) {
+    transcriptLine = currentTranscriptLine;
+  }
   return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
       currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
@@ -172,32 +178,33 @@ function scrollToTopOfTranscript(transcriptLine) {
   transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
 
-// TODO: Update this function to actually search for the next line.
+/**
+ * Returns the next transcript line based on `currentTimeMs`.
+ */
 function getNextTranscriptLine(currentTimeMs) {
+  let nextTranscript = currentTranscriptLine.nextElementSibling;
+  // Video is playing normally.
+  if (isWithinCurrentTimeRange(currentTimeMs, nextTranscript)) {
+    return nextTranscript;
+  }
+  return findClosestTranscriptLine(currentTimeMs);
+}
+
+/**
+ * Searches for and returns the closest transcript line
+ * based on `currentTimeMs`.
+ */
+function findClosestTranscriptLine(currentTimeMs) {
   let transcriptLinePointer = document.getElementsByTagName('li')[0];
   while (transcriptLinePointer != null &&
          !isWithinCurrentTimeRange(currentTimeMs)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
+  // This happens if the time does not fall in the time 
+  // range of any transcript.
   if (transcriptLinePointer === null) {
-    if (isBolded(currentTranscriptLine)) {
-      removeBold(currentTranscriptLine);
-    }
+    removeBold(currentTranscriptLine);
     return currentTranscriptLine;
   }
   return transcriptLinePointer;
-}
-
-/**
- * Checks if `currentTimeMs` is within the time range for
- * the current transcript line.
- */
-function isWithinCurrentTimeRange(currentTimeMs) {
-  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
-      currentTimeMs <= currentTranscriptLine.endTimestampMs;
-}
-
-/** Checks if `transcriptLineLiElement` is bolded. */
-function isBolded(transcriptLineLiElement) {
-  return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
 }
