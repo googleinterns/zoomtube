@@ -74,20 +74,30 @@ public class LectureServlet extends HttpServlet {
     videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
+  /**
+   * Checks that the {@code request} 
+   */
+  private Optional<String> validateRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_NAME) == null) {
+      return Optional.of(ERROR_MISSING_NAME);
+    }
+    if (request.getParameter(PARAM_LINK) == null) {
+      return Optional.of(ERROR_MISSING_LINK);
+    }
+    return Optional.empty();
+  }
+
   @Override
   // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    if (request.getParameter(PARAM_NAME) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_NAME);
+    Optional<String> error = validateRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
       return;
     }
-    String lectureName = request.getParameter(PARAM_NAME);
 
-    if (request.getParameter(PARAM_LINK) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_LINK);
-      return;
-    }
+    String lectureName = request.getParameter(PARAM_NAME);
     String videoUrl = request.getParameter(PARAM_LINK);
 
     Optional<String> videoId = getVideoId(videoUrl);
@@ -97,22 +107,14 @@ public class LectureServlet extends HttpServlet {
     }
 
     Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
-    final Optional<String> redirectUrl;
     if (existingEntity.isPresent()) {
-      redirectUrl = buildRedirectUrl(existingEntity.get());
-    } else {
-      Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
-      datastore.put(lectureEntity);
-      initializeTranscript(lectureEntity);
-      redirectUrl = buildRedirectUrl(lectureEntity);
+      response.sendRedirect(buildRedirectUrl(existingEntity.get()));
     }
 
-    if (!redirectUrl.isPresent()) {
-      response.sendError(
-          HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ERROR_FAILED_REDIRECT);
-      return;
-    }
-    response.sendRedirect(redirectUrl.get());
+    Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
+    datastore.put(lectureEntity);
+    initializeTranscript(lectureEntity);
+    response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
   /**
@@ -173,17 +175,15 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns URL for the lecture view page for {@code lectureEntity}, or {@code Optional.empty()} if the URL
-   * couldn't be built.
+   * Returns URL for the lecture view page for {@code lectureEntity}.
    */
-  private Optional<String> buildRedirectUrl(Entity lectureEntity) {
+  private String buildRedirectUrl(Entity lectureEntity) throws ServletException {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-
     try {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(PARAM_ID, lectureId);
-      return Optional.of(urlBuilder.build().toString());
-    } catch (URISyntaxException urlBuilderError) {
-      return Optional.empty();
+      return urlBuilder.build().toString();
+    } catch (URISyntaxException e) {
+      throw new ServletException(e);
     }
   }
 }
