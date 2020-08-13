@@ -37,6 +37,10 @@ body {
   background-color: #f3f3f3;
 }
 
+.navbar h2 {
+  margin-bottom: 0 !important;
+}
+
 /* Buttons */
 
 .btn {
@@ -58,10 +62,4 @@ body {
 
 .btn-wider {
   width: 200px !important;
-}
-
-/* Text */
-
-#header-text {
-  margin-bottom: 0 !important;
 }
