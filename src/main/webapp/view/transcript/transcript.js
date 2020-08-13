@@ -142,3 +142,32 @@ function scrollToTopOfTranscript(transcriptLine) {
   const ulElementOffset = transcriptLine.parentElement.offsetTop;
   transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
+
+// TODO: Update this function to actually search for the next line.
+function getNextTranscriptLine(currentTimeMs) {
+  const transcriptLinePointer = document.getElementsByTagName('li')[0];
+  while (transcriptLinePointer != null && !isWithinCurrentTimeRange(currentTimeMs)) {
+    transcriptLinePointer = transcriptLinePointer.nextElementSibling;
+  }
+  if (transcriptLinePointer === null) {
+    if (isBold(currentTranscriptLine)) {
+      removeBold(currentTranscriptLine);
+    }
+    return currentTranscriptLine;
+  }
+  return transcriptLinePointer;
+}
+
+/**
+ * Checks if `currentTimeMs` is within the time range for
+ * the current transcript line.
+ */
+function isWithinCurrentTimeRange(currentTimeMs) {
+  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= currentTranscriptLine.endTimestampMs;
+}
+
+/** Checks if `transcriptLineLiElement` is bolded. */
+function isBolded(transcriptLineLiElement) {
+  return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
+}
