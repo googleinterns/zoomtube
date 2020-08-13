@@ -112,19 +112,22 @@ function deleteTranscript() {
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
-  let nextTranscript = currentTranscriptLine.nextElementSibling;
-  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
-    if (isFirstLine(currentTranscriptLine)) {
-      return;
-    }
-    nextTranscript = currentTranscriptLine.previousSibling;
-  }
   if (isWithinCurrentTimeRange(currentTimeMs)) {
     if (!isBolded(currentTranscriptLine)) {
       addBold(currentTranscriptLine);
     }
     return;
   }
+  if (isBeforeTheFirstTranscriptLine(currentTimeMs)) {
+    return;
+  }
+  let nextTranscript;
+  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
+    nextTranscript = currentTranscriptLine.previousSibling;
+  } else {
+    nextTranscript = currentTranscriptLine.nextElementSibling;
+  }
+
   // not within range,
   removeBold(currentTranscriptLine);
   currentTranscriptLine = nextTranscript;
@@ -159,9 +162,9 @@ function isWithinCurrentTimeRange(currentTimeMs) {
       currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
 
-function isFirstLine(transcriptLineLiElement) {
+function isBeforeTheFirstTranscriptLine(currentTimeMs) {
   const firstTranscriptLine = document.getElementsByTagName('li')[0];
-  return transcriptLineLiElement === firstTranscriptLine;
+  return currentTimeMs < firstTranscriptLine.startTimestampMs;
 }
 
 /**
