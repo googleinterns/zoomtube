@@ -157,7 +157,7 @@ function isBolded(transcriptLineLiElement) {
 /**
  * Returns true if `currentTimeMs` is within the time range for
  * 'transcriptLine'
- * 
+ *
  * <p>If `transcriptLine` is undefined, `currentTimeMs` is checked to be
  * within the current transcript line instead.
  */
@@ -182,7 +182,7 @@ function scrollToTopOfTranscript(transcriptLine) {
  * Returns the next transcript line based on `currentTimeMs`.
  */
 function getNextTranscriptLine(currentTimeMs) {
-  let nextTranscript = currentTranscriptLine.nextElementSibling;
+  const nextTranscript = currentTranscriptLine.nextElementSibling;
   // Video is playing normally.
   if (isWithinCurrentTimeRange(currentTimeMs, nextTranscript)) {
     return nextTranscript;
@@ -200,7 +200,7 @@ function findClosestTranscriptLine(currentTimeMs) {
          !isWithinCurrentTimeRange(currentTimeMs)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
-  // This happens if the time does not fall in the time 
+  // This happens if the time does not fall in the time
   // range of any transcript.
   if (transcriptLinePointer === null) {
     removeBold(currentTranscriptLine);
