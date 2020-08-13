@@ -44,8 +44,8 @@ function onPlayerReady(event) {
   window.startVideoSyncTimer();
 }
 
-/** Seeks video to {@code currentTime}. */
-function seekVideo(currentTime) {
+/** Seeks video to {@code currentTimeMs}. */
+function seekVideo(currentTimeMs) {
   // TODO: Removed and implement.
-  console.log('SEEKING VIDEO TO: ' + currentTime);
+  console.log('SEEKING VIDEO TO: ' + currentTimeMs);
 }

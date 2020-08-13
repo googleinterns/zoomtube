@@ -13,7 +13,7 @@
 // limitations under the License.
 
 let videoSyncTimer;
-let lastTime;
+let lastTimeMs;
 
 const TIME_INTERVAL = 100;
 
@@ -23,20 +23,21 @@ const TIME_INTERVAL = 100;
  */
 function startVideoSyncTimer() {
   videoSyncTimer = window.setInterval(() => {
-    sync(window.videoPlayer.getCurrentTime());
+    const currentTimeSeconds = window.videoPlayer.getCurrentTime();
+    sync(window.secondsToMilliseconds(currentTimeSeconds));
   }, /* ms= */ TIME_INTERVAL);
 }
 
 /**
- * Calls functions that seek transcript, and discussion to {@code currentTime}
- * (number of seconds since start of video), when the {@code currentTime}
+ * Calls functions that seek transcript, and discussion to `currentTimeMs`
+ * (number of milliseconds since start of video), when the `currentTimeMs`
  * changes from the last time this was called.
  */
-function sync(currentTime) {
-  if (currentTime == lastTime) {
+function sync(currentTimeMs) {
+  if (currentTimeMs == lastTimeMs) {
     return;
   }
-  lastTime = currentTime;
-  window.seekTranscript(currentTime);
-  window.seekDiscussion(currentTime);
+  lastTimeMs = currentTimeMs;
+  window.seekTranscript(currentTimeMs);
+  window.seekDiscussion(currentTimeMs);
 }

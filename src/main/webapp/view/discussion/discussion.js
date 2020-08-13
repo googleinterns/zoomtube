@@ -278,12 +278,10 @@ class DiscussionComment extends HTMLElement {
 // Custom element names must contain a hyphen.
 customElements.define('discussion-comment', DiscussionComment);
 
-/** Seeks discussion to `currentTimeSeconds`. */
-function seekDiscussion(currentTimeSeconds) {
-  const currentTimeMilliseconds =
-      window.secondsToMilliseconds(currentTimeSeconds);
-  updateNewCommentTimestamp(currentTimeMilliseconds);
-  const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
+/** Seeks discussion to `currentTimeMs`. */
+function seekDiscussion(currentTimeMs) {
+  updateNewCommentTimestamp(currentTimeMs);
+  const nearbyComments = getNearbyDiscussionComments(currentTimeMs);
   if (nearbyComments.length == 0) {
     return;
   }

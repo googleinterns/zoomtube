@@ -109,9 +109,8 @@ function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to {@code currentTime}, which is given in seconds. */
-function seekTranscript(currentTime) {
-  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+/** Seeks transcript to {@code currentTimeMs}. */
+function seekTranscript(currentTimeMs) {
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
