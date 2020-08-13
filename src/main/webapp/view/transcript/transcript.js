@@ -113,9 +113,7 @@ function deleteTranscript() {
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
   if (isBeforeTheFirstTranscriptLine(currentTimeMs)) {
-    // TODO: Reset the bolding on the current Transcript and scroll
-    // to the top of the transcript container.
-    return;
+    resetToBeforeTranscript();
   }
   if (isWithinCurrentTimeRange(currentTimeMs)) {
     addBold(currentTranscriptLine);
@@ -189,4 +187,13 @@ function scrollToTopOfTranscript(transcriptLine) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
   const ulElementOffset = transcriptLine.parentElement.offsetTop;
   transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
+}
+
+/**
+ * Resets the transcript container to what it looks like before it
+ * started scrolling.
+ */
+function resetToBeforeTranscript() {
+  // TODO: Add implementation
+  return;
 }
