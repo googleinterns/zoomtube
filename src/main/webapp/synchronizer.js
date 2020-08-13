@@ -13,7 +13,9 @@
 // limitations under the License.
 
 let videoSyncTimer;
-const TIME_INTERVAL = 1000;
+let lastTime;
+
+const TIME_INTERVAL = 100;
 
 /**
  * Starts timer which broadcasts current video time every
@@ -25,16 +27,15 @@ function startVideoSyncTimer() {
   }, /* ms= */ TIME_INTERVAL);
 }
 
-/** Stops video sync timer. */
-function stopVideoSyncTimer() {
-  clearInterval(videoSyncTimer);
-}
-
 /**
  * Calls functions that seek transcript, and discussion to {@code currentTime}
  * (number of seconds since video started playing).
  */
 function sync(currentTime) {
+  if (currentTime == lastTime) {
+    return;
+  }
+  lastTime = currentTime;
   window.seekTranscript(currentTime);
   window.seekDiscussion(currentTime);
 }
