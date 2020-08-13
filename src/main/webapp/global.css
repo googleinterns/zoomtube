@@ -64,3 +64,9 @@ body {
 .btn-wider {
   width: 200px !important;
 }
+
+/* Text */
+
+#header-text {
+  margin-bottom: 0 !important;
+}
