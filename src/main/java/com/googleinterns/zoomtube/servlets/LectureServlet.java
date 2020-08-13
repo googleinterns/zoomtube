@@ -80,9 +80,7 @@ public class LectureServlet extends HttpServlet {
       return;
     }
 
-    String lectureName = request.getParameter(PARAM_NAME);
     String videoUrl = request.getParameter(PARAM_LINK);
-
     Optional<String> videoId = getVideoId(videoUrl);
     if (!videoId.isPresent()) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_INVALID_LINK);
@@ -95,6 +93,7 @@ public class LectureServlet extends HttpServlet {
       return;
     }
 
+    String lectureName = request.getParameter(PARAM_NAME);
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
     initializeTranscript(lectureEntity);
@@ -121,7 +120,7 @@ public class LectureServlet extends HttpServlet {
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
     transcriptParser.parseAndStoreTranscript(videoId, lectureKey);
   }
-  
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> error = validateGetRequest(request);
