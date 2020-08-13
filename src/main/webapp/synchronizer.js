@@ -25,11 +25,6 @@ function startVideoSyncTimer() {
   }, /* ms= */ TIME_INTERVAL);
 }
 
-/** Stops video sync timer. */
-function stopVideoSyncTimer() {
-  clearInterval(videoSyncTimer);
-}
-
 /**
  * Calls functions that seek transcript, and discussion to {@code currentTime}
  * (number of seconds since video started playing).
