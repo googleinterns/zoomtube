@@ -161,8 +161,8 @@ function isBolded(transcriptLineLiElement) {
  * the current transcript line.
  */
 function isWithinCurrentTimeRange(currentTimeMs) {
-  return transcriptLine.startTimestampMs <= currentTimeMs &&
-      currentTimeMs <= transcriptLine.endTimestampMs;
+  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
 
 /**
