@@ -53,7 +53,6 @@ public class LectureServlet extends HttpServlet {
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
 
-
   @VisibleForTesting static final String ERROR_MISSING_NAME = "Missing name parameter.";
   @VisibleForTesting static final String ERROR_MISSING_LINK = "Missing link parameter.";
   @VisibleForTesting static final String ERROR_MISSING_ID = "Missing id parameter.";
@@ -75,7 +74,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Checks that the {@code request} 
+   * Checks that the {@code request}
    */
   private Optional<String> validateRequest(HttpServletRequest request) {
     if (request.getParameter(PARAM_NAME) == null) {
@@ -109,6 +108,7 @@ public class LectureServlet extends HttpServlet {
     Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()));
+      return;
     }
 
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
@@ -183,7 +183,9 @@ public class LectureServlet extends HttpServlet {
       URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(PARAM_ID, lectureId);
       return urlBuilder.build().toString();
     } catch (URISyntaxException e) {
-      throw new ServletException(e);
+      // This should never happen because our params are constants.
+      // But if it does, we let it bubble up.
+      throw new ServletException(e.getCause());
     }
   }
 }

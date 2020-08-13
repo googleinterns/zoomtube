@@ -88,7 +88,8 @@ public final class LectureServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_MISSING_NAME);
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_MISSING_NAME);
   }
 
   @Test
@@ -97,7 +98,8 @@ public final class LectureServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_MISSING_LINK);
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_MISSING_LINK);
   }
 
   @Test
@@ -107,7 +109,8 @@ public final class LectureServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_INVALID_LINK);
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, LectureServlet.ERROR_INVALID_LINK);
   }
 
   @Test
@@ -170,7 +173,8 @@ public final class LectureServletTest {
 
     String json = content.toString();
     assertThat(json).isEmpty();
-    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, LectureServlet.ERROR_LECTURE_NOT_FOUND);
+    verify(response).sendError(
+        HttpServletResponse.SC_NOT_FOUND, LectureServlet.ERROR_LECTURE_NOT_FOUND);
   }
 
   @Test
