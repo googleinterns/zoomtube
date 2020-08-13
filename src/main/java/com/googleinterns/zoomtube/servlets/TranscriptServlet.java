@@ -63,14 +63,23 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (request.getParameter(PARAM_ID) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_ID);
+    Optional<String> error = validateGetRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
       return;
     }
+
     long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
     PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
     writeTranscriptLines(response, transcriptLines);
+  }
+
+  private Optional<String> validateGetRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_ID) == null) {
+      return Optional.of(ERROR_MISSING_ID);
+    }
+    return Optional.empty();
   }
 
   /**
