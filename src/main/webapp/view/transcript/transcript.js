@@ -113,6 +113,8 @@ function deleteTranscript() {
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
   if (isBeforeTheFirstTranscriptLine(currentTimeMs)) {
+    // TODO: Reset the bolding on the current Transcript and scroll
+    // to the top of the transcript container.
     return;
   }
   if (isWithinCurrentTimeRange(currentTimeMs)) {
@@ -149,9 +151,12 @@ function isBolded(transcriptLineLiElement) {
  * Checks if `currentTimeMs` is within the time range for
  * the current transcript line.
  */
-function isWithinCurrentTimeRange(currentTimeMs) {
-  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
-      currentTimeMs <= currentTranscriptLine.endTimestampMs;
+function isWithinCurrentTimeRange(currentTimeMs, transcriptLine) {
+  if (transcriptLine === undefined) {
+    transcriptLine = currentTranscriptLine;
+  }
+  return transcriptLine.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= transcriptLine.endTimestampMs;
 }
 
 /**
