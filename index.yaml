@@ -2,10 +2,10 @@ indexes:
 - kind: Comment
   properties:
   - name: lecture
-  - name: timestamp
+  - name: timestamp_ms
   - name: created
     direction: desc
 - kind: TranscriptLine
   properties:
-  - name: transcriptLine
-  - name: start
+  - name: lecture
+  - name: start_ms
