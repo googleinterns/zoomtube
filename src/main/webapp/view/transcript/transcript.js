@@ -114,6 +114,9 @@ function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
   if (currentTimeMs <= currentTranscriptLine.endTimestampMs) {
     return;
+  } else if (currentTime > currentTranscriptLine.startTimestampMs && isBolded(currentTranscriptLine)) {
+    removeBold(currentTranscriptLine);
+    return;
   }
   removeBold(currentTranscriptLine);
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
@@ -132,6 +135,11 @@ function addBold(transcriptLineLiElement) {
 function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
+}
+
+/** Checks if `transcriptLineLiElement` is bolded. */
+function isBolded(transcriptLineLiElement) {
+  return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
 }
 
 /**
