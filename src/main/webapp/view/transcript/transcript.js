@@ -168,13 +168,11 @@ function isBeforeTheFirstTranscriptLine(currentTimeMs) {
   return currentTimeMs < firstTranscriptLine.startTimestampMs;
 }
 
-// TODO: Update this function to actually search for the next line.
+/**
+ * Returns the closest transcript line based on `currentTimeMs`.
+ */
 function getNextTranscriptLine(currentTimeMs) {
-  let nextTranscript = currentTranscriptLine.nextElementSibling;
-  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
-    nextTranscript = currentTranscriptLine.previousSibling;
-  }
-  return nextTranscript;
+  // TODO: Implement this function.
 }
 
 /**
