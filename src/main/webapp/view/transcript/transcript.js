@@ -115,8 +115,7 @@ function seekTranscript(currentTime) {
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  if (currentTranscriptLine.startTimestampMs <= currentTimeMs &&
-      currentTimeMs <= currentTranscriptLine.endTimestampMs) {
+  if (isWithinCurrentTimeRange(currentTimeMs)) {
     if (!isBolded(currentTranscriptLine)) {
       addBold(currentTranscriptLine);
     }
@@ -146,9 +145,13 @@ function isBolded(transcriptLineLiElement) {
   return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
 }
 
+/**
+ * Checks if `currentTimeMs` is within the time range for
+ * the current transcript line.
+ * */
 function isWithinCurrentTimeRange(currentTimeMs) {
   return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
-  currentTimeMs <= currentTranscriptLine.endTimestampMs;
+      currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
 
 /**
