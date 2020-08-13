@@ -38,6 +38,7 @@ import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.Date;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -72,12 +73,11 @@ public class DiscussionServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (request.getParameter(PARAM_LECTURE) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_LECTURE);
+    Optional<String> error = validatePostRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
       return;
     }
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
-    Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
 
     User author = userService.getCurrentUser();
     if (author == null) {
@@ -85,47 +85,58 @@ public class DiscussionServlet extends HttpServlet {
       return;
     }
 
-    if (request.getParameter(PARAM_TYPE) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_COMMENT_TYPE);
-      return;
-    }
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
+    Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
-
     // TODO: Require non-zero content length. See: #183.
     String content = CharStreams.toString(request.getReader());
     Date dateNow = new Date(Clock.systemUTC().millis());
 
     final Entity commentEntity;
     if (type == Comment.Type.REPLY) {
-      if (request.getParameter(PARAM_PARENT) == null) {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_PARENT);
-        return;
-      }
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
       Key parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
       commentEntity = CommentUtil.createReplyEntity(lecture, parent, author, content, dateNow);
     } else {
-      if (request.getParameter(PARAM_TIMESTAMP) == null) {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_TIMESTAMP);
-        return;
-      }
       long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
       commentEntity =
           CommentUtil.createRootEntity(lecture, timestampMs, author, content, dateNow, type);
     }
-
     datastore.put(commentEntity);
+
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
+  }
+
+  private Optional<String> validatePostRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_LECTURE) == null) {
+      return Optional.of(ERROR_MISSING_LECTURE);
+    }
+    if (request.getParameter(PARAM_TYPE) == null) {
+      return Optional.of(ERROR_MISSING_COMMENT_TYPE);
+    }
+
+    Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
+    if (type == Comment.Type.REPLY) {
+      // Replies need a parent.
+      if (request.getParameter(PARAM_PARENT) == null) {
+        return Optional.of(ERROR_MISSING_PARENT);
+      }
+    } else {
+      // Root (non-reply) comments need a timestamp.
+      if (request.getParameter(PARAM_TIMESTAMP) == null) {
+        return Optional.of(ERROR_MISSING_PARENT);
+      }
+    }
+    return Optional.empty();
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    if (request.getParameter(PARAM_LECTURE) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_LECTURE);
-      return;
+    Optional<String> error = validateGetRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
     }
+
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Filter lectureFilter = new FilterPredicate(CommentUtil.LECTURE, FilterOperator.EQUAL, lecture);
@@ -142,5 +153,12 @@ public class DiscussionServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(comments));
+  }
+
+  private Optional<String> validateGetRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_LECTURE) == null) {
+      return Optional.of(ERROR_MISSING_LECTURE);
+    }
+    return Optional.empty();
   }
 }
