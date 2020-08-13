@@ -118,7 +118,6 @@ function seekTranscript(currentTime) {
       return;
     }
     nextTranscript = currentTranscriptLine.previousSibling;
-    // return;
   }
   if (isWithinCurrentTimeRange(currentTimeMs)) {
     if (!isBolded(currentTranscriptLine)) {
