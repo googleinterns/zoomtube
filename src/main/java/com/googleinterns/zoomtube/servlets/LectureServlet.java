@@ -111,6 +111,33 @@ public class LectureServlet extends HttpServlet {
     return Optional.empty();
   }
 
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Optional<String> error = validateGetRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
+      return;
+    }
+
+    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
+    Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    try {
+      Entity lectureEntity = datastore.get(lectureEntityKey);
+      Gson gson = new Gson();
+      response.setContentType("application/json");
+      response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
+    } catch (EntityNotFoundException entityNotFound) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, ERROR_LECTURE_NOT_FOUND);
+    }
+  }
+
+  private Optional<String> validateGetRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_ID) == null) {
+      return Optional.of(ERROR_MISSING_ID);
+    }
+    return Optional.empty();
+  }
+
   /**
    * Parses and stores the transcript lines in datastore using the {@code lectureKey}
    * and {@code videoId} properties in {@code lectureEntity}.
@@ -127,13 +154,13 @@ public class LectureServlet extends HttpServlet {
    * {@code Optional.empty()} if one doesn't exist.
    */
   // TODO: Use a filter to avoid fetching all lectures.  See: #185.
-  private Optional<Entity> checkUrlInDatabase(String videoUrl) {
+  private Optional<Entity> checkUrlInDatabase(String url) {
     Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
     for (Entity lecture : resultsIterable) {
-      if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(videoUrl)) {
+      if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
         return Optional.of(lecture);
       }
     }
@@ -163,32 +190,5 @@ public class LectureServlet extends HttpServlet {
       // But if it does, we let it bubble up.
       throw new ServletException(e.getCause());
     }
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Optional<String> error = validateGetRequest(request);
-    if (error.isPresent()) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
-      return;
-    }
-
-    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
-    Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    try {
-      Entity lectureEntity = datastore.get(lectureEntityKey);
-      Gson gson = new Gson();
-      response.setContentType("application/json");
-      response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
-    } catch (EntityNotFoundException entityNotFound) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND, ERROR_LECTURE_NOT_FOUND);
-    }
-  }
-
-  private Optional<String> validateGetRequest(HttpServletRequest request) {
-    if (request.getParameter(PARAM_ID) == null) {
-      return Optional.of(ERROR_MISSING_ID);
-    }
-    return Optional.empty();
   }
 }
