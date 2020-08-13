@@ -71,7 +71,7 @@ function appendTextToList(transcriptLine, ulElement) {
       transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
 
   const liElement = document.createElement('li');
-  liElement.classList.add('align-self-center', 'mb-2');
+  liElement.classList.add('align-self-center', 'mb-2', DEFAULT_FONT_WEIGHT);
   liElement.appendChild(contentDivElement);
   const hrElement = document.createElement('hr');
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
@@ -112,12 +112,19 @@ function deleteTranscript() {
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
-  if (currentTimeMs <= currentTranscriptLine.endTimestampMs) {
+  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  // TODO: Disable highlighting on the currentTranscriptLine
+  if (isWithinCurrentTimeRange(currentTimeMs)) {
+    if (!isBolded(currentTranscriptLine)) {
+      addBold(currentTranscriptLine);
+    }
+    return;
+  }
+  removeBold(currentTranscriptLine);
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   scrollToTopOfTranscript(currentTranscriptLine);
+  addBold(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
 }
 
@@ -131,6 +138,20 @@ function addBold(transcriptLineLiElement) {
 function removeBold(transcriptLineLiElement) {
   transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
+}
+
+/** Checks if `transcriptLineLiElement` is bolded. */
+function isBolded(transcriptLineLiElement) {
+  return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
+}
+
+/**
+ * Checks if `currentTimeMs` is within the time range for
+ * the current transcript line.
+ * */
+function isWithinCurrentTimeRange(currentTimeMs) {
+  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
 
 /**
