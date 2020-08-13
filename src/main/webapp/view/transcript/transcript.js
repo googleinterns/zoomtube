@@ -164,7 +164,7 @@ function isWithinCurrentTimeRange(currentTimeMs) {
 }
 
 /**
- * Checks if `currentTimeMs` is before the starting timestamp of
+ * Returns true if `currentTimeMs` is before the starting timestamp of
  * the first transcript line.
  */
 function isBeforeTheFirstTranscriptLine(currentTimeMs) {
