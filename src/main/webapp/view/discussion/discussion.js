@@ -42,6 +42,8 @@ const COMMENT_TYPE_NOTE = 'NOTE';
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
 
+// TODO: Refactor these global variables into a namespace, module, or class.
+// See: #191.
 let newCommentTimestampMs = 0;
 let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
 
