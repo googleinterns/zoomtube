@@ -145,12 +145,13 @@ function scrollToTopOfTranscript(transcriptLine) {
 
 // TODO: Update this function to actually search for the next line.
 function getNextTranscriptLine(currentTimeMs) {
-  const transcriptLinePointer = document.getElementsByTagName('li')[0];
-  while (transcriptLinePointer != null && !isWithinCurrentTimeRange(currentTimeMs)) {
+  let transcriptLinePointer = document.getElementsByTagName('li')[0];
+  while (transcriptLinePointer != null &&
+         !isWithinCurrentTimeRange(currentTimeMs)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
   if (transcriptLinePointer === null) {
-    if (isBold(currentTranscriptLine)) {
+    if (isBolded(currentTranscriptLine)) {
       removeBold(currentTranscriptLine);
     }
     return currentTranscriptLine;
