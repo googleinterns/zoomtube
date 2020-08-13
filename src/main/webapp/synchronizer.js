@@ -29,7 +29,8 @@ function startVideoSyncTimer() {
 
 /**
  * Calls functions that seek transcript, and discussion to {@code currentTime}
- * (number of seconds since video started playing).
+ * (number of seconds since start of video), when the {@code currentTime}
+ * changes from the last time this was called.
  */
 function sync(currentTime) {
   if (currentTime == lastTime) {
