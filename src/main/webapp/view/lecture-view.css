@@ -71,7 +71,7 @@ discussion-comment {
 }
 
 #transcript-lines-container {
-  height: 90%;
+  height: calc(100% - 5rem);
   overflow: auto;
 }
 
