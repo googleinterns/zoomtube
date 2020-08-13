@@ -178,7 +178,7 @@ function scrollToTopOfTranscript(transcriptLine) {
  * started scrolling.
  */
 function resetToBeforeTranscript() {
-  // TODO: Create a static reference to the first Transcript line once 
+  // TODO: Create a static reference to the first Transcript line once
   // a class is created for transcript line.
   const firstTranscriptLine = document.getElementsByTagName('li')[0];
   removeBold(currentTranscriptLine);
