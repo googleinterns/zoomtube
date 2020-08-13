@@ -13,7 +13,8 @@
 // limitations under the License.
 
 let videoSyncTimer;
-let lastTime = 0; // Video starts at 0.
+let lastTime;
+
 const TIME_INTERVAL = 100;
 
 /**
