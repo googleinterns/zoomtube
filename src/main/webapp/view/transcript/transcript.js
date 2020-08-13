@@ -126,7 +126,7 @@ function seekTranscript(currentTime) {
   // TODO: Handle the case where the video isn't only playing.
 }
 
-/** 
+/**
  * Bolds the text in `transcriptLineLiElement` if it is not already
  * bolded.
  */
