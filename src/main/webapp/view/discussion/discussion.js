@@ -77,7 +77,10 @@ async function postReply(inputField, parentId) {
 
 /**
  * Posts comment from `inputField` and reloads the discussion. Adds query
- * parameters from `params` to the request.
+ * parameters from `params` to the request. Different types of comments
+ * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
+ * The caller should ensure the correct parameters are supplied for the type
+ * of comment being posted.
  */
 async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);

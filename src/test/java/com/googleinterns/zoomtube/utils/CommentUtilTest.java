@@ -32,15 +32,12 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public final class CommentUtilTest {
-  private Key lectureKey;
-
   // Needed for accessing datastore services while creating an Entity.
   private final LocalServiceTestHelper testServices = new LocalServiceTestHelper();
 
   @Before
   public void setUp() {
     testServices.setUp();
-    lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
   }
 
   @After
@@ -50,6 +47,7 @@ public final class CommentUtilTest {
 
   @Test
   public void createComment_reply_shouldReturnCommentFromEntity() throws IOException {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
     User author = new User("test@example.com", "example.com");
     Key parentKey = KeyFactory.createKey(CommentUtil.KIND, /* id= */ 67890);
     String content = "Test content";
@@ -77,8 +75,9 @@ public final class CommentUtilTest {
 
   @Test
   public void createComment_root_shouldReturnCommentFromEntity() throws IOException {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
     long timestamp = 123;
-    User author = new User("test@example.com", "example.com");
+    User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     String content = "Test content";
     Date dateNow = new Date();
     Entity entity = new Entity(CommentUtil.KIND);
@@ -105,8 +104,9 @@ public final class CommentUtilTest {
 
   @Test
   public void createRootEntity_shouldReturnEntityWithProperties() throws IOException {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
     long timestampMs = 123;
-    User author = new User("test@example.com", "example.com");
+    User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     String content = "Test content";
     Date dateNow = new Date();
     Comment.Type type = Comment.Type.QUESTION;
@@ -125,8 +125,9 @@ public final class CommentUtilTest {
 
   @Test
   public void createReplyEntity_shouldReturnEntityWithProperties() throws IOException {
-    Key parentKey = KeyFactory.createKey(CommentUtil.KIND, 67890);
-    User author = new User("test@example.com", "example.com");
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
+    Key parentKey = KeyFactory.createKey(CommentUtil.KIND, /* id= */ 67890);
+    User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     String content = "Test content";
     Date dateNow = new Date();
 
