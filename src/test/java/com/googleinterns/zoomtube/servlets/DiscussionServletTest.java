@@ -1,4 +1,4 @@
-package com.googleinterns.zoomtube.servlets;
+// package com.googleinterns.zoomtube.servlets;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
@@ -89,8 +89,8 @@ public class DiscussionServletTest {
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something
-    unique"))); when(request.getParameter(DiscussionServlet.PARAM_PARENT))
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
         .thenReturn(Integer.toString(parentId));
 
     servlet.doPost(request, response);
