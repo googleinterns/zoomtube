@@ -112,8 +112,13 @@ function deleteTranscript() {
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  let nextTranscript = currentTranscriptLine.nextElementSibling;
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
-    return;
+    if (isFirstLine(currentTranscriptLine)) {
+      return;
+    }
+    nextTranscript = currentTranscriptLine.previousSibling;
+    // return;
   }
   if (isWithinCurrentTimeRange(currentTimeMs)) {
     if (!isBolded(currentTranscriptLine)) {
@@ -121,8 +126,9 @@ function seekTranscript(currentTime) {
     }
     return;
   }
+  // not within range,
   removeBold(currentTranscriptLine);
-  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  currentTranscriptLine = nextTranscript;
   scrollToTopOfTranscript(currentTranscriptLine);
   addBold(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
@@ -152,6 +158,11 @@ function isBolded(transcriptLineLiElement) {
 function isWithinCurrentTimeRange(currentTimeMs) {
   return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
       currentTimeMs <= currentTranscriptLine.endTimestampMs;
+}
+
+function isFirstLine(transcriptLineLiElement) {
+  const firstTranscriptLine = document.getElementsByTagName('li')[0];
+  return transcriptLineLiElement === firstTranscriptLine;
 }
 
 /**
