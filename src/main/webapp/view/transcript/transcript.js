@@ -177,6 +177,7 @@ function isBeforeTheFirstTranscriptLine(currentTimeMs) {
  */
 function getNextTranscriptLine(currentTimeMs) {
   // TODO: Implement this function.
+  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   console.log(currentTimeMs);
 }
 
