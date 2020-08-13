@@ -172,3 +172,15 @@ function scrollToTopOfTranscript(transcriptLine) {
   const ulElementOffset = transcriptLine.parentElement.offsetTop;
   transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
+
+/**
+ * Resets the transcript container to what it looks like before it
+ * started scrolling.
+ */
+function resetToBeforeTranscript() {
+  // TODO: Create a static reference to the first Transcript line once 
+  // a class is created for transcript line.
+  const firstTranscriptLine = document.getElementsByTagName('li')[0];
+  removeBold(currentTranscriptLine);
+  scrollToTopOfTranscript(firstTranscriptLine);
+}
