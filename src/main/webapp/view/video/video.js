@@ -34,7 +34,7 @@ function onYouTubeIframeAPIReady() {
     videoId: window.LECTURE.videoId,
     events: {
       onReady: onPlayerReady,
-      onStateChange: startOrStopTimer,
+      onStateChange: videStateChange,
     },
   });
 }
@@ -44,8 +44,13 @@ function onPlayerReady(event) {
   event.target.playVideo();
 }
 
-/** Starts timer if {@code currentState} is playing, stops otherwise. */
-function startOrStopTimer(currentState) {
+/**
+ * Syncronizes everything, then starts timer if {@code currentState}
+ * is playing or stops it otherwise.
+ */
+function videStateChange(currentState) {
+  window.sync(window.videoPlayer.getCurrentTime());
+
   if (currentState.data == window.YT.PlayerState.PLAYING) {
     window.startVideoSyncTimer();
     return;

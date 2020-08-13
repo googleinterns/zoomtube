@@ -13,7 +13,7 @@
 // limitations under the License.
 
 let videoSyncTimer;
-const TIME_INTERVAL = 1000;
+const TIME_INTERVAL = 100;
 
 /**
  * Starts timer which broadcasts current video time every
