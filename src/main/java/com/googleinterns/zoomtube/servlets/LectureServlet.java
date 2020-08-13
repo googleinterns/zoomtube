@@ -111,6 +111,17 @@ public class LectureServlet extends HttpServlet {
     return Optional.empty();
   }
 
+  /**
+   * Parses and stores the transcript lines in datastore using the {@code lectureKey}
+   * and {@code videoId} properties in {@code lectureEntity}.
+   */
+  private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
+    TranscriptParser transcriptParser = TranscriptParser.getParser();
+    Key lectureKey = lectureEntity.getKey();
+    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
+    transcriptParser.parseAndStoreTranscript(videoId, lectureKey);
+  }
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> error = validateGetRequest(request);
@@ -136,17 +147,6 @@ public class LectureServlet extends HttpServlet {
       return Optional.of(ERROR_MISSING_ID);
     }
     return Optional.empty();
-  }
-
-  /**
-   * Parses and stores the transcript lines in datastore using the {@code lectureKey}
-   * and {@code videoId} properties in {@code lectureEntity}.
-   */
-  private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
-    TranscriptParser transcriptParser = TranscriptParser.getParser();
-    Key lectureKey = lectureEntity.getKey();
-    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
-    transcriptParser.parseAndStoreTranscript(videoId, lectureKey);
   }
 
   /**
