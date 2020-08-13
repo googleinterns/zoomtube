@@ -45,14 +45,11 @@ public class LectureServlet extends HttpServlet {
       + "watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|"
       + "embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
-  @VisibleForTesting static final String PARAM_ID = "id";
-
   /* Name of input field used for lecture name in lecture selection page. */
   @VisibleForTesting static final String PARAM_NAME = "name-input";
-
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
-
+  @VisibleForTesting static final String PARAM_ID = "id";
   @VisibleForTesting static final String ERROR_MISSING_NAME = "Missing name parameter.";
   @VisibleForTesting static final String ERROR_MISSING_LINK = "Missing link parameter.";
   @VisibleForTesting static final String ERROR_MISSING_ID = "Missing id parameter.";
@@ -73,24 +70,11 @@ public class LectureServlet extends HttpServlet {
     videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
-  /**
-   * Checks that the {@code request}
-   */
-  private Optional<String> validateRequest(HttpServletRequest request) {
-    if (request.getParameter(PARAM_NAME) == null) {
-      return Optional.of(ERROR_MISSING_NAME);
-    }
-    if (request.getParameter(PARAM_LINK) == null) {
-      return Optional.of(ERROR_MISSING_LINK);
-    }
-    return Optional.empty();
-  }
-
   @Override
   // TODO: Check if URL is valid.
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    Optional<String> error = validateRequest(request);
+    Optional<String> error = validatePostRequest(request);
     if (error.isPresent()) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
       return;
@@ -117,6 +101,16 @@ public class LectureServlet extends HttpServlet {
     response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
+  private Optional<String> validatePostRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_NAME) == null) {
+      return Optional.of(ERROR_MISSING_NAME);
+    }
+    if (request.getParameter(PARAM_LINK) == null) {
+      return Optional.of(ERROR_MISSING_LINK);
+    }
+    return Optional.empty();
+  }
+
   /**
    * Parses and stores the transcript lines in datastore using the {@code lectureKey}
    * and {@code videoId} properties in {@code lectureEntity}.
@@ -126,24 +120,6 @@ public class LectureServlet extends HttpServlet {
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
     transcriptParser.parseAndStoreTranscript(videoId, lectureKey);
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (request.getParameter(PARAM_ID) == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_MISSING_ID);
-      return;
-    }
-    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
-    Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    try {
-      Entity lectureEntity = datastore.get(lectureEntityKey);
-      Gson gson = new Gson();
-      response.setContentType("application/json");
-      response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
-    } catch (EntityNotFoundException entityNotFound) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND, ERROR_LECTURE_NOT_FOUND);
-    }
   }
 
   /**
@@ -187,5 +163,32 @@ public class LectureServlet extends HttpServlet {
       // But if it does, we let it bubble up.
       throw new ServletException(e.getCause());
     }
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Optional<String> error = validateGetRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
+      return;
+    }
+
+    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
+    Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    try {
+      Entity lectureEntity = datastore.get(lectureEntityKey);
+      Gson gson = new Gson();
+      response.setContentType("application/json");
+      response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
+    } catch (EntityNotFoundException entityNotFound) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, ERROR_LECTURE_NOT_FOUND);
+    }
+  }
+
+  private Optional<String> validateGetRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_ID) == null) {
+      return Optional.of(ERROR_MISSING_ID);
+    }
+    return Optional.empty();
   }
 }
