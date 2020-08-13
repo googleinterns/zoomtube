@@ -121,7 +121,7 @@ function seekTranscript(currentTime) {
     }
     return;
   }
-  let nextTranscript = getNextTranscriptLine(currentTimeMs);
+  const nextTranscript = getNextTranscriptLine(currentTimeMs);
   removeBold(currentTranscriptLine);
   currentTranscriptLine = nextTranscript;
   scrollToTopOfTranscript(currentTranscriptLine);
@@ -159,6 +159,7 @@ function isBeforeTheFirstTranscriptLine(currentTimeMs) {
   return currentTimeMs < firstTranscriptLine.startTimestampMs;
 }
 
+// TODO: Update this function to actually search for the next line.
 function getNextTranscriptLine(currentTimeMs) {
   let nextTranscript = currentTranscriptLine.nextElementSibling;
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
