@@ -19,12 +19,14 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,7 +35,10 @@ import org.xml.sax.SAXException;
 
 /** Parses the transcript XML and stores the lines in datastore. */
 public final class TranscriptParser {
-  private static final String XML_URL_TEMPLATE = "http://video.google.com/timedtext?lang=en&v=";
+  private static final String API_URL = "http://video.google.com/timedtext";
+  private static final String API_PARAM_LANG = "lang";
+  private static final String API_LANG_ENGLISH = "en";
+  private static final String API_PARAM_VIDEO = "v";
   private static final long MILLISECONDS_PER_SECOND = 1000;
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
@@ -78,16 +83,26 @@ public final class TranscriptParser {
 
   /**
    * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
-   * if there is a parsing error.
+   * if there is a parsing or URL building error.
    *
    * @param videoId Indicates the video to extract the transcript from.
    */
   private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
-    String transcriptXMLUrl = XML_URL_TEMPLATE + videoId;
+    final URL url;
+    try {
+      URIBuilder urlBuilder = new URIBuilder(API_URL);
+      urlBuilder.addParameter(API_PARAM_LANG, API_LANG_ENGLISH);
+      urlBuilder.addParameter(API_PARAM_VIDEO, videoId);
+      url = urlBuilder.build().toURL();
+    } catch (URISyntaxException e) {
+      // TODO: Alert the user.
+      System.out.println("URL building error");
+      return Optional.empty();
+    }
 
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document document = documentBuilder.parse(new URL(transcriptXMLUrl).openStream());
+      Document document = documentBuilder.parse(url.openStream());
       document.getDocumentElement().normalize();
       return Optional.of(document);
     } catch (ParserConfigurationException | SAXException e) {
