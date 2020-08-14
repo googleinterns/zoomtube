@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
 public class TranscriptServlet extends HttpServlet {
   private DatastoreService datastore;
   @VisibleForTesting static final String PARAM_ID = "id";
-  @VisibleForTesting static final String ERROR_MISSING_ID = "Missing id parameter.";
+  private static final String ERROR_MISSING_ID = "Missing id parameter.";
 
   @Override
   public void init() throws ServletException {
