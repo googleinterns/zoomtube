@@ -19,6 +19,9 @@ const PARAM_ID = 'id';
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
+// TODO: Remove global scope and link to video object.
+window.synchronizer = new Synchronizer();
+
 /** Sets {@code window.LECTURE} as Lecture for view page. */
 getLecture().then((lecture) => {
   window.LECTURE = lecture;
