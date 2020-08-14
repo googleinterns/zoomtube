@@ -113,14 +113,18 @@ class TranscriptLine extends HTMLElement {
     this.updateSpanSlot('content', transcriptLine.content, CONTENT_STYLE);
 
     // TODO: Update to use number once pull request #168 is merged.
-    this.startDate = new Date(transcriptLine.start);
-    this.endDate = new Date(transcriptLine.end);
+    this.startTimestampMs = transcriptLine.startTimestampMs;
+    this.endTimestampMs = transcriptLine.endTimestampMs;
     // Sets the current transcript line to be the first line.
     if (currentTranscriptLine == null) {
       currentTranscriptLine = this;
     }
   }
-  // TODO: split into classes style for timestamp and content
+
+  /**
+   * Updates the template slot `slotName` with `slotValue` and styling
+   * from `slotStyle`.
+   */
   updateSpanSlot(slotName, slotValue, slotStyle) {
     const span = document.createElement('span');
     span.innerText = slotValue;
