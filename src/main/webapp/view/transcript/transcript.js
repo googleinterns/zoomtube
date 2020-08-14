@@ -133,6 +133,11 @@ class TranscriptLine extends HTMLElement {
     this.appendChild(span);
   }
 
+  /** Returns true if the text is already bolded. */
+  isBolded() {
+    return this.classList.contains(BOLD_FONT_WEIGHT);
+  }
+
   /**
    * Bolds the text if it is not already
    * bolded.
@@ -157,11 +162,6 @@ class TranscriptLine extends HTMLElement {
     this.classList.remove(BOLD_FONT_WEIGHT);
   }
 
-  /** Returns true if the text is already bolded. */
-  isBolded() {
-    return this.classList.contains(BOLD_FONT_WEIGHT);
-  }
-
   /**
    * Returns true if `currentTimeMs` is within the time range for
    * this transcript line.
@@ -173,7 +173,6 @@ class TranscriptLine extends HTMLElement {
 
   /**
    * Scrolls this transcript line to the top of the transcript area.
-   *
    */
   scrollToTopOfTranscript() {
     const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
