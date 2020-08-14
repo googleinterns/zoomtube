@@ -14,7 +14,7 @@
 
 const TIME_INTERVAL = 1000;
 
-class Synchronizer {
+export class Synchronizer {
   /**
    * Starts timer which broadcasts current video time every
    * {@code TIME_INTERVAL} milliseconds.

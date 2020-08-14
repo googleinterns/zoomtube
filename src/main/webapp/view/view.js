@@ -11,6 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// module 'view.js'
+
+import {Synchronizer} from '../synchronizer.js';
 
 const ENDPOINT_LECTURE = '/lecture';
 
