@@ -197,15 +197,15 @@ function findClosestTranscriptLine(timeMs) {
   let transcriptLinePointer = document.getElementsByTagName('li')[0];
   while (transcriptLinePointer != null &&
          !isWithinTimeRange(timeMs, currentTranscriptLine) &&
-         !isPastTranscriptLine(currentTranscriptLine, timeMs)) {
+         !isAfterTimeMs(currentTranscriptLine, timeMs)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
   return transcriptLinePointer;
 }
 
 /**
- * Returns true if `timeMs` is after the time range for `transcriptLine`.
+ * Returns true if the ending time of `transcriptLine` if after `timeMs`.
  */
-function isPastTimeMs(transcriptLine, timeMs) {
-  return timeMs < transcriptLine.endTimestampMs;
+function isAfterTimeMs(transcriptLine, timeMs) {
+  return transcriptLine.endTimestampMs > timeMs;
 }
