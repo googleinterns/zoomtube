@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const PARAM_ID = 'id';
-const PARAM_VIDEO_ID = 'video-id';
 const ENDPOINT_LECTURE = '/lecture';
+
+const PARAM_ID = 'id';
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
-window.VIDEO_ID = getVideoId();
 
 /** Sets {@code window.LECTURE} as Lecture for view page. */
 getLecture().then((lecture) => {
@@ -53,12 +52,4 @@ async function getLecture() {
 function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(PARAM_ID);
-}
-
-/**
- * Returns the video id obtained from the current page's URL parameters.
- */
-function getVideoId() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(PARAM_VIDEO_ID);
 }

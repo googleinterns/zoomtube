@@ -21,7 +21,7 @@
 <body>
   <nav class="navbar navbar-light">
     <h2 id="header-text">ZoomTube</h2>
-    <a type="button" class="btn btn-outline-primary" href="/lectures">All Lectures</a>
+    <a type="button" class="btn btn-outline-primary" href="/lectures/">All Lectures</a>
   </nav>
 
   <div id="page">
@@ -35,7 +35,7 @@
     <div class="halfpage" id="discussion">
       <div id="new-comment-row">
         <div id="new-comment-form" class="form-group">
-          <label for="post-textarea">Leave a Comment</label>
+          <label for="post-textarea">Leave a Comment at <span id="timestamp-span">00:00</span></label>
           <textarea class="form-control" id="post-textarea" rows="2"></textarea>
         </div>
         <button class="btn btn-primary mb-2" type="button" onclick="postNewComment()">
@@ -79,6 +79,24 @@
       </div>
     </div>
   </div>
+</template>
+
+<template id="transcript-line-template">
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="/global.css" />
+  <link rel="stylesheet" href="/view/lecture-view.css" />
+  <li class="align-self-center mb-2">
+    <div class="d-flex flex-row mb-1">
+      <slot name="timestamp-range" class="justify-content-start mb-1"></slot>
+      <slot name="content" class="ml-4 mb-1"></slot>
+    </div>
+    <hr class="my-1 align-middle mr-5" />
+  </li>
 </template>
 
 <script

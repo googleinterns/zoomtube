@@ -20,16 +20,6 @@ const BOLD_FONT_WEIGHT = 'font-weight-bold';
 let /** Element */ currentTranscriptLine;
 
 /**
- * Sends a POST request to the transcript.
- */
-// TODO: Delete this method once TranscriptServlet's doPost()
-// is called in LectureServlet.
-function sendPostToTranscript(lectureQueryString) {
-  const params = new URLSearchParams(lectureQueryString);
-  fetch('/transcript', {method: 'POST', body: params});
-}
-
-/**
  * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
  *
  * <p>This function assumes that the transcript lines have already
@@ -90,16 +80,18 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  // TODO: Update this constant once the pull request updating Date to long
-  // is approved.
-  const currentTimestamp =
-      window.getDateInSeconds(currentTranscriptLine.endDate);
-  if (currentTime <= currentTimestamp) {
+  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  // TODO: Disable highlighting on the currentTranscriptLine
+  if (isWithinCurrentTimeRange(currentTimeMs)) {
+    addBold(currentTranscriptLine);
+    return;
+  }
+  removeBold(currentTranscriptLine);
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  currentTranscriptLine.scrollIntoView();
+  scrollToTopOfTranscript(currentTranscriptLine);
+  addBold(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
 }
 /**
@@ -132,34 +124,52 @@ class TranscriptLine extends HTMLLIElement {
     }
   }
 
-  /** Bolds the text. */
+/**
+ * Bolds the text if it is not already
+ * bolded.
+ */
   addBold() {
+    if (this.isBolded()) {
+      return;
+    }
     this.classList.add(BOLD_FONT_WEIGHT);
     this.classList.remove(DEFAULT_FONT_WEIGHT);
   }
 
-  /** Removes bold from the text. */
+  /**
+ * Removes bold from the text in `transcriptLineLiElement` if it
+ * is currently bolded.
+ */
   removeBold() {
+    if (!this.isBolded()) {
+      return;
+    }
     this.classList.add(DEFAULT_FONT_WEIGHT);
     this.classList.remove(BOLD_FONT_WEIGHT);
   }
 
-  /** Creates and returns a div element with style added. */
-  // TODO: Delete this method after the creation of a transcript line
-  // on the DOM is to use slots.
-  createStyledDivElement() {
-    const contentDivElement = document.createElement('div');
-    contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
-    return contentDivElement;
+  /** Returns true if bolded. */
+  isBolded() {
+    return this.classList.contains(BOLD_FONT_WEIGHT);
   }
 
-  /** Creates and returns a hr element with style added. */
-  // TODO: Delete this method after the creation of a transcript line
-  // on the DOM is to use slots.
-  createStyledHrElement() {
-    const hrElement = document.createElement('hr');
-    hrElement.classList.add('my-1', 'align-middle', 'mr-5');
-    return hrElement;
+  /**
+ * Returns true if `currentTimeMs` is within the time range for
+ * this transcript line.
+ */
+  isWithinCurrentTimeRange(currentTimeMs) {
+    return this.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= this.endTimestampMs;
+  }
+
+  /**
+   * Scrolls this transcript line to the top of the transcript area.
+   *
+   */
+  scrollToTopOfTranscript() {
+    const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
+    const ulElementOffset = this.parentElement.offsetTop;
+    transcriptContainer.scrollTop = this.offsetTop - ulElementOffset;
   }
 }
 

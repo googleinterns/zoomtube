@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DiscussionServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_LECTURE = "lecture";
   @VisibleForTesting static final String PARAM_PARENT = "parent";
+  @VisibleForTesting static final String PARAM_TIMESTAMP = "timestamp";
 
   private UserService userService;
   private DatastoreService datastore;
@@ -75,9 +76,13 @@ public class DiscussionServlet extends HttpServlet {
       return;
     }
     String content = CharStreams.toString(request.getReader());
-    // TODO: Get actual video timestamp from request.
-    // Use the start of the video for now.
+
+    // Default timestamp is the start of the video.
     long timestampMs = 0;
+    if (request.getParameter(PARAM_TIMESTAMP) != null) {
+      timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
+    }
+
     Date dateNow = new Date(Clock.systemUTC().millis());
 
     if (parent == null) {

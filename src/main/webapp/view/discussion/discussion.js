@@ -16,11 +16,13 @@ const ENDPOINT_DISCUSSION = '/discussion';
 
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
+const PARAM_TIMESTAMP = 'timestamp';
 
 const ATTR_ID = 'key-id';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
+const ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
 
 const TEMPLATE_COMMENT = document.querySelector('#comment-template');
 
@@ -34,6 +36,14 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
+// 10 seconds.
+const TIME_TOLERANCE_MS = 10000;
+
+// TODO: Refactor these global variables into a namespace, module, or class.
+// See: #191.
+let newCommentTimestampMs = 0;
+let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
+
 /**
  * Loads the lecture disucssion.
  */
@@ -45,7 +55,8 @@ async function intializeDiscussion() {
  * Posts a new comment using the main post textarea.
  */
 async function postNewComment() {
-  postAndReload(ELEMENT_POST_TEXTAREA);
+  postAndReload(
+      ELEMENT_POST_TEXTAREA, /* parent= */ undefined, newCommentTimestampMs);
 }
 
 /**
@@ -60,11 +71,15 @@ async function postReply(inputField, parentId) {
  * {@code parentId} is provided, this posts a reply to the comment with
  * that id.
  */
-async function postAndReload(inputField, parentId = undefined) {
+async function postAndReload(
+    inputField, parentId = undefined, timestamp = undefined) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  if (parentId) {
+  if (parentId !== undefined) {
     url.searchParams.append(PARAM_PARENT, parentId);
+  }
+  if (timestamp !== undefined) {
+    url.searchParams.append(PARAM_TIMESTAMP, timestamp);
   }
 
   fetch(url, {
@@ -82,11 +97,14 @@ async function postAndReload(inputField, parentId = undefined) {
 async function loadDiscussion() {
   // Clear any existing comments before loading.
   ELEMENT_DISCUSSION.textContent = '';
+  currentRootDiscussionComments = [];
 
   const comments = await fetchDiscussion();
   const preparedComments = prepareComments(comments);
   for (const comment of preparedComments) {
-    ELEMENT_DISCUSSION.appendChild(new DiscussionComment(comment));
+    const commentElement = new DiscussionComment(comment);
+    currentRootDiscussionComments.push(commentElement);
+    ELEMENT_DISCUSSION.appendChild(commentElement);
   }
 }
 
@@ -126,6 +144,40 @@ async function fetchDiscussion() {
 
   const request = await fetch(url);
   return request.json();
+}
+
+/**
+ * Updates the timestamp displayed and sent by the new comment form.
+ *
+ * @param {number} timeMs The new time in milliseconds to use.
+ */
+function updateNewCommentTimestamp(timeMs) {
+  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMs);
+  newCommentTimestampMs = timeMs;
+}
+
+/**
+ * Returns an array of the `DiscussionComment`s with timestamps near
+ * `timestampMs`. This returns an empty array if no elements are nearby.
+ *
+ * <p>A comment is nearby if it is within `TIME_TOLERANCE_MS`.
+ */
+function getNearbyDiscussionComments(timestampMs) {
+  const nearby = [];
+  // currentRootDiscussionComments is already sorted by timestamp.
+  for (const element of currentRootDiscussionComments) {
+    const commentTime = element.comment.timestampMs;
+    if (commentTime < timestampMs - TIME_TOLERANCE_MS) {
+      // Before the start of the range, continue to next.
+      continue;
+    }
+    if (commentTime > timestampMs + TIME_TOLERANCE_MS) {
+      // Outside of range, there will be no more.
+      return nearby;
+    }
+    nearby.push(element);
+  }
+  return nearby;
 }
 
 /**
@@ -211,13 +263,29 @@ class DiscussionComment extends HTMLElement {
     span.slot = name;
     this.appendChild(span);
   }
+
+  /**
+   * Scroll such that this element is at the top of the discussion area.
+   */
+  scrollToTopOfDiscussion() {
+    const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
+    const elementTop = this.offsetTop;
+    const offset = elementTop - scrollPaneTop;
+    ELEMENT_DISCUSSION.scrollTop = offset;
+  }
 }
 
 // Custom element names must contain a hyphen.
 customElements.define('discussion-comment', DiscussionComment);
 
-/** Seeks discussion to {@code currentTime}. */
-function seekDiscussion(currentTime) {
-  // TODO: Remove and implement.
-  console.log('SEEKING DISCUSSION TO: ' + currentTime);
+/** Seeks discussion to `currentTimeSeconds`. */
+function seekDiscussion(currentTimeSeconds) {
+  const currentTimeMilliseconds =
+      window.secondsToMilliseconds(currentTimeSeconds);
+  updateNewCommentTimestamp(currentTimeMilliseconds);
+  const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
+  if (nearbyComments.length == 0) {
+    return;
+  }
+  nearbyComments[0].scrollToTopOfDiscussion();
 }

@@ -39,14 +39,13 @@ async function loadLectureList() {
 
 /**
  * Creates and returns a <li> containing an <a> linking to {@code
- * lecture}'s video url and name.
+ * lecture}'s view page.
  */
 function createLectureListItem(lecture) {
   const lectureLink = document.createElement('a');
 
   const url = new URL(REDIRECT_PAGE, window.location.origin);
   url.searchParams.append(PARAM_ID, lecture.key.id);
-  url.searchParams.append(PARAM_VIDEO_ID, lecture.videoId);
   lectureLink.href = url;
   lectureLink.className = 'list-group-item list-group-item-action';
 
