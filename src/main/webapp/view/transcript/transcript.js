@@ -13,6 +13,7 @@
 // limitations under the License.
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
@@ -97,22 +98,30 @@ function seekTranscript(currentTime) {
 }
 
 /**
- * Creates an <li> element containing {@code transcriptLine}'s text, start
- * time, and end time and appends it to {@code ulElement}.
+ * Creates a transcript line element containing the text,
+ * start time, and end time from `transcriptLine`.
  */
 class TranscriptLine extends HTMLElement {
+  /**
+   * Creates a custom HTML element representing a transcript line.
+   * 
+   * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
+   * help create the transcript line.
+   *
+   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
+   *     whose `attributes` should be used.
+   */
   constructor(transcriptLine) {
     super();
     const timestampRange = window.createTimestampRange(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
 
-    const template = document.getElementById('transcript-line-template');
+    const template = document.getElementById(TRANSCRIPT_TEMPLATE);
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.updateSpanSlot('timestamp-range', timestampRange, TIME_RANGE_STYLE);
-    this.updateSpanSlot('content', transcriptLine.content, CONTENT_STYLE);
+    this.updateSlot('timestamp-range', timestampRange, TIME_RANGE_STYLE);
+    this.updateSlot('content', transcriptLine.content, CONTENT_STYLE);
 
-    // TODO: Update to use number once pull request #168 is merged.
     this.startTimestampMs = transcriptLine.startTimestampMs;
     this.endTimestampMs = transcriptLine.endTimestampMs;
     // Sets the current transcript line to be the first line.
@@ -125,7 +134,7 @@ class TranscriptLine extends HTMLElement {
    * Updates the template slot `slotName` with `slotValue` and styling
    * from `slotStyle`.
    */
-  updateSpanSlot(slotName, slotValue, slotStyle) {
+  updateSlot(slotName, slotValue, slotStyle) {
     const span = document.createElement('span');
     span.innerText = slotValue;
     span.slot = slotName;
