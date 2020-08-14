@@ -211,7 +211,7 @@ public class DiscussionServletTest {
 
   private Entity createTestCommentEntity(int lectureId) {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    User author = new User("test@example.com", "example.com");
+    User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     Date dateNow = new Date();
 
     return CommentUtil.createRootEntity(
