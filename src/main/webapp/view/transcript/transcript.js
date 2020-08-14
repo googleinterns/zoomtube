@@ -104,7 +104,7 @@ function seekTranscript(currentTime) {
 class TranscriptLine extends HTMLElement {
   /**
    * Creates a custom HTML element representing a transcript line.
-   * 
+   *
    * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
    * help create the transcript line.
    *
