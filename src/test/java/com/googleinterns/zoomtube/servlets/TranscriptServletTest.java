@@ -135,7 +135,7 @@ public final class TranscriptServletTest {
     transcriptServlet.doGet(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, "Missing id parameter.");
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing id parameter.");
   }
 
   @Test
