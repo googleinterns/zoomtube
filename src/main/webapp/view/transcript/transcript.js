@@ -119,9 +119,9 @@ function seekTranscript(currentTime) {
     addBold(currentTranscriptLine);
     return;
   }
-  const nextTranscript = getNextTranscriptLine(currentTimeMs);
+  const nextTranscriptLine = getNextTranscriptLine(currentTimeMs);
   removeBold(currentTranscriptLine);
-  currentTranscriptLine = nextTranscript;
+  currentTranscriptLine = nextTranscriptLine;
   scrollToTopOfTranscript(currentTranscriptLine);
   addBold(currentTranscriptLine);
 }
