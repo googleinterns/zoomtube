@@ -34,13 +34,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/** Parses the transcript XML and stores the lines in datastore. */
+/**
+ * Fetches and parses English transcript XML from the Google Video Timedtext API, and
+ * stores the lines in datastore.
+ */
 public final class TranscriptParser {
   private static final String API_URL = "http://video.google.com/timedtext";
   private static final String API_PARAM_LANG = "lang";
   private static final String API_LANG_ENGLISH = "en";
   private static final String API_PARAM_VIDEO = "v";
   private static final long MILLISECONDS_PER_SECOND = 1000;
+
   public static final String ATTR_START = "start";
   public static final String ATTR_DURATION = "dur";
   public static final String TAG_TEXT = "text";
