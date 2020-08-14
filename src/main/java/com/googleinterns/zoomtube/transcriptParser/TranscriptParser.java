@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
@@ -77,38 +78,36 @@ public final class TranscriptParser {
    * datastore.
    */
   public void parseAndStoreTranscript(String videoId, Key lectureKey) throws IOException {
-    Document document = getTranscriptXmlAsDocument(videoId).get();
+    URL url = getTranscriptUrlForVideo(videoId);
+    Document document = fetchUrlAsXmlDocument(url);
     putTranscriptLinesInDatastore(lectureKey, document);
   }
 
-  /**
-   * Returns the transcript for a video as a document. Otherwise, returns Optional.empty()
-   * if there is a parsing or URL building error.
-   *
-   * @param videoId Indicates the video to extract the transcript from.
-   */
-  private Optional<Document> getTranscriptXmlAsDocument(String videoId) throws IOException {
-    final URL url;
+  private URL getTranscriptUrlForVideo(String videoId) throws IOException {
     try {
       URIBuilder urlBuilder = new URIBuilder(API_URL);
       urlBuilder.addParameter(API_PARAM_LANG, API_LANG_ENGLISH);
       urlBuilder.addParameter(API_PARAM_VIDEO, videoId);
-      url = urlBuilder.build().toURL();
-    } catch (URISyntaxException e) {
-      // TODO: Alert the user.
-      System.out.println("URL building error");
-      return Optional.empty();
+      return urlBuilder.build().toURL();
+    } catch (URISyntaxException | MalformedURLException e) {
+      throw new IOException(e.getCause());
     }
+  }
 
+  /**
+   * Returns a Document for the XML at {@code url}.
+   *
+   * @param url Indicates the url to fetch and parse.
+   * @throws IOException if there is an error parsing the transcript.
+   */
+  private Document fetchUrlAsXmlDocument(URL url) throws IOException {
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       Document document = documentBuilder.parse(url.openStream());
       document.getDocumentElement().normalize();
-      return Optional.of(document);
+      return document;
     } catch (ParserConfigurationException | SAXException e) {
-      // TODO: Alert the user.
-      System.out.println("XML parsing error");
-      return Optional.empty();
+      throw new IOException(e.getCause());
     }
   }
 
