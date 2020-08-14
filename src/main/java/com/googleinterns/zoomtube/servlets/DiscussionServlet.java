@@ -121,8 +121,8 @@ public class DiscussionServlet extends HttpServlet {
       return Optional.of(ERROR_MISSING_PARENT);
     }
 
-    // Only root (non-reply) comments need a timestamp.
-    if (request.getParameter(PARAM_TIMESTAMP) == null) {
+    if (type != Comment.Type.REPLY && request.getParameter(PARAM_TIMESTAMP) == null) {
+      // Root (non-reply) comments need a timestamp.
       return Optional.of(ERROR_MISSING_TIMESTAMP);
     }
 

@@ -77,13 +77,11 @@ public class DiscussionServletTest {
   @Test
   public void doPost_loggedOut_postForbidden() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(false);
-    final int parentId = 32;
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.REPLY.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
-    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
-        .thenReturn(Integer.toString(parentId));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT)).thenReturn("123");
 
     servlet.doPost(request, response);
 
