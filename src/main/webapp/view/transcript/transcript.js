@@ -16,6 +16,8 @@ const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
+const TIME_RANGE_STYLE = 'justify-content-start mb-1';
+const CONTENT_STYLE = 'ml-4 mb-1';
 
 let /** Element */ currentTranscriptLine;
 
@@ -49,7 +51,6 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
-    // appendTextToList(transcriptLine, ulElement);
     ulElement.appendChild(new TranscriptLine(transcriptLine));
   });
 }
@@ -84,37 +85,33 @@ function seekTranscript(currentTime) {
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  if (isWithinCurrentTimeRange(currentTimeMs)) {
-    addBold(currentTranscriptLine);
+  if (currentTranscriptLine.isWithinCurrentTimeRange(currentTimeMs)) {
+    currentTranscriptLine.addBold();
     return;
   }
-  removeBold(currentTranscriptLine);
+  currentTranscriptLine.removeBold();
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  scrollToTopOfTranscript(currentTranscriptLine);
-  addBold(currentTranscriptLine);
+  currentTranscriptLine.scrollToTopOfTranscript();
+  currentTranscriptLine.addBold();
   // TODO: Handle the case where the video isn't only playing.
 }
+
 /**
  * Creates an <li> element containing {@code transcriptLine}'s text, start
  * time, and end time and appends it to {@code ulElement}.
  */
-class TranscriptLine extends HTMLLIElement {
+class TranscriptLine extends HTMLElement {
   constructor(transcriptLine) {
     super();
-    // TODO: Refactor creation of DOM elements to use slots instead.
     const timestampRange = window.createTimestampRange(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-    const contentDivElement = this.createStyledDivElement();
-    appendParagraphToContainer(
-        timestampRange, contentDivElement,
-        /* classes= */['justify-content-start', 'mb-1']);
-    appendParagraphToContainer(
-        transcriptLine.content, contentDivElement,
-        /* classes= */['ml-4', 'mb-1']);
-    this.classList.add('align-self-center', 'mb-2');
-    this.appendChild(contentDivElement);
-    const hrElement = this.createStyledHrElement();
-    this.appendChild(hrElement);
+
+    const template = document.getElementById('transcript-line-template');
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.updateSpanSlot('timestamp-range', timestampRange, TIME_RANGE_STYLE);
+    this.updateSpanSlot('content', transcriptLine.content, CONTENT_STYLE);
+
     // TODO: Update to use number once pull request #168 is merged.
     this.startDate = new Date(transcriptLine.start);
     this.endDate = new Date(transcriptLine.end);
@@ -123,11 +120,19 @@ class TranscriptLine extends HTMLLIElement {
       currentTranscriptLine = this;
     }
   }
+  // TODO: split into classes style for timestamp and content
+  updateSpanSlot(slotName, slotValue, slotStyle) {
+    const span = document.createElement('span');
+    span.innerText = slotValue;
+    span.slot = slotName;
+    span.class = slotStyle;
+    this.appendChild(span);
+  }
 
-/**
- * Bolds the text if it is not already
- * bolded.
- */
+  /**
+   * Bolds the text if it is not already
+   * bolded.
+   */
   addBold() {
     if (this.isBolded()) {
       return;
@@ -137,9 +142,9 @@ class TranscriptLine extends HTMLLIElement {
   }
 
   /**
- * Removes bold from the text in `transcriptLineLiElement` if it
- * is currently bolded.
- */
+   * Removes bold from the text in `transcriptLineLiElement` if it
+   * is currently bolded.
+   */
   removeBold() {
     if (!this.isBolded()) {
       return;
@@ -154,12 +159,12 @@ class TranscriptLine extends HTMLLIElement {
   }
 
   /**
- * Returns true if `currentTimeMs` is within the time range for
- * this transcript line.
- */
+   * Returns true if `currentTimeMs` is within the time range for
+   * this transcript line.
+   */
   isWithinCurrentTimeRange(currentTimeMs) {
     return this.startTimestampMs <= currentTimeMs &&
-      currentTimeMs <= this.endTimestampMs;
+        currentTimeMs <= this.endTimestampMs;
   }
 
   /**
@@ -173,4 +178,4 @@ class TranscriptLine extends HTMLLIElement {
   }
 }
 
-customElements.define('transcript-line', TranscriptLine, {extends: 'li'});
+customElements.define('transcript-line', TranscriptLine);
