@@ -44,20 +44,18 @@ public class LectureServlet extends HttpServlet {
       "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|"
       + "watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|"
       + "embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+  private static final String ERROR_MISSING_NAME = "Missing name parameter.";
+  private static final String ERROR_MISSING_LINK = "Missing link parameter.";
+  private static final String ERROR_MISSING_ID = "Missing id parameter.";
+  private static final String ERROR_INVALID_LINK = "Invalid video link.";
+  private static final String ERROR_LECTURE_NOT_FOUND = "Lecture not found in database.";
+  private static final String REDIRECT_URL = "/view";
 
   /* Name of input field used for lecture name in lecture selection page. */
   @VisibleForTesting static final String PARAM_NAME = "name-input";
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
   @VisibleForTesting static final String PARAM_ID = "id";
-  @VisibleForTesting static final String ERROR_MISSING_NAME = "Missing name parameter.";
-  @VisibleForTesting static final String ERROR_MISSING_LINK = "Missing link parameter.";
-  @VisibleForTesting static final String ERROR_MISSING_ID = "Missing id parameter.";
-  @VisibleForTesting static final String ERROR_INVALID_LINK = "Invalid video link.";
-  @VisibleForTesting static final String ERROR_FAILED_REDIRECT = "Failed to create redirect URL.";
-  @VisibleForTesting static final String ERROR_LECTURE_NOT_FOUND = "Lecture not found in database.";
-
-  private static final String REDIRECT_URL = "/view";
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern;
