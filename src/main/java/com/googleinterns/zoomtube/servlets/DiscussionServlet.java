@@ -85,14 +85,14 @@ public class DiscussionServlet extends HttpServlet {
       return;
     }
 
+    final Entity commentEntity;
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
     // TODO: Require non-zero content length. See: #183.
     String content = CharStreams.toString(request.getReader());
     Date dateNow = new Date(Clock.systemUTC().millis());
 
-    final Entity commentEntity;
+    Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
     if (type == Comment.Type.REPLY) {
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
       Key parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
