@@ -33,6 +33,7 @@ getLecture().then((lecture) => {
  * and transcript sections for the lecture view page.
  */
 async function initialize() {
+  setLectureName();
   window.loadVideoApi();
   window.intializeDiscussion();
   window.loadTranscript(window.location.search);
@@ -55,4 +56,10 @@ async function getLecture() {
 function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(PARAM_ID);
+}
+
+/** Sets the lecture name in `header-text`. */
+function setLectureName() {
+  const headerText = document.getElementById('header-text');
+  headerText.innerText = window.LECTURE.lectureName;
 }
