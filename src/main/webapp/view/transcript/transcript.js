@@ -115,7 +115,7 @@ function seekTranscript(currentTime) {
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  if (isWithinCurrentTimeRange(currentTimeMs)) {
+  if (isWithinTimeRange(currentTimeMs, currentTranscriptLine)) {
     addBold(currentTranscriptLine);
     return;
   }
@@ -123,7 +123,8 @@ function seekTranscript(currentTime) {
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   scrollToTopOfTranscript(currentTranscriptLine);
   addBold(currentTranscriptLine);
-  // TODO: Handle the case where the video isn't only playing.
+  // TODO: Check if currentTranscriptLine is within the time range. If
+  // it isn't, do not bold the transcript line.
 }
 
 /**
@@ -158,11 +159,8 @@ function isBolded(transcriptLineLiElement) {
 /**
  * Returns true if `currentTimeMs` is within the time range for
  * 'transcriptLine'
- *
- * <p>If `transcriptLine` is undefined, `currentTimeMs` is checked to be
- * within the current transcript line instead.
  */
-function isWithinCurrentTimeRange(currentTimeMs, transcriptLine) {
+function isWithinTimeRange(currentTimeMs, transcriptLine) {
   if (transcriptLine === undefined) {
     transcriptLine = currentTranscriptLine;
   }
@@ -185,7 +183,7 @@ function scrollToTopOfTranscript(transcriptLine) {
 function getNextTranscriptLine(currentTimeMs) {
   const nextTranscript = currentTranscriptLine.nextElementSibling;
   // Video is playing normally.
-  if (isWithinCurrentTimeRange(currentTimeMs, nextTranscript)) {
+  if (isWithinTimeRange(currentTimeMs, nextTranscript)) {
     return nextTranscript;
   }
   return findClosestTranscriptLine(currentTimeMs);
@@ -193,19 +191,21 @@ function getNextTranscriptLine(currentTimeMs) {
 
 /**
  * Searches for and returns the closest transcript line
- * based on `currentTimeMs`.
+ * based on `timeMs`.
  */
-function findClosestTranscriptLine(currentTimeMs) {
+function findClosestTranscriptLine(timeMs) {
   let transcriptLinePointer = document.getElementsByTagName('li')[0];
   while (transcriptLinePointer != null &&
-         !isWithinCurrentTimeRange(currentTimeMs)) {
+         !isWithinTimeRange(timeMs, currentTranscriptLine) &&
+         !isPastTranscriptLine(timeMs, currentTranscriptLine)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
-  // This happens if the time does not fall in the time
-  // range of any transcript.
-  if (transcriptLinePointer === null) {
-    removeBold(currentTranscriptLine);
-    return currentTranscriptLine;
-  }
   return transcriptLinePointer;
+}
+
+/**
+ * Returns true if `timeMs` is after the time range for `transcriptLine`.
+ */
+function isPastTranscriptLine(timeMs, transcriptLine) {
+  return timeMs > transcriptLine.endTimestampMs;
 }
