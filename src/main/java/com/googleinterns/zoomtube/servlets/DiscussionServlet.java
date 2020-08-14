@@ -116,17 +116,16 @@ public class DiscussionServlet extends HttpServlet {
     }
 
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
-    if (type == Comment.Type.REPLY) {
+    if (type == Comment.Type.REPLY && request.getParameter(PARAM_PARENT) == null) {
       // Replies need a parent.
-      if (request.getParameter(PARAM_PARENT) == null) {
-        return Optional.of(ERROR_MISSING_PARENT);
-      }
-    } else {
-      // Root (non-reply) comments need a timestamp.
-      if (request.getParameter(PARAM_TIMESTAMP) == null) {
-        return Optional.of(ERROR_MISSING_TIMESTAMP);
-      }
+      return Optional.of(ERROR_MISSING_PARENT);
     }
+
+    // Only root (non-reply) comments need a timestamp.
+    if (request.getParameter(PARAM_TIMESTAMP) == null) {
+      return Optional.of(ERROR_MISSING_TIMESTAMP);
+    }
+
     return Optional.empty();
   }
 
