@@ -15,7 +15,7 @@
 let videoSyncTimer;
 let lastTime;
 
-const TIME_INTERVAL = 100;
+const TIME_INTERVAL_MS = 100;
 
 /**
  * Starts timer which broadcasts current video time every
@@ -24,7 +24,7 @@ const TIME_INTERVAL = 100;
 function startVideoSyncTimer() {
   videoSyncTimer = window.setInterval(() => {
     sync(window.videoPlayer.getCurrentTime());
-  }, /* ms= */ TIME_INTERVAL);
+  }, /* ms= */ TIME_INTERVAL_MS);
 }
 
 /**
