@@ -71,7 +71,7 @@ public class LectureServlet extends HttpServlet {
   }
 
   @Override
-  // TODO: Check if URL is valid.
+  // TODO: Check if videoId is a valid YouTube video. See: #224.
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     Optional<String> error = validatePostRequest(request);
