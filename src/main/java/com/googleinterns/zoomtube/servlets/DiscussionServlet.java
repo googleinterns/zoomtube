@@ -53,14 +53,12 @@ public class DiscussionServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_TIMESTAMP = "timestamp";
   @VisibleForTesting static final String PARAM_TYPE = "type";
 
-  @VisibleForTesting static final String ERROR_MISSING_LECTURE = "Missing lecture parameter.";
-  @VisibleForTesting
-  static final String ERROR_MISSING_COMMENT_TYPE = "Missing comment type parameter.";
-  @VisibleForTesting
-  static final String ERROR_MISSING_PARENT = "Missing parent parameter for reply comment.";
-  @VisibleForTesting
-  static final String ERROR_MISSING_TIMESTAMP = "Missing timestamp parameter for root comment.";
-  @VisibleForTesting static final String ERROR_NOT_LOGGED_IN = "You are not logged in.";
+  private static final String ERROR_MISSING_LECTURE = "Missing lecture parameter.";
+  private static final String ERROR_MISSING_COMMENT_TYPE = "Missing comment type parameter.";
+  private static final String ERROR_MISSING_PARENT = "Missing parent parameter for reply comment.";
+  private static final String ERROR_MISSING_TIMESTAMP =
+      "Missing timestamp parameter for root comment.";
+  private static final String ERROR_NOT_LOGGED_IN = "You are not logged in.";
 
   private UserService userService;
   private DatastoreService datastore;
