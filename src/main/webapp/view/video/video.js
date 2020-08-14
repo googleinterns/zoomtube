@@ -42,15 +42,17 @@ function onYouTubeIframeAPIReady() {
 /** {@code event} plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
+  // TODO: Remove global scope and link to video object.
+  window.synchronizer = new synchronizer();
 }
 
 /** Starts timer if {@code currentState} is playing, stops otherwise. */
 function startOrStopTimer(currentState) {
   if (currentState.data == window.YT.PlayerState.PLAYING) {
-    window.startVideoSyncTimer();
+    window.synchronizer.startVideoSyncTimer();
     return;
   }
-  window.stopVideoSyncTimer();
+  window.synchronizer.stopVideoSyncTimer();
 }
 
 /** Seeks video to {@code currentTime}. */

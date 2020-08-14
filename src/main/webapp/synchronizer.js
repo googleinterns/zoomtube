@@ -12,29 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let videoSyncTimer;
 const TIME_INTERVAL = 1000;
 
-/**
- * Starts timer which broadcasts current video time every
- * {@code TIME_INTERVAL} milliseconds.
- */
-function startVideoSyncTimer() {
-  videoSyncTimer = window.setInterval(() => {
-    sync(window.videoPlayer.getCurrentTime());
-  }, /* ms= */ TIME_INTERVAL);
-}
+class synchronizer {
+  /**
+   * Starts timer which broadcasts current video time every
+   * {@code TIME_INTERVAL} milliseconds.
+   */
+  startVideoSyncTimer() {
+    this.videoSyncTimer = window.setInterval(() => {
+      this.sync(window.videoPlayer.getCurrentTime());
+    }, /* ms= */ TIME_INTERVAL);
+  }
 
-/** Stops video sync timer. */
-function stopVideoSyncTimer() {
-  clearInterval(videoSyncTimer);
-}
+  /** Stops video sync timer. */
+  stopVideoSyncTimer() {
+    clearInterval(this.videoSyncTimer);
+  }
 
-/**
- * Calls functions that seek transcript, and discussion to {@code currentTime}
- * (number of seconds since video started playing).
- */
-function sync(currentTime) {
-  window.seekTranscript(currentTime);
-  window.seekDiscussion(currentTime);
+  /**
+   * Calls functions that seek transcript, and discussion to {@code currentTime}
+   * (number of seconds since video started playing).
+   */
+  sync(currentTime) {
+    window.seekTranscript(currentTime);
+    window.seekDiscussion(currentTime);
+  }
 }
