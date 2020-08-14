@@ -85,7 +85,8 @@ public class DiscussionServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
+    verify(response).sendError(
+        HttpServletResponse.SC_FORBIDDEN, /* message= */ "You are not logged in.");
     assertThat(datastore.prepare(new Query(CommentUtil.KIND)).countEntities(withLimit(1)))
         .isEqualTo(0);
   }
@@ -96,7 +97,8 @@ public class DiscussionServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing lecture parameter.");
   }
 
   @Test
@@ -108,7 +110,7 @@ public class DiscussionServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, "Missing comment type parameter.");
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing comment type parameter.");
   }
 
   @Test
@@ -121,8 +123,8 @@ public class DiscussionServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, "Missing parent parameter for reply comment.");
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST,
+        /* message= */ "Missing parent parameter for reply comment.");
   }
 
   @Test
@@ -135,8 +137,8 @@ public class DiscussionServletTest {
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, "Missing timestamp parameter for root comment.");
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST,
+        /* message= */ "Missing timestamp parameter for root comment.");
   }
 
   @Test
@@ -188,7 +190,8 @@ public class DiscussionServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lecture parameter.");
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing lecture parameter.");
   }
 
   @Test
