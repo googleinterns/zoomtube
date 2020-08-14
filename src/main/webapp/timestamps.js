@@ -40,7 +40,10 @@ function secondsToMilliseconds(seconds) {
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
 }
 
-// TODO: Add method header.
+/**
+ * Returns {String} of a time range from
+ * `startTimestampMs` to `endTimestampMs`.
+ */
 function createTimestampRange(startTimestampMs, endTimestampMs) {
   const startTimestamp = window.timestampToString(startTimestampMs);
   const endTimestamp = window.timestampToString(endTimestampMs);

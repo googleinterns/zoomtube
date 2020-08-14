@@ -142,7 +142,7 @@ class TranscriptLine extends HTMLElement {
   }
 
   /**
-   * Removes bold from the text in `transcriptLineLiElement` if it
+   * Removes bold from the text if it
    * is currently bolded.
    */
   removeBold() {
@@ -153,7 +153,7 @@ class TranscriptLine extends HTMLElement {
     this.classList.remove(BOLD_FONT_WEIGHT);
   }
 
-  /** Returns true if bolded. */
+  /** Returns true if the text is already bolded. */
   isBolded() {
     return this.classList.contains(BOLD_FONT_WEIGHT);
   }
