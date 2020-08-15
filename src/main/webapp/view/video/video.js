@@ -63,4 +63,4 @@ function seekVideo(currentTime) {
   console.log('SEEKING VIDEO TO: ' + currentTime);
 }
 
-export {loadVideoApi};
+export {loadVideoApi, seekVideo};
