@@ -41,10 +41,10 @@ function secondsToMilliseconds(seconds) {
 }
 
 /**
- * Returns {String} A time range from
+ * Returns {string} A time range from
  * `startTimestampMs` to `endTimestampMs`.
  */
-function createTimestampRange(startTimestampMs, endTimestampMs) {
+function timestampRangeToString(startTimestampMs, endTimestampMs) {
   const startTimestamp = window.timestampToString(startTimestampMs);
   const endTimestamp = window.timestampToString(endTimestampMs);
   return `${startTimestamp} - ${endTimestamp}`;
