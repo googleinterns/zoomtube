@@ -119,8 +119,8 @@ class TranscriptLine extends HTMLElement {
     const template = document.getElementById(TRANSCRIPT_TEMPLATE);
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.updateSlot('timestamp-range', timestampRange, STYLE_TIME_RANGE);
-    this.updateSlot('content', transcriptLine.content, STYLE_CONTENT);
+    this.updateTemplateSlot('timestamp-range', timestampRange, STYLE_TIME_RANGE);
+    this.updateTemplateSlot('content', transcriptLine.content, STYLE_CONTENT);
 
     this.startTimestampMs = transcriptLine.startTimestampMs;
     this.endTimestampMs = transcriptLine.endTimestampMs;
@@ -134,7 +134,7 @@ class TranscriptLine extends HTMLElement {
    * Updates the template slot `slotName` with `slotValue` and styling
    * from `slotStyle`.
    */
-  updateSlot(slotName, slotValue, slotStyle) {
+  updateTemplateSlot(slotName, slotValue, slotStyle) {
     const span = document.createElement('span');
     span.innerText = slotValue;
     span.slot = slotName;
