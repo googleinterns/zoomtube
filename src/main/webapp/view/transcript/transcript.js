@@ -201,7 +201,7 @@ function findClosestTranscriptLine(timeMs) {
 }
 
 /**
- * Returns true if the starting time of `transcriptLine` if before `timeMs`.
+ * Returns true if the starting time of `transcriptLine` is before `timeMs`.
  */
 function isBeforeTimeMs(transcriptLine, timeMs) {
   return transcriptLine.startTimestampMs < timeMs;
