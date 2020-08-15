@@ -12,7 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {startVideoSyncTimer, stopVideoSyncTimer} from '../../synchronizer.js';
+
 const SCRIPT = 'script';
+
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
 /** Loads YouTube iFrame API. */
 async function loadVideoApi() {
@@ -47,10 +51,10 @@ function onPlayerReady(event) {
 /** Starts timer if {@code currentState} is playing, stops otherwise. */
 function startOrStopTimer(currentState) {
   if (currentState.data == window.YT.PlayerState.PLAYING) {
-    window.startVideoSyncTimer();
+    startVideoSyncTimer();
     return;
   }
-  window.stopVideoSyncTimer();
+  stopVideoSyncTimer();
 }
 
 /** Seeks video to {@code currentTime}. */
@@ -58,3 +62,5 @@ function seekVideo(currentTime) {
   // TODO: Removed and implement.
   console.log('SEEKING VIDEO TO: ' + currentTime);
 }
+
+export {loadVideoApi};

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
+
 const ENDPOINT_DISCUSSION = '/discussion';
 
 const PARAM_LECTURE = 'lecture';
@@ -38,6 +40,8 @@ const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
+
+window.postNewComment = postNewComment;
 
 // TODO: Refactor these global variables into a namespace, module, or class.
 // See: #191.
@@ -152,7 +156,7 @@ async function fetchDiscussion() {
  * @param {number} timeMs The new time in milliseconds to use.
  */
 function updateNewCommentTimestamp(timeMs) {
-  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMs);
+  ELEMENT_TIMESTAMP_SPAN.innerText = timestampToString(timeMs);
   newCommentTimestampMs = timeMs;
 }
 
@@ -216,7 +220,7 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (!comment.parentKey.value) {
       // Only display timestamp on root comments.
-      timestampPrefix = `${window.timestampToString(comment.timestampMs)} - `;
+      timestampPrefix = `${timestampToString(comment.timestampMs)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
@@ -280,8 +284,7 @@ customElements.define('discussion-comment', DiscussionComment);
 
 /** Seeks discussion to `currentTimeSeconds`. */
 function seekDiscussion(currentTimeSeconds) {
-  const currentTimeMilliseconds =
-      window.secondsToMilliseconds(currentTimeSeconds);
+  const currentTimeMilliseconds = secondsToMilliseconds(currentTimeSeconds);
   updateNewCommentTimestamp(currentTimeMilliseconds);
   const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
   if (nearbyComments.length == 0) {
@@ -289,3 +292,5 @@ function seekDiscussion(currentTimeSeconds) {
   }
   nearbyComments[0].scrollToTopOfDiscussion();
 }
+
+export {intializeDiscussion, seekDiscussion};

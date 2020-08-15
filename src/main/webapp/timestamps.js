@@ -39,3 +39,5 @@ function timestampToString(timestampMs) {
 function secondsToMilliseconds(seconds) {
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
 }
+
+export {timestampToString, secondsToMilliseconds};

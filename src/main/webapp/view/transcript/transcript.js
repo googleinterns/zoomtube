@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
+
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
@@ -58,9 +60,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  * time, and end time and appends it to {@code ulElement}.
  */
 function appendTextToList(transcriptLine, ulElement) {
-  const startTimestamp =
-      window.timestampToString(transcriptLine.startTimestampMs);
-  const endTimestamp = window.timestampToString(transcriptLine.endTimestampMs);
+  const startTimestamp = timestampToString(transcriptLine.startTimestampMs);
+  const endTimestamp = timestampToString(transcriptLine.endTimestampMs);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   const contentDivElement = document.createElement('div');
@@ -111,7 +112,7 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  const currentTimeMs = secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
@@ -172,3 +173,5 @@ function scrollToTopOfTranscript(transcriptLine) {
   const ulElementOffset = transcriptLine.parentElement.offsetTop;
   transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
+
+export {loadTranscript, seekTranscript};

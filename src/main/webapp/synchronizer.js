@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {seekDiscussion} from './view/discussion/discussion.js';
+import {seekTranscript} from './view/transcript/transcript.js';
+
 let videoSyncTimer;
 const TIME_INTERVAL = 1000;
 
@@ -35,6 +38,8 @@ function stopVideoSyncTimer() {
  * (number of seconds since video started playing).
  */
 function sync(currentTime) {
-  window.seekTranscript(currentTime);
-  window.seekDiscussion(currentTime);
+  seekTranscript(currentTime);
+  seekDiscussion(currentTime);
 }
+
+export {startVideoSyncTimer, stopVideoSyncTimer};

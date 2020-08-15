@@ -1,6 +1,7 @@
 {
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2017,
+    "sourceType": "module"
   },
   "env": {
     "browser": true,
@@ -12,6 +13,6 @@
     "no-multi-spaces": "off",
     "require-jsdoc": "off",
     "valid-jsdoc": "off",
-    "no-unused-vars": ["error", { "vars": "local", "args": "after-used", "ignoreRestSiblings": false }]
+    "no-unused-vars": ["off", { "vars": "local", "args": "after-used", "ignoreRestSiblings": false }]
   }
 }
