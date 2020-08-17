@@ -17,7 +17,7 @@ const MILLISECONDS_PER_SECOND = 1000;
 /**
  * Converts a `timestampMs` in milliseconds into a string.
  */
-function timestampToString(timestampMs) {
+export function timestampToString(timestampMs) {
   const date = new Date();
   date.setTime(timestampMs);
   const seconds = date.getUTCSeconds().toString().padStart(
@@ -35,6 +35,11 @@ function timestampToString(timestampMs) {
 /**
  * Converts `seconds` to milliseconds.
  */
+<<<<<<< HEAD
 function secondsToMilliseconds(seconds) {
+=======
+// TODO: Remove once #158 is addressed.
+export function secondsToMilliseconds(seconds) {
+>>>>>>> master
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
 }
