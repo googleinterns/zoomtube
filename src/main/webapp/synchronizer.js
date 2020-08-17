@@ -16,7 +16,9 @@ import {seekDiscussion} from './view/discussion/discussion.js';
 import {seekTranscript} from './view/transcript/transcript.js';
 
 let videoSyncTimer;
-const TIME_INTERVAL = 1000;
+let lastTime;
+
+const TIME_INTERVAL_MS = 100;
 
 /**
  * Starts timer which broadcasts current video time every
@@ -25,19 +27,19 @@ const TIME_INTERVAL = 1000;
 export function startVideoSyncTimer() {
   videoSyncTimer = window.setInterval(() => {
     sync(window.videoPlayer.getCurrentTime());
-  }, /* ms= */ TIME_INTERVAL);
-}
-
-/** Stops video sync timer. */
-export function stopVideoSyncTimer() {
-  clearInterval(videoSyncTimer);
+  }, /* ms= */ TIME_INTERVAL_MS);
 }
 
 /**
  * Calls functions that seek transcript, and discussion to `currentTime`
- * (number of seconds since video started playing).
+ * (number of seconds since start of video), when the `currentTime`
+ * changes from the last time this was called.
  */
 function sync(currentTime) {
+  if (currentTime == lastTime) {
+    return;
+  }
+  lastTime = currentTime;
   seekTranscript(currentTime);
   seekDiscussion(currentTime);
 }
