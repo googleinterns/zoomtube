@@ -27,7 +27,6 @@ import java.util.Optional;
 public abstract class Comment {
   public static enum Type {
     QUESTION,
-    RESOURCE,
     NOTE,
     REPLY,
   }

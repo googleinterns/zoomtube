@@ -24,13 +24,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
-import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -166,17 +163,13 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns URL redirecting to lecture view page with parameters {@code lectureId}
-   * and {@code videoId} found in {@code lectureEntity}.
+   * Returns URL for the lecture view page for {@code lectureEntity}.
    */
   private Optional<String> buildRedirectUrl(Entity lectureEntity) {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-    String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
 
     try {
-      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL)
-                                  .addParameter(LectureUtil.ID, lectureId)
-                                  .addParameter(LectureUtil.VIDEO_ID, videoId);
+      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(LectureUtil.ID, lectureId);
       return Optional.of(urlBuilder.build().toString());
     } catch (URISyntaxException urlBuilderError) {
       // TODO: Send a response error.

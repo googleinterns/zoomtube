@@ -2,8 +2,6 @@ package com.googleinterns.zoomtube.servlets;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +29,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -165,6 +162,25 @@ public class DiscussionServletTest {
   }
 
   @Test
+  public void doPost_reply_storesCommentWithParent() throws ServletException, IOException {
+    testServices.setEnvIsLoggedIn(true);
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TYPE))
+        .thenReturn(Comment.Type.REPLY.toString());
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
+        .thenReturn("1337");
+
+    servlet.doPost(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);
+    PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
+    assertThat(query.countEntities(withLimit(2))).isEqualTo(1);
+    Comment comment = CommentUtil.createComment(query.asSingleEntity());
+    assertThat(comment.parentKey().get().getId()).isEqualTo(1337);
+  }
+
+  @Test
   public void doPost_rootComment_storesTypeAndTimestamp() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
@@ -254,7 +270,7 @@ public class DiscussionServletTest {
 
   private Entity createTestCommentEntity(int lectureId) {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    User author = new User("test@example.com", "example.com");
+    User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     Date dateNow = new Date();
 
     return CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, author,

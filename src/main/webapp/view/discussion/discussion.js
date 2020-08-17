@@ -38,11 +38,12 @@ const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 const COMMENT_TYPE_REPLY = 'REPLY';
 const COMMENT_TYPE_QUESTION = 'QUESTION';
 const COMMENT_TYPE_NOTE = 'NOTE';
-const COMMENT_TYPE_RESOURCE = 'RESOURCE';
 
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
 
+// TODO: Refactor these global variables into a namespace, module, or class.
+// See: #191.
 let newCommentTimestampMs = 0;
 let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
 
@@ -76,7 +77,10 @@ async function postReply(inputField, parentId) {
 
 /**
  * Posts comment from `inputField` and reloads the discussion. Adds query
- * parameters from `params` to the request.
+ * parameters from `params` to the request. Different types of comments
+ * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
+ * The caller should ensure the correct parameters are supplied for the type
+ * of comment being posted.
  */
 async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
