@@ -194,7 +194,7 @@ function findClosestTranscriptLine(timeMs) {
   let transcriptLinePointer = document.getElementsByTagName('li')[0];
   while (transcriptLinePointer != null &&
          !isWithinTimeRange(timeMs, transcriptLinePointer) &&
-         isBeforeTimeMs(transcriptLinePointer, timeMs)) {
+         isBeforeTimeMs(timeMs, transcriptLinePointer)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
   return transcriptLinePointer;
@@ -203,6 +203,6 @@ function findClosestTranscriptLine(timeMs) {
 /**
  * Returns true if the starting time of `transcriptLine` is before `timeMs`.
  */
-function isBeforeTimeMs(transcriptLine, timeMs) {
+function isBeforeTimeMs(timeMs, transcriptLine) {
   return transcriptLine.startTimestampMs < timeMs;
 }
