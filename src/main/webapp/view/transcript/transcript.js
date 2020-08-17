@@ -21,7 +21,7 @@ const PARAM_ID = 'id';
 let /** Element */ currentTranscriptLine;
 
 /**
- * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
+ * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
  *
  * <p>This function assumes that the transcript lines have already
  * been added to the datastore.
@@ -35,7 +35,7 @@ function loadTranscript() {
 }
 
 /**
- * Adds {@code transcriptLines} to the DOM as list elements.
+ * Adds `transcriptLines` to the DOM as list elements.
  */
 function addMultipleTranscriptLinesToDom(transcriptLines) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
@@ -52,8 +52,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 }
 
 /**
- * Creates an <li> element containing {@code transcriptLine}'s text, start
- * time, and end time and appends it to {@code ulElement}.
+ * Creates an `<li>` element containing `transcriptLine`'s text, start
+ * time, and end time and appends it to `ulElement`.
  */
 function appendTextToList(transcriptLine, ulElement) {
   const startTimestamp =
@@ -84,10 +84,10 @@ function appendTextToList(transcriptLine, ulElement) {
 }
 
 /**
- * Creates a p tag to store the given {@code text} inside the
- * {@code container}.
+ * Creates a p tag to store the given `text` inside the
+ * `container`.
  *
- * <p>Adds classes the the p tag if {@code classList} is provided.
+ * <p>Adds classes the the p tag if `classList` is provided.
  */
 function appendParagraphToContainer(text, container, classes = []) {
   const pTag = document.createElement('p');
@@ -107,7 +107,7 @@ function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to {@code currentTime}, which is given in seconds. */
+/** Seeks transcript to `currentTime`, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {

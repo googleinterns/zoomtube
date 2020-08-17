@@ -19,7 +19,7 @@ const PARAM_ID = 'id';
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
-/** Sets {@code window.LECTURE} as Lecture for view page. */
+/** Sets `window.LECTURE` as Lecture for view page. */
 getLecture().then((lecture) => {
   window.LECTURE = lecture;
   initialize();
@@ -37,8 +37,8 @@ async function initialize() {
 }
 
 /**
- * Returns lecture in database associated with {@code window.LECTURE_ID}
- * obtained from {@code ENDPOINT_LECTURE}.
+ * Returns lecture in database associated with `window.LECTURE_ID`
+ * obtained from `ENDPOINT_LECTURE`.
  */
 async function getLecture() {
   const url = new URL(ENDPOINT_LECTURE, window.location.origin);
