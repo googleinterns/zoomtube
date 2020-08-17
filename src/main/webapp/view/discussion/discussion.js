@@ -20,8 +20,6 @@ const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
 const PARAM_TIMESTAMP = 'timestamp';
 
-const ATTR_ID = 'key-id';
-
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 const ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
