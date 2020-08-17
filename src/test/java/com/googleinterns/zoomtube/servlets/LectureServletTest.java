@@ -59,7 +59,6 @@ public final class LectureServletTest {
   /* Writer where response is written. */
   private StringWriter content;
 
-  private static final String LINK_INPUT = "link-input";
   private static final String TEST_NAME = "TestName";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=3ymwOvzhwHs";
   private static final String TEST_ID = "3ymwOvzhwHs";
@@ -80,10 +79,42 @@ public final class LectureServletTest {
   }
 
   @Test
+  public void doPost_missingName_badRequest() throws IOException, ServletException {
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing name parameter.");
+  }
+
+  @Test
+  public void doPost_missingLink_badRequest() throws IOException, ServletException {
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing link parameter.");
+  }
+
+  @Test
+  public void doPost_invalidLink_badRequest() throws IOException, ServletException {
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn("this is not a link");
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Invalid video link.");
+  }
+
+  @Test
   public void doPost_urlAlreadyInDatabase_shouldReturnLecture()
       throws IOException, ServletException {
-    when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
-    datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
+    datastoreService.put(LectureUtil.createEntity(TEST_NAME, TEST_LINK, TEST_ID));
 
     servlet.doPost(request, response);
 
@@ -94,13 +125,22 @@ public final class LectureServletTest {
   @Test
   public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect()
       throws IOException, ServletException {
-    when(request.getParameter(LINK_INPUT)).thenReturn(TEST_LINK);
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
 
     // No lecture in datastoreService.
     servlet.doPost(request, response);
 
     assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
     verify(response).sendRedirect("/view/?id=1");
+  }
+
+  @Test
+  public void doGet_missingLecture_badRequest() throws IOException {
+    servlet.doGet(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing id parameter.");
   }
 
   @Test
@@ -130,7 +170,8 @@ public final class LectureServletTest {
 
     String json = content.toString();
     assertThat(json).isEmpty();
-    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
+    verify(response).sendError(
+        HttpServletResponse.SC_NOT_FOUND, /* message= */ "Lecture not found in database.");
   }
 
   @Test
