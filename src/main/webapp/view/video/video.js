@@ -34,7 +34,6 @@ function onYouTubeIframeAPIReady() {
     videoId: window.LECTURE.videoId,
     events: {
       onReady: onPlayerReady,
-      onStateChange: startOrStopTimer,
     },
   });
 }
@@ -42,15 +41,7 @@ function onYouTubeIframeAPIReady() {
 /** `event` plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
-}
-
-/** Starts timer if `currentState` is playing, stops otherwise. */
-function startOrStopTimer(currentState) {
-  if (currentState.data == window.YT.PlayerState.PLAYING) {
-    window.startVideoSyncTimer();
-    return;
-  }
-  window.stopVideoSyncTimer();
+  window.startVideoSyncTimer();
 }
 
 /** Seeks video to `currentTime`. */

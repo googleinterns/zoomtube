@@ -169,8 +169,7 @@ public class DiscussionServletTest {
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.REPLY.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
-    when(request.getParameter(DiscussionServlet.PARAM_PARENT))
-        .thenReturn("1337");
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT)).thenReturn("1337");
 
     servlet.doPost(request, response);
 
