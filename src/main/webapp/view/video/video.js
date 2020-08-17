@@ -39,12 +39,12 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-/** {@code event} plays the YouTube video. */
+/** `event` plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
 }
 
-/** Starts timer if {@code currentState} is playing, stops otherwise. */
+/** Starts timer if `currentState` is playing, stops otherwise. */
 function startOrStopTimer(currentState) {
   if (currentState.data == window.YT.PlayerState.PLAYING) {
     window.startVideoSyncTimer();
@@ -53,7 +53,7 @@ function startOrStopTimer(currentState) {
   window.stopVideoSyncTimer();
 }
 
-/** Seeks video to {@code currentTime}. */
+/** Seeks video to `currentTime`. */
 function seekVideo(currentTime) {
   // TODO: Removed and implement.
   console.log('SEEKING VIDEO TO: ' + currentTime);

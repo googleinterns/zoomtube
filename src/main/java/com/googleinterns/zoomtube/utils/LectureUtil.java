@@ -25,6 +25,7 @@ public final class LectureUtil {
   public static final String NAME = "lectureName";
   public static final String VIDEO_URL = "videoUrl";
   public static final String VIDEO_ID = "video-id";
+  // TODO: Remove and prefer parameters specified in servlet that will be handling request.
   public static final String ID = "id";
 
   /** Creates and returns a Lecture from {@code entity}. */

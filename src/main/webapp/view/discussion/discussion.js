@@ -66,7 +66,7 @@ async function postNewComment() {
 }
 
 /**
- * Posts the content of {@code inputField} as a reply to {@code parentId}.
+ * Posts the content of `inputField` as a reply to `parentId`.
  */
 async function postReply(inputField, parentId) {
   postAndReload(inputField, {
@@ -149,7 +149,7 @@ function prepareComments(comments) {
 }
 
 /**
- * Requests all comments in the lecture specified by {@code LECTURE_ID} from
+ * Requests all comments in the lecture specified by `LECTURE_ID` from
  * the {@link java.com.googleinterns.zoomtube.servlets.DiscussionServlet}.
  */
 async function fetchDiscussion() {
@@ -200,7 +200,7 @@ function getNearbyDiscussionComments(timestampMs) {
 class DiscussionComment extends HTMLElement {
   /**
    * Creates an custom HTML element representing a comment.  This uses the
-   * template and slots defined by {@code TEMPLATE_COMMENT} to render the
+   * template and slots defined by `TEMPLATE_COMMENT` to render the
    * comment's content and replies.
    *
    * @param comment The comment from the servlet that this element should
@@ -222,7 +222,7 @@ class DiscussionComment extends HTMLElement {
 
   /**
    * Returns a string containing the timestamp, author, and creation time of
-   * the {@code comment}.  The timestamp is not displayed for replies to
+   * the `comment`.  The timestamp is not displayed for replies to
    * other comments.
    */
   getHeaderString(comment) {
@@ -256,8 +256,8 @@ class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Creates a {@code DiscussionComment} for every reply to this comment, and
-   * adds them to a {@code div} in the replies slot of the DOM template.
+   * Creates a `DiscussionComment` for every reply to this comment, and
+   * adds them to a `<div>` in the replies slot of the DOM template.
    */
   addReplies(replies) {
     const replyDiv = document.createElement('div');
@@ -269,8 +269,8 @@ class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Sets the content of the shadow-dom slot named {@code name} to a span
-   * element containing {@code value} as text.
+   * Sets the content of the shadow-dom slot named `name` to a span
+   * element containing `value` as text.
    */
   setSlotSpan(name, value) {
     const span = document.createElement('span');

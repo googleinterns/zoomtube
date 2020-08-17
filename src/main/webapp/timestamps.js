@@ -15,7 +15,7 @@
 const MILLISECONDS_PER_SECOND = 1000;
 
 /**
- * Converts a {@code timestampMs} in milliseconds into a string.
+ * Converts a `timestampMs` in milliseconds into a string.
  */
 function timestampToString(timestampMs) {
   const date = new Date();

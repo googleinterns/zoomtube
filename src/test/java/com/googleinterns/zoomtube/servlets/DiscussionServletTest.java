@@ -50,6 +50,7 @@ public class DiscussionServletTest {
 
   private static final int LECTURE_ID = 1;
   private static final String LECTURE_ID_STR = "1";
+  private static final long TIMESTAMP_MS = 123;
   private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
       new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 

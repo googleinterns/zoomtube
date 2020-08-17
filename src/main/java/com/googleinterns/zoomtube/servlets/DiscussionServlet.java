@@ -102,6 +102,7 @@ public class DiscussionServlet extends HttpServlet {
     }
     datastore.put(commentEntity);
 
+    datastore.put(commentEntity);
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
   }
 
