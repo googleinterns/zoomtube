@@ -30,7 +30,7 @@ let /** Element */ currentTranscriptLine;
  * @param lectureQueryString Indicates the video ID and the lecture ID
  * to fetch the transcript from.
  */
-function loadTranscript(lectureQueryString) {
+export function loadTranscript(lectureQueryString) {
   fetch(ENDPOINT_TRANSCRIPT + lectureQueryString)
       .then((response) => response.json())
       .then((transcriptLines) => {
@@ -111,7 +111,7 @@ function deleteTranscript() {
 }
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
-function seekTranscript(currentTime) {
+export function seekTranscript(currentTime) {
   const currentTimeMs = secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
@@ -173,5 +173,3 @@ function scrollToTopOfTranscript(transcriptLine) {
   const ulElementOffset = transcriptLine.parentElement.offsetTop;
   transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
-
-export {loadTranscript, seekTranscript};

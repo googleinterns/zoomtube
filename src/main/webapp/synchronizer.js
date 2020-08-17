@@ -22,14 +22,14 @@ const TIME_INTERVAL = 1000;
  * Starts timer which broadcasts current video time every
  * {@code TIME_INTERVAL} milliseconds.
  */
-function startVideoSyncTimer() {
+export function startVideoSyncTimer() {
   videoSyncTimer = window.setInterval(() => {
     sync(window.videoPlayer.getCurrentTime());
   }, /* ms= */ TIME_INTERVAL);
 }
 
 /** Stops video sync timer. */
-function stopVideoSyncTimer() {
+export function stopVideoSyncTimer() {
   clearInterval(videoSyncTimer);
 }
 
@@ -41,5 +41,3 @@ function sync(currentTime) {
   seekTranscript(currentTime);
   seekDiscussion(currentTime);
 }
-
-export {startVideoSyncTimer, stopVideoSyncTimer};

@@ -51,7 +51,7 @@ let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
 /**
  * Loads the lecture disucssion.
  */
-async function intializeDiscussion() {
+export async function intializeDiscussion() {
   await loadDiscussion();
 }
 
@@ -283,7 +283,7 @@ class DiscussionComment extends HTMLElement {
 customElements.define('discussion-comment', DiscussionComment);
 
 /** Seeks discussion to `currentTimeSeconds`. */
-function seekDiscussion(currentTimeSeconds) {
+export function seekDiscussion(currentTimeSeconds) {
   const currentTimeMilliseconds = secondsToMilliseconds(currentTimeSeconds);
   updateNewCommentTimestamp(currentTimeMilliseconds);
   const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
@@ -292,5 +292,3 @@ function seekDiscussion(currentTimeSeconds) {
   }
   nearbyComments[0].scrollToTopOfDiscussion();
 }
-
-export {intializeDiscussion, seekDiscussion};

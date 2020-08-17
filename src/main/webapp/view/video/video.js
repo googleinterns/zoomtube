@@ -19,7 +19,7 @@ const SCRIPT = 'script';
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
 /** Loads YouTube iFrame API. */
-async function loadVideoApi() {
+export async function loadVideoApi() {
   const videoApiScript = document.createElement(SCRIPT);
   const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
   videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -58,9 +58,7 @@ function startOrStopTimer(currentState) {
 }
 
 /** Seeks video to {@code currentTime}. */
-function seekVideo(currentTime) {
+export function seekVideo(currentTime) {
   // TODO: Removed and implement.
   console.log('SEEKING VIDEO TO: ' + currentTime);
 }
-
-export {loadVideoApi, seekVideo};
