@@ -46,6 +46,6 @@ function onPlayerReady(event) {
 
 /** Seeks video to `currentTimeMs`. */
 function seekVideo(currentTimeMs) {
-  // TODO: Removed and implement.
+  // TODO: Remove log and implement.
   console.log('SEEKING VIDEO TO: ' + currentTimeMs);
 }
