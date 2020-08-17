@@ -44,14 +44,18 @@ public class LectureServlet extends HttpServlet {
       "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|"
       + "watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|"
       + "embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+  private static final String ERROR_MISSING_NAME = "Missing name parameter.";
+  private static final String ERROR_MISSING_LINK = "Missing link parameter.";
+  private static final String ERROR_MISSING_ID = "Missing id parameter.";
+  private static final String ERROR_INVALID_LINK = "Invalid video link.";
+  private static final String ERROR_LECTURE_NOT_FOUND = "Lecture not found in database.";
+  private static final String REDIRECT_URL = "/view/";
 
   /* Name of input field used for lecture name in lecture selection page. */
-  private static final String NAME_INPUT = "name-input";
-
+  @VisibleForTesting static final String PARAM_NAME = "name-input";
   /* Name of input field used for lecture video link in lecture selection page. */
-  private static final String LINK_INPUT = "link-input";
-
-  private static final String REDIRECT_URL = "/view/";
+  @VisibleForTesting static final String PARAM_LINK = "link-input";
+  @VisibleForTesting static final String PARAM_ID = "id";
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern;
@@ -65,20 +69,43 @@ public class LectureServlet extends HttpServlet {
   }
 
   @Override
-  // TODO: Check if URL is valid.
+  // TODO: Check if videoId is a valid YouTube video. See: #224.
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
-    Optional<Entity> existingEntity = checkUrlInDatabase(optionalVideoUrl);
-
-    if (existingEntity.isPresent()) {
-      response.sendRedirect(buildRedirectUrl(existingEntity.get()).get());
+    Optional<String> error = validatePostRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
       return;
     }
-    Entity lectureEntity = getLectureEntityFromRequest(request);
+
+    String videoUrl = request.getParameter(PARAM_LINK);
+    Optional<String> videoId = getVideoId(videoUrl);
+    if (!videoId.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_INVALID_LINK);
+      return;
+    }
+
+    Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
+    if (existingEntity.isPresent()) {
+      response.sendRedirect(buildRedirectUrl(existingEntity.get()));
+      return;
+    }
+
+    String lectureName = request.getParameter(PARAM_NAME);
+    Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
     initializeTranscript(lectureEntity);
-    response.sendRedirect(buildRedirectUrl(lectureEntity).get());
+    response.sendRedirect(buildRedirectUrl(lectureEntity));
+  }
+
+  private Optional<String> validatePostRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_NAME) == null) {
+      return Optional.of(ERROR_MISSING_NAME);
+    }
+    if (request.getParameter(PARAM_LINK) == null) {
+      return Optional.of(ERROR_MISSING_LINK);
+    }
+    return Optional.empty();
   }
 
   /**
@@ -94,7 +121,13 @@ public class LectureServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    Optional<String> error = validateGetRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
+      return;
+    }
+
+    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
     Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     try {
       Entity lectureEntity = datastore.get(lectureEntityKey);
@@ -102,54 +135,33 @@ public class LectureServlet extends HttpServlet {
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(LectureUtil.createLecture(lectureEntity)));
     } catch (EntityNotFoundException entityNotFound) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND, "Lecture not found in database.");
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, ERROR_LECTURE_NOT_FOUND);
     }
+  }
+
+  private Optional<String> validateGetRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_ID) == null) {
+      return Optional.of(ERROR_MISSING_ID);
+    }
+    return Optional.empty();
   }
 
   /**
    * Returns the Entity in database that has {@code url}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
-  private Optional<Entity> checkUrlInDatabase(Optional<String> videoUrl) {
-    if (!videoUrl.isPresent()) {
-      return Optional.empty();
-    }
-
+  // TODO: Use a filter to avoid fetching all lectures.  See: #185.
+  private Optional<Entity> checkUrlInDatabase(String url) {
     Query query = new Query(LectureUtil.KIND);
     PreparedQuery results = datastore.prepare(query);
     Iterable<Entity> resultsIterable = results.asIterable();
 
-    String url = videoUrl.get();
     for (Entity lecture : resultsIterable) {
       if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
         return Optional.of(lecture);
       }
     }
     return Optional.empty();
-  }
-
-  /** Returns {@code lectureEntity} using parameters found in {@code request}. */
-  // TODO: Send errors as a response if fields are empty.
-  private Entity getLectureEntityFromRequest(HttpServletRequest request) {
-    Optional<String> optionalLectureName = getParameter(request, NAME_INPUT);
-    String lectureName = optionalLectureName.isPresent() ? optionalLectureName.get() : "";
-    Optional<String> optionalVideoUrl = getParameter(request, LINK_INPUT);
-    String videoUrl = optionalVideoUrl.isPresent() ? optionalVideoUrl.get() : "";
-    Optional<String> optionalVideoId = getVideoId(videoUrl);
-    String videoId = optionalVideoId.isPresent() ? optionalVideoId.get() : "";
-    return LectureUtil.createEntity(lectureName, videoUrl, videoId);
-  }
-
-  /**
-   * Returns the value of {@code name} from the {@code request} form.
-   * If the {@code name} cannot be found, return {@code Optional.empty()}.
-   */
-  private Optional<String> getParameter(HttpServletRequest request, String name) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return Optional.empty();
-    }
-    return Optional.of(value);
   }
 
   @VisibleForTesting
@@ -165,15 +177,15 @@ public class LectureServlet extends HttpServlet {
   /**
    * Returns URL for the lecture view page for {@code lectureEntity}.
    */
-  private Optional<String> buildRedirectUrl(Entity lectureEntity) {
+  private String buildRedirectUrl(Entity lectureEntity) throws ServletException {
     String lectureId = String.valueOf(lectureEntity.getKey().getId());
-
     try {
-      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(LectureUtil.ID, lectureId);
-      return Optional.of(urlBuilder.build().toString());
-    } catch (URISyntaxException urlBuilderError) {
-      // TODO: Send a response error.
-      return Optional.empty();
+      URIBuilder urlBuilder = new URIBuilder(REDIRECT_URL).addParameter(PARAM_ID, lectureId);
+      return urlBuilder.build().toString();
+    } catch (URISyntaxException e) {
+      // This should never happen because our params are constants.
+      // But if it does, we let it bubble up.
+      throw new ServletException(e.getCause());
     }
   }
 }
