@@ -17,12 +17,9 @@ const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
-<<<<<<< HEAD
 const STYLE_TIME_RANGE = 'justify-content-start mb-1';
 const STYLE_CONTENT = 'ml-4 mb-1';
-=======
 const PARAM_ID = 'id';
->>>>>>> origin/master
 
 let /** Element */ currentTranscriptLine;
 
