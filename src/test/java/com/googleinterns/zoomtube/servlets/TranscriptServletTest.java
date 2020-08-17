@@ -16,6 +16,7 @@ package com.googleinterns.zoomtube.servlets;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -130,9 +131,17 @@ public final class TranscriptServletTest {
   }
 
   @Test
+  public void doGet_missingId_badRequest() throws ServletException, IOException {
+    transcriptServlet.doGet(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing id parameter.");
+  }
+
+  @Test
   public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -144,7 +153,7 @@ public final class TranscriptServletTest {
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -158,7 +167,7 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_C.toString());
 
     transcriptServlet.doGet(request, response);
 
@@ -171,7 +180,7 @@ public final class TranscriptServletTest {
       throws ServletException, IOException {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_A.toString());
+    when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptServlet.doGet(request, response);
 
