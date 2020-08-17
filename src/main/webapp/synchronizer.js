@@ -30,7 +30,7 @@ function startVideoSyncTimer() {
 
 /**
  * Calls functions that seek transcript, and discussion to `currentVideoTimeMs`
- * if the `currentTimeMs` changes from the last time this was called.
+ * if the `currentTimeMs` changed from the last time this method was called.
  */
 function sync(currentVideoTimeMs) {
   if (currentVideoTimeMs == lastSyncedTimeMs) {
