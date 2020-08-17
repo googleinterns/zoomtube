@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
+
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
@@ -26,7 +28,7 @@ let /** Element */ currentTranscriptLine;
  * <p>This function assumes that the transcript lines have already
  * been added to the datastore.
  */
-function loadTranscript() {
+export function loadTranscript() {
   const url = new URL(ENDPOINT_TRANSCRIPT, window.location.origin);
   url.searchParams.append(PARAM_ID, window.LECTURE_ID);
   fetch(url).then((response) => response.json()).then((transcriptLines) => {
@@ -56,9 +58,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
  * time, and end time and appends it to `ulElement`.
  */
 function appendTextToList(transcriptLine, ulElement) {
-  const startTimestamp =
-      window.timestampToString(transcriptLine.startTimestampMs);
-  const endTimestamp = window.timestampToString(transcriptLine.endTimestampMs);
+  const startTimestamp = timestampToString(transcriptLine.startTimestampMs);
+  const endTimestamp = timestampToString(transcriptLine.endTimestampMs);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
 
   const contentDivElement = document.createElement('div');
@@ -103,13 +104,13 @@ function appendParagraphToContainer(text, container, classes = []) {
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
-function deleteTranscript() {
+export function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
 /** Seeks transcript to `currentTime`, which is given in seconds. */
-function seekTranscript(currentTime) {
-  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+export function seekTranscript(currentTime) {
+  const currentTimeMs = secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }

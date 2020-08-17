@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {seekDiscussion} from './view/discussion/discussion.js';
+import {seekTranscript} from './view/transcript/transcript.js';
+
 let videoSyncTimer;
 let lastTime;
 
@@ -21,7 +24,7 @@ const TIME_INTERVAL_MS = 100;
  * Starts timer which broadcasts current video time every
  * `TIME_INTERVAL` milliseconds.
  */
-function startVideoSyncTimer() {
+export function startVideoSyncTimer() {
   videoSyncTimer = window.setInterval(() => {
     sync(window.videoPlayer.getCurrentTime());
   }, /* ms= */ TIME_INTERVAL_MS);
@@ -37,6 +40,6 @@ function sync(currentTime) {
     return;
   }
   lastTime = currentTime;
-  window.seekTranscript(currentTime);
-  window.seekDiscussion(currentTime);
+  seekTranscript(currentTime);
+  seekDiscussion(currentTime);
 }

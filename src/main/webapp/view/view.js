@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {intializeDiscussion} from '../view/discussion/discussion.js';
+import {loadTranscript} from './transcript/transcript.js';
+import {loadVideoApi} from './video/video.js';
+
 const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
@@ -31,9 +35,9 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  window.loadVideoApi();
-  window.intializeDiscussion();
-  window.loadTranscript();
+  loadVideoApi();
+  intializeDiscussion();
+  loadTranscript();
 }
 
 /**
