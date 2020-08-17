@@ -138,6 +138,7 @@ class TranscriptLine extends HTMLElement {
     span.innerText = slotValue;
     span.slot = slotName;
     // span.className = slotStyle;
+    console.log(slotStyle);
     this.appendChild(span);
   }
 
