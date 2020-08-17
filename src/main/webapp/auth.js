@@ -13,12 +13,12 @@
 // limitations under the License.
 
 const ENDPOINT_AUTH = '/auth';
-let AUTH_STATUS;
+export let AUTH_STATUS;
 
 /**
  * Loads and saves the user's authentication status.
  */
-async function intializeAuth() {
+export async function intializeAuth() {
   AUTH_STATUS = await getAuthStatus();
 }
 

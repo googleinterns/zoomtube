@@ -13,6 +13,6 @@
     "no-multi-spaces": "off",
     "require-jsdoc": "off",
     "valid-jsdoc": "off",
-    "no-unused-vars": ["off", { "vars": "local", "args": "after-used", "ignoreRestSiblings": false }]
+    "no-unused-vars": ["error", { "vars": "local", "args": "after-used", "ignoreRestSiblings": false }]
   }
 }

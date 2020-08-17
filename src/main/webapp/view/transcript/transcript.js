@@ -104,13 +104,13 @@ function appendParagraphToContainer(text, container, classes = []) {
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
-function deleteTranscript() {
+export function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
 /** Seeks transcript to `currentTime`, which is given in seconds. */
 export function seekTranscript(currentTime) {
-  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  const currentTimeMs = secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
