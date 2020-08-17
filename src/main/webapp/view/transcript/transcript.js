@@ -56,23 +56,6 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
 }
 
 /**
- * Creates a p tag to store the given {@code text} inside the
- * {@code container}.
- *
- * <p>Adds classes the the p tag if `classList` is provided.
- */
-function appendParagraphToContainer(text, container, classes = []) {
-  const pTag = document.createElement('p');
-  pTag.innerText = text;
-  container.appendChild(pTag);
-
-  if (classes.length == 0) {
-    return;
-  }
-  pTag.classList.add(...classes);
-}
-
-/**
  * Sends a POST request to delete all of the transcript lines from datastore.
  */
 function deleteTranscript() {
