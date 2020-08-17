@@ -39,6 +39,7 @@ import org.xml.sax.SAXException;
  * stores the lines in datastore.
  */
 public final class TranscriptParser {
+  /** Transcripts are generated using the Google Video Timedtext API. */
   private static final String API_URL = "http://video.google.com/timedtext";
   private static final String API_PARAM_LANG = "lang";
   private static final String API_LANG_ENGLISH = "en";
