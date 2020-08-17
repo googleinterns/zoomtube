@@ -20,6 +20,7 @@ const BOLD_FONT_WEIGHT = 'font-weight-bold';
 const URL_PARAM_ID = 'id';
 const SLOT_TIME_RANGE = 'time-range';
 const SLOT_CONTENT = 'content';
+const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 let /** Element */ currentTranscriptLine;
 
@@ -186,4 +187,4 @@ class TranscriptLine extends HTMLElement {
   }
 }
 
-customElements.define('transcript-line', TranscriptLine);
+customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLine);
