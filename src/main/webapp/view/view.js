@@ -13,9 +13,7 @@
 // limitations under the License.
 
 import {intializeDiscussion} from '../view/discussion/discussion.js';
-
 import {loadTranscript} from './transcript/transcript.js';
-
 import {loadVideoApi} from './video/video.js';
 
 const ENDPOINT_LECTURE = '/lecture';
