@@ -143,13 +143,13 @@ class TranscriptLine extends HTMLElement {
     this.appendChild(span);
   }
 
-  /** Returns true if the text is already bolded. */
+  /** Returns true if the element is already bolded. */
   isBolded() {
     return this.classList.contains(BOLD_FONT_WEIGHT);
   }
 
   /**
-   * Bolds the text if it is not already
+   * Bolds the element if it is not already
    * bolded.
    */
   addBold() {
@@ -161,7 +161,7 @@ class TranscriptLine extends HTMLElement {
   }
 
   /**
-   * Removes bold from the text if it
+   * Removes bold from the element if it
    * is currently bolded.
    */
   removeBold() {
