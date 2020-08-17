@@ -81,7 +81,7 @@ function seekTranscript(currentTime) {
 
 /**
  * Creates a transcript line element containing the text,
- * start time, and end time from `transcriptLine`.
+ * start time, and end time.
  */
 class TranscriptLine extends HTMLElement {
   /**
