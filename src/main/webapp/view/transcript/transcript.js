@@ -16,6 +16,7 @@ const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
+const PARAM_ID = 'id';
 
 let /** Element */ currentTranscriptLine;
 
@@ -24,16 +25,13 @@ let /** Element */ currentTranscriptLine;
  *
  * <p>This function assumes that the transcript lines have already
  * been added to the datastore.
- *
- * @param lectureQueryString Indicates the video ID and the lecture ID
- * to fetch the transcript from.
  */
-function loadTranscript(lectureQueryString) {
-  fetch(ENDPOINT_TRANSCRIPT + lectureQueryString)
-      .then((response) => response.json())
-      .then((transcriptLines) => {
-        addMultipleTranscriptLinesToDom(transcriptLines);
-      });
+function loadTranscript() {
+  const url = new URL(ENDPOINT_TRANSCRIPT, window.location.origin);
+  url.searchParams.append(PARAM_ID, window.LECTURE_ID);
+  fetch(url).then((response) => response.json()).then((transcriptLines) => {
+    addMultipleTranscriptLinesToDom(transcriptLines);
+  });
 }
 
 /**
@@ -112,7 +110,11 @@ function deleteTranscript() {
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
-  if (currentTimeMs <= currentTranscriptLine.endTimestampMs) {
+  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
+    return;
+  }
+  if (isWithinCurrentTimeRange(currentTimeMs)) {
+    addBold(currentTranscriptLine);
     return;
   }
   removeBold(currentTranscriptLine);
@@ -122,16 +124,42 @@ function seekTranscript(currentTime) {
   // TODO: Handle the case where the video isn't only playing.
 }
 
-/** Bolds the text in `transcriptLineLiElement` */
+/**
+ * Bolds the text in `transcriptLineLiElement` if it is not already
+ * bolded.
+ */
 function addBold(transcriptLineLiElement) {
+  if (isBolded(transcriptLineLiElement)) {
+    return;
+  }
   transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
   transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
 }
 
-/** Removes bold from the text in `transcriptLineLiElement` */
+/**
+ * Removes bold from the text in `transcriptLineLiElement` if it
+ * is currently bolded.
+ */
 function removeBold(transcriptLineLiElement) {
+  if (!isBolded(transcriptLineLiElement)) {
+    return;
+  }
   transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
+}
+
+/** Returns true if`transcriptLineLiElement` is bolded. */
+function isBolded(transcriptLineLiElement) {
+  return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
+}
+
+/**
+ * Returns true if `currentTimeMs` is within the time range for
+ * the current transcript line.
+ */
+function isWithinCurrentTimeRange(currentTimeMs) {
+  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= currentTranscriptLine.endTimestampMs;
 }
 
 /**
