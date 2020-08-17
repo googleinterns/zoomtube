@@ -32,10 +32,15 @@
   margin-top: 20px;
 }
 
+discussion-comment {
+  display: block;
+}
+
 #discussion-comments {
   height: calc(100vh - 206px);
   max-height: calc(100vh - 206px);
   overflow: scroll;
+  padding-bottom: calc(100vh - 306px);
 }
 
 #new-comment-row {
@@ -66,7 +71,7 @@
 }
 
 #transcript-lines-container {
-  height: 90%;
+  height: calc(100% - 5rem);
   overflow: auto;
 }
 

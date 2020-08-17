@@ -49,7 +49,7 @@ public class LectureServlet extends HttpServlet {
   private static final String ERROR_MISSING_ID = "Missing id parameter.";
   private static final String ERROR_INVALID_LINK = "Invalid video link.";
   private static final String ERROR_LECTURE_NOT_FOUND = "Lecture not found in database.";
-  private static final String REDIRECT_URL = "/view";
+  private static final String REDIRECT_URL = "/view/";
 
   /* Name of input field used for lecture name in lecture selection page. */
   @VisibleForTesting static final String PARAM_NAME = "name-input";

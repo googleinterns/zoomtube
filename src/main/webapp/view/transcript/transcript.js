@@ -20,17 +20,6 @@ const BOLD_FONT_WEIGHT = 'font-weight-bold';
 let /** Element */ currentTranscriptLine;
 
 /**
- * Sends a POST request to the transcript.
- */
-// TODO: Delete this method once TranscriptServlet's doPost()
-// is called in LectureServlet.
-// TODO: Add videoId as a param.
-function sendPostToTranscript(lectureQueryString) {
-  const params = new URLSearchParams(lectureQueryString);
-  fetch('/transcript', {method: 'POST', body: params});
-}
-
-/**
  * Fetches the transcript lines from {@code ENDPOINT_TRANSCRIPT}.
  *
  * <p>This function assumes that the transcript lines have already
@@ -82,15 +71,14 @@ function appendTextToList(transcriptLine, ulElement) {
       transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
 
   const liElement = document.createElement('li');
-  liElement.classList.add('align-self-center', 'mb-2');
+  liElement.classList.add('align-self-center', 'mb-2', DEFAULT_FONT_WEIGHT);
   liElement.appendChild(contentDivElement);
   const hrElement = document.createElement('hr');
   hrElement.classList.add('my-1', 'align-middle', 'mr-5');
   liElement.appendChild(hrElement);
   ulElement.appendChild(liElement);
-  // Save the dates for seeking later.
-  liElement.startDate = new Date(transcriptLine.start);
-  liElement.endDate = new Date(transcriptLine.end);
+  liElement.startTimestampMs = transcriptLine.startTimestampMs;
+  liElement.endTimestampMs = transcriptLine.endTimestampMs;
   // Sets the current transcript line to be the first line.
   if (currentTranscriptLine == null) {
     currentTranscriptLine = liElement;
@@ -123,27 +111,64 @@ function deleteTranscript() {
 
 /** Seeks transcript to {@code currentTime}, which is given in seconds. */
 function seekTranscript(currentTime) {
-  // TODO: Update this constant once the pull request updating Date to long
-  // is approved.
-  const currentTimestamp =
-      window.getDateInSeconds(currentTranscriptLine.endDate);
-  if (currentTime <= currentTimestamp) {
+  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  // TODO: Disable highlighting on the currentTranscriptLine
+  if (isWithinCurrentTimeRange(currentTimeMs)) {
+    addBold(currentTranscriptLine);
+    return;
+  }
+  removeBold(currentTranscriptLine);
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  currentTranscriptLine.scrollIntoView();
+  scrollToTopOfTranscript(currentTranscriptLine);
+  addBold(currentTranscriptLine);
   // TODO: Handle the case where the video isn't only playing.
 }
 
-/** Bolds the text in `transcriptLineLiElement` */
+/**
+ * Bolds the text in `transcriptLineLiElement` if it is not already
+ * bolded.
+ */
 function addBold(transcriptLineLiElement) {
+  if (isBolded(transcriptLineLiElement)) {
+    return;
+  }
   transcriptLineLiElement.classList.add(BOLD_FONT_WEIGHT);
   transcriptLineLiElement.classList.remove(DEFAULT_FONT_WEIGHT);
 }
 
-/** Removes bold from the text in `transcriptLineLiElement` */
+/**
+ * Removes bold from the text in `transcriptLineLiElement` if it
+ * is currently bolded.
+ */
 function removeBold(transcriptLineLiElement) {
+  if (!isBolded(transcriptLineLiElement)) {
+    return;
+  }
   transcriptLineLiElement.classList.add(DEFAULT_FONT_WEIGHT);
   transcriptLineLiElement.classList.remove(BOLD_FONT_WEIGHT);
+}
+
+/** Returns true if`transcriptLineLiElement` is bolded. */
+function isBolded(transcriptLineLiElement) {
+  return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
+}
+
+/**
+ * Returns true if `currentTimeMs` is within the time range for
+ * the current transcript line.
+ */
+function isWithinCurrentTimeRange(currentTimeMs) {
+  return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
+      currentTimeMs <= currentTranscriptLine.endTimestampMs;
+}
+
+/**
+ * Scrolls `transcriptLine` to the top of the transcript area.
+ * */
+function scrollToTopOfTranscript(transcriptLine) {
+  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
+  const ulElementOffset = transcriptLine.parentElement.offsetTop;
+  transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
