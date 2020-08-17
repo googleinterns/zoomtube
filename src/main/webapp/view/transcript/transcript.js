@@ -18,8 +18,8 @@ const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
 const URL_PARAM_ID = 'id';
-const SLOT_TIME_RANGE = 'time-range';
-const SLOT_CONTENT = 'content';
+const TRANSCRIPT_SLOT_TIME_RANGE = 'timestamp-range';
+const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 let /** Element */ currentTranscriptLine;
@@ -118,8 +118,8 @@ class TranscriptLine extends HTMLElement {
     const template = document.getElementById(TRANSCRIPT_TEMPLATE);
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.updateTemplateSlot(SLOT_TIME_RANGE, timestampRange);
-    this.updateTemplateSlot(SLOT_CONTENT, transcriptLine.content);
+    this.updateTemplateSlot(TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);
+    this.updateTemplateSlot(TRANSCRIPT_SLOT_CONTENT, transcriptLine.content);
 
     this.startTimestampMs = transcriptLine.startTimestampMs;
     this.endTimestampMs = transcriptLine.endTimestampMs;
