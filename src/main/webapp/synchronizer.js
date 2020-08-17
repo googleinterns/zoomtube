@@ -13,7 +13,7 @@
 // limitations under the License.
 
 let videoSyncTimer;
-let lastVideoTimeMs;
+let lastSyncedTimeMs;
 
 const TIME_INTERVAL_MS = 100;
 
@@ -33,10 +33,10 @@ function startVideoSyncTimer() {
  * if the `currentTimeMs` changes from the last time this was called.
  */
 function sync(currentVideoTimeMs) {
-  if (currentVideoTimeMs == lastVideoTimeMs) {
+  if (currentVideoTimeMs == lastSyncedTimeMs) {
     return;
   }
-  lastVideoTimeMs = currentVideoTimeMs;
+  lastSyncedTimeMs = currentVideoTimeMs;
   window.seekTranscript(currentVideoTimeMs);
   window.seekDiscussion(currentVideoTimeMs);
 }
