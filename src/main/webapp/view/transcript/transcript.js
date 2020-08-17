@@ -16,6 +16,7 @@ const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
+const PARAM_ID = 'id';
 
 let /** Element */ currentTranscriptLine;
 
@@ -24,16 +25,13 @@ let /** Element */ currentTranscriptLine;
  *
  * <p>This function assumes that the transcript lines have already
  * been added to the datastore.
- *
- * @param lectureQueryString Indicates the video ID and the lecture ID
- * to fetch the transcript from.
  */
-function loadTranscript(lectureQueryString) {
-  fetch(ENDPOINT_TRANSCRIPT + lectureQueryString)
-      .then((response) => response.json())
-      .then((transcriptLines) => {
-        addMultipleTranscriptLinesToDom(transcriptLines);
-      });
+function loadTranscript() {
+  const url = new URL(ENDPOINT_TRANSCRIPT, window.location.origin);
+  url.searchParams.append(PARAM_ID, window.LECTURE_ID);
+  fetch(url).then((response) => response.json()).then((transcriptLines) => {
+    addMultipleTranscriptLinesToDom(transcriptLines);
+  });
 }
 
 /**

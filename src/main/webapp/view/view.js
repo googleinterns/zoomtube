@@ -33,7 +33,7 @@ async function initialize() {
   setLectureName();
   window.loadVideoApi();
   window.intializeDiscussion();
-  window.loadTranscript(window.location.search);
+  window.loadTranscript();
 }
 
 /**
