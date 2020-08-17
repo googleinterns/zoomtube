@@ -38,13 +38,13 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-/** {@code event} plays the YouTube video. */
+/** `event` plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
   window.startVideoSyncTimer();
 }
 
-/** Seeks video to {@code currentTimeMs}. */
+/** Seeks video to `currentTimeMs`. */
 function seekVideo(currentTimeMs) {
   // TODO: Removed and implement.
   console.log('SEEKING VIDEO TO: ' + currentTimeMs);

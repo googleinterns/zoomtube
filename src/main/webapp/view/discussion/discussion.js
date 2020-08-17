@@ -17,8 +17,7 @@ const ENDPOINT_DISCUSSION = '/discussion';
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
 const PARAM_TIMESTAMP = 'timestamp';
-
-const ATTR_ID = 'key-id';
+const PARAM_TYPE = 'type';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
@@ -35,6 +34,10 @@ const SELECTOR_REPLY_FORM = '#reply-form';
 const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
+
+const COMMENT_TYPE_REPLY = 'REPLY';
+const COMMENT_TYPE_QUESTION = 'QUESTION';
+const COMMENT_TYPE_NOTE = 'NOTE';
 
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
@@ -55,31 +58,40 @@ async function intializeDiscussion() {
  * Posts a new comment using the main post textarea.
  */
 async function postNewComment() {
-  postAndReload(
-      ELEMENT_POST_TEXTAREA, /* parent= */ undefined, newCommentTimestampMs);
+  // TODO: Add support for submitting types other than QUESTION.
+  postAndReload(ELEMENT_POST_TEXTAREA, {
+    [PARAM_TIMESTAMP]: newCommentTimestampMs,
+    [PARAM_TYPE]: COMMENT_TYPE_QUESTION,
+  });
 }
 
 /**
- * Posts the content of {@code inputField} as a reply to {@code parentId}.
+ * Posts the content of `inputField` as a reply to `parentId`.
  */
 async function postReply(inputField, parentId) {
-  postAndReload(inputField, parentId);
+  postAndReload(inputField, {
+    [PARAM_PARENT]: parentId,
+    [PARAM_TYPE]: COMMENT_TYPE_REPLY,
+  });
 }
 
 /**
- * Posts comment from {@code inputField} and reloads the discussion. If
- * {@code parentId} is provided, this posts a reply to the comment with
- * that id.
+ * Posts comment from `inputField` and reloads the discussion. Adds query
+ * parameters from `params` to the request. Different types of comments
+ * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
+ * The caller should ensure the correct parameters are supplied for the type
+ * of comment being posted.
  */
-async function postAndReload(
-    inputField, parentId = undefined, timestamp = undefined) {
+async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  if (parentId !== undefined) {
-    url.searchParams.append(PARAM_PARENT, parentId);
-  }
-  if (timestamp !== undefined) {
-    url.searchParams.append(PARAM_TIMESTAMP, timestamp);
+  for (const param in params) {
+    // This is recommended by the style guide, but disallowed by linter.
+    /* eslint-disable no-prototype-builtins */
+    if (params.hasOwnProperty(param)) {
+      url.searchParams.append(param, params[param]);
+    }
+    /* eslint-enable no-prototype-builtins */
   }
 
   fetch(url, {
@@ -123,7 +135,7 @@ function prepareComments(comments) {
 
   const rootComments = [];
   for (const comment of comments) {
-    if (comment.parentKey.value) {
+    if (comment.type === COMMENT_TYPE_REPLY) {
       const parent = commentKeys[comment.parentKey.value.id];
       parent.replies.push(comment);
     } else {
@@ -131,11 +143,13 @@ function prepareComments(comments) {
       rootComments.push(comment);
     }
   }
+  // Sort comments such that earliest timestamp is first.
+  rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value));
   return rootComments;
 }
 
 /**
- * Requests all comments in the lecture specified by {@code LECTURE_ID} from
+ * Requests all comments in the lecture specified by `LECTURE_ID` from
  * the {@link java.com.googleinterns.zoomtube.servlets.DiscussionServlet}.
  */
 async function fetchDiscussion() {
@@ -166,7 +180,7 @@ function getNearbyDiscussionComments(timestampMs) {
   const nearby = [];
   // currentRootDiscussionComments is already sorted by timestamp.
   for (const element of currentRootDiscussionComments) {
-    const commentTime = element.comment.timestampMs;
+    const commentTime = element.comment.timestampMs.value;
     if (commentTime < timestampMs - TIME_TOLERANCE_MS) {
       // Before the start of the range, continue to next.
       continue;
@@ -186,7 +200,7 @@ function getNearbyDiscussionComments(timestampMs) {
 class DiscussionComment extends HTMLElement {
   /**
    * Creates an custom HTML element representing a comment.  This uses the
-   * template and slots defined by {@code TEMPLATE_COMMENT} to render the
+   * template and slots defined by `TEMPLATE_COMMENT` to render the
    * comment's content and replies.
    *
    * @param comment The comment from the servlet that this element should
@@ -208,15 +222,16 @@ class DiscussionComment extends HTMLElement {
 
   /**
    * Returns a string containing the timestamp, author, and creation time of
-   * the {@code comment}.  The timestamp is not displayed for replies to
+   * the `comment`.  The timestamp is not displayed for replies to
    * other comments.
    */
   getHeaderString(comment) {
     const username = comment.author.email.split('@')[0];
     let timestampPrefix = '';
-    if (!comment.parentKey.value) {
-      // Only display timestamp on root comments.
-      timestampPrefix = `${window.timestampToString(comment.timestampMs)} - `;
+    if (comment.type !== COMMENT_TYPE_REPLY) {
+      // Don't show timestamp on replies.
+      timestampPrefix =
+          `${window.timestampToString(comment.timestampMs.value)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
@@ -241,8 +256,8 @@ class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Creates a {@code DiscussionComment} for every reply to this comment, and
-   * adds them to a {@code div} in the replies slot of the DOM template.
+   * Creates a `DiscussionComment` for every reply to this comment, and
+   * adds them to a `<div>` in the replies slot of the DOM template.
    */
   addReplies(replies) {
     const replyDiv = document.createElement('div');
@@ -254,8 +269,8 @@ class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Sets the content of the shadow-dom slot named {@code name} to a span
-   * element containing {@code value} as text.
+   * Sets the content of the shadow-dom slot named `name` to a span
+   * element containing `value` as text.
    */
   setSlotSpan(name, value) {
     const span = document.createElement('span');
