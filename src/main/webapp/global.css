@@ -33,8 +33,17 @@ body {
   width: 100%;
 }
 
+#header-text {
+  text-decoration: none;
+  color: inherit;
+}
+
 .navbar {
   background-color: #f3f3f3;
+}
+
+.navbar h2 {
+  margin-bottom: 0 !important;
 }
 
 /* Buttons */
