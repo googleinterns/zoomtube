@@ -17,9 +17,6 @@ const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
-const STYLE_TIME_RANGE = 'justify-content-start mb-1';
-const STYLE_CONTENT = 'ml-4 mb-1';
-const PARAM_ID = 'id';
 
 let /** Element */ currentTranscriptLine;
 
@@ -31,7 +28,9 @@ let /** Element */ currentTranscriptLine;
  */
 function loadTranscript() {
   const url = new URL(ENDPOINT_TRANSCRIPT, window.location.origin);
-  url.searchParams.append(PARAM_ID, window.LECTURE_ID);
+  // TODO: Create a variable for 'id' once #234 is merged. It currently
+  // can not be created because the constant for id is defined elsewhere.
+  url.searchParams.append('id', window.LECTURE_ID);
   fetch(url).then((response) => response.json()).then((transcriptLines) => {
     addMultipleTranscriptLinesToDom(transcriptLines);
   });
@@ -118,8 +117,8 @@ class TranscriptLine extends HTMLElement {
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.updateTemplateSlot(
-        'timestamp-range', timestampRange, STYLE_TIME_RANGE);
-    this.updateTemplateSlot('content', transcriptLine.content, STYLE_CONTENT);
+        'timestamp-range', timestampRange);
+    this.updateTemplateSlot('content', transcriptLine.content);
 
     this.startTimestampMs = transcriptLine.startTimestampMs;
     this.endTimestampMs = transcriptLine.endTimestampMs;
@@ -133,12 +132,10 @@ class TranscriptLine extends HTMLElement {
    * Updates the template slot `slotName` with `slotValue` and styling
    * from `slotStyle`.
    */
-  updateTemplateSlot(slotName, slotValue, slotStyle) {
+  updateTemplateSlot(slotName, slotValue) {
     const span = document.createElement('span');
     span.innerText = slotValue;
     span.slot = slotName;
-    // span.className = slotStyle;
-    console.log(slotStyle);
     this.appendChild(span);
   }
 
