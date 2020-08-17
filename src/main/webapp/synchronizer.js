@@ -15,7 +15,6 @@
 import {seekDiscussion} from './view/discussion/discussion.js';
 import {seekTranscript} from './view/transcript/transcript.js';
 
-let videoSyncTimer;
 let lastTime;
 
 const TIME_INTERVAL_MS = 100;
@@ -25,7 +24,7 @@ const TIME_INTERVAL_MS = 100;
  * `TIME_INTERVAL` milliseconds.
  */
 export function startVideoSyncTimer() {
-  videoSyncTimer = window.setInterval(() => {
+  window.setInterval(() => {
     sync(window.videoPlayer.getCurrentTime());
   }, /* ms= */ TIME_INTERVAL_MS);
 }

@@ -40,7 +40,6 @@ const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
 const COMMENT_TYPE_REPLY = 'REPLY';
 const COMMENT_TYPE_QUESTION = 'QUESTION';
-const COMMENT_TYPE_NOTE = 'NOTE';
 
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
