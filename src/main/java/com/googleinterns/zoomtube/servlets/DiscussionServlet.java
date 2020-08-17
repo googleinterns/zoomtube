@@ -50,6 +50,7 @@ public class DiscussionServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_LECTURE = "lecture";
   @VisibleForTesting static final String PARAM_PARENT = "parent";
   @VisibleForTesting static final String PARAM_TIMESTAMP = "timestamp";
+  @VisibleForTesting static final String PARAM_TYPE = "type";
 
   private UserService userService;
   private DatastoreService datastore;
@@ -64,34 +65,28 @@ public class DiscussionServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    String parentIdString = request.getParameter(PARAM_PARENT);
-    Key parent = null;
-    if (parentIdString != null) {
-      long parentId = Long.parseLong(parentIdString);
-      parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
-    }
     User author = userService.getCurrentUser();
     if (author == null) {
       response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not logged in.");
       return;
     }
     String content = CharStreams.toString(request.getReader());
-
-    // Default timestamp is the start of the video.
-    long timestampMs = 0;
-    if (request.getParameter(PARAM_TIMESTAMP) != null) {
-      timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
-    }
-
     Date dateNow = new Date(Clock.systemUTC().millis());
 
-    if (parent == null) {
-      datastore.put(CommentUtil.createEntity(lecture, timestampMs, author, content, dateNow));
+    // TODO: Check that required parameters are provided, otherwise .sendError. See: #178.
+    final Entity commentEntity;
+    Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
+    if (type == Comment.Type.REPLY) {
+      long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
+      Key parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
+      commentEntity = CommentUtil.createReplyEntity(lecture, parent, author, content, dateNow);
     } else {
-      datastore.put(
-          CommentUtil.createEntity(lecture, parent, timestampMs, author, content, dateNow));
+      long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
+      commentEntity =
+          CommentUtil.createRootEntity(lecture, timestampMs, author, content, dateNow, type);
     }
 
+    datastore.put(commentEntity);
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
   }
 
@@ -103,10 +98,7 @@ public class DiscussionServlet extends HttpServlet {
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Filter lectureFilter = new FilterPredicate(CommentUtil.LECTURE, FilterOperator.EQUAL, lecture);
 
-    Query query = new Query(CommentUtil.KIND)
-                      .setFilter(lectureFilter)
-                      .addSort(CommentUtil.TIMESTAMP_MS, SortDirection.ASCENDING)
-                      .addSort(CommentUtil.CREATED, SortDirection.DESCENDING);
+    Query query = new Query(CommentUtil.KIND).setFilter(lectureFilter);
     PreparedQuery pq = datastore.prepare(query);
 
     ImmutableList.Builder<Comment> commentsBuilder = new ImmutableList.Builder<>();
