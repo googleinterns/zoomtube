@@ -32,7 +32,9 @@ const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
 const COMMENT_TYPE_REPLY = 'REPLY';
 const COMMENT_TYPE_QUESTION = 'QUESTION';
+/* eslint-disable no-unused-vars */
 const COMMENT_TYPE_NOTE = 'NOTE';
+/* eslint-disable no-unused-vars */
 
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
@@ -132,7 +134,7 @@ class DiscussionManager {
    * <p>All comments are sent from the servlet without any structure, so the
    * client needs to organize them before displaying.
    */
-  #structureComments(allComments) {
+  structureComments(allComments) {
     const commentIds = {};
     for (const comment of allComments) {
       comment.replies = [];
@@ -167,7 +169,7 @@ class DiscussionManager {
     const request = await fetch(url);
     const json = await request.json();
 
-    return this.#structureComments(json);
+    return this.structureComments(json);
   }
 
   /**
@@ -177,7 +179,7 @@ class DiscussionManager {
    * The caller should ensure the correct parameters are supplied for the type
    * of comment being posted.
    */
-  async #postComment(content, params) {
+  async postComment(content, params) {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
     url.searchParams.append(
         DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
@@ -201,7 +203,7 @@ class DiscussionManager {
    * `type`.
    */
   async postRootComment(content, timestampMs, type) {
-    await this.#postComment(content, {
+    await this.postComment(content, {
       [DiscussionManager.#PARAM_TIMESTAMP]: timestampMs,
       [DiscussionManager.#PARAM_TYPE]: type,
     });
@@ -211,7 +213,7 @@ class DiscussionManager {
    * Posts `content` as a reply to `parentId`.
    */
   async postReply(content, parentId) {
-    await this.#postComment(content, {
+    await this.postComment(content, {
       [DiscussionManager.#PARAM_PARENT]: parentId,
       [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
     });
