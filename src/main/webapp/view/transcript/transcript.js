@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
+import {secondsToMilliseconds, createTimestampRange} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
@@ -69,7 +69,7 @@ export function deleteTranscript() {
 
 /** Seeks transcript to `currentTime`, which is given in seconds. */
 export function seekTranscript(currentTime) {
-  const currentTimeMs = window.secondsToMilliseconds(currentTime);
+  const currentTimeMs = secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
   }
@@ -129,7 +129,7 @@ class TranscriptLineElement extends HTMLElement {
     const template = document.getElementById(TRANSCRIPT_TEMPLATE);
     const transcriptLineElement =
         new TranscriptLineElement(template, transcriptLine);
-    const timestampRange = window.createTimestampRange(
+    const timestampRange = createTimestampRange(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     transcriptLineElement.updateTemplateSlot(
         TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);

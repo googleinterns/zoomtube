@@ -44,7 +44,7 @@ export function secondsToMilliseconds(seconds) {
  * Returns {String} a time range from
  * `startTimestampMs` to `endTimestampMs`.
  */
-function createTimestampRange(startTimestampMs, endTimestampMs) {
+export function createTimestampRange(startTimestampMs, endTimestampMs) {
   const startTimestamp = window.timestampToString(startTimestampMs);
   const endTimestamp = window.timestampToString(endTimestampMs);
   return `${startTimestamp} - ${endTimestamp}`;
