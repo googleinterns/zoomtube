@@ -53,7 +53,7 @@ export async function intializeDiscussion() {
 window.postNewComment = () => {
   const manager = new DiscussionManager(window.LECTURE);
   // TODO: Add support for submitting types other than QUESTION.
-  manager.postRootComment(
+  await manager.postRootComment(
       ELEMENT_POST_TEXTAREA.value, newCommentTimestampMs,
       COMMENT_TYPE_QUESTION);
   loadDiscussion();
