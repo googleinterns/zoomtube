@@ -29,12 +29,12 @@ export class TranscriptArea {
    * transcript lines onto the DOM.
    *
    * @param eventController An event controller object that
-   *     that will be passed into
+   *     that will be passed into a seekTranscript object.
    */
   constructor(eventController) {
-    this.#eventController = eventController;
-    // TODO: Create a transcriptSeeker object.
-    // TODO: Assign EventController and call addListener.
+    console.log(eventController);
+    // TODO: Create a transcriptSeeker object with the
+    // eventController as the parameter.
   }
 
   /**
