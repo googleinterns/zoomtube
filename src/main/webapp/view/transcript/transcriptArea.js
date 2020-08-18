@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {appendTextToList} from '/transcript.js';
+
 /** Loads the transcript lines onto the DOM. */
 export class TranscriptArea {
   static #ENDPOINT_TRANSCRIPT = '/transcript';
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
 
-  #transcriptSeeker;
+  #transcriptSeeker;git s
   #eventController;
 
   /**

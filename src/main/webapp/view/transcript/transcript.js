@@ -17,7 +17,6 @@ import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
-const PARAM_ID = 'id';
 
 let /** Element */ currentTranscriptLine;
 
@@ -25,7 +24,7 @@ let /** Element */ currentTranscriptLine;
  * Creates an `<li>` element containing `transcriptLine`'s text, start
  * time, and end time and appends it to `ulElement`.
  */
-function appendTextToList(transcriptLine, ulElement) {
+export function appendTextToList(transcriptLine, ulElement) {
   const startTimestamp = timestampToString(transcriptLine.startTimestampMs);
   const endTimestamp = timestampToString(transcriptLine.endTimestampMs);
   const timestamp = `${startTimestamp} - ${endTimestamp}`;
