@@ -157,7 +157,7 @@ class DiscussionManager {
    */
   async fetchRootComments() {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
-    url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.id);
+    url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
 
     const request = await fetch(url);
     const json = await request.json();
@@ -174,7 +174,7 @@ class DiscussionManager {
    */
   async #postComment(content, params) {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
-    url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.id);
+    url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
     for (const param in params) {
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
@@ -204,7 +204,7 @@ class DiscussionManager {
   /**
    * Posts `content` as a reply to `parentId`.
    */
-  async postReply(content, parentId, callback) {
+  async postReply(content, parentId) {
     await this.#postComment(content, {
       [DiscussionManager.#PARAM_PARENT]: parentId,
       [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
