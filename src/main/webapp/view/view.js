@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {intializeDiscussion} from '../view/discussion/discussion.js';
-import {TranscriptArea} from './transcript/transcriptArea.js';
+import {TranscriptArea} from './transcript/transcript-area.js';
 import {loadVideoApi} from './video/video.js';
 
 const ENDPOINT_LECTURE = '/lecture';
