@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
+
 const ENDPOINT_DISCUSSION = '/discussion';
 
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
 const PARAM_TIMESTAMP = 'timestamp';
-
-const ATTR_ID = 'key-id';
+const PARAM_TYPE = 'type';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
@@ -36,8 +37,16 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
+const COMMENT_TYPE_REPLY = 'REPLY';
+const COMMENT_TYPE_QUESTION = 'QUESTION';
+/* eslint-disable no-unused-vars */
+const COMMENT_TYPE_NOTE = 'NOTE';
+/* eslint-disable no-unused-vars */
+
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
+
+window.postNewComment = postNewComment;
 
 // TODO: Refactor these global variables into a namespace, module, or class.
 // See: #191.
@@ -47,7 +56,7 @@ let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
 /**
  * Loads the lecture disucssion.
  */
-async function intializeDiscussion() {
+export async function intializeDiscussion() {
   await loadDiscussion();
 }
 
@@ -55,31 +64,40 @@ async function intializeDiscussion() {
  * Posts a new comment using the main post textarea.
  */
 async function postNewComment() {
-  postAndReload(
-      ELEMENT_POST_TEXTAREA, /* parent= */ undefined, newCommentTimestampMs);
+  // TODO: Add support for submitting types other than QUESTION.
+  postAndReload(ELEMENT_POST_TEXTAREA, {
+    [PARAM_TIMESTAMP]: newCommentTimestampMs,
+    [PARAM_TYPE]: COMMENT_TYPE_QUESTION,
+  });
 }
 
 /**
  * Posts the content of `inputField` as a reply to `parentId`.
  */
 async function postReply(inputField, parentId) {
-  postAndReload(inputField, parentId);
+  postAndReload(inputField, {
+    [PARAM_PARENT]: parentId,
+    [PARAM_TYPE]: COMMENT_TYPE_REPLY,
+  });
 }
 
 /**
- * Posts comment from `inputField` and reloads the discussion. If
- * `parentId` is provided, this posts a reply to the comment with
- * that id.
+ * Posts comment from `inputField` and reloads the discussion. Adds query
+ * parameters from `params` to the request. Different types of comments
+ * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
+ * The caller should ensure the correct parameters are supplied for the type
+ * of comment being posted.
  */
-async function postAndReload(
-    inputField, parentId = undefined, timestamp = undefined) {
+async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
   url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  if (parentId !== undefined) {
-    url.searchParams.append(PARAM_PARENT, parentId);
-  }
-  if (timestamp !== undefined) {
-    url.searchParams.append(PARAM_TIMESTAMP, timestamp);
+  for (const param in params) {
+    // This is recommended by the style guide, but disallowed by linter.
+    /* eslint-disable no-prototype-builtins */
+    if (params.hasOwnProperty(param)) {
+      url.searchParams.append(param, params[param]);
+    }
+    /* eslint-enable no-prototype-builtins */
   }
 
   fetch(url, {
@@ -123,7 +141,7 @@ function prepareComments(comments) {
 
   const rootComments = [];
   for (const comment of comments) {
-    if (comment.parentKey.value) {
+    if (comment.type === COMMENT_TYPE_REPLY) {
       const parent = commentKeys[comment.parentKey.value.id];
       parent.replies.push(comment);
     } else {
@@ -131,6 +149,8 @@ function prepareComments(comments) {
       rootComments.push(comment);
     }
   }
+  // Sort comments such that earliest timestamp is first.
+  rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value));
   return rootComments;
 }
 
@@ -152,7 +172,7 @@ async function fetchDiscussion() {
  * @param {number} timeMs The new time in milliseconds to use.
  */
 function updateNewCommentTimestamp(timeMs) {
-  ELEMENT_TIMESTAMP_SPAN.innerText = window.timestampToString(timeMs);
+  ELEMENT_TIMESTAMP_SPAN.innerText = timestampToString(timeMs);
   newCommentTimestampMs = timeMs;
 }
 
@@ -166,7 +186,7 @@ function getNearbyDiscussionComments(timestampMs) {
   const nearby = [];
   // currentRootDiscussionComments is already sorted by timestamp.
   for (const element of currentRootDiscussionComments) {
-    const commentTime = element.comment.timestampMs;
+    const commentTime = element.comment.timestampMs.value;
     if (commentTime < timestampMs - TIME_TOLERANCE_MS) {
       // Before the start of the range, continue to next.
       continue;
@@ -214,9 +234,9 @@ class DiscussionComment extends HTMLElement {
   getHeaderString(comment) {
     const username = comment.author.email.split('@')[0];
     let timestampPrefix = '';
-    if (!comment.parentKey.value) {
-      // Only display timestamp on root comments.
-      timestampPrefix = `${window.timestampToString(comment.timestampMs)} - `;
+    if (comment.type !== COMMENT_TYPE_REPLY) {
+      // Don't show timestamp on replies.
+      timestampPrefix = `${timestampToString(comment.timestampMs.value)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
@@ -279,9 +299,8 @@ class DiscussionComment extends HTMLElement {
 customElements.define('discussion-comment', DiscussionComment);
 
 /** Seeks discussion to `currentTimeSeconds`. */
-function seekDiscussion(currentTimeSeconds) {
-  const currentTimeMilliseconds =
-      window.secondsToMilliseconds(currentTimeSeconds);
+export function seekDiscussion(currentTimeSeconds) {
+  const currentTimeMilliseconds = secondsToMilliseconds(currentTimeSeconds);
   updateNewCommentTimestamp(currentTimeMilliseconds);
   const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
   if (nearbyComments.length == 0) {

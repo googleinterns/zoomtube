@@ -12,10 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {startVideoSyncTimer} from '../../synchronizer.js';
+
 const SCRIPT = 'script';
 
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
 /** Loads YouTube iFrame API. */
-async function loadVideoApi() {
+export async function loadVideoApi() {
   const videoApiScript = document.createElement(SCRIPT);
   const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
   videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -34,7 +38,6 @@ function onYouTubeIframeAPIReady() {
     videoId: window.LECTURE.videoId,
     events: {
       onReady: onPlayerReady,
-      onStateChange: startOrStopTimer,
     },
   });
 }
@@ -42,19 +45,11 @@ function onYouTubeIframeAPIReady() {
 /** `event` plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
-}
-
-/** Starts timer if `currentState` is playing, stops otherwise. */
-function startOrStopTimer(currentState) {
-  if (currentState.data == window.YT.PlayerState.PLAYING) {
-    window.startVideoSyncTimer();
-    return;
-  }
-  window.stopVideoSyncTimer();
+  startVideoSyncTimer();
 }
 
 /** Seeks video to `currentTime`. */
-function seekVideo(currentTime) {
+export function seekVideo(currentTime) {
   // TODO: Removed and implement.
   console.log('SEEKING VIDEO TO: ' + currentTime);
 }
