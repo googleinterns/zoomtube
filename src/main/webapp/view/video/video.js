@@ -24,8 +24,8 @@ export default class Video {
 
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
-    console.log('LoadVideoApi called.');
-    window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady();
+    window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+    window.onPlayerReady = this.onPlayerReady;
     const videoApiScript = document.createElement(SCRIPT);
     const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
     videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -44,7 +44,7 @@ export default class Video {
       width: '640',
       videoId: window.LECTURE.videoId,
       events: {
-        onReady: window.video.onPlayerReady,
+        onReady: onPlayerReady,
       },
     });
   }
