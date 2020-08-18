@@ -49,6 +49,14 @@ export async function intializeDiscussion() {
   await loadDiscussion();
 }
 
+// This is used as the `onclick` handler of the new comment area submit button.
+window.postNewComment = () => {
+  const manager = new DiscussionManager(window.LECTURE);
+  // TODO: Add support for submitting types other than QUESTION.
+  manager.postRootComment(
+      ELEMENT_POST_TEXTAREA.value, newCommentTimestampMs,
+      COMMENT_TYPE_QUESTION);
+};
 
 /**
  * Adds comments to the discussion element.
@@ -186,7 +194,7 @@ class DiscussionManager {
    * Posts `content` as a new root comment at `timestampMs` with the specified
    * `type`.
    */
-  async postRootComment(content, type, timestampMs) {
+  async postRootComment(content, timestampMs, type) {
     await this.#postComment(content, {
       [DiscussionManager.#PARAM_TIMESTAMP]: timestampMs,
       [DiscussionManager.#PARAM_TYPE]: type,
