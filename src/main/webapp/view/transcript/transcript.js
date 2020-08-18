@@ -89,7 +89,8 @@ function seekTranscript(currentTime) {
 function scrollToTopOfTranscript(transcriptLineElement) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
   const ulElementOffset = transcriptLineElement.parentElement.offsetTop;
-  transcriptContainer.scrollTop = transcriptLineElement.offsetTop - ulElementOffset;
+  transcriptContainer.scrollTop =
+      transcriptLineElement.offsetTop - ulElementOffset;
 }
 
 /**
