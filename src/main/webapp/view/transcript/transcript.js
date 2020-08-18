@@ -15,43 +15,11 @@
 import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
 const PARAM_ID = 'id';
 
 let /** Element */ currentTranscriptLine;
-
-/**
- * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
- *
- * <p>This function assumes that the transcript lines have already
- * been added to the datastore.
- */
-export function loadTranscript() {
-  const url = new URL(ENDPOINT_TRANSCRIPT, window.location.origin);
-  url.searchParams.append(PARAM_ID, window.LECTURE_ID);
-  fetch(url).then((response) => response.json()).then((transcriptLines) => {
-    addMultipleTranscriptLinesToDom(transcriptLines);
-  });
-}
-
-/**
- * Adds `transcriptLines` to the DOM as list elements.
- */
-function addMultipleTranscriptLinesToDom(transcriptLines) {
-  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-  if (transcriptContainer.firstChild) {
-    transcriptContainer.removeChild(transcriptContainer.firstChild);
-  }
-  const ulElement = document.createElement('ul');
-  ulElement.class = 'mx-auto';
-  transcriptContainer.appendChild(ulElement);
-
-  transcriptLines.forEach((transcriptLine) => {
-    appendTextToList(transcriptLine, ulElement);
-  });
-}
 
 /**
  * Creates an `<li>` element containing `transcriptLine`'s text, start

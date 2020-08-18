@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {intializeDiscussion} from '../view/discussion/discussion.js';
-import {loadTranscript} from './transcript/transcript.js';
+import {TranscriptArea} from './transcript/transcriptArea.js';
 import {loadVideoApi} from './video/video.js';
 
 const ENDPOINT_LECTURE = '/lecture';
@@ -37,7 +37,8 @@ async function initialize() {
   setLectureName();
   loadVideoApi();
   intializeDiscussion();
-  loadTranscript();
+  const transcript = new TranscriptArea('event controller');
+  transcript.loadTranscript();
 }
 
 /**
