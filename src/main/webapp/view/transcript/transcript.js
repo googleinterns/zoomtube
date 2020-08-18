@@ -68,7 +68,7 @@ function deleteTranscript() {
 /** Seeks transcript to `currentTime`, which is given in seconds. */
 function seekTranscript(currentTime) {
   const currentTimeMs = window.secondsToMilliseconds(currentTime);
-  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
+  if (currentTimeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
   }
   if (currentTranscriptLine.isWithinTimeRange(currentTimeMs)) {
@@ -125,7 +125,8 @@ class TranscriptLineElement extends HTMLElement {
    */
   static createTranscriptLineElement(transcriptLine) {
     const template = document.getElementById(TRANSCRIPT_TEMPLATE);
-    const transcriptLineElement = new TranscriptLineElement(template, transcriptLine);
+    const transcriptLineElement =
+        new TranscriptLineElement(template, transcriptLine);
     const timestampRange = window.createTimestampRange(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     transcriptLineElement.updateTemplateSlot(
