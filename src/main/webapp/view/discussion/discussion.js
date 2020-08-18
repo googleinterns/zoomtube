@@ -69,7 +69,7 @@ async function loadDiscussion() {
   const manager = new DiscussionManager(window.LECTURE);
   const rootComments = await manager.fetchRootComments();
   for (const rootComment of rootComments) {
-    const rootCommentElement = new DiscussionComment(rootComment);
+    const rootCommentElement = new DiscussionComment(rootComment, manager);
     currentRootDiscussionComments.push(rootCommentElement);
     ELEMENT_DISCUSSION.appendChild(rootCommentElement);
   }
@@ -217,6 +217,8 @@ class DiscussionManager {
  * Renders a comment and its replies, with a form to post a new reply.
  */
 class DiscussionComment extends HTMLElement {
+  #manager;
+
   /**
    * Creates an custom HTML element representing a comment.  This uses the
    * template and slots defined by `TEMPLATE_COMMENT` to render the
@@ -224,9 +226,11 @@ class DiscussionComment extends HTMLElement {
    *
    * @param comment The comment from the servlet that this element should
    *     render.
+   * @param {DiscussionManager} manager The current discussion's manager.
    */
-  constructor(comment) {
+  constructor(comment, manager) {
     super();
+    this.#manager = manager;
     this.comment = comment;
     this.attachShadow({mode: 'open'});
     const shadow = TEMPLATE_COMMENT.content.cloneNode(true);
@@ -269,7 +273,10 @@ class DiscussionComment extends HTMLElement {
     };
     this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
-      postReply(textarea, this.comment.commentKey.id);
+      this.#manager.postReply(textarea.value, this.comment.commentKey.id)
+          .then(() => {
+            this.loadDiscussion();
+          });
     };
   }
 
@@ -281,7 +288,7 @@ class DiscussionComment extends HTMLElement {
     const replyDiv = document.createElement('div');
     replyDiv.slot = SLOT_REPLIES;
     for (const reply of replies) {
-      replyDiv.appendChild(new DiscussionComment(reply));
+      replyDiv.appendChild(new DiscussionComment(reply, this.#manager));
     }
     this.appendChild(replyDiv);
   }
