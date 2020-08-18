@@ -166,8 +166,7 @@ class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Removes bold from the element if it
-   * is currently bolded.
+   * Removes bold from the element if it is currently bolded.
    */
   removeBold() {
     if (!this.isBolded()) {
