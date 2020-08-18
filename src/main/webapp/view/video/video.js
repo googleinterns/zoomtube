@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {startVideoSyncTimer, stopVideoSyncTimer} from '../../synchronizer.js';
+import {startVideoSyncTimer} from '../../synchronizer.js';
 
 const SCRIPT = 'script';
 
@@ -45,7 +45,7 @@ function onYouTubeIframeAPIReady() {
 /** `event` plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
-  window.startVideoSyncTimer();
+  startVideoSyncTimer();
 }
 
 /** Seeks video to `currentTime`. */
