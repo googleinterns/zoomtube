@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO: Update this import statement once TranscriptLineElement is in master.
 import {appendTextToList} from '/transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
@@ -20,7 +21,7 @@ export class TranscriptArea {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
 
-  #transcriptSeeker;git s
+  #transcriptSeeker;
   #eventController;
 
   /**
