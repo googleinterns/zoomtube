@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {startVideoSyncTimer, stopVideoSyncTimer} from '../../synchronizer.js';
+import {startVideoSyncTimer} from '../../synchronizer.js';
 
 const SCRIPT = 'script';
 
@@ -38,7 +38,6 @@ function onYouTubeIframeAPIReady() {
     videoId: window.LECTURE.videoId,
     events: {
       onReady: onPlayerReady,
-      onStateChange: startOrStopTimer,
     },
   });
 }
@@ -46,15 +45,7 @@ function onYouTubeIframeAPIReady() {
 /** `event` plays the YouTube video. */
 function onPlayerReady(event) {
   event.target.playVideo();
-}
-
-/** Starts timer if `currentState` is playing, stops otherwise. */
-function startOrStopTimer(currentState) {
-  if (currentState.data == window.YT.PlayerState.PLAYING) {
-    startVideoSyncTimer();
-    return;
-  }
-  stopVideoSyncTimer();
+  startVideoSyncTimer();
 }
 
 /** Seeks video to `currentTime`. */
