@@ -37,8 +37,6 @@ const COMMENT_TYPE_NOTE = 'NOTE';
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
 
-window.postNewComment = postNewComment;
-
 // TODO: Refactor these global variables into a namespace, module, or class.
 // See: #191.
 let newCommentTimestampMs = 0;
@@ -51,54 +49,6 @@ export async function intializeDiscussion() {
   await loadDiscussion();
 }
 
-/**
- * Posts a new comment using the main post textarea.
- */
-async function postNewComment() {
-  // TODO: Add support for submitting types other than QUESTION.
-  postAndReload(ELEMENT_POST_TEXTAREA, {
-    [PARAM_TIMESTAMP]: newCommentTimestampMs,
-    [PARAM_TYPE]: COMMENT_TYPE_QUESTION,
-  });
-}
-
-/**
- * Posts the content of `inputField` as a reply to `parentId`.
- */
-async function postReply(inputField, parentId) {
-  postAndReload(inputField, {
-    [PARAM_PARENT]: parentId,
-    [PARAM_TYPE]: COMMENT_TYPE_REPLY,
-  });
-}
-
-/**
- * Posts comment from `inputField` and reloads the discussion. Adds query
- * parameters from `params` to the request. Different types of comments
- * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
- * The caller should ensure the correct parameters are supplied for the type
- * of comment being posted.
- */
-async function postAndReload(inputField, params) {
-  const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  for (const param in params) {
-    // This is recommended by the style guide, but disallowed by linter.
-    /* eslint-disable no-prototype-builtins */
-    if (params.hasOwnProperty(param)) {
-      url.searchParams.append(param, params[param]);
-    }
-    /* eslint-enable no-prototype-builtins */
-  }
-
-  fetch(url, {
-    method: 'POST',
-    body: inputField.value,
-  }).then(() => {
-    inputField.value = '';
-    loadDiscussion();
-  });
-}
 
 /**
  * Adds comments to the discussion element.
@@ -108,53 +58,13 @@ async function loadDiscussion() {
   ELEMENT_DISCUSSION.textContent = '';
   currentRootDiscussionComments = [];
 
-  const comments = await fetchDiscussion();
-  const preparedComments = prepareComments(comments);
-  for (const comment of preparedComments) {
-    const commentElement = new DiscussionComment(comment);
-    currentRootDiscussionComments.push(commentElement);
-    ELEMENT_DISCUSSION.appendChild(commentElement);
+  const manager = new DiscussionManager(window.LECTURE);
+  const rootComments = await manager.fetchRootComments();
+  for (const rootComment of rootComments) {
+    const rootCommentElement = new DiscussionComment(rootComment);
+    currentRootDiscussionComments.push(rootCommentElement);
+    ELEMENT_DISCUSSION.appendChild(rootCommentElement);
   }
-}
-
-/**
- * Organizes comments into threads with nested replies.
- *
- * <p>All comments are sent from the servlet without any structure, so the
- * client needs to organize them before displaying.
- */
-function prepareComments(comments) {
-  const commentKeys = {};
-  for (const comment of comments) {
-    comment.replies = [];
-    commentKeys[comment.commentKey.id] = comment;
-  }
-
-  const rootComments = [];
-  for (const comment of comments) {
-    if (comment.type === COMMENT_TYPE_REPLY) {
-      const parent = commentKeys[comment.parentKey.value.id];
-      parent.replies.push(comment);
-    } else {
-      // Top level comments don't have parents.
-      rootComments.push(comment);
-    }
-  }
-  // Sort comments such that earliest timestamp is first.
-  rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value));
-  return rootComments;
-}
-
-/**
- * Requests all comments in the lecture specified by `LECTURE_ID` from
- * the {@link java.com.googleinterns.zoomtube.servlets.DiscussionServlet}.
- */
-async function fetchDiscussion() {
-  const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-
-  const request = await fetch(url);
-  return request.json();
 }
 
 /**
@@ -193,26 +103,68 @@ function getNearbyDiscussionComments(timestampMs) {
 
 
 class DiscussionManager {
-  static #ENDPOINT = '/discussion'
-  static #PARAM_LECTURE = 'lecture'
-  static #PARAM_PARENT = 'parent'
-  static #PARAM_TIMESTAMP = 'timestamp'
-  static #PARAM_TYPE = 'type'
-  #lecture
+  static #ENDPOINT = '/discussion';
+  static #PARAM_LECTURE = 'lecture';
+  static #PARAM_PARENT = 'parent';
+  static #PARAM_TIMESTAMP = 'timestamp';
+  static #PARAM_TYPE = 'type';
+  #lecture;
 
   constructor(lecture) {
     this.#lecture = lecture;
   }
 
-  #structureComments() {
+  /**
+   * Organizes comments into threads with nested replies.
+   *
+   * <p>All comments are sent from the servlet without any structure, so the
+   * client needs to organize them before displaying.
+   */
+  #structureComments(allComments) {
+    const commentIds = {};
+    for (const comment of allComments) {
+      comment.replies = [];
+      commentIds[comment.commentKey.id] = comment;
+    }
 
+    const rootComments = [];
+    for (const comment of allComments) {
+      if (comment.type === COMMENT_TYPE_REPLY) {
+        const parent = commentIds[comment.parentKey.value.id];
+        parent.replies.push(comment);
+      } else {
+        // Top level comments don't have parents.
+        rootComments.push(comment);
+      }
+    }
+    // Sort comments such that earliest timestamp is first.
+    rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value));
+    return rootComments;
   }
 
-  fetchRootComments() {
+  /**
+   * Fetches and returns all comments in `this.#lecture` from the `ENDPOINT`.
+   * This returns a sorted array of all root comments, with replies added to
+   * their parents.
+   */
+  async fetchRootComments() {
+    const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
+    url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.id);
 
+    const request = await fetch(url);
+    const json = await request.json();
+
+    return this.#structureComments(json);
   }
 
-  #postComment(content, params, callback) {
+  /**
+   * Posts `content` reloads the discussion. Adds query
+   * parameters from `params` to the request. Different types of comments
+   * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
+   * The caller should ensure the correct parameters are supplied for the type
+   * of comment being posted.
+   */
+  async #postComment(content, params) {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
     url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.id);
     for (const param in params) {
@@ -224,18 +176,31 @@ class DiscussionManager {
       /* eslint-enable no-prototype-builtins */
     }
 
-    fetch(url, {
+    await fetch(url, {
       method: 'POST',
       body: content,
-    }).then(callback);
+    });
   }
 
-  postRootComment(content, type, timestampMs, callback) {
-
+  /**
+   * Posts `content` as a new root comment at `timestampMs` with the specified
+   * `type`.
+   */
+  async postRootComment(content, type, timestampMs) {
+    await this.#postComment(content, {
+      [DiscussionManager.#PARAM_TIMESTAMP]: timestampMs,
+      [DiscussionManager.#PARAM_TYPE]: type,
+    });
   }
 
-  postReply(content, parentId, callback) {
-    this.#postComment
+  /**
+   * Posts `content` as a reply to `parentId`.
+   */
+  async postReply(content, parentId, callback) {
+    await this.#postComment(content, {
+      [DiscussionManager.#PARAM_PARENT]: parentId,
+      [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
+    });
   }
 }
 
@@ -276,8 +241,7 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (comment.type !== COMMENT_TYPE_REPLY) {
       // Don't show timestamp on replies.
-      timestampPrefix =
-          `${timestampToString(comment.timestampMs.value)} - `;
+      timestampPrefix = `${timestampToString(comment.timestampMs.value)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
