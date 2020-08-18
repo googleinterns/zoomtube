@@ -56,6 +56,7 @@ window.postNewComment = () => {
   manager.postRootComment(
       ELEMENT_POST_TEXTAREA.value, newCommentTimestampMs,
       COMMENT_TYPE_QUESTION);
+  loadDiscussion();
 };
 
 /**
@@ -157,7 +158,8 @@ class DiscussionManager {
    */
   async fetchRootComments() {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
-    url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
+    url.searchParams.append(
+        DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
 
     const request = await fetch(url);
     const json = await request.json();
@@ -174,7 +176,8 @@ class DiscussionManager {
    */
   async #postComment(content, params) {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
-    url.searchParams.append(DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
+    url.searchParams.append(
+        DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
     for (const param in params) {
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
@@ -275,7 +278,7 @@ class DiscussionComment extends HTMLElement {
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
       this.#manager.postReply(textarea.value, this.comment.commentKey.id)
           .then(() => {
-            this.loadDiscussion();
+            loadDiscussion();
           });
     };
   }
