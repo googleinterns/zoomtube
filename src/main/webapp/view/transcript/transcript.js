@@ -53,7 +53,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
-    ulElement.appendChild(new TranscriptLineElement(transcriptLine));
+    ulElement.appendChild(
+        TranscriptLineElement.createTranscriptLineElement(transcriptLine));
   });
 }
 
@@ -109,16 +110,22 @@ class TranscriptLineElement extends HTMLElement {
    */
   constructor(transcriptLine) {
     super();
+    this.transcriptLine = transcriptLine;
+  }
+
+  static createTranscriptLineElement(transcriptLine) {
+    const transcriptLineElement = new TranscriptLineElement(transcriptLine);
+    transcriptLineElement.attachShadow({mode: 'open'});
+    const template = document.getElementById(TRANSCRIPT_TEMPLATE);
+    transcriptLineElement.shadowRoot.appendChild(
+        template.content.cloneNode(true));
     const timestampRange = window.createTimestampRange(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-
-    const template = document.getElementById(TRANSCRIPT_TEMPLATE);
-    this.attachShadow({mode: 'open'});
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.updateTemplateSlot(TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);
-    this.updateTemplateSlot(TRANSCRIPT_SLOT_CONTENT, transcriptLine.content);
-
-    this.transcriptLine = transcriptLine;
+    transcriptLineElement.updateTemplateSlot(
+        TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);
+    transcriptLineElement.updateTemplateSlot(
+        TRANSCRIPT_SLOT_CONTENT, transcriptLine.content);
+    return transcriptLineElement;
   }
 
   /**
@@ -165,7 +172,7 @@ class TranscriptLineElement extends HTMLElement {
    */
   isWithinTimeRange(timestampMs) {
     return this.transcriptLine.startTimestampMs <= timestampMs &&
-    timestampMs <= this.transcriptLine.endTimestampMs;
+        timestampMs <= this.transcriptLine.endTimestampMs;
   }
 }
 
