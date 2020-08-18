@@ -191,11 +191,17 @@ function getNextTranscriptLine(currentTimeMs) {
  * based on `timeMs`.
  */
 function findClosestTranscriptLine(timeMs) {
-  let transcriptLinePointer = document.getElementsByTagName('li')[0];
+  // TODO: Create a global variable for the list of transcript line elements
+  // once the pull request separating transcript.js into classes is merged.
+  const transcriptLineElements = document.getElementsByTagName('li');
+  let transcriptLinePointer = transcriptLineElements[0];
   while (transcriptLinePointer != null &&
          !isWithinTimeRange(timeMs, transcriptLinePointer) &&
          isBeforeTimeMs(timeMs, transcriptLinePointer)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
+  }
+  if (transcriptLinePointer === null) {
+    transcriptLinePointer = transcriptLineElements[transcriptLineElements.length - 1];
   }
   return transcriptLinePointer;
 }
