@@ -14,11 +14,13 @@
 
 import {intializeDiscussion} from '../view/discussion/discussion.js';
 import {loadTranscript} from './transcript/transcript.js';
-import {loadVideoApi} from './video/video.js';
+import Video from './video/video.js';
 
 const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
+
+window.video = new Video();
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
@@ -35,7 +37,7 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  loadVideoApi();
+  // window.video.loadVideoApi();
   intializeDiscussion();
   loadTranscript();
 }

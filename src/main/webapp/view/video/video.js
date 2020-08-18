@@ -16,40 +16,48 @@ import {startVideoSyncTimer} from '../../synchronizer.js';
 
 const SCRIPT = 'script';
 
-window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+export default class Video {
+  constructor() {
+    console.log('Constructor called.');
+    this.loadVideoApi();
+  }
 
-/** Loads YouTube iFrame API. */
-export async function loadVideoApi() {
-  const videoApiScript = document.createElement(SCRIPT);
-  const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
-  videoApiScript.src = 'https://www.youtube.com/iframe_api';
-  firstScriptTag.parentNode.insertBefore(videoApiScript, firstScriptTag);
-}
+  /** Loads YouTube iFrame API. */
+  async loadVideoApi() {
+    console.log('LoadVideoApi called.');
+    window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady();
+    const videoApiScript = document.createElement(SCRIPT);
+    const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
+    videoApiScript.src = 'https://www.youtube.com/iframe_api';
+    firstScriptTag.parentNode.insertBefore(videoApiScript, firstScriptTag);
+  }
 
-/**
- * Creates a YouTube Video iFrame that plays lecture video after
- * the API calls it. This is a required callback from the API.
- */
-// TODO: Change height and width.
-function onYouTubeIframeAPIReady() {
-  window.videoPlayer = new window.YT.Player('player', {
-    height: '390',
-    width: '640',
-    videoId: window.LECTURE.videoId,
-    events: {
-      onReady: onPlayerReady,
-    },
-  });
-}
+  /**
+   * Creates a YouTube Video iFrame that plays lecture video after
+   * the API calls it. This is a required callback from the API.
+   */
+  // TODO: Change height and width.
+  onYouTubeIframeAPIReady() {
+    console.log('onYouTubeIframeAPIReady called.');
+    const videoPlayer = new window.YT.Player('player', {
+      height: '390',
+      width: '640',
+      videoId: window.LECTURE.videoId,
+      events: {
+        onReady: window.video.onPlayerReady,
+      },
+    });
+  }
 
-/** `event` plays the YouTube video. */
-function onPlayerReady(event) {
-  event.target.playVideo();
-  startVideoSyncTimer();
-}
+  /** `event` plays the YouTube video. */
+  onPlayerReady(event) {
+    event.target.playVideo();
+    startVideoSyncTimer();
+  }
 
-/** Seeks video to `currentTime`. */
-export function seekVideo(currentTime) {
-  // TODO: Removed and implement.
-  console.log('SEEKING VIDEO TO: ' + currentTime);
+  /** Seeks video to `currentTime`. */
+  seekVideo(currentTime) {
+    // TODO: Removed and implement.
+    console.log('SEEKING VIDEO TO: ' + currentTime);
+  }
 }
