@@ -61,6 +61,9 @@ export class TranscriptArea {
   static addMultipleTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer =
         document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
+    // Removes the transcript lines from the container if there are any.
+    // This prevents having multiple sets of ul tags every time the page
+    // is refreshed.
     if (transcriptContainer.firstChild) {
       transcriptContainer.removeChild(transcriptContainer.firstChild);
     }
