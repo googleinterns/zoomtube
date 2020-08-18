@@ -13,7 +13,7 @@
 // limitations under the License.
 // module 'view.js'
 
-import {Synchronizer} from '../synchronizer.js';
+import Synchronizer from '../synchronizer.js';
 
 import {intializeDiscussion} from '../view/discussion/discussion.js';
 import {loadTranscript} from './transcript/transcript.js';

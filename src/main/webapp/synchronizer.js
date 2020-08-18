@@ -19,26 +19,28 @@ let lastTime;
 
 const TIME_INTERVAL_MS = 100;
 
-/**
- * Starts timer which broadcasts current video time every
- * `TIME_INTERVAL` milliseconds.
- */
-export function startVideoSyncTimer() {
-  window.setInterval(() => {
-    sync(window.videoPlayer.getCurrentTime());
-  }, /* ms= */ TIME_INTERVAL_MS);
-}
-
-/**
- * Calls functions that seek transcript, and discussion to `currentTime`
- * (number of seconds since start of video), when the `currentTime`
- * changes from the last time this was called.
- */
-function sync(currentTime) {
-  if (currentTime == lastTime) {
-    return;
+export default class Synchronizer {
+  /**
+   * Starts timer which broadcasts current video time every
+   * `TIME_INTERVAL` milliseconds.
+   */
+  startVideoSyncTimer() {
+    window.setInterval(() => {
+      this.sync(window.videoPlayer.getCurrentTime());
+    }, /* ms= */ TIME_INTERVAL_MS);
   }
-  lastTime = currentTime;
-  seekTranscript(currentTime);
-  seekDiscussion(currentTime);
+
+  /**
+   * Calls functions that seek transcript, and discussion to `currentTime`
+   * (number of seconds since start of video), when the `currentTime`
+   * changes from the last time this was called.
+   */
+  sync(currentTime) {
+    if (currentTime == lastTime) {
+      return;
+    }
+    lastTime = currentTime;
+    seekTranscript(currentTime);
+    seekDiscussion(currentTime);
+  }
 }
