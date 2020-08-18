@@ -117,7 +117,8 @@ class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Creates a custom HTML element representing `transcriptLine`.
+   * Creates a custom HTML element representing `transcriptLine` with
+   * the text and time range appended to the element.
    *
    * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
    * help create the transcript line.
