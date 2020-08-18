@@ -23,7 +23,7 @@ const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 let /** Element */ currentTranscriptLine;
-// TODO: Create an instance reference to the current transcriptLine when
+// TODO: Create an instance reference to currentTranscriptLine when
 // the code for seeking the transcript is refactored into a class.
 
 /**
@@ -53,7 +53,7 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {
-    ulElement.appendChild(new TranscriptLine(transcriptLine));
+    ulElement.appendChild(new TranscriptLineElement(transcriptLine));
   });
 }
 
@@ -76,18 +76,27 @@ function seekTranscript(currentTime) {
   }
   currentTranscriptLine.removeBold();
   currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  currentTranscriptLine.scrollToTopOfTranscript();
+  scrollToTopOfTranscript(currentTranscriptLine);
   currentTranscriptLine.addBold();
   // TODO: Handle the case where the video isn't only playing.
+}
+
+/**
+ * Scrolls 'transcriptLineElement` to the top of the transcript area.
+ */
+function scrollToTopOfTranscript(transcriptLineElement) {
+  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
+  const ulElementOffset = transcriptLineElement.parentElement.offsetTop;
+  transcriptContainer.scrollTop = transcriptLineElement.offsetTop - ulElementOffset;
 }
 
 /**
  * Creates a transcript line element containing the text,
  * start time, and end time.
  */
-class TranscriptLine extends HTMLElement {
+class TranscriptLineElement extends HTMLElement {
   /**
-   * Creates a custom HTML element representing a transcript line.
+   * Creates a custom HTML element representing `transcriptLine`.
    *
    * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
    * help create the transcript line.
@@ -125,8 +134,7 @@ class TranscriptLine extends HTMLElement {
   }
 
   /**
-   * Bolds the element if it is not already
-   * bolded.
+   * Bolds the element if it is not already bolded.
    */
   addBold() {
     if (this.isBolded()) {
@@ -149,22 +157,13 @@ class TranscriptLine extends HTMLElement {
   }
 
   /**
-   * Returns true if `timeMs` is within the time range for
+   * Returns true if `timestampMs` is within the time range for
    * this transcript line.
    */
-  isWithinTimeRange(timeMs) {
-    return this.transcriptLine.startTimestampMs <= timeMs &&
-    timeMs <= this.transcriptLine.endTimestampMs;
-  }
-
-  /**
-   * Scrolls this transcript line to the top of the transcript area.
-   */
-  scrollToTopOfTranscript() {
-    const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-    const ulElementOffset = this.parentElement.offsetTop;
-    transcriptContainer.scrollTop = this.offsetTop - ulElementOffset;
+  isWithinTimeRange(timestampMs) {
+    return this.transcriptLine.startTimestampMs <= timestampMs &&
+    timestampMs <= this.transcriptLine.endTimestampMs;
   }
 }
 
-customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLine);
+customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLineElement);
