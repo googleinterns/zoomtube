@@ -48,8 +48,8 @@ function onPlayerReady(event) {
   startVideoSyncTimer();
 }
 
-/** Seeks video to `currentTimeMs`. */
-export function seekVideo(currentTimeMs) {
+/** Seeks video to `timeMs`. */
+export function seekVideo(timeMs) {
   // TODO: Remove log and implement.
-  console.log('SEEKING VIDEO TO: ' + currentTimeMs);
+  console.log('SEEKING VIDEO TO: ' + timeMs);
 }

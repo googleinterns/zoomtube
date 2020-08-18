@@ -108,12 +108,12 @@ export function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to `currentTimeMs`. */
-export function seekTranscript(currentTimeMs) {
-  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
+/** Seeks transcript to `timeMs`. */
+export function seekTranscript(timeMs) {
+  if (timeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  if (isWithinCurrentTimeRange(currentTimeMs)) {
+  if (isWithinCurrentTimeRange(timeMs)) {
     addBold(currentTranscriptLine);
     return;
   }
