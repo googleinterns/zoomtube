@@ -14,19 +14,19 @@
 
 /** Loads the transcript lines onto the DOM. */
 export class TranscriptArea {
-  static ENDPOINT_TRANSCRIPT = '/transcript';
-  static TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-  static PARAM_ID = 'id';
-  
+  static #ENDPOINT_TRANSCRIPT = '/transcript';
+  static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+  static #PARAM_ID = 'id';
+
   #transcriptSeeker;
   #eventController;
-  
+
   /**
    * Creates an instance of `TranscriptArea` for loading
    * transcript lines onto the DOM.
-   * 
+   *
    * @param eventController An event controller object that
-   *     that will be passed into 
+   *     that will be passed into
    */
   constructor(eventController) {
     this.#eventController = eventController;
@@ -41,8 +41,9 @@ export class TranscriptArea {
    * been added to the datastore.
    */
   loadTranscript() {
-    const url = new URL(TranscriptArea.ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.PARAM_ID, window.LECTURE_ID);
+    const url =
+        new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
+    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
     fetch(url).then((response) => response.json()).then((transcriptLines) => {
       TranscriptArea.addMultipleTranscriptLinesToDom(transcriptLines);
     });
@@ -52,7 +53,8 @@ export class TranscriptArea {
    * Adds `transcriptLines` to the DOM as list elements.
    */
   static addMultipleTranscriptLinesToDom(transcriptLines) {
-    const transcriptContainer = document.getElementById(TranscriptArea.TRANSCRIPT_CONTAINER);
+    const transcriptContainer =
+        document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
     if (transcriptContainer.firstChild) {
       transcriptContainer.removeChild(transcriptContainer.firstChild);
     }
