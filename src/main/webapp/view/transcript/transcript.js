@@ -201,7 +201,8 @@ function findClosestTranscriptLine(timeMs) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
   if (transcriptLinePointer === null) {
-    transcriptLinePointer = transcriptLineElements[transcriptLineElements.length - 1];
+    transcriptLinePointer =
+        transcriptLineElements[transcriptLineElements.length - 1];
   }
   return transcriptLinePointer;
 }
