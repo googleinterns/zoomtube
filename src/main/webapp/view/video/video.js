@@ -17,15 +17,9 @@ import {startVideoSyncTimer} from '../../synchronizer.js';
 const SCRIPT = 'script';
 
 export default class Video {
-  constructor() {
-    console.log('Constructor called.');
-    this.loadVideoApi();
-  }
-
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
-    window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
-    window.onPlayerReady = this.onPlayerReady;
+    window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
     const videoApiScript = document.createElement(SCRIPT);
     const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
     videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -38,13 +32,12 @@ export default class Video {
    */
   // TODO: Change height and width.
   onYouTubeIframeAPIReady() {
-    console.log('onYouTubeIframeAPIReady called.');
-    const videoPlayer = new window.YT.Player('player', {
+    this.videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
       videoId: window.LECTURE.videoId,
       events: {
-        onReady: onPlayerReady,
+        onReady: this.onPlayerReady,
       },
     });
   }

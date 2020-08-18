@@ -20,6 +20,8 @@ const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
 
+const video = new Video();
+
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
@@ -35,8 +37,7 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  // window.video.loadVideoApi();
-  window.video = new Video();
+  video.loadVideoApi();
   intializeDiscussion();
   loadTranscript();
 }
