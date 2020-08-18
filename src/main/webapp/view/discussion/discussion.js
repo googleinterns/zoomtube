@@ -14,12 +14,6 @@
 
 import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
 
-const ENDPOINT_DISCUSSION = '/discussion';
-
-const PARAM_LECTURE = 'lecture';
-const PARAM_PARENT = 'parent';
-const PARAM_TIMESTAMP = 'timestamp';
-
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 const ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
@@ -181,6 +175,32 @@ function getNearbyDiscussionComments(timestampMs) {
   }
   return nearby;
 }
+
+
+class DiscussionManager {
+  static #ENDPOINT = '/discussion'
+  static #PARAM_LECTURE = 'lecture';
+  static #PARAM_PARENT = 'parent';
+  static #PARAM_TIMESTAMP = 'timestamp';
+  #lecture
+
+  constructor(lecture) {
+    this.#lecture = lecture;
+  }
+
+  fetchRootComments() {
+
+  }
+
+  postRootComment(content, type, timestampMs, callback) {
+
+  }
+
+  postReply(content, parentId, callback) {
+    
+  }
+}
+
 
 /**
  * Renders a comment and its replies, with a form to post a new reply.
