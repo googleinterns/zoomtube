@@ -24,6 +24,7 @@ let /** Element */ currentTranscriptLine;
  * Creates an `<li>` element containing `transcriptLine`'s text, start
  * time, and end time and appends it to `ulElement`.
  */
+// TODO: Delete this function once TranscriptLineElement is in master.
 export function appendTextToList(transcriptLine, ulElement) {
   const startTimestamp = timestampToString(transcriptLine.startTimestampMs);
   const endTimestamp = timestampToString(transcriptLine.endTimestampMs);

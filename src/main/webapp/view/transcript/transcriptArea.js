@@ -54,6 +54,9 @@ export class TranscriptArea {
 
   /**
    * Adds `transcriptLines` to the DOM as list elements.
+   * 
+   * <p>This is a private method that should only be called in
+   * `loadTranscript()`.
    */
   static addMultipleTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer =
