@@ -115,8 +115,6 @@ function getNearbyDiscussionComments(timestampMs) {
   return nearby;
 }
 
-
-
 /**
  * Renders a comment and its replies, with a form to post a new reply.
  */

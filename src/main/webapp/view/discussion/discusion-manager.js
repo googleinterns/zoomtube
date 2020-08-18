@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {COMMENT_TYPE_NOTE, COMMENT_TYPE_QUESTION, COMMENT_TYPE_REPLY} from './discussion.js';
+import {COMMENT_TYPE_REPLY} from './discussion.js';
 
 export default class DiscussionManager {
   static #ENDPOINT = '/discussion';
