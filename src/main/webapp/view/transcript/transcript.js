@@ -23,8 +23,8 @@ const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 let /** Element */ currentTranscriptLine;
-//TODO: Create an instance reference to the current transcriptLine when
-//the code for seeking the transcript is refactored into a class.
+// TODO: Create an instance reference to the current transcriptLine when
+// the code for seeking the transcript is refactored into a class.
 
 /**
  * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
