@@ -37,7 +37,7 @@ async function initialize() {
   setLectureName();
   loadVideoApi();
   intializeDiscussion();
-  // TODO: Move TranscriptArea initialization to a constructor
+  // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
   const transcript = new TranscriptArea('event controller');
   transcript.loadTranscript();
