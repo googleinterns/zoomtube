@@ -39,30 +39,18 @@ const COMMENT_TYPE_NOTE = 'NOTE';
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
 
-// TODO: Refactor these global variables into a namespace, module, or class.
-// See: #191.
-let newCommentTimestampMs = 0;
-let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
+export let discussion;
 
 /**
  * Loads the lecture disucssion.
  */
 export async function intializeDiscussion() {
-  await loadDiscussion();
+  discussion = new DiscussionArea();
+  discussion.initialize();
 }
 
 // This is used as the `onclick` handler of the new comment area submit button.
-window.postNewComment = () => {
-  const manager = new DiscussionManager(window.LECTURE);
-  // TODO: Add support for submitting types other than QUESTION.
-  manager
-      .postRootComment(
-          ELEMENT_POST_TEXTAREA.value, newCommentTimestampMs,
-          COMMENT_TYPE_QUESTION)
-      .then(() => {
-        loadDiscussion();
-      });
-};
+window.postNewComment = discussion.postNewComment.bind(discussion);
 
 /**
  * Adds comments to the discussion element.
@@ -113,6 +101,55 @@ function getNearbyDiscussionComments(timestampMs) {
     nearby.push(element);
   }
   return nearby;
+}
+
+
+class DiscussionArea {
+  #lecture;
+  #manager;
+  #currentTimeMs;
+  #currentRootComments;
+
+  constructor(lecture) {
+    this.#lecture = lecture;
+    this.#manager = new DiscussionManager(lecture);
+    this.#currentTimeMs = 0;
+  }
+
+  async initialize() {
+    await loadDiscussion();
+  }
+
+  async loadDiscussion() {
+    let newCommentTimestampMs = 0;
+    let /** !Array<DiscussionComment> */ currentRootDiscussionComments = [];
+  }
+
+  seek(timeMs) {
+    updateNewCommentTimestamp(currentTimeMilliseconds);
+    const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
+    if (nearbyComments.length == 0) {
+      return;
+    }
+    nearbyComments[0].scrollToTopOfDiscussion();
+  }
+
+  postNewComment() {
+    this.#manager
+        .postRootComment(
+            ELEMENT_POST_TEXTAREA.value, newCommentTimestampMs,
+            COMMENT_TYPE_QUESTION)
+        .then(() => {
+          loadDiscussion();
+        });
+  }
+
+  postReply(content, parentId) {
+    this.#manager.postReply(content, parentId).then(() => {
+      loadDiscussion();
+    });
+  }
+
 }
 
 
@@ -225,7 +262,7 @@ class DiscussionManager {
  * Renders a comment and its replies, with a form to post a new reply.
  */
 class DiscussionComment extends HTMLElement {
-  #manager;
+  #discusion;
 
   /**
    * Creates an custom HTML element representing a comment.  This uses the
@@ -234,11 +271,11 @@ class DiscussionComment extends HTMLElement {
    *
    * @param comment The comment from the servlet that this element should
    *     render.
-   * @param {DiscussionManager} manager The current discussion's manager.
+   * @param {DiscussionArea} discusion The current discussion.
    */
-  constructor(comment, manager) {
+  constructor(comment, discusion) {
     super();
-    this.#manager = manager;
+    this.#discusion = discusion;
     this.comment = comment;
     this.attachShadow({mode: 'open'});
     const shadow = TEMPLATE_COMMENT.content.cloneNode(true);
@@ -281,10 +318,7 @@ class DiscussionComment extends HTMLElement {
     };
     this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
-      this.#manager.postReply(textarea.value, this.comment.commentKey.id)
-          .then(() => {
-            loadDiscussion();
-          });
+      this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
     };
   }
 
@@ -296,7 +330,7 @@ class DiscussionComment extends HTMLElement {
     const replyDiv = document.createElement('div');
     replyDiv.slot = SLOT_REPLIES;
     for (const reply of replies) {
-      replyDiv.appendChild(new DiscussionComment(reply, this.#manager));
+      replyDiv.appendChild(new DiscussionComment(reply, this.#discussion));
     }
     this.appendChild(replyDiv);
   }
@@ -329,10 +363,5 @@ customElements.define('discussion-comment', DiscussionComment);
 /** Seeks discussion to `currentTimeSeconds`. */
 export function seekDiscussion(currentTimeSeconds) {
   const currentTimeMilliseconds = secondsToMilliseconds(currentTimeSeconds);
-  updateNewCommentTimestamp(currentTimeMilliseconds);
-  const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
-  if (nearbyComments.length == 0) {
-    return;
-  }
-  nearbyComments[0].scrollToTopOfDiscussion();
+  discussion.seek(currentTimeMilliseconds);
 }
