@@ -23,6 +23,8 @@ const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 let /** Element */ currentTranscriptLine;
+//TODO: Create an instance reference to the current transcriptLine when 
+// the code for seeking the transcript is refactored into a class.
 
 /**
  * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
@@ -68,7 +70,7 @@ function seekTranscript(currentTime) {
   if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
     return;
   }
-  if (currentTranscriptLine.isWithinCurrentTimeRange(currentTimeMs)) {
+  if (currentTranscriptLine.isWithinTimeRange(currentTimeMs)) {
     currentTranscriptLine.addBold();
     return;
   }
@@ -104,12 +106,7 @@ class TranscriptLine extends HTMLElement {
     this.updateTemplateSlot(TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);
     this.updateTemplateSlot(TRANSCRIPT_SLOT_CONTENT, transcriptLine.content);
 
-    this.startTimestampMs = transcriptLine.startTimestampMs;
-    this.endTimestampMs = transcriptLine.endTimestampMs;
-    // Sets the current transcript line to be the first line.
-    if (currentTranscriptLine == null) {
-      currentTranscriptLine = this;
-    }
+    this.transcriptLine = transcriptLine;
   }
 
   /**
@@ -152,12 +149,12 @@ class TranscriptLine extends HTMLElement {
   }
 
   /**
-   * Returns true if `currentTimeMs` is within the time range for
+   * Returns true if `timeMs` is within the time range for
    * this transcript line.
    */
-  isWithinCurrentTimeRange(currentTimeMs) {
-    return this.startTimestampMs <= currentTimeMs &&
-        currentTimeMs <= this.endTimestampMs;
+  isWithinTimeRange(timeMs) {
+    return this.transcriptLine.startTimestampMs <= timeMs &&
+    timeMs <= this.transcriptLine.endTimestampMs;
   }
 
   /**
