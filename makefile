@@ -5,7 +5,7 @@ HTML_VALIDATE=node_modules/html-validate/bin/html-validate.js
 PRETTIER=node_modules/prettier/bin-prettier.js
 
 node_modules:
-	npm install clang-format prettier css-validator html-validate eslint eslint-config-google
+	npm install clang-format prettier css-validator html-validate eslint eslint-config-google babel-eslint
 
 pretty: node_modules
 	$(PRETTIER) --write src/**/*.{html,css}
