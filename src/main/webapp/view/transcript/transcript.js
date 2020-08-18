@@ -102,23 +102,30 @@ class TranscriptLineElement extends HTMLElement {
   /**
    * Creates a custom HTML element representing `transcriptLine`.
    *
+   * @param template The template that will be cloned to create the
+   *     transcript line.
+   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
+   *     whose `attributes` should be used.
+   */
+  constructor(template, transcriptLine) {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.transcriptLine = transcriptLine;
+  }
+
+  /**
+   * Creates a custom HTML element representing `transcriptLine`.
+   *
    * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
    * help create the transcript line.
    *
    * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
    *     whose `attributes` should be used.
    */
-  constructor(transcriptLine) {
-    super();
-    this.transcriptLine = transcriptLine;
-  }
-
   static createTranscriptLineElement(transcriptLine) {
-    const transcriptLineElement = new TranscriptLineElement(transcriptLine);
-    transcriptLineElement.attachShadow({mode: 'open'});
     const template = document.getElementById(TRANSCRIPT_TEMPLATE);
-    transcriptLineElement.shadowRoot.appendChild(
-        template.content.cloneNode(true));
+    const transcriptLineElement = new TranscriptLineElement(template, transcriptLine);
     const timestampRange = window.createTimestampRange(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     transcriptLineElement.updateTemplateSlot(
