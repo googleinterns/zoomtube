@@ -84,6 +84,8 @@ function seekTranscript(currentTime) {
 /**
  * Scrolls 'transcriptLineElement` to the top of the transcript area.
  */
+// TODO: Make this function static and move it into the
+// class that seeks the transcript.
 function scrollToTopOfTranscript(transcriptLineElement) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
   const ulElementOffset = transcriptLineElement.parentElement.offsetTop;
