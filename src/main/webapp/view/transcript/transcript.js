@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds, createTimestampRange} from '../../timestamps.js';
+import {createTimestampRange, secondsToMilliseconds} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
