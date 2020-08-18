@@ -14,6 +14,12 @@
 
 import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
 
+import DiscussionManager from './discusion-manager.js';
+
+export const COMMENT_TYPE_REPLY = 'REPLY';
+export const COMMENT_TYPE_QUESTION = 'QUESTION';
+export const COMMENT_TYPE_NOTE = 'NOTE';
+
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
 const ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
@@ -29,12 +35,6 @@ const SELECTOR_REPLY_FORM = '#reply-form';
 const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
-
-const COMMENT_TYPE_REPLY = 'REPLY';
-const COMMENT_TYPE_QUESTION = 'QUESTION';
-/* eslint-disable no-unused-vars */
-const COMMENT_TYPE_NOTE = 'NOTE';
-/* eslint-disable no-unused-vars */
 
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
@@ -102,7 +102,6 @@ function getNearbyDiscussionComments(timestampMs) {
   }
   return nearby;
 }
-
 
 class DiscussionArea {
   #lecture;
