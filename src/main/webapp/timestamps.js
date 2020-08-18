@@ -41,7 +41,7 @@ function secondsToMilliseconds(seconds) {
 }
 
 /**
- * Returns a time range string in the forma of
+ * Returns a time range string in the form of
  * `startTimestampMs` - `endTimestampMs`.
  */
 function timestampRangeToString(startTimestampMs, endTimestampMs) {
