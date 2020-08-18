@@ -25,6 +25,12 @@ import java.util.Optional;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class Comment {
+  public static enum Type {
+    QUESTION,
+    NOTE,
+    REPLY,
+  }
+
   /** Returns the comment's Datastore entity key. */
   public abstract Key commentKey();
 
@@ -37,8 +43,11 @@ public abstract class Comment {
    */
   public abstract Optional<Key> parentKey();
 
-  /** Returns the timestamp in milliseconds this comment is referencing in the video. */
-  public abstract long timestampMs();
+  /**
+   * Returns the timestamp in milliseconds this comment is referencing in the video, or {@code
+   * Optional.empty()} if this is a reply.
+   */
+  public abstract Optional<Long> timestampMs();
 
   /**
    * Returns the comment's author.
@@ -51,6 +60,9 @@ public abstract class Comment {
   /** Returns the comment's creation date. */
   public abstract Date created();
 
+  /** Returns the type of the comment. */
+  public abstract Type type();
+
   public static Builder builder() {
     return new AutoValue_Comment.Builder();
   }
@@ -62,9 +74,11 @@ public abstract class Comment {
     public abstract Builder setParentKey(Key parentKey);
     public abstract Builder setParentKey(Optional<Key> parentKey);
     public abstract Builder setTimestampMs(long timestampMs);
+    public abstract Builder setTimestampMs(Optional<Long> timestampMs);
     public abstract Builder setAuthor(User author);
     public abstract Builder setContent(String content);
     public abstract Builder setCreated(Date created);
+    public abstract Builder setType(Type type);
 
     public abstract Comment build();
   }

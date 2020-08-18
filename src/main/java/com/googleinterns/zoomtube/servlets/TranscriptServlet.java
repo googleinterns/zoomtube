@@ -25,12 +25,14 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +43,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TranscriptServlet extends HttpServlet {
   private DatastoreService datastore;
+  @VisibleForTesting static final String PARAM_ID = "id";
+  private static final String ERROR_MISSING_ID = "Missing id parameter.";
 
   @Override
   public void init() throws ServletException {
@@ -49,10 +53,23 @@ public class TranscriptServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long lectureId = Long.parseLong(request.getParameter(LectureUtil.ID));
+    Optional<String> error = validateGetRequest(request);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
+      return;
+    }
+
+    long lectureId = Long.parseLong(request.getParameter(PARAM_ID));
     PreparedQuery preparedQuery = getLectureTranscriptQuery(lectureId);
     ImmutableList<TranscriptLine> transcriptLines = getTranscriptLines(preparedQuery);
     writeTranscriptLines(response, transcriptLines);
+  }
+
+  private Optional<String> validateGetRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_ID) == null) {
+      return Optional.of(ERROR_MISSING_ID);
+    }
+    return Optional.empty();
   }
 
   /**

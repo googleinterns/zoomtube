@@ -15,6 +15,10 @@
 
 import {Synchronizer} from '../synchronizer.js';
 
+import {intializeDiscussion} from '../view/discussion/discussion.js';
+import {loadTranscript} from './transcript/transcript.js';
+import {loadVideoApi} from './video/video.js';
+
 const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
@@ -37,14 +41,14 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  window.loadVideoApi();
-  window.intializeDiscussion();
-  window.loadTranscript(window.location.search);
+  loadVideoApi();
+  intializeDiscussion();
+  loadTranscript();
 }
 
 /**
- * Returns lecture in database associated with {@code window.LECTURE_ID}
- * obtained from {@code ENDPOINT_LECTURE}.
+ * Returns lecture in database associated with `window.LECTURE_ID`
+ * obtained from `ENDPOINT_LECTURE`.
  */
 async function getLecture() {
   const url = new URL(ENDPOINT_LECTURE, window.location.origin);
