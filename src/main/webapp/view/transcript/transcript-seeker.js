@@ -40,9 +40,6 @@ export default class TranscriptSeeker {
   /**
    * Returns the `currentTranscriptLine` if it exists. Else, returns
    * undefined.
-   *
-   * <p>This is a public getter method for the retrieving the
-   * `currentTranscriptLine`.
    */
   currentTranscriptLine() {
     if (this.#currentTranscriptLine == null) {
@@ -53,10 +50,6 @@ export default class TranscriptSeeker {
       this.#currentTranscriptLine = document.getElementsByTagName('li')[0];
     }
     return this.#currentTranscriptLine;
-  }
-
-  setCurrentTranscriptLine(currentTranscriptLine) {
-    this.#currentTranscriptLine = currentTranscriptLine;
   }
 
   /**
@@ -82,8 +75,8 @@ export default class TranscriptSeeker {
       return;
     }
     removeBold(this.currentTranscriptLine());
-    this.setCurrentTranscriptLine(
-        this.currentTranscriptLine().nextElementSibling);
+    this.#currentTranscriptLine =
+        this.currentTranscriptLine().nextElementSibling;
     this.scrollToTopOfTranscript(this.currentTranscriptLine());
     addBold(this.currentTranscriptLine());
     // TODO: Handle the case where the video isn't only playing.
