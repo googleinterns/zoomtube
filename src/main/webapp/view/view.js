@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {intializeDiscussion} from '../view/discussion/discussion.js';
+import {loadTranscript} from './transcript/transcript.js';
+import {loadVideoApi} from './video/video.js';
+
 const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
@@ -19,7 +23,7 @@ const PARAM_ID = 'id';
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
-/** Sets {@code window.LECTURE} as Lecture for view page. */
+/** Sets `window.LECTURE` as Lecture for view page. */
 getLecture().then((lecture) => {
   window.LECTURE = lecture;
   initialize();
@@ -30,14 +34,15 @@ getLecture().then((lecture) => {
  * and transcript sections for the lecture view page.
  */
 async function initialize() {
-  window.loadVideoApi();
-  window.intializeDiscussion();
-  window.loadTranscript(window.location.search);
+  setLectureName();
+  loadVideoApi();
+  intializeDiscussion();
+  loadTranscript();
 }
 
 /**
- * Returns lecture in database associated with {@code window.LECTURE_ID}
- * obtained from {@code ENDPOINT_LECTURE}.
+ * Returns lecture in database associated with `window.LECTURE_ID`
+ * obtained from `ENDPOINT_LECTURE`.
  */
 async function getLecture() {
   const url = new URL(ENDPOINT_LECTURE, window.location.origin);
@@ -52,4 +57,10 @@ async function getLecture() {
 function getLectureId() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(PARAM_ID);
+}
+
+/** Sets the lecture name in `header-text`. */
+function setLectureName() {
+  const headerText = document.getElementById('header-text');
+  headerText.innerText = window.LECTURE.lectureName;
 }

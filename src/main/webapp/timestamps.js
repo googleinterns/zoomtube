@@ -15,9 +15,9 @@
 const MILLISECONDS_PER_SECOND = 1000;
 
 /**
- * Converts a {@code timestampMs} in milliseconds into a string.
+ * Converts a `timestampMs` in milliseconds into a string.
  */
-function timestampToString(timestampMs) {
+export function timestampToString(timestampMs) {
   const date = new Date();
   date.setTime(timestampMs);
   const seconds = date.getUTCSeconds().toString().padStart(
@@ -35,7 +35,16 @@ function timestampToString(timestampMs) {
 /**
  * Converts `seconds` to milliseconds.
  */
-// TODO: Remove once #158 is addressed.
-function secondsToMilliseconds(seconds) {
+export function secondsToMilliseconds(seconds) {
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
+}
+
+/**
+ * Returns a time range string in the form of
+ * `startTimestampMs` - `endTimestampMs`.
+ */
+export function timestampRangeToString(startTimestampMs, endTimestampMs) {
+  const startTimestamp = timestampToString(startTimestampMs);
+  const endTimestamp = timestampToString(endTimestampMs);
+  return `${startTimestamp} - ${endTimestamp}`;
 }
