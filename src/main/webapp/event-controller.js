@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /** Manages storing eventListeners and broadcasting events. */
-class EventController {
+export default class EventController {
   constructor() {
     this.eventListeners = new Map();
     this.addEventListener = this.addEventListener.bind(this);
