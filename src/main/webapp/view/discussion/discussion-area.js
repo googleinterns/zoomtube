@@ -28,12 +28,14 @@ export default class DiscussionArea {
   #manager;
   #currentTimeMs;
   #currentRootCommentElements;
+  #nearestComments;
 
   constructor(lecture) {
     this.#lecture = lecture;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#currentRootCommentElements = [];
+    this.#nearestComments = [];
   }
 
   async initialize() {
@@ -91,11 +93,21 @@ export default class DiscussionArea {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
         timestampToString(timeMs);
-    const nearestComments = this.getNearestDiscussionComments(timeMs);
-    if (nearestComments.length == 0) {
+
+    // Remove any existing highlights.
+    for (const comment of this.#nearestComments) {
+      comment.setHighlighted(false);
+    }
+
+    // Scroll to and highlight new nearest comments.
+    this.#nearestComments = this.getNearestDiscussionComments(timeMs);
+    if (this.#nearestComments.length == 0) {
       return;
     }
-    nearestComments[0].scrollToTopOfDiscussion();
+    this.#nearestComments[0].scrollToTopOfDiscussion();
+    for (const comment of this.#nearestComments) {
+      comment.setHighlighted(true);
+    }
   }
 
   postNewComment() {
