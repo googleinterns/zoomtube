@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds, timestampRangeToString} from '../../timestamps.js';
+import {secondsToMilliseconds, timestampRangeToString}
+  from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
@@ -129,7 +130,7 @@ class TranscriptLineElement extends HTMLElement {
    */
   static createTranscriptLineElement(transcriptLine) {
     const timestampRange = timestampRangeToString(
-        transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);       
+        transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     return new TranscriptLineElement(timestampRange, transcriptLine);
   }
 
