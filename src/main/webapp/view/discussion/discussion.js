@@ -14,7 +14,7 @@
 
 import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
 
-import DiscussionManager from './discusion-manager.js';
+import DiscussionManager from './discussion-manager.js';
 
 export const COMMENT_TYPE_REPLY = 'REPLY';
 export const COMMENT_TYPE_QUESTION = 'QUESTION';
