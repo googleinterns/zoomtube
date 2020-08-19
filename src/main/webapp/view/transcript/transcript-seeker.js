@@ -13,9 +13,8 @@
 // limitations under the License.
 
 
-/** Loads the transcript lines onto the DOM. */
-export class TranscriptSeeker {
-  static #ENDPOINT_TRANSCRIPT = '/transcript';
+/** Controls seeking to parts in the transcript. */
+export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
 
