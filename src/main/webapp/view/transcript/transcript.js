@@ -177,7 +177,7 @@ function scrollToTopOfTranscript(transcriptLine) {
 /**
  * Returns the next transcript line based on `timeMs`.
  */
-function getNextTranscriptLine(timeMs) {
+function transcriptLineWithTime(timeMs) {
   const nextTranscript = currentTranscriptLine.nextElementSibling;
   // Video is playing normally.
   if (isWithinTimeRange(timeMs, nextTranscript)) {
