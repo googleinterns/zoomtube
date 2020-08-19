@@ -18,6 +18,9 @@ import TranscriptSeeker from './view/transcript/transcript-seeker.js';
 let lastTime;
 
 const TIME_INTERVAL_MS = 100;
+// TODO: Retrieve the transcriptSeeker from the TranscriptArea instead
+// once #255
+const transcriptSeeker = new TranscriptSeeker('event controller');
 
 /**
  * Starts timer which broadcasts current video time every
@@ -39,9 +42,6 @@ function sync(currentTime) {
     return;
   }
   lastTime = currentTime;
-  // TODO: Retrieve the transcriptSeeker from the TranscriptArea instead
-  // once #255
-  const transcriptSeeker = new TranscriptSeeker("event controller");
   transcriptSeeker.seekTranscript(currentTime);
   seekDiscussion(currentTime);
 }

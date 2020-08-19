@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {secondsToMilliseconds} from '../../timestamps.js';
 
-/** Controls seeking to parts in the transcript. */
+// TODO: Update imports below once pull request #192
+// is merged.
+import {addBold, isWithinCurrentTimeRange, removeBold} from './transcript.js';
+
+/** Controls seeking to parts of the transcript. */
 export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 
@@ -24,11 +29,10 @@ export default class TranscriptSeeker {
    * Creates an instance of `TranscriptSeeker` for loading
    * transcript lines onto the DOM.
    *
-   * @param eventController An event controller object that
-   *     that will be passed into a seekTranscript object.
+   * @param eventController An event controller instance that
+   *    will help relay the current time to other objects.
    */
   constructor(eventController) {
-    console.log(eventController);
     this.#eventController = eventController;
     // TODO: Add method to add listeners.
   }
@@ -36,16 +40,23 @@ export default class TranscriptSeeker {
   /**
    * Returns the `currentTranscriptLine` if it exists. Else, returns
    * undefined.
+   *
+   * <p>This is a public getter method for the retrieving the
+   * `currentTranscriptLine`.
    */
   currentTranscriptLine() {
     if (this.#currentTranscriptLine == null) {
       // TODO: Update the query to find transcript-line elements once
       // pull request #192 is merged.
-      // If there are no elements, currentTranscript is assigned to be
-      // undefined.
+      // If the first transcript line doesn't exist, currentTranscript is
+      // assigned to be undefined.
       this.#currentTranscriptLine = document.getElementsByTagName('li')[0];
     }
     return this.#currentTranscriptLine;
+  }
+
+  setCurrentTranscriptLine(currentTranscriptLine) {
+    this.#currentTranscriptLine = currentTranscriptLine;
   }
 
   /**
@@ -61,17 +72,18 @@ export default class TranscriptSeeker {
   /** Seeks transcript to `currentTime`, which is given in seconds. */
   seekTranscript(currentTime) {
     const currentTimeMs = secondsToMilliseconds(currentTime);
-    if (currentTimeMs < this.#currentTranscriptLine.startTimestampMs) {
+    if (currentTimeMs < this.currentTranscriptLine().startTimestampMs) {
       return;
     }
     if (isWithinCurrentTimeRange(currentTimeMs)) {
-      addBold(this.#currentTranscriptLine);
+      addBold(this.currentTranscriptLine());
       return;
     }
-    removeBold(this.#currentTranscriptLine);
-    this.#currentTranscriptLine = this.#currentTranscriptLine.nextElementSibling;
-    scrollToTopOfTranscript(this.#currentTranscriptLine);
-    addBold(this.#currentTranscriptLine);
+    removeBold(this.currentTranscriptLine());
+    this.setCurrentTranscriptLine(
+        this.currentTranscriptLine().nextElementSibling);
+    this.scrollToTopOfTranscript(this.currentTranscriptLine());
+    addBold(this.currentTranscriptLine());
     // TODO: Handle the case where the video isn't only playing.
   }
 
