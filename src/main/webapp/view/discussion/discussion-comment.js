@@ -36,27 +36,31 @@ export default class DiscussionComment extends HTMLElement {
 
   /**
    * Creates an custom HTML element representing a comment.  This uses the
-   * template and slots defined by `TEMPLATE_COMMENT` to render the
-   * comment's content and replies.
+   * template and slots defined by `TEMPLATE` to render the
+   * comment's content and replies, once the comment is set.
    *
-   * @param comment The comment from the servlet that this element should
-   *     render.
    * @param {DiscussionArea} discussion The current discussion.
    */
-  constructor(comment, discussion) {
+  constructor(discussion) {
     super();
     this.#discussion = discussion;
-    this.comment = comment;
     this.attachShadow({mode: 'open'});
     const shadow = DiscussionComment.#TEMPLATE.content.cloneNode(true);
     this.shadowRoot.appendChild(shadow);
+    this.addReplyEventListeners();
+  }
 
+  /**
+   * @param comment The comment from the discussion that this element should
+   *     render.
+   */
+  setComment(comment) {
+    this.comment = comment;
+    this.textContent = '';
     this.setSlotSpan(
         DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
     this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
     this.addReplies(comment.replies);
-
-    this.addReplyEventListeners();
   }
 
   /**
@@ -109,7 +113,9 @@ export default class DiscussionComment extends HTMLElement {
     const replyDiv = document.createElement('div');
     replyDiv.slot = DiscussionComment.#SLOT_REPLIES;
     for (const reply of replies) {
-      replyDiv.appendChild(new DiscussionComment(reply, this.#discussion));
+      const child = new DiscussionComment(this.#discussion);
+      child.setComment(reply);
+      replyDiv.appendChild(child);
     }
     this.appendChild(replyDiv);
   }

@@ -47,7 +47,8 @@ export default class DiscussionArea {
 
     const rootComments = await this.#manager.fetchRootComments();
     for (const rootComment of rootComments) {
-      const rootCommentElement = new DiscussionComment(rootComment, this);
+      const rootCommentElement = new DiscussionComment(this);
+      rootCommentElement.setComment(rootComment);
       this.#currentRootCommentElements.push(rootCommentElement);
       ELEMENT_DISCUSSION.appendChild(rootCommentElement);
     }
