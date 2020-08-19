@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {seekDiscussion} from './view/discussion/discussion.js';
-import {seekTranscript} from './view/transcript/transcript.js';
+import TranscriptSeeker from './view/transcript/transcript-seeker.js';
 
 let lastTime;
 
@@ -39,6 +39,9 @@ function sync(currentTime) {
     return;
   }
   lastTime = currentTime;
-  seekTranscript(currentTime);
+  // TODO: Retrieve the transcriptSeeker from the TranscriptArea instead
+  // once #255
+  const transcriptSeeker = new TranscriptSeeker("event controller");
+  transcriptSeeker.seekTranscript(currentTime);
   seekDiscussion(currentTime);
 }

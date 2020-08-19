@@ -60,6 +60,23 @@ export default class TranscriptSeeker {
     transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
   }
 
+  /** Seeks transcript to `currentTime`, which is given in seconds. */
+  seekTranscript(currentTime) {
+    const currentTimeMs = secondsToMilliseconds(currentTime);
+    if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
+      return;
+    }
+    if (isWithinCurrentTimeRange(currentTimeMs)) {
+      addBold(currentTranscriptLine);
+      return;
+    }
+    removeBold(currentTranscriptLine);
+    currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+    scrollToTopOfTranscript(currentTranscriptLine);
+    addBold(currentTranscriptLine);
+    // TODO: Handle the case where the video isn't only playing.
+  }
+
   // TODO: Move functions getNextTranscript() and findClosestTranscriptLine()
   // once #215 is merged.
 }
