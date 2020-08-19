@@ -32,7 +32,7 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
-export let discussion;
+export let /** DiscussionArea */ discussion;
 
 /**
  * Loads the lecture disucssion.
@@ -58,7 +58,8 @@ export class DiscussionComment extends HTMLElement {
    *
    * @param comment The comment from the servlet that this element should
    *     render.
-   * @param {DiscussionArea} discussion The current discussion.
+   * @param {DiscussionArea} discussion The discussion that this comment is a
+   *     part of.
    */
   constructor(comment, discussion) {
     super();
