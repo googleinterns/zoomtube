@@ -20,6 +20,8 @@ let lastTime;
 const TIME_INTERVAL_MS = 100;
 // TODO: Retrieve the transcriptSeeker from the TranscriptArea instead
 // once #255 is merged into master.
+// TODO: Move transcriptSeeker to a different class once the eventListeners
+// are added.
 const transcriptSeeker = new TranscriptSeeker('event controller');
 
 /**
