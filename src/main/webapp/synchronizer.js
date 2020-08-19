@@ -22,7 +22,7 @@ const TIME_INTERVAL_MS = 100;
 export default class Synchronizer {
   /**
    * Starts timer which broadcasts current video time every
-   * `TIME_INTERVAL` milliseconds.
+   * `TIME_INTERVAL_MS` milliseconds.
    */
   startVideoSyncTimer() {
     window.setInterval(() => {
