@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds, timestampRangeToString} from '../../timestamps.js';
+import {secondsToMilliseconds,
+  timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
 const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
 const URL_PARAM_ID = 'id';
-const TRANSCRIPT_SLOT_TIME_RANGE = 'timestamp-range';
-const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 let /** Element */ currentTranscriptLine;
@@ -100,8 +98,6 @@ function scrollToTopOfTranscript(transcriptLineElement) {
       transcriptLineElement.offsetTop - ulElementOffset;
 }
 
-
-
 /**
  * Creates a transcript line element containing the text,
  * start time, and end time.
@@ -119,7 +115,7 @@ class TranscriptLineElement extends HTMLElement {
     const contentDivElement = TranscriptLineElement.createContentDivElement();
     TranscriptLineElement.appendParagraphToContainer(
         timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
-        TranscriptLineElement.appendParagraphToContainer(
+    TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
     this.classList.add('align-self-center', 'mb-2');
     this.appendChild(contentDivElement);
