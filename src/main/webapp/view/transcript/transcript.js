@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {secondsToMilliseconds,
-    timestampRangeToString} from '../../timestamps.js';
+  timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
