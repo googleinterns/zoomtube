@@ -16,6 +16,7 @@ import {startVideoSyncTimer} from '../../synchronizer.js';
 
 const SCRIPT = 'script';
 
+/** Initializes and stores video player information. */
 // TODO: Add function that returns current video time #259.
 export default class Video {
   /** Loads YouTube iFrame API. */
