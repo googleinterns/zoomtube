@@ -68,6 +68,7 @@ export default class TranscriptArea {
       transcriptContainer.removeChild(transcriptContainer.firstChild);
     }
     const ulElement = document.createElement('ul');
+    // TODO: Move the class assignment to the HTML.
     ulElement.class = 'mx-auto';
     transcriptContainer.appendChild(ulElement);
     transcriptLines.forEach((transcriptLine) => {
