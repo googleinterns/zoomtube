@@ -35,7 +35,6 @@ export function timestampToString(timestampMs) {
 /**
  * Converts `seconds` to milliseconds.
  */
-// TODO: Remove once #158 is addressed.
 export function secondsToMilliseconds(seconds) {
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
 }
