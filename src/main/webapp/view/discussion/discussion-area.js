@@ -14,9 +14,9 @@
 
 import {timestampToString} from '../../timestamps.js';
 
+import {DiscussionComment} from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_QUESTION} from './discussion.js';
-import {DiscussionComment} from './discussion.js';
 
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
