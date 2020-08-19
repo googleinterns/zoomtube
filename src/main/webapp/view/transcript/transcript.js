@@ -77,7 +77,7 @@ export function seekTranscript(timeMs) {
     return;
   }
   currentTranscriptLine.removeBold();
-  currentTranscriptLine = transcriptLineWithTime(timeMs);
+  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
   scrollToTopOfTranscript(currentTranscriptLine);
   currentTranscriptLine.addBold();
   // TODO: Handle the case where the video isn't only playing.
