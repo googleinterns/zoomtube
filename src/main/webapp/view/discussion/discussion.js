@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
+import {timestampToString} from '../../timestamps.js';
 
 const ENDPOINT_DISCUSSION = '/discussion';
 
@@ -298,11 +298,10 @@ class DiscussionComment extends HTMLElement {
 // Custom element names must contain a hyphen.
 customElements.define('discussion-comment', DiscussionComment);
 
-/** Seeks discussion to `currentTimeSeconds`. */
-export function seekDiscussion(currentTimeSeconds) {
-  const currentTimeMilliseconds = secondsToMilliseconds(currentTimeSeconds);
-  updateNewCommentTimestamp(currentTimeMilliseconds);
-  const nearbyComments = getNearbyDiscussionComments(currentTimeMilliseconds);
+/** Seeks discussion to `timeMs`. */
+export function seekDiscussion(timeMs) {
+  updateNewCommentTimestamp(timeMs);
+  const nearbyComments = getNearbyDiscussionComments(timeMs);
   if (nearbyComments.length == 0) {
     return;
   }
