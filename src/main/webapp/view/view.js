@@ -20,6 +20,7 @@ const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
 
+// TODO: Remove global scope and add to view object.
 window.video = new Video();
 
 /* exported LECTURE_ID */
