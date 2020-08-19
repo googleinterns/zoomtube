@@ -73,7 +73,6 @@ export default class TranscriptSeeker {
     this.currentTranscriptLine().addBold();
     // TODO: Handle the case where the video isn't only playing.
   }
-
   // TODO: Move functions getNextTranscript() and findClosestTranscriptLine()
   // into this class once #215 is merged.
 
