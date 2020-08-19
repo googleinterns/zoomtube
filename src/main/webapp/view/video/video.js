@@ -16,6 +16,7 @@ import {startVideoSyncTimer} from '../../synchronizer.js';
 
 const SCRIPT = 'script';
 
+/** Initializes and stores video player information. */
 export default class Video {
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
