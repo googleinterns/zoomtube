@@ -34,7 +34,7 @@ export function deleteTranscript() {
 }
 
 /** Seeks transcript to `timeMs`. */
-export async function seekTranscript(timeMs) {
+export function seekTranscript(timeMs) {
   if (timeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
   }

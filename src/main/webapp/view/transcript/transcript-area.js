@@ -43,7 +43,7 @@ export default class TranscriptArea {
    * <p>This function assumes that the transcript lines have already
    * been added to the datastore.
    */
-  loadTranscript() {
+  async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
     url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
