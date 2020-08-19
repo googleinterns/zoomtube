@@ -19,7 +19,7 @@ import {COMMENT_TYPE_REPLY} from './discussion.js';
 /**
  * Renders a comment and its replies, with a form to post a new reply.
  */
-export class DiscussionComment extends HTMLElement {
+export default class DiscussionComment extends HTMLElement {
   static #TEMPLATE = document.querySelector('#comment-template');
 
   static #SLOT_HEADER = 'header';
