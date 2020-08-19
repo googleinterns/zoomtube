@@ -35,10 +35,9 @@ discussion-comment {
   display: block;
 }
 
-discussion-comment.highlighted > [slot='header'] {
+discussion-comment[highlighted] > [slot='header'] {
   font-weight: bold;
 }
-
 
 #discussion-comments {
   height: calc(100vh - 206px);

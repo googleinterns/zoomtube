@@ -22,6 +22,8 @@ import {COMMENT_TYPE_REPLY} from './discussion.js';
 export class DiscussionComment extends HTMLElement {
   static #TEMPLATE = document.querySelector('#comment-template');
 
+  static #ATTR_HIGHLIGHTED = 'highlighted';
+
   static #SLOT_HEADER = 'header';
   static #SLOT_CONTENT = 'content';
   static #SLOT_REPLIES = 'replies';
@@ -133,6 +135,18 @@ export class DiscussionComment extends HTMLElement {
     const elementTop = this.offsetTop;
     const offset = elementTop - scrollPaneTop;
     ELEMENT_DISCUSSION.scrollTop = offset;
+  }
+
+  /**
+   * Sets if this comment should be highlighted on the DOM.
+   */
+  setHighlighted(highlight) {
+    if (highlight) {
+      // We just want to add the attribute, the value doesn't matter.
+      this.setAttribute(DiscussionComment.#ATTR_HIGHLIGHTED, /* value= */ '');
+      return;
+    }
+    this.removeAttribute(DiscussionComment.#ATTR_HIGHLIGHTED);
   }
 }
 
