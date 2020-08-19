@@ -47,9 +47,9 @@ export default class TranscriptArea {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
     url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
-    fetch(url).then((response) => response.json()).then((transcriptLines) => {
-      TranscriptArea.addMultipleTranscriptLinesToDom(transcriptLines);
-    });
+    const transcriptResponse = await fetch(url);
+    const transcriptLines = await transcriptResponse.json();
+    TranscriptArea.addMultipleTranscriptLinesToDom(transcriptLines);
   }
 
   /**
