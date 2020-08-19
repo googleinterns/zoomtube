@@ -19,6 +19,7 @@ let lastTime;
 
 const TIME_INTERVAL_MS = 100;
 
+/** Handles when to seek transcript and discussion areas. */
 export default class Synchronizer {
   /**
    * Starts timer which broadcasts current video time every
@@ -31,10 +32,11 @@ export default class Synchronizer {
   }
 
   /**
-   * Calls functions that seek transcript, and discussion to `currentTime`
+   * Calls functions that seek transcript and discussion to `currentTime`
    * (number of seconds since start of video), when the `currentTime`
    * changes from the last time this was called.
    */
+  // TODO: Send `currentTime` as ms.
   sync(currentTime) {
     if (currentTime == lastTime) {
       return;
