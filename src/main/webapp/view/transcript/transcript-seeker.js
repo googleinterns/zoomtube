@@ -18,7 +18,7 @@ import {secondsToMilliseconds} from '../../timestamps.js';
 // is merged.
 import {addBold, isWithinCurrentTimeRange, removeBold} from './transcript.js';
 
-/** Controls seeking to parts of the transcript. */
+/** Seeks to parts of the transcript. */
 export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 
@@ -34,7 +34,7 @@ export default class TranscriptSeeker {
    */
   constructor(eventController) {
     this.#eventController = eventController;
-    // TODO: Add method to add listeners.
+    // TODO: Add the event listeners.
   }
 
   /**
@@ -71,6 +71,8 @@ export default class TranscriptSeeker {
 
   /** Seeks transcript to `currentTime`, which is given in seconds. */
   seekTranscript(currentTime) {
+    // TODO: Refactor this method once the helper methods are merged in #215
+    // and #228.
     const currentTimeMs = secondsToMilliseconds(currentTime);
     if (currentTimeMs < this.currentTranscriptLine().startTimestampMs) {
       return;
@@ -89,4 +91,6 @@ export default class TranscriptSeeker {
 
   // TODO: Move functions getNextTranscript() and findClosestTranscriptLine()
   // into this class once #215 is merged.
+
+  // TODO: Add a method that adds the eventListeners.
 }
