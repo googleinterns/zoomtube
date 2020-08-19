@@ -32,7 +32,7 @@ export default class Video {
    * Creates a YouTube Video iFrame that plays lecture video after
    * the API calls it. This is a required callback from the API.
    */
-  // TODO: Change height and width.
+  // TODO: Support dynamic video height and width.
   onYouTubeIframeAPIReady() {
     this.videoPlayer = new window.YT.Player('player', {
       height: '390',
