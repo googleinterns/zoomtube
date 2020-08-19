@@ -67,7 +67,7 @@ export function deleteTranscript() {
  * Creates a transcript line element containing the text,
  * start time, and end time.
  */
-export class TranscriptLineElement extends HTMLElement {
+class TranscriptLineElement extends HTMLElement {
   /**
    * Creates a custom HTML element representing `transcriptLine`.
    *
