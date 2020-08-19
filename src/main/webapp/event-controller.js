@@ -20,7 +20,7 @@ export default class EventController {
     this.broadcastEvent = this.broadcastEvent.bind(this);
   }
 
-  /** Adds `callBack` to `eventNames` stores in `eventListeners`. */
+  /** Adds `callBack` to `eventNames` stored in `eventListeners`. */
   addEventListener(callBack, eventNames) {
     for (const eventName of eventNames) {
       let callBacks = [];
