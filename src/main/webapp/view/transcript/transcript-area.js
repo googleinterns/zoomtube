@@ -16,7 +16,7 @@
 import {appendTextToList} from '/transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
-export class TranscriptArea {
+export default class TranscriptArea {
   static #ENDPOINT_TRANSCRIPT = '/transcript';
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
