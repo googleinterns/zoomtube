@@ -21,11 +21,11 @@ class EventController {
   }
 
   /** Adds `callBack` to `eventNames` stores in `eventListeners`. */
-  addEventListener(callBack, ...eventNames) {
-    for (eventName of eventNames) {
+  addEventListener(callBack, eventNames) {
+    for (const eventName of eventNames) {
       let callBacks = [];
       if (this.eventListeners.has(eventName)) {
-        callBacks = this.listeners.get(eventName);
+        callBacks = this.eventListeners.get(eventName);
       }
       callBacks.push(callBack);
       this.eventListeners.set(eventName, callBacks);
@@ -37,15 +37,27 @@ class EventController {
    *  passes `params` to callback. Returns false if there
    *  were no callbacks, true otherwise.
    */
-  broadcastListener(eventName, ...params) {
+  broadcastEvent(eventName, ...params) {
     if (!this.eventListeners.has(eventName)) {
       console.error('No event listeners found.');
       return false;
     }
-    const callBacks = this.listeners.get(eventName);
+    const callBacks = this.eventListeners.get(eventName);
     callBacks.forEach((callback) => {
       callback(...params);
     });
     return true;
   }
 }
+
+const eventController = new EventController();
+eventController.addEventListener(
+    () => console.log('Syncing Discussion \n'), ['sync', 'syncAll']);
+eventController.addEventListener(
+    () => console.log('Syncing Transcript \n'), ['sync', 'syncAll']);
+eventController.addEventListener(
+    () => console.log('Syncing Video \n'), ['syncAll']);
+
+eventController.broadcastEvent('sync');
+console.log('\n');
+eventController.broadcastEvent('syncAll');
