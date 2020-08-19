@@ -16,7 +16,6 @@ import {startVideoSyncTimer} from '../../synchronizer.js';
 
 const SCRIPT = 'script';
 
-// TODO: Add function that returns current video time #259.
 export default class Video {
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
@@ -31,7 +30,6 @@ export default class Video {
    * Creates a YouTube Video iFrame that plays lecture video after
    * the API calls it. This is a required callback from the API.
    */
-  // TODO: Change height and width.
   onYouTubeIframeAPIReady() {
     this.videoPlayer = new window.YT.Player('player', {
       height: '390',
@@ -47,6 +45,11 @@ export default class Video {
   onPlayerReady(event) {
     event.target.playVideo();
     startVideoSyncTimer();
+  }
+
+  /** Returns current video time of 'videoPlayer'. */
+  getCurrentVideoTime() {
+    return this.videoPlayer.getCurrentTime();
   }
 
   /** Seeks video to `currentTime`. */

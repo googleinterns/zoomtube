@@ -23,10 +23,9 @@ const TIME_INTERVAL_MS = 100;
  * Starts timer which broadcasts current video time every
  * `TIME_INTERVAL` milliseconds.
  */
-// TODO: Get video time from function in video.js #259.
 export function startVideoSyncTimer() {
   window.setInterval(() => {
-    sync(window.videoPlayer.getCurrentTime());
+    sync(window.video.getCurrentVideoTime());
   }, /* ms= */ TIME_INTERVAL_MS);
 }
 
