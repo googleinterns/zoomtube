@@ -35,7 +35,7 @@ const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 export let /** DiscussionArea */ discussion;
 
 /**
- * Loads the lecture disucssion.
+ * Loads the lecture discussion.
  */
 export async function intializeDiscussion() {
   discussion = new DiscussionArea(window.LECTURE);

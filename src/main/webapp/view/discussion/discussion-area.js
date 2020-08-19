@@ -91,7 +91,7 @@ export default class DiscussionArea {
   }
 
   /**
-   * Seeks the discussion area to `timeMs`.  This involves scrolling the
+   * Seeks the discussion area to `timeMs`. This involves scrolling the
    * comments, and updating the time displayed in the new comment area.
    */
   seek(timeMs) {
