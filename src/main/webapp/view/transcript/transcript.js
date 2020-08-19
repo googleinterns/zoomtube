@@ -99,6 +99,7 @@ function scrollToTopOfTranscript(transcriptLineElement) {
   transcriptContainer.scrollTop =
       transcriptLineElement.offsetTop - ulElementOffset;
 }
+
 /**
  * Creates a p tag to store the given {@code text} inside the
  * {@code container}.
@@ -115,45 +116,36 @@ function appendParagraphToContainer(text, container, classes = []) {
   }
   pTag.classList.add(...classes);
 }
+
 /**
  * Creates a transcript line element containing the text,
  * start time, and end time.
  */
 class TranscriptLineElement extends HTMLElement {
-  // /**
-  //  * Creates a custom HTML element representing `transcriptLine`.
-  //  *
-  //  * @param template The template that will be cloned to create the
-  //  *     transcript line.
-  //  * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
-  //  *     whose `attributes` should be used.
-  //  */
-  // constructor(template, transcriptLine) {
-  //   super();
-  //   this.attachShadow({mode: 'open'});
-  //   this.shadowRoot.appendChild(template.content.cloneNode(true));
-  //   this.transcriptLine = transcriptLine;
-  // }
+  /**
+   * Creates a custom HTML element representing `transcriptLine`.
+   *
+   * @param timestampRange The timestamp for the transcript line.
+   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
+   *     whose `attributes` should be used.
+   */
   constructor(timestampRange, transcriptLine) {
     super();
-    const contentDivElement = this.createContentDiv();
+    const contentDivElement = this.createContentDivElement();
     appendParagraphToContainer(
         timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
     appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
-
     this.classList.add('align-self-center', 'mb-2');
     this.appendChild(contentDivElement);
     const hrElement = this.createHrElement();
     this.appendChild(hrElement);
     this.transcriptLine = transcriptLine;
   }
+
   /**
    * Creates a custom HTML element representing `transcriptLine` with
    * the text and time range appended to the element.
-   *
-   * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
-   * help create the transcript line.
    *
    * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
    *     whose `attributes` should be used.
@@ -165,13 +157,21 @@ class TranscriptLineElement extends HTMLElement {
         new TranscriptLineElement(timestampRange, transcriptLine);
     return transcriptLineElement;
   }
-  
-  createContentDiv() {
+
+  /**
+   * Creates a stylized div element that will be used to store
+   * the time range and text in a `TranscriptLineElement`.
+   */
+  createContentDivElement() {
     const contentDivElement = document.createElement('div');
     contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
     return contentDivElement;
   }
 
+  /**
+   * Creates a stylized hr element that will be used to create a
+   * `TranscriptLineElement`.
+   */
   createHrElement() {
     const hrElement = document.createElement('hr');
     hrElement.classList.add('my-1', 'align-middle', 'mr-5');
