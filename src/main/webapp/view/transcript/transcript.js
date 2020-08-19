@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds,
-  timestampRangeToString} from '../../timestamps.js';
+import {timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
@@ -34,13 +33,12 @@ export function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to `currentTime`, which is given in seconds. */
-export function seekTranscript(currentTime) {
-  const currentTimeMs = secondsToMilliseconds(currentTime);
-  if (currentTimeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
+/** Seeks transcript to `timeMs`. */
+export function seekTranscript(timeMs) {
+  if (timeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
   }
-  if (currentTranscriptLine.isWithinTimeRange(currentTimeMs)) {
+  if (currentTranscriptLine.isWithinTimeRange(timeMs)) {
     currentTranscriptLine.addBold();
     return;
   }
