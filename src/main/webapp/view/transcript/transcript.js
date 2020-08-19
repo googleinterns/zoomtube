@@ -108,23 +108,6 @@ export function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to `currentTime`, which is given in seconds. */
-export function seekTranscript(currentTime) {
-  const currentTimeMs = secondsToMilliseconds(currentTime);
-  if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
-    return;
-  }
-  if (isWithinCurrentTimeRange(currentTimeMs)) {
-    addBold(currentTranscriptLine);
-    return;
-  }
-  removeBold(currentTranscriptLine);
-  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-  scrollToTopOfTranscript(currentTranscriptLine);
-  addBold(currentTranscriptLine);
-  // TODO: Handle the case where the video isn't only playing.
-}
-
 /**
  * Bolds the text in `transcriptLineLiElement` if it is not already
  * bolded.
@@ -161,13 +144,4 @@ function isBolded(transcriptLineLiElement) {
 export function isWithinCurrentTimeRange(currentTimeMs) {
   return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
       currentTimeMs <= currentTranscriptLine.endTimestampMs;
-}
-
-/**
- * Scrolls `transcriptLine` to the top of the transcript area.
- * */
-function scrollToTopOfTranscript(transcriptLine) {
-  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-  const ulElementOffset = transcriptLine.parentElement.offsetTop;
-  transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
 }
