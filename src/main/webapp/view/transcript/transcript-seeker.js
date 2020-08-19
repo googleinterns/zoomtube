@@ -71,8 +71,8 @@ export default class TranscriptSeeker {
 
   /** Seeks transcript to `currentTime`, which is given in seconds. */
   seekTranscript(currentTime) {
-    // TODO: Refactor this method once the helper methods are merged in #215
-    // and #228.
+    // TODO: Refactor this method once the helper methods in #215
+    // and #228 are merged into master.
     const currentTimeMs = secondsToMilliseconds(currentTime);
     if (currentTimeMs < this.currentTranscriptLine().startTimestampMs) {
       return;
