@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds,
-  timestampRangeToString} from '../../timestamps.js';
+import {secondsToMilliseconds, timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const ENDPOINT_TRANSCRIPT = '/transcript';
@@ -51,8 +50,6 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   const ulElement = document.createElement('ul');
   ulElement.class = 'mx-auto';
   transcriptContainer.appendChild(ulElement);
-  console.log(transcriptLines);
-  console.log(transcriptLines[0]);
   transcriptLines.forEach((transcriptLine) => {
     ulElement.appendChild(
         TranscriptLineElement.createTranscriptLineElement(transcriptLine));
@@ -119,8 +116,7 @@ class TranscriptLineElement extends HTMLElement {
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
     this.classList.add('align-self-center', 'mb-2');
     this.appendChild(contentDivElement);
-    const hrElement = TranscriptLineElement.createHrElement();
-    this.appendChild(hrElement);
+    this.appendChild(TranscriptLineElement.createHrElement());
     this.transcriptLine = transcriptLine;
   }
 
@@ -133,10 +129,8 @@ class TranscriptLineElement extends HTMLElement {
    */
   static createTranscriptLineElement(transcriptLine) {
     const timestampRange = timestampRangeToString(
-        transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-    const transcriptLineElement =
-        new TranscriptLineElement(timestampRange, transcriptLine);
-    return transcriptLineElement;
+        transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);       
+    return new TranscriptLineElement(timestampRange, transcriptLine);
   }
 
   /**
