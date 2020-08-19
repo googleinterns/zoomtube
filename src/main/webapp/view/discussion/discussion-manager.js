@@ -14,6 +14,9 @@
 
 import {COMMENT_TYPE_REPLY} from './discussion.js';
 
+/**
+ * Manages fetching and posting comments in a lecture's discussion.
+ */
 export default class DiscussionManager {
   static #ENDPOINT = '/discussion';
   static #PARAM_LECTURE = 'lecture';
@@ -22,6 +25,10 @@ export default class DiscussionManager {
   static #PARAM_TYPE = 'type';
   #lecture;
 
+  /**
+   * @param lecture The current lecture, which is used when making requests to
+   *     the discussion endpoint.
+   */
   constructor(lecture) {
     this.#lecture = lecture;
   }
