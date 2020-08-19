@@ -17,6 +17,7 @@ package com.googleinterns.zoomtube.transcriptParser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Transaction;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -123,22 +124,33 @@ public final class TranscriptParser {
    * @param document The XML file containing the transcript lines.
    */
   private void putTranscriptLinesInDatastore(Key lectureKey, Document document) {
-    NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
-    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
-      Node transcriptNode = transcriptNodes.item(nodeIndex);
-      Element transcriptElement = (Element) transcriptNode;
-      String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
+    Transaction transaction = datastore.beginTransaction();
 
-      float lineStartSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
-      float lineDurationSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
-      // I couldn't find any official way to convert a float seconds to long milliseconds without
-      // losing precision.
-      long lineStartMs = Math.round(lineStartSeconds * MILLISECONDS_PER_SECOND);
-      long lineDurationMs = Math.round(lineDurationSeconds * MILLISECONDS_PER_SECOND);
-      long lineEndMs = lineStartMs + lineDurationMs;
+    try {
+      NodeList transcriptNodes = document.getElementsByTagName(TAG_TEXT);
+      for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
+        Node transcriptNode = transcriptNodes.item(nodeIndex);
+        Element transcriptElement = (Element) transcriptNode;
+        String lineContent = StringEscapeUtils.unescapeXml(transcriptNode.getTextContent());
 
-      datastore.put(TranscriptLineUtil.createEntity(
-          lectureKey, lineContent, lineStartMs, lineDurationMs, lineEndMs));
+        float lineStartSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_START));
+        float lineDurationSeconds = Float.parseFloat(transcriptElement.getAttribute(ATTR_DURATION));
+        // I couldn't find any official way to convert a float seconds to long milliseconds without
+        // losing precision.
+        long lineStartMs = Math.round(lineStartSeconds * MILLISECONDS_PER_SECOND);
+        long lineDurationMs = Math.round(lineDurationSeconds * MILLISECONDS_PER_SECOND);
+        long lineEndMs = lineStartMs + lineDurationMs;
+
+        datastore.put(transaction,
+            TranscriptLineUtil.createEntity(
+                lectureKey, lineContent, lineStartMs, lineDurationMs, lineEndMs));
+      }
+
+      transaction.commit();
+    } finally {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
     }
   }
 }
