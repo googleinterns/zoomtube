@@ -16,7 +16,6 @@
 /** Controls seeking to parts in the transcript. */
 export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-  static #PARAM_ID = 'id';
 
   #currentTranscriptLine;
   #eventController;
@@ -63,20 +62,20 @@ export default class TranscriptSeeker {
   /** Seeks transcript to `currentTime`, which is given in seconds. */
   seekTranscript(currentTime) {
     const currentTimeMs = secondsToMilliseconds(currentTime);
-    if (currentTimeMs < currentTranscriptLine.startTimestampMs) {
+    if (currentTimeMs < this.#currentTranscriptLine.startTimestampMs) {
       return;
     }
     if (isWithinCurrentTimeRange(currentTimeMs)) {
-      addBold(currentTranscriptLine);
+      addBold(this.#currentTranscriptLine);
       return;
     }
-    removeBold(currentTranscriptLine);
-    currentTranscriptLine = currentTranscriptLine.nextElementSibling;
-    scrollToTopOfTranscript(currentTranscriptLine);
-    addBold(currentTranscriptLine);
+    removeBold(this.#currentTranscriptLine);
+    this.#currentTranscriptLine = this.#currentTranscriptLine.nextElementSibling;
+    scrollToTopOfTranscript(this.#currentTranscriptLine);
+    addBold(this.#currentTranscriptLine);
     // TODO: Handle the case where the video isn't only playing.
   }
 
   // TODO: Move functions getNextTranscript() and findClosestTranscriptLine()
-  // once #215 is merged.
+  // into this class once #215 is merged.
 }
