@@ -25,7 +25,7 @@ const TIME_INTERVAL_MS = 100;
  */
 export function startVideoSyncTimer() {
   window.setInterval(() => {
-    sync(window.video.getCurrentVideoTime());
+    sync(window.video.getCurrentVideoTimeSeconds());
   }, /* ms= */ TIME_INTERVAL_MS);
 }
 

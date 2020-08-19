@@ -48,7 +48,7 @@ export default class Video {
   }
 
   /** Returns current video time of 'videoPlayer'. */
-  getCurrentVideoTime() {
+  getCurrentVideoTimeSeconds() {
     return this.videoPlayer.getCurrentTime();
   }
 
