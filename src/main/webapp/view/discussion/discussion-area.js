@@ -95,9 +95,7 @@ export default class DiscussionArea {
         timestampToString(timeMs);
 
     // Remove any existing highlights.
-    for (const comment of this.#nearestComments) {
-      comment.setHighlighted(false);
-    }
+    this.#nearestComments.forEach(comment => comment.unhighlight());
 
     // Scroll to and highlight new nearest comments.
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
@@ -105,9 +103,7 @@ export default class DiscussionArea {
       return;
     }
     this.#nearestComments[0].scrollToTopOfDiscussion();
-    for (const comment of this.#nearestComments) {
-      comment.setHighlighted(true);
-    }
+    this.#nearestComments.forEach(comment => comment.highlight());
   }
 
   postNewComment() {

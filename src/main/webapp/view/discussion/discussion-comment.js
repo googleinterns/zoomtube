@@ -138,14 +138,17 @@ export class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Sets if this comment should be highlighted on the DOM.
+   * Highlights this element on the DOM.
    */
-  setHighlighted(highlight) {
-    if (highlight) {
-      // We just want to add the attribute, the value doesn't matter.
-      this.setAttribute(DiscussionComment.#ATTR_HIGHLIGHTED, /* value= */ '');
-      return;
-    }
+  highlight() {
+    // We just want to add the attribute, the value doesn't matter.
+    this.setAttribute(DiscussionComment.#ATTR_HIGHLIGHTED, /* value= */ '');
+  }
+
+  /**
+   * Unhighlights this element on the DOM.
+   */
+  unhighlight() {
     this.removeAttribute(DiscussionComment.#ATTR_HIGHLIGHTED);
   }
 }
