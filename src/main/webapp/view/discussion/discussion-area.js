@@ -71,18 +71,15 @@ export default class DiscussionArea {
         nearestDistance = distance;
         continue;
       }
-
       if (distance < nearestDistance) {
         nearest = [element];
         nearestDistance = distance;
         continue;
       }
-
       if (distance == nearestDistance) {
         nearest.push(element);
         continue;
       }
-
       if (distance > nearestDistance && commentTimeMs > timeMs) {
         break;
       }
