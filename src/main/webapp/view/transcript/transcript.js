@@ -203,7 +203,7 @@ function transcriptLineWithTime(timeMs) {
   // is the one immediately after it. This check is done before
   // the search is conducted because it is more time efficient
   // to check the next element than to conduct a search.
-  if (isWithinTimeRange(timeMs, nextTranscript)) {
+  if (nextTranscript.isWithinTimeRange(timeMs)) {
     return nextTranscript;
   }
   // This call happens if the user seeks to a certain timestamp instead.
@@ -220,8 +220,8 @@ function findClosestTranscriptLine(timeMs) {
   const transcriptLineElements = document.getElementsByTagName('li');
   let transcriptLinePointer = transcriptLineElements[0];
   while (transcriptLinePointer != null &&
-         !isWithinTimeRange(timeMs, transcriptLinePointer) &&
-         isBeforeTimeMs(timeMs, transcriptLinePointer)) {
+         !transcriptLinePointer.isWithinTimeRange(timeMs) &&
+         transcriptLinePointer.isBeforeTimeMs(timeMs)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
   // This happens when `timeMs` is after the last transcriptLine's ending
