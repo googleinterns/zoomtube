@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {secondsToMilliseconds} from '../timestamps.js';
 import {seekDiscussion} from './view/discussion/discussion.js';
 import TranscriptSeeker from './view/transcript/transcript-seeker.js';
 
-let lastTime;
+let lastSyncedTimeMs;
 
 const TIME_INTERVAL_MS = 100;
 // TODO: Retrieve the transcriptSeeker from the TranscriptArea instead
@@ -26,24 +27,25 @@ const transcriptSeeker = new TranscriptSeeker('event controller');
 
 /**
  * Starts timer which broadcasts current video time every
- * `TIME_INTERVAL` milliseconds.
+ * `TIME_INTERVAL_MS` milliseconds.
  */
 export function startVideoSyncTimer() {
-  window.setInterval(() => {
-    sync(window.videoPlayer.getCurrentTime());
+  setInterval(() => {
+    const currentTimeSeconds = window.videoPlayer.getCurrentTime();
+    sync(secondsToMilliseconds(currentTimeSeconds));
   }, /* ms= */ TIME_INTERVAL_MS);
 }
 
 /**
- * Calls functions that seek transcript, and discussion to `currentTime`
- * (number of seconds since start of video), when the `currentTime`
- * changes from the last time this was called.
+ * Calls functions that seek transcript, and discussion to `currentVideoTimeMs`
+ * if the `currentVideoTimeMs` changed from the last time this method was
+ * called.
  */
-function sync(currentTime) {
-  if (currentTime == lastTime) {
+function sync(currentVideoTimeMs) {
+  if (currentVideoTimeMs == lastSyncedTimeMs) {
     return;
   }
-  lastTime = currentTime;
-  transcriptSeeker.seekTranscript(currentTime);
-  seekDiscussion(currentTime);
+  lastSyncedTimeMs = currentVideoTimeMs;
+  transcriptSeeker.seekTranscript(currentVideoTimeMs);
+  seekDiscussion(currentVideoTimeMs);
 }

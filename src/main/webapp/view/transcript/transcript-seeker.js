@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds} from '../../timestamps.js';
-
-// TODO: Update imports below once pull request #192
-// is merged.
-import {addBold, isWithinCurrentTimeRange, removeBold} from './transcript.js';
-
 /** Seeks to parts of the transcript. */
 export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
@@ -43,11 +37,10 @@ export default class TranscriptSeeker {
    */
   currentTranscriptLine() {
     if (this.#currentTranscriptLine == null) {
-      // TODO: Update the query to find transcript-line elements once
-      // pull request #192 is merged.
       // If the first transcript line doesn't exist, currentTranscript is
       // assigned to be undefined.
-      this.#currentTranscriptLine = document.getElementsByTagName('li')[0];
+      this.#currentTranscriptLine =
+          document.getElementsByTagName('transcript-line')[0];
     }
     return this.#currentTranscriptLine;
   }
@@ -55,30 +48,29 @@ export default class TranscriptSeeker {
   /**
    * Scrolls `transcriptLine` to the top of the transcript area.
    */
-  scrollToTopOfTranscript(transcriptLine) {
+  static scrollToTopOfTranscript(transcriptLine) {
     const transcriptContainer =
         document.getElementById(TranscriptSeeker.#TRANSCRIPT_CONTAINER);
     const ulElementOffset = transcriptLine.parentElement.offsetTop;
     transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
   }
 
-  /** Seeks transcript to `currentTime`, which is given in seconds. */
-  seekTranscript(currentTime) {
+  /** Seeks transcript to `timeMs`. */
+  seekTranscript(timeMs) {
     // TODO: Refactor this method once the helper methods in #215
     // and #228 are merged into master.
-    const currentTimeMs = secondsToMilliseconds(currentTime);
-    if (currentTimeMs < this.currentTranscriptLine().startTimestampMs) {
+    if (timeMs < this.currentTranscriptLine().transcriptLine.startTimestampMs) {
       return;
     }
-    if (isWithinCurrentTimeRange(currentTimeMs)) {
-      addBold(this.currentTranscriptLine());
+    if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
+      this.currentTranscriptLine().addBold();
       return;
     }
-    removeBold(this.currentTranscriptLine());
+    this.currentTranscriptLine().removeBold();
     this.#currentTranscriptLine =
         this.currentTranscriptLine().nextElementSibling;
-    this.scrollToTopOfTranscript(this.currentTranscriptLine());
-    addBold(this.currentTranscriptLine());
+    TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
+    this.currentTranscriptLine().addBold();
     // TODO: Handle the case where the video isn't only playing.
   }
 
