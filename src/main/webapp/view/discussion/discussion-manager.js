@@ -62,8 +62,8 @@ export default class DiscussionManager {
   }
 
   /**
-   * Fetches and returns all comments in `this.#lecture` from the `ENDPOINT`.
-   * This returns a sorted array of all root comments, with replies added to
+   * Fetches all of the lecture comments from the `ENDPOINT`. This
+   * returns a sorted array of all root comments, with replies added to
    * their parents.
    */
   async fetchRootComments() {
@@ -75,32 +75,6 @@ export default class DiscussionManager {
     const json = await request.json();
 
     return this.structureComments(json);
-  }
-
-  /**
-   * Posts `content` reloads the discussion. Adds query
-   * parameters from `params` to the request. Different types of comments
-   * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
-   * The caller should ensure the correct parameters are supplied for the type
-   * of comment being posted.
-   */
-  async postComment(content, params) {
-    const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
-    url.searchParams.append(
-        DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
-    for (const param in params) {
-      // This is recommended by the style guide, but disallowed by linter.
-      /* eslint-disable no-prototype-builtins */
-      if (params.hasOwnProperty(param)) {
-        url.searchParams.append(param, params[param]);
-      }
-      /* eslint-enable no-prototype-builtins */
-    }
-
-    await fetch(url, {
-      method: 'POST',
-      body: content,
-    });
   }
 
   /**
@@ -121,6 +95,33 @@ export default class DiscussionManager {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_PARENT]: parentId,
       [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
+    });
+  }
+
+  /**
+   * Posts `content` to the discussion with the given `params`.  This method is
+   * private and should only be called within `DiscussionManager`.
+   *
+   * <p>Different types of comments require different parameters, such as
+   * `PARAM_TIMESTAMP` or `PARAM_PARENT`. The caller should ensure the correct
+   * parameters are supplied for the type of comment being posted.
+   */
+  async postComment(content, params) {
+    const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
+    url.searchParams.append(
+        DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
+    for (const param in params) {
+      // This is recommended by the style guide, but disallowed by linter.
+      /* eslint-disable no-prototype-builtins */
+      if (params.hasOwnProperty(param)) {
+        url.searchParams.append(param, params[param]);
+      }
+      /* eslint-enable no-prototype-builtins */
+    }
+
+    await fetch(url, {
+      method: 'POST',
+      body: content,
     });
   }
 }

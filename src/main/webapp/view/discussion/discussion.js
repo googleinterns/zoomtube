@@ -118,6 +118,7 @@ function getNearbyDiscussionComments(timestampMs) {
 /**
  * Renders a comment and its replies, with a form to post a new reply.
  */
+// TODO: PR #264 moves this to a new file.
 class DiscussionComment extends HTMLElement {
   #manager;
 
