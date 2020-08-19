@@ -30,8 +30,7 @@ export default class TranscriptSeeker {
   constructor(eventController) {
     console.log(eventController);
     this.#eventController = eventController;
-    // TODO: Create a transcriptSeeker object with the
-    // eventController as the parameter.
+    // TODO: Add method to add listeners.
   }
 
   /**
