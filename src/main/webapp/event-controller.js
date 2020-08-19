@@ -49,15 +49,3 @@ class EventController {
     return true;
   }
 }
-
-const eventController = new EventController();
-eventController.addEventListener(
-    () => console.log('Syncing Discussion \n'), ['sync', 'syncAll']);
-eventController.addEventListener(
-    () => console.log('Syncing Transcript \n'), ['sync', 'syncAll']);
-eventController.addEventListener(
-    () => console.log('Syncing Video \n'), ['syncAll']);
-
-eventController.broadcastEvent('sync');
-console.log('\n');
-eventController.broadcastEvent('syncAll');
