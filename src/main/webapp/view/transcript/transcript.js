@@ -66,9 +66,6 @@ export function deleteTranscript() {
 
 /** Seeks transcript to `currentTime`, which is given in seconds. */
 export function seekTranscript(currentTime) {
-  if (currentTranscriptLine == null) {
-    currentTranscriptLine = document.getElementsByTagName('transcript-line')[0];
-  }
   const currentTimeMs = secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
