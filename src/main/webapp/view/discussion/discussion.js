@@ -19,7 +19,6 @@ const ENDPOINT_DISCUSSION = '/discussion';
 const PARAM_LECTURE = 'lecture';
 const PARAM_PARENT = 'parent';
 const PARAM_TIMESTAMP = 'timestamp';
-
 const PARAM_TYPE = 'type';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
@@ -237,8 +236,7 @@ class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (comment.type !== COMMENT_TYPE_REPLY) {
       // Don't show timestamp on replies.
-      timestampPrefix =
-          `${window.timestampToString(comment.timestampMs.value)} - `;
+      timestampPrefix = `${timestampToString(comment.timestampMs.value)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }

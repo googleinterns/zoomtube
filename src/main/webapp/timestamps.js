@@ -38,3 +38,13 @@ export function timestampToString(timestampMs) {
 export function secondsToMilliseconds(seconds) {
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
 }
+
+/**
+ * Returns a time range string in the form of
+ * `startTimestampMs` - `endTimestampMs`.
+ */
+export function timestampRangeToString(startTimestampMs, endTimestampMs) {
+  const startTimestamp = window.timestampToString(startTimestampMs);
+  const endTimestamp = window.timestampToString(endTimestampMs);
+  return `${startTimestamp} - ${endTimestamp}`;
+}
