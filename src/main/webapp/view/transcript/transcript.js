@@ -100,22 +100,7 @@ function scrollToTopOfTranscript(transcriptLineElement) {
       transcriptLineElement.offsetTop - ulElementOffset;
 }
 
-/**
- * Creates a p tag to store the given {@code text} inside the
- * {@code container}.
- *
- * <p>Adds classes the the p tag if {@code classList} is provided.
- */
-function appendParagraphToContainer(text, container, classes = []) {
-  const pTag = document.createElement('p');
-  pTag.innerText = text;
-  container.appendChild(pTag);
 
-  if (classes.length == 0) {
-    return;
-  }
-  pTag.classList.add(...classes);
-}
 
 /**
  * Creates a transcript line element containing the text,
@@ -131,14 +116,14 @@ class TranscriptLineElement extends HTMLElement {
    */
   constructor(timestampRange, transcriptLine) {
     super();
-    const contentDivElement = this.createContentDivElement();
-    appendParagraphToContainer(
+    const contentDivElement = TranscriptLineElement.createContentDivElement();
+    TranscriptLineElement.appendParagraphToContainer(
         timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
-    appendParagraphToContainer(
+        TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
     this.classList.add('align-self-center', 'mb-2');
     this.appendChild(contentDivElement);
-    const hrElement = this.createHrElement();
+    const hrElement = TranscriptLineElement.createHrElement();
     this.appendChild(hrElement);
     this.transcriptLine = transcriptLine;
   }
@@ -162,7 +147,7 @@ class TranscriptLineElement extends HTMLElement {
    * Creates a stylized div element that will be used to store
    * the time range and text in a `TranscriptLineElement`.
    */
-  createContentDivElement() {
+  static createContentDivElement() {
     const contentDivElement = document.createElement('div');
     contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
     return contentDivElement;
@@ -172,10 +157,27 @@ class TranscriptLineElement extends HTMLElement {
    * Creates a stylized hr element that will be used to create a
    * `TranscriptLineElement`.
    */
-  createHrElement() {
+  static createHrElement() {
     const hrElement = document.createElement('hr');
     hrElement.classList.add('my-1', 'align-middle', 'mr-5');
     return hrElement;
+  }
+
+  /**
+   * Creates a p tag to store the given `text` inside the
+   * `container`.
+   *
+   * <p>Adds classes the the p tag if `classList` is provided.
+   */
+  static appendParagraphToContainer(text, container, classes = []) {
+    const pTag = document.createElement('p');
+    pTag.innerText = text;
+    container.appendChild(pTag);
+
+    if (classes.length == 0) {
+      return;
+    }
+    pTag.classList.add(...classes);
   }
 
   /**
