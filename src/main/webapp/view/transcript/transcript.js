@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {createTimestampRange, secondsToMilliseconds} from '../../timestamps.js';
+import {secondsToMilliseconds, timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
@@ -53,7 +53,8 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   const ulElement = document.createElement('ul');
   ulElement.class = 'mx-auto';
   transcriptContainer.appendChild(ulElement);
-
+  console.log(transcriptLines);
+  console.log(transcriptLines[0]);
   transcriptLines.forEach((transcriptLine) => {
     ulElement.appendChild(
         TranscriptLineElement.createTranscriptLineElement(transcriptLine));
@@ -69,6 +70,9 @@ export function deleteTranscript() {
 
 /** Seeks transcript to `currentTime`, which is given in seconds. */
 export function seekTranscript(currentTime) {
+  if (currentTranscriptLine == null) {
+    currentTranscriptLine = document.getElementsByTagName('transcript-line')[0];
+  }
   const currentTimeMs = secondsToMilliseconds(currentTime);
   if (currentTimeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
@@ -95,27 +99,55 @@ function scrollToTopOfTranscript(transcriptLineElement) {
   transcriptContainer.scrollTop =
       transcriptLineElement.offsetTop - ulElementOffset;
 }
+/**
+ * Creates a p tag to store the given {@code text} inside the
+ * {@code container}.
+ *
+ * <p>Adds classes the the p tag if {@code classList} is provided.
+ */
+function appendParagraphToContainer(text, container, classes = []) {
+  const pTag = document.createElement('p');
+  pTag.innerText = text;
+  container.appendChild(pTag);
 
+  if (classes.length == 0) {
+    return;
+  }
+  pTag.classList.add(...classes);
+}
 /**
  * Creates a transcript line element containing the text,
  * start time, and end time.
  */
 class TranscriptLineElement extends HTMLElement {
-  /**
-   * Creates a custom HTML element representing `transcriptLine`.
-   *
-   * @param template The template that will be cloned to create the
-   *     transcript line.
-   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
-   *     whose `attributes` should be used.
-   */
-  constructor(template, transcriptLine) {
+  // /**
+  //  * Creates a custom HTML element representing `transcriptLine`.
+  //  *
+  //  * @param template The template that will be cloned to create the
+  //  *     transcript line.
+  //  * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
+  //  *     whose `attributes` should be used.
+  //  */
+  // constructor(template, transcriptLine) {
+  //   super();
+  //   this.attachShadow({mode: 'open'});
+  //   this.shadowRoot.appendChild(template.content.cloneNode(true));
+  //   this.transcriptLine = transcriptLine;
+  // }
+  constructor(timestampRange, transcriptLine) {
     super();
-    this.attachShadow({mode: 'open'});
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    const contentDivElement = this.createContentDiv();
+    appendParagraphToContainer(
+        timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
+    appendParagraphToContainer(
+        transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+
+    this.classList.add('align-self-center', 'mb-2');
+    this.appendChild(contentDivElement);
+    const hrElement = this.createHrElement();
+    this.appendChild(hrElement);
     this.transcriptLine = transcriptLine;
   }
-
   /**
    * Creates a custom HTML element representing `transcriptLine` with
    * the text and time range appended to the element.
@@ -127,16 +159,23 @@ class TranscriptLineElement extends HTMLElement {
    *     whose `attributes` should be used.
    */
   static createTranscriptLineElement(transcriptLine) {
-    const template = document.getElementById(TRANSCRIPT_TEMPLATE);
-    const transcriptLineElement =
-        new TranscriptLineElement(template, transcriptLine);
-    const timestampRange = createTimestampRange(
+    const timestampRange = timestampRangeToString(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-    transcriptLineElement.updateTemplateSlot(
-        TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);
-    transcriptLineElement.updateTemplateSlot(
-        TRANSCRIPT_SLOT_CONTENT, transcriptLine.content);
+    const transcriptLineElement =
+        new TranscriptLineElement(timestampRange, transcriptLine);
     return transcriptLineElement;
+  }
+  
+  createContentDiv() {
+    const contentDivElement = document.createElement('div');
+    contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
+    return contentDivElement;
+  }
+
+  createHrElement() {
+    const hrElement = document.createElement('hr');
+    hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+    return hrElement;
   }
 
   /**
