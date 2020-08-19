@@ -179,10 +179,14 @@ function scrollToTopOfTranscript(transcriptLine) {
  */
 function transcriptLineWithTime(timeMs) {
   const nextTranscript = currentTranscriptLine.nextElementSibling;
-  // Video is playing normally.
+  // If the video is playing normally, the next transcript line
+  // is the one immediately after it. This check is done before
+  // the search is conducted because it is more time efficient
+  // to check the next element than to conduct a search.
   if (isWithinTimeRange(timeMs, nextTranscript)) {
     return nextTranscript;
   }
+  // This call happens if the user seeks to a certain timestamp instead.
   return findClosestTranscriptLine(timeMs);
 }
 
