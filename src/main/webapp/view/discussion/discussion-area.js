@@ -24,7 +24,6 @@ export const ELEMENT_DISCUSSION =
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
-  static #TIME_TOLERANCE_MS = 10000;  // 10 seconds.
   #lecture;
   #manager;
   #currentTimeMs;
@@ -55,38 +54,51 @@ export default class DiscussionArea {
   }
 
   /**
-   * Returns an array of the `DiscussionComment`s with timestamps near
-   * `timestampMs`. This returns an empty array if no elements are nearby.
-   *
-   * <p>A comment is nearby if it is within `TIME_TOLERANCE_MS`.
+   * Returns an array of the `DiscussionComment`s with the nearest time to
+   * `timeMs`. This typically returns an array with a single element, but
+   * if there are multiple comments the same distance away, they will all be
+   * returned. This can also return an empty array if there are no comments.
    */
-  getNearbyDiscussionComments(timestampMs) {
-    const nearby = [];
-    // currentRootCommentElements is already sorted by timestamp.
+  getNearestDiscussionComments(timeMs) {
+    let nearest = [];
+    let nearestDistance = Infinity;
+    // #currentRootCommentElements is sorted by timestamp.
     for (const element of this.#currentRootCommentElements) {
-      const commentTime = element.comment.timestampMs.value;
-      if (commentTime < timestampMs - DiscussionArea.#TIME_TOLERANCE_MS) {
-        // Before the start of the range, continue to next.
+      const commentTimeMs = element.comment.timestampMs.value;
+      const distance = Math.abs(timeMs - commentTimeMs);
+      if (nearest.length == 0) {
+        nearest = [element];
+        nearestDistance = distance;
         continue;
       }
-      if (commentTime > timestampMs + DiscussionArea.#TIME_TOLERANCE_MS) {
-        // Outside of range, there will be no more.
-        return nearby;
+
+      if (distance < nearestDistance) {
+        nearest = [element];
+        nearestDistance = distance;
+        continue;
       }
-      nearby.push(element);
+
+      if (distance == nearestDistance) {
+        nearest.push(element);
+        continue;
+      }
+
+      if (distance > nearestDistance && commentTimeMs > timeMs) {
+        break;
+      }
     }
-    return nearby;
+    return nearest;
   }
 
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
         timestampToString(timeMs);
-    const nearbyComments = this.getNearbyDiscussionComments(timeMs);
-    if (nearbyComments.length == 0) {
+    const nearestComments = this.getNearestDiscussionComments(timeMs);
+    if (nearestComments.length == 0) {
       return;
     }
-    nearbyComments[0].scrollToTopOfDiscussion();
+    nearestComments[0].scrollToTopOfDiscussion();
   }
 
   postNewComment() {
