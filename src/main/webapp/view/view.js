@@ -40,7 +40,7 @@ async function initialize() {
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
   const transcript = new TranscriptArea('event controller');
-  transcript.loadTranscript();
+  await transcript.loadTranscript();
 }
 
 /**
