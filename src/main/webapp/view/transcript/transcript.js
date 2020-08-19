@@ -112,6 +112,8 @@ export function deleteTranscript() {
  * Bolds the text in `transcriptLineLiElement` if it is not already
  * bolded.
  */
+// TODO: Move this function to the transcriptLineElement in
+// pull request #192.
 export function addBold(transcriptLineLiElement) {
   if (isBolded(transcriptLineLiElement)) {
     return;
@@ -124,6 +126,8 @@ export function addBold(transcriptLineLiElement) {
  * Removes bold from the text in `transcriptLineLiElement` if it
  * is currently bolded.
  */
+// TODO: Move this function to the transcriptLineElement in
+// pull request #192.
 export function removeBold(transcriptLineLiElement) {
   if (!isBolded(transcriptLineLiElement)) {
     return;
@@ -133,6 +137,8 @@ export function removeBold(transcriptLineLiElement) {
 }
 
 /** Returns true if`transcriptLineLiElement` is bolded. */
+// TODO: Move this function to the transcriptLineElement in
+// pull request #192.
 function isBolded(transcriptLineLiElement) {
   return transcriptLineLiElement.classList.contains(BOLD_FONT_WEIGHT);
 }
@@ -141,6 +147,8 @@ function isBolded(transcriptLineLiElement) {
  * Returns true if `currentTimeMs` is within the time range for
  * the current transcript line.
  */
+// TODO: Move this function to the transcriptLineElement in
+// pull request #192.
 export function isWithinCurrentTimeRange(currentTimeMs) {
   return currentTranscriptLine.startTimestampMs <= currentTimeMs &&
       currentTimeMs <= currentTranscriptLine.endTimestampMs;
