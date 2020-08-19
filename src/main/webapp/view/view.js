@@ -20,7 +20,8 @@ const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
 
-const video = new Video();
+// TODO: Remove global scope and add to view object.
+window.video = new Video();
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
@@ -37,7 +38,7 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  video.loadVideoApi();
+  window.video.loadVideoApi();
   intializeDiscussion();
   loadTranscript();
 }
