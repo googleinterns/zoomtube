@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {secondsToMilliseconds} from '../timestamps.js';
 import {seekDiscussion} from './view/discussion/discussion.js';
 import {seekTranscript} from './view/transcript/transcript.js';
 
@@ -24,9 +25,9 @@ const TIME_INTERVAL_MS = 100;
  * `TIME_INTERVAL_MS` milliseconds.
  */
 export function startVideoSyncTimer() {
-  window.setInterval(() => {
+  setInterval(() => {
     const currentTimeSeconds = window.videoPlayer.getCurrentTime();
-    sync(window.secondsToMilliseconds(currentTimeSeconds));
+    sync(secondsToMilliseconds(currentTimeSeconds));
   }, /* ms= */ TIME_INTERVAL_MS);
 }
 
