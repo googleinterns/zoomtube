@@ -157,12 +157,12 @@ function isBolded(transcriptLineLiElement) {
 }
 
 /**
- * Returns true if `currentTimeMs` is within the time range for
+ * Returns true if `timeMs` is within the time range of
  * 'transcriptLine'
  */
-function isWithinTimeRange(currentTimeMs, transcriptLine) {
-  return transcriptLine.startTimestampMs <= currentTimeMs &&
-      currentTimeMs <= transcriptLine.endTimestampMs;
+function isWithinTimeRange(timeMs, transcriptLine) {
+  return transcriptLine.startTimestampMs <= timeMs &&
+  timeMs <= transcriptLine.endTimestampMs;
 }
 
 /**
@@ -175,15 +175,15 @@ function scrollToTopOfTranscript(transcriptLine) {
 }
 
 /**
- * Returns the next transcript line based on `currentTimeMs`.
+ * Returns the next transcript line based on `timeMs`.
  */
-function getNextTranscriptLine(currentTimeMs) {
+function getNextTranscriptLine(timeMs) {
   const nextTranscript = currentTranscriptLine.nextElementSibling;
   // Video is playing normally.
-  if (isWithinTimeRange(currentTimeMs, nextTranscript)) {
+  if (isWithinTimeRange(timeMs, nextTranscript)) {
     return nextTranscript;
   }
-  return findClosestTranscriptLine(currentTimeMs);
+  return findClosestTranscriptLine(timeMs);
 }
 
 /**
