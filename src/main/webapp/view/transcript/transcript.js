@@ -204,6 +204,9 @@ function findClosestTranscriptLine(timeMs) {
          isBeforeTimeMs(timeMs, transcriptLinePointer)) {
     transcriptLinePointer = transcriptLinePointer.nextElementSibling;
   }
+  // This happens when timeMs is after the last transcriptLine's ending
+  // timestamp. TranscriptLinePointer is updated to be the last transcriptLine
+  // because it is the closest line that the transcript can scroll to.
   if (transcriptLinePointer === null) {
     transcriptLinePointer =
         transcriptLineElements[transcriptLineElements.length - 1];
