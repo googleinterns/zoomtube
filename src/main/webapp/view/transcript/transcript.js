@@ -179,7 +179,7 @@ class TranscriptLineElement extends HTMLElement {
 
   /**
    * Returns true if `timestampMs` is within the time range of
-   * this transcript line.
+   * this transcript line element.
    */
   isWithinTimeRange(timestampMs) {
     return this.transcriptLine.startTimestampMs <= timestampMs &&
