@@ -97,12 +97,17 @@ export default class DiscussionComment extends HTMLElement {
       $(replyForm).collapse('hide');
     };
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_POST_REPLY)
-        .onclick = () => {
-      const textarea = this.shadowRoot.querySelector(
-          DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
-      this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
-    };
+        .onclick = this.postReplyClicked.bind(this);
     /* eslint-enable indent */
+  }
+
+  /**
+   * Posts the content of the reply textarea as a reply to this comment,
+   * and reloads the discussion area.
+   */
+  postReplyClicked() {
+    const textarea = this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
+    this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
   }
 
   /**
