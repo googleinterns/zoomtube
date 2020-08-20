@@ -66,6 +66,10 @@ discussion-comment {
 
 /* Transcript */
 
+#scroll-banner {
+  visibility: hidden;
+}
+
 #transcript-container {
   height: calc(100% - 390px);
 }
