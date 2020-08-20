@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-console.log('LOADED');
+window.iconsOnClick = iconsOnClick;
 
-window.a = a;
-
-function a() {
-  const videoTimeStamp = window.videoPLayer.getCurrentTime();
+function iconOnClick(iconType) {
+  const videoTimeStamp = window.videoPlayer.getCurrentTime();
   const url = new URL('/icon-feedback', window.location.origin);
   url.searchParams.append('lectureId', window.LECTURE_ID);
   url.searchParams.append('videoTimeStamp', videoTimeStamp);
   url.searchParams.append('iconType', iconType);
-  fetch(url, {method: 'POST'});
+  console.log(url);
+  // fetch(url, {method: 'POST'});
 }
