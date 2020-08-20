@@ -12,16 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Manages storing eventListeners and broadcasting events. */
+/**
+ * Manages storing eventListeners and broadcasting events.
+ * Supports adding eventListeners by registering callbacks to an event name.
+ * Supports broadcasting events by executing callbacks associated with an event
+ * name.
+ */
 export default class EventController {
   constructor() {
     this.eventListeners = new Map();
-    this.addEventListener = this.addEventListener.bind(this);
-    this.broadcastEvent = this.broadcastEvent.bind(this);
   }
 
   /** Adds `callBack` to `eventNames` stored in `eventListeners`. */
-  addEventListener(callBack, eventNames) {
+  addEventListener(callBack, ...eventNames) {
     for (const eventName of eventNames) {
       let callBacks = [];
       if (this.eventListeners.has(eventName)) {
@@ -34,8 +37,8 @@ export default class EventController {
 
   /**
    *  Calls all callbacks associated with `eventName` and
-   *  passes `params` to callback. Returns false if there
-   *  were no callbacks, true otherwise.
+   *  passes `params` to callback. Returns `false` if there
+   *  were no callbacks, `true` otherwise.
    */
   broadcastEvent(eventName, ...params) {
     if (!this.eventListeners.has(eventName)) {
