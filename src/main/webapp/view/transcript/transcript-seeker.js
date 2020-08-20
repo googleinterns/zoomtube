@@ -46,7 +46,7 @@ export default class TranscriptSeeker {
   }
 
   /**
-   * Scrolls the transcript area so that `transcriptLine` is on top.
+   * Scrolls the transcript area so that `transcriptLine` is at the top.
    */
   static scrollToTopOfTranscript(transcriptLine) {
     const transcriptContainer =
