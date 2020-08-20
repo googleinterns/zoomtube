@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const ENDPOINT_FEEDBACK = '/icon-feedback';
+
+const PARAM_LECTURE_ID = 'lectureId';
+const PARAM_TIMESTAMP = 'timestamp';
+const PARAM_ICON_TYPE = 'iconType';
+
 window.iconOnClick = iconOnClick;
 
 /**
@@ -20,9 +26,9 @@ window.iconOnClick = iconOnClick;
  */
 function iconOnClick(iconType) {
   const videoTimeStamp = window.videoPlayer.getCurrentTime();
-  const url = new URL('/icon-feedback', window.location.origin);
-  url.searchParams.append('lectureId', window.LECTURE_ID);
-  url.searchParams.append('videoTimeStamp', videoTimeStamp);
-  url.searchParams.append('iconType', iconType);
+  const url = new URL(ENDPOINT_FEEDBACK, window.location.origin);
+  url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
+  url.searchParams.append(PARAM_TIMESTAMP, videoTimeStamp);
+  url.searchParams.append(PARAM_ICON_TYPE, iconType);
   fetch(url, {method: 'POST'});
 }
