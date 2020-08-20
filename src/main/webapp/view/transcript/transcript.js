@@ -35,6 +35,9 @@ export function deleteTranscript() {
 
 /** Seeks transcript to `timeMs`. */
 export function seekTranscript(timeMs) {
+  if (currentTranscriptLine == null) {
+    currentTranscriptLine = document.getElementsByTagName('transcript-line')[0];
+  }
   if (timeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
   }

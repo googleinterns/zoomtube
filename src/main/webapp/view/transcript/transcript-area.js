@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {TranscriptLineElement} from '/transcript.js';
+import {TranscriptLineElement} from './transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
 export default class TranscriptArea {
@@ -31,7 +31,7 @@ export default class TranscriptArea {
    *     that will be passed into a seekTranscript object.
    */
   constructor(eventController) {
-    console.log(eventController);
+    this.#eventController = eventController;
     // TODO: Create a transcriptSeeker object with the
     // eventController as the parameter.
   }
@@ -71,7 +71,8 @@ export default class TranscriptArea {
     ulElement.class = 'mx-auto';
     transcriptContainer.appendChild(ulElement);
     transcriptLines.forEach((transcriptLine) => {
-      ulElement.appendChild(TranscriptLineElement.createTranscriptLineElement(transcriptLine));
+      ulElement.appendChild(
+          TranscriptLineElement.createTranscriptLineElement(transcriptLine));
     });
   }
 
