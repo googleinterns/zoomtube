@@ -16,7 +16,7 @@ window.iconOnClick = iconOnClick;
 
 /**
  * Sends `iconType`, video time stamp of when icon was clicked,
- * and lecture ID to be stored in database.  
+ * and lecture ID to be stored in database.
  */
 function iconOnClick(iconType) {
   const videoTimeStamp = window.videoPlayer.getCurrentTime();
