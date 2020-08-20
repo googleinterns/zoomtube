@@ -77,5 +77,5 @@ discussion-comment {
 
 #transcript-lines-container ul {
   list-style-type: none;
-  padding-bottom: calc(100vh - 110%);
+  padding-bottom: calc(100vh - 620px);
 }
