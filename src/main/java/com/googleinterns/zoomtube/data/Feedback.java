@@ -18,7 +18,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
-/** Contains data related to feedback left through icons. */
+/** Contains data related to feedback left by clicking icons. */
 @GenerateTypeAdapter
 @AutoValue
 public abstract class Feedback {
@@ -28,10 +28,17 @@ public abstract class Feedback {
     TOO_FAST,
     TOO_SLOW,
   }
-
+  
+  /** Returns feedback's datastore entity key. */
   public abstract Key feedbackKey();
+
+  /** Returns lucture entity key associated with feedback. */
   public abstract Key lectureKey();
-  public abstract Long timestampSeconds();
+
+  /** Returns timestamps in milliseconds of when feedback icon was clicked. */
+  public abstract Long timestampMs();
+
+  /** Returns type of Feedback. */
   public abstract Type type();
 
   public static Builder builder() {
@@ -42,9 +49,9 @@ public abstract class Feedback {
   public abstract static class Builder {
     public abstract Builder setFeedbackKey(Key feedbackKey);
     public abstract Builder setLectureKey(Key lectureKey);
-    public abstract Builder setTimestampSeconds(long timestampSeconds);
+    public abstract Builder setTimestampMs(Long timestampMs);
     public abstract Builder setType(Type type);
 
-    public abstract Comment build();
+    public abstract Feedback build();
   }
 }
