@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {transcriptSeeker} from '../../synchronizer.js';
 import {timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
@@ -48,6 +49,7 @@ function addMultipleTranscriptLinesToDom(transcriptLines) {
   }
   const ulElement = document.createElement('ul');
   ulElement.class = 'mx-auto';
+  ulElement.onscroll = transcriptSeeker.stopAutoScroll();
   transcriptContainer.appendChild(ulElement);
 
   transcriptLines.forEach((transcriptLine) => {

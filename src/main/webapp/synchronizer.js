@@ -23,7 +23,7 @@ const TIME_INTERVAL_MS = 100;
 // once #255 is merged into master.
 // TODO: Move transcriptSeeker to a different class once the eventListeners
 // are added.
-const transcriptSeeker = new TranscriptSeeker('event controller');
+export const transcriptSeeker = new TranscriptSeeker('event controller');
 
 /**
  * Starts timer which broadcasts current video time every

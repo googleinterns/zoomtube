@@ -18,6 +18,7 @@ export default class TranscriptSeeker {
 
   #currentTranscriptLine;
   #eventController;
+  #autoScrollIsActive;
 
   /**
    * Creates an instance of `TranscriptSeeker` for loading
@@ -69,7 +70,9 @@ export default class TranscriptSeeker {
     this.currentTranscriptLine().removeBold();
     this.#currentTranscriptLine =
         this.currentTranscriptLine().nextElementSibling;
-    TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
+    if (this.#autoScrollIsActive) {
+      TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
+    }
     this.currentTranscriptLine().addBold();
     // TODO: Handle the case where the video isn't only playing.
   }
@@ -77,4 +80,9 @@ export default class TranscriptSeeker {
   // into this class once #215 is merged.
 
   // TODO: Add a method that adds the eventListeners.
+
+  // TODO: Add method header
+  stopAutoScroll() {
+    this.#autoScrollIsActive = false;
+  }
 }
