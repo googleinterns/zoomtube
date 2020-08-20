@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {intializeDiscussion} from '../view/discussion/discussion.js';
-import {loadTranscript} from './transcript/transcript.js';
+import TranscriptArea from './transcript/transcript-area.js';
 import {loadVideoApi} from './video/video.js';
 
 const ENDPOINT_LECTURE = '/lecture';
@@ -37,7 +37,10 @@ async function initialize() {
   setLectureName();
   loadVideoApi();
   intializeDiscussion();
-  loadTranscript();
+  // TODO: Move TranscriptArea initialization outside of initialize()
+  // and replace string parameter with a controller object.
+  const transcript = new TranscriptArea('event controller');
+  await transcript.loadTranscript();
 }
 
 /**
