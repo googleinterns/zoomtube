@@ -47,7 +47,7 @@ public final class FeedbackUtilTest {
   @Test
   public void createFeedback_shouldReturnFeedbackFromEntity() throws IOException {
     Entity feedbackEntity = new Entity(FeedbackUtil.KIND);
-    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/ 123);
+    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/123);
     feedbackEntity.setProperty(FeedbackUtil.LECTURE, lectureKey);
     feedbackEntity.setProperty(FeedbackUtil.TIMESTAMP_MS, (long) 456);
     feedbackEntity.setProperty(FeedbackUtil.TYPE, Feedback.Type.GOOD.toString());
@@ -61,7 +61,7 @@ public final class FeedbackUtilTest {
 
   @Test
   public void createEntity_shouldReturnEntityWithInputs() throws IOException {
-    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/ 123);
+    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/123);
 
     Entity result = FeedbackUtil.createEntity(lectureKey, (long) 456, Feedback.Type.GOOD);
 
