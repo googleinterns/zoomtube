@@ -20,8 +20,8 @@ export default class TranscriptSeeker {
   #eventController;
 
   /**
-   * Creates an instance of `TranscriptSeeker` for loading
-   * transcript lines onto the DOM.
+   * Creates an instance of `TranscriptSeeker` for seeking
+   * to a line in the transcript.
    *
    * @param eventController An event controller instance that
    *    will help relay the current time to other objects.
@@ -46,7 +46,7 @@ export default class TranscriptSeeker {
   }
 
   /**
-   * Scrolls `transcriptLine` to the top of the transcript area.
+   * Scrolls the transcript area so that `transcriptLine` is on top.
    */
   static scrollToTopOfTranscript(transcriptLine) {
     const transcriptContainer =
