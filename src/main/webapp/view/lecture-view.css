@@ -80,14 +80,16 @@ discussion-comment {
   list-style-type: none;
 }
 
-#video-icons {
-  display: flex;
-  flex-direction: row;
-}
+/* Feedback Icons */
 
 #icons {
+  align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+}
+
+#video-icons {
+  display: flex;
+  flex-direction: row;
 }

@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-window.iconsOnClick = iconsOnClick;
+window.iconOnClick = iconOnClick;
 
+/**
+ * Sends `iconType`, video time stamp of when icon was clicked,
+ * and lecture ID to be stored in database.  
+ */
 function iconOnClick(iconType) {
   const videoTimeStamp = window.videoPlayer.getCurrentTime();
   const url = new URL('/icon-feedback', window.location.origin);
   url.searchParams.append('lectureId', window.LECTURE_ID);
   url.searchParams.append('videoTimeStamp', videoTimeStamp);
   url.searchParams.append('iconType', iconType);
-  console.log(url);
-  // fetch(url, {method: 'POST'});
+  fetch(url, {method: 'POST'});
 }
