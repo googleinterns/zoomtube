@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // TODO: Update this import statement once TranscriptLineElement is in master.
-import {appendTextToList} from '/transcript.js';
+import {appendTextToList} from './transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
 export default class TranscriptArea {
