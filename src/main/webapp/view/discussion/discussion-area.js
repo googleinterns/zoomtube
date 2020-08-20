@@ -89,21 +89,31 @@ export default class DiscussionArea {
     return nearest;
   }
 
+  /**
+   * Removes any existing highlights on comments.
+   */
+  unhightlightNearestComments() {
+    this.#nearestComments.forEach((comment) => comment.unhighlight());
+  }
+
+  /**
+   * Highlights nearest comments.
+   */
+  highlightNearestComments() {
+    this.#nearestComments.forEach((comment) => comment.highlight());
+  }
+
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
         timestampToString(timeMs);
 
-    // Remove any existing highlights.
-    this.#nearestComments.forEach((comment) => comment.unhighlight());
-
-    // Scroll to and highlight new nearest comments.
+    this.unhightlightNearestComments();
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
-    if (this.#nearestComments.length == 0) {
-      return;
+    if (this.#nearestComments.length > 0) {
+      this.#nearestComments[0].scrollToTopOfDiscussion();
     }
-    this.#nearestComments[0].scrollToTopOfDiscussion();
-    this.#nearestComments.forEach((comment) => comment.highlight());
+    this.highlightNearestComments();
   }
 
   postNewComment() {
