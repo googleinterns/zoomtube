@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO: Update export for transcriptSeeker. When the transcriptArea and
+// transcriptSeeker pull requests get merged in, transcriptArea will have
+// an import for transcript-seeker.js instead. 
 import {transcriptSeeker} from '../../synchronizer.js';
 import {timestampRangeToString} from '../../timestamps.js';
 
@@ -42,6 +45,7 @@ export function loadTranscript() {
 /**
  * Adds `transcriptLines` to the DOM as list elements.
  */
+// TODO: Move this function to transcriptArea once that pull request is merged.
 function addMultipleTranscriptLinesToDom(transcriptLines) {
   const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
   if (transcriptContainer.firstChild) {

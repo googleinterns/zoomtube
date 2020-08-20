@@ -81,7 +81,7 @@ export default class TranscriptSeeker {
 
   // TODO: Add a method that adds the eventListeners.
 
-  // TODO: Add method header
+  /** De-activates the automatic scrolling of the transcript. */
   stopAutoScroll() {
     this.#autoScrollIsActive = false;
   }
