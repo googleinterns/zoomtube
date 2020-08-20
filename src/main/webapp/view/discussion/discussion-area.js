@@ -34,7 +34,7 @@ export default class DiscussionArea {
   #currentRootCommentElements;
 
   /**
-   * Creates a DiscussionArea for a `lecture`.
+   * Creates a `DiscussionArea` for a `lecture`.
    */
   constructor(lecture) {
     this.#lecture = lecture;
@@ -77,11 +77,11 @@ export default class DiscussionArea {
     // currentRootCommentElements is already sorted by timestamp.
     for (const element of this.#currentRootCommentElements) {
       const commentTime = element.comment.timestampMs.value;
-      if (commentTime < timestampMs - DiscussionArea.#TIME_TOLERANCE_MS) {
+      if (commentTime < (timestampMs - DiscussionArea.#TIME_TOLERANCE_MS)) {
         // Before the start of the range, continue to next.
         continue;
       }
-      if (commentTime > timestampMs + DiscussionArea.#TIME_TOLERANCE_MS) {
+      if (commentTime > (timestampMs + DiscussionArea.#TIME_TOLERANCE_MS)) {
         // Outside of range, there will be no more.
         return nearby;
       }
