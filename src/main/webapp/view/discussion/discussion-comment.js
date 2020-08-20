@@ -106,7 +106,8 @@ export default class DiscussionComment extends HTMLElement {
    * and reloads the discussion area.
    */
   postReplyClicked() {
-    const textarea = this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
+    const textarea = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
     this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
   }
 
