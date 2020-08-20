@@ -14,7 +14,7 @@
 
 // TODO: Update export for transcriptSeeker. When the transcriptArea and
 // transcriptSeeker pull requests get merged in, transcriptArea will have
-// an import for transcript-seeker.js instead. 
+// an import for transcript-seeker.js instead.
 import {transcriptSeeker} from '../../synchronizer.js';
 import {timestampRangeToString} from '../../timestamps.js';
 
