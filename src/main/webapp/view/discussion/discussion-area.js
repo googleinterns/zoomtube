@@ -34,7 +34,7 @@ export default class DiscussionArea {
   #currentRootCommentElements;
 
   /**
-   * @param lecture The lecture that this discussion is about.
+   * Creates a DiscussionArea for a `lecture`.
    */
   constructor(lecture) {
     this.#lecture = lecture;
