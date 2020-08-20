@@ -59,7 +59,11 @@
   <link rel="stylesheet" href="/view/lecture-view.css" />
   <div class="comment">
     <div>
-      <h1 class="comment-header"><slot name="header"></slot>&nbsp;</h1>
+      <h1 class="comment-header">
+        <slot name="header"></slot>
+        &nbsp;
+        <slot name="type-tag"></slot>
+      </h1>
       <div class="comment-content">
         <div><slot name="content"></slot></div>
         <div class="actions-bar">
