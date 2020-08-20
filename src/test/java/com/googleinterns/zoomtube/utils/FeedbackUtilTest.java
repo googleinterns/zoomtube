@@ -47,7 +47,7 @@ public final class FeedbackUtilTest {
   @Test
   public void createFeedback_shouldReturnFeedbackFromEntity() throws IOException {
     Entity feedbackEntity = new Entity(FeedbackUtil.KIND);
-    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/(long) 123);
+    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/ 123);
     feedbackEntity.setProperty(FeedbackUtil.LECTURE, lectureKey);
     feedbackEntity.setProperty(FeedbackUtil.TIMESTAMP_MS, (long) 456);
     feedbackEntity.setProperty(FeedbackUtil.TYPE, Feedback.Type.GOOD.toString());
@@ -55,18 +55,18 @@ public final class FeedbackUtilTest {
     Feedback result = FeedbackUtil.createFeedback(feedbackEntity);
 
     assertThat(result.lectureKey()).isEqualTo(lectureKey);
-    assertThat(result.timestampMs()).isEqualTo((long) 456);
+    assertThat(result.timestampMs()).isEqualTo(456);
     assertThat(result.type()).isEqualTo(Feedback.Type.GOOD);
   }
 
   @Test
   public void createEntity_shouldReturnEntityWithInputs() throws IOException {
-    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/(long) 123);
+    Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/ 123);
 
     Entity result = FeedbackUtil.createEntity(lectureKey, (long) 456, Feedback.Type.GOOD);
 
     assertThat(result.getProperty(FeedbackUtil.LECTURE)).isEqualTo(lectureKey);
-    assertThat(result.getProperty(FeedbackUtil.TIMESTAMP_MS)).isEqualTo((long) 456);
+    assertThat(result.getProperty(FeedbackUtil.TIMESTAMP_MS)).isEqualTo(456);
     assertThat(result.getProperty(FeedbackUtil.TYPE)).isEqualTo(Feedback.Type.GOOD.toString());
   }
 }
