@@ -139,11 +139,11 @@ export default class DiscussionComment extends HTMLElement {
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
    */
   setTypeTag(type) {
-    const span = document.createElement('span');
-    span.innerText = COMMENT_TYPES[type].name;
-    span.classList.add(...COMMENT_TYPES[type].badgeStyles);
-    span.slot = DiscussionComment.#SLOT_TYPE_TAG;
-    this.appendChild(span);
+    const typePill = document.createElement('span');
+    typePill.innerText = COMMENT_TYPES[type].name;
+    typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
+    typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
+    this.appendChild(typePill);
   }
 
 
