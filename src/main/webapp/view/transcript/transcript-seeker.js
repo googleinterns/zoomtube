@@ -37,7 +37,7 @@ export default class TranscriptSeeker {
    */
   currentTranscriptLine() {
     if (this.#currentTranscriptLine == null) {
-      // If the first transcript line doesn't exist, currentTranscript is
+      // If the first transcript line doesn't exist, `currentTranscriptLine` is
       // assigned to be undefined.
       this.#currentTranscriptLine =
           document.getElementsByTagName('transcript-line')[0];
