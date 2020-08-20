@@ -175,6 +175,7 @@ class DiscussionComment extends HTMLElement {
       $(replyForm).collapse('hide');
     };
     this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
+      // TODO: Make this it's own function.
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
       this.#manager.postReply(textarea.value, this.comment.commentKey.id)
           .then(() => {
