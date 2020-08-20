@@ -20,8 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.googleinterns.zoomtube.data.Feedback;
-import com.googleinterns.zoomtube.utils.FeedbackUtil;
+import com.googleinterns.zoomtube.data.IconFeedback;
+import com.googleinterns.zoomtube.utils.IconFeedbackUtil;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public final class FeedbackUtilTest {
+public final class IconFeedbackUtilTest {
   // Needed for accessing datastore services while creating an Entity.
   private final LocalServiceTestHelper testServices = new LocalServiceTestHelper();
 
@@ -45,28 +45,29 @@ public final class FeedbackUtilTest {
   }
 
   @Test
-  public void createFeedback_shouldReturnFeedbackFromEntity() throws IOException {
-    Entity feedbackEntity = new Entity(FeedbackUtil.KIND);
+  public void createIconFeedback_shouldReturnFeedbackFromEntity() throws IOException {
+    Entity iconFeedbackEntity = new Entity(IconFeedbackUtil.KIND);
     Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/123);
-    feedbackEntity.setProperty(FeedbackUtil.LECTURE, lectureKey);
-    feedbackEntity.setProperty(FeedbackUtil.TIMESTAMP_MS, (long) 456);
-    feedbackEntity.setProperty(FeedbackUtil.TYPE, Feedback.Type.GOOD.toString());
+    iconFeedbackEntity.setProperty(IconFeedbackUtil.LECTURE, lectureKey);
+    iconFeedbackEntity.setProperty(IconFeedbackUtil.TIMESTAMP_MS, 456L);
+    iconFeedbackEntity.setProperty(IconFeedbackUtil.TYPE, IconFeedback.Type.GOOD.toString());
 
-    Feedback result = FeedbackUtil.createFeedback(feedbackEntity);
+    IconFeedback result = IconFeedbackUtil.createIconFeedback(iconFeedbackEntity);
 
     assertThat(result.lectureKey()).isEqualTo(lectureKey);
     assertThat(result.timestampMs()).isEqualTo(456);
-    assertThat(result.type()).isEqualTo(Feedback.Type.GOOD);
+    assertThat(result.type()).isEqualTo(IconFeedback.Type.GOOD);
   }
 
   @Test
   public void createEntity_shouldReturnEntityWithInputs() throws IOException {
     Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/123);
 
-    Entity result = FeedbackUtil.createEntity(lectureKey, (long) 456, Feedback.Type.GOOD);
+    Entity result = IconFeedbackUtil.createEntity(lectureKey, 456L, IconFeedback.Type.GOOD);
 
-    assertThat(result.getProperty(FeedbackUtil.LECTURE)).isEqualTo(lectureKey);
-    assertThat(result.getProperty(FeedbackUtil.TIMESTAMP_MS)).isEqualTo(456);
-    assertThat(result.getProperty(FeedbackUtil.TYPE)).isEqualTo(Feedback.Type.GOOD.toString());
+    assertThat(result.getProperty(IconFeedbackUtil.LECTURE)).isEqualTo(lectureKey);
+    assertThat(result.getProperty(IconFeedbackUtil.TIMESTAMP_MS)).isEqualTo(456);
+    assertThat(result.getProperty(IconFeedbackUtil.TYPE))
+        .isEqualTo(IconFeedback.Type.GOOD.toString());
   }
 }

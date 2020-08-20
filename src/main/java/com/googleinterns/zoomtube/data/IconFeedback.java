@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 
 /** Contains data related to feedback left by clicking icons. */
 @AutoValue
-public abstract class Feedback {
+public abstract class IconFeedback {
   public static enum Type {
     GOOD,
     BAD,
@@ -28,28 +28,28 @@ public abstract class Feedback {
   }
 
   /** Returns feedback's datastore entity key. */
-  public abstract Key feedbackKey();
+  public abstract Key iconFeedbackKey();
 
-  /** Returns lucture entity key associated with feedback. */
+  /** Returns lecture entity key associated with IconFeedback. */
   public abstract Key lectureKey();
 
   /** Returns timestamps in milliseconds of when feedback icon was clicked. */
-  public abstract Long timestampMs();
+  public abstract long timestampMs();
 
-  /** Returns type of Feedback. */
+  /** Returns type of IconFeedback. */
   public abstract Type type();
 
   public static Builder builder() {
-    return new AutoValue_Feedback.Builder();
+    return new AutoValue_IconFeedback.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder setFeedbackKey(Key feedbackKey);
+    public abstract Builder setIconFeedbackKey(Key iconFeedbackKey);
     public abstract Builder setLectureKey(Key lectureKey);
-    public abstract Builder setTimestampMs(Long timestampMs);
+    public abstract Builder setTimestampMs(long timestampMs);
     public abstract Builder setType(Type type);
 
-    public abstract Feedback build();
+    public abstract IconFeedback build();
   }
 }

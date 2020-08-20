@@ -16,41 +16,41 @@ package com.googleinterns.zoomtube.utils;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.googleinterns.zoomtube.data.Feedback;
+import com.googleinterns.zoomtube.data.IconFeedback;
 
 /** Utility for creating Feedback Entities and Feedback. */
-public final class FeedbackUtil {
+public final class IconFeedbackUtil {
   public static final String KIND = "Feedback";
   public static final String LECTURE = "lecture";
   public static final String TIMESTAMP_MS = "timestampMs";
   public static final String TYPE = "type";
 
   /** Creates and returns a Feedback from {@code entity}. */
-  public static Feedback createFeedback(Entity entity) {
-    Key feedbackKey = entity.getKey();
+  public static IconFeedback createIconFeedback(Entity entity) {
+    Key iconFeedbackKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
     long timestampMs = (long) entity.getProperty(TIMESTAMP_MS);
-    Feedback.Type type = Feedback.Type.valueOf((String) entity.getProperty(TYPE));
+    IconFeedback.Type type = IconFeedback.Type.valueOf((String) entity.getProperty(TYPE));
 
-    Feedback.Builder builder = Feedback.builder()
-                                   .setFeedbackKey(feedbackKey)
-                                   .setLectureKey(lectureKey)
-                                   .setTimestampMs(timestampMs)
-                                   .setType(type);
+    IconFeedback.Builder builder = IconFeedback.builder()
+                                       .setIconFeedbackKey(iconFeedbackKey)
+                                       .setLectureKey(lectureKey)
+                                       .setTimestampMs(timestampMs)
+                                       .setType(type);
     return builder.build();
   }
 
   /**
-   * Creates and returns a Feedback entity using {@code lectureKey},
+   * Creates and returns an IconFeedback entity using {@code lectureKey},
    * {@code timestampMs}, and {@code type}.
    */
-  public static Entity createEntity(Key lectureKey, long timestampMs, Feedback.Type type) {
-    Entity entity = new Entity(KIND);
+  public static Entity createEntity(Key lectureKey, long timestampMs, IconFeedback.Type type) {
+    Entity entity = new Entity(KIND, lectureKey);
     entity.setProperty(LECTURE, lectureKey);
     entity.setProperty(TIMESTAMP_MS, timestampMs);
     entity.setProperty(TYPE, type.toString());
     return entity;
   }
 
-  private FeedbackUtil(){};
+  private IconFeedbackUtil(){};
 }
