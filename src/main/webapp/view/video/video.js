@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {startVideoSyncTimer} from '../../synchronizer.js';
-
 const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
@@ -47,7 +45,7 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    startVideoSyncTimer();
+    window.synchronizer.startVideoSyncTimer();
   }
 
   /** Seeks video to `currentTime`. */

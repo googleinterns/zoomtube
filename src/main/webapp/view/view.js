@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import Synchronizer from '../synchronizer.js';
+
 import {intializeDiscussion} from '../view/discussion/discussion.js';
 
 import TranscriptArea from './transcript/transcript-area.js';
@@ -27,7 +29,10 @@ window.video = new Video();
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
 
-/** Sets `window.LECTURE` as Lecture for view page. */
+// TODO: Remove global scope and link to a View object.
+window.synchronizer = new Synchronizer();
+
+/** Sets {@code window.LECTURE} as Lecture for view page. */
 getLecture().then((lecture) => {
   window.LECTURE = lecture;
   initialize();
