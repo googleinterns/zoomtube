@@ -67,6 +67,7 @@ discussion-comment {
 /* Transcript */
 
 #scroll-banner {
+  background-color: #4c8bf5;
   visibility: hidden;
 }
 
