@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds} from '../timestamps.js';
 import {seekDiscussion} from './view/discussion/discussion.js';
 import {seekTranscript} from './view/transcript/transcript.js';
 
@@ -21,26 +20,31 @@ let lastSyncedTimeMs;
 const TIME_INTERVAL_MS = 100;
 
 /**
- * Starts timer which broadcasts current video time every
- * `TIME_INTERVAL_MS` milliseconds.
+ * Handles when to seek transcript and discussion areas according to video
+ * time.
  */
-export function startVideoSyncTimer() {
-  setInterval(() => {
-    const currentTimeSeconds = window.videoPlayer.getCurrentTime();
-    sync(secondsToMilliseconds(currentTimeSeconds));
-  }, /* ms= */ TIME_INTERVAL_MS);
-}
-
-/**
- * Calls functions that seek transcript, and discussion to `currentVideoTimeMs`
- * if the `currentVideoTimeMs` changed from the last time this method was
- * called.
- */
-function sync(currentVideoTimeMs) {
-  if (currentVideoTimeMs == lastSyncedTimeMs) {
-    return;
+export default class Synchronizer {
+  /**
+   * Starts timer which broadcasts current video time every
+   * `TIME_INTERVAL_MS` milliseconds.
+   */
+  startVideoSyncTimer() {
+    setInterval(() => {
+      this.sync(window.video.getCurrentVideoTimeMs());
+    }, /* ms= */ TIME_INTERVAL_MS);
   }
-  lastSyncedTimeMs = currentVideoTimeMs;
-  seekTranscript(currentVideoTimeMs);
-  seekDiscussion(currentVideoTimeMs);
+
+  /**
+   * Calls functions that seek transcript, and discussion to
+   * `currentVideoTimeMs` if the `currentVideoTimeMs` changed from the last time
+   * this method was called.
+   */
+  sync(currentVideoTimeMs) {
+    if (currentVideoTimeMs == lastSyncedTimeMs) {
+      return;
+    }
+    lastSyncedTimeMs = currentVideoTimeMs;
+    seekTranscript(currentVideoTimeMs);
+    seekDiscussion(currentVideoTimeMs);
+  }
 }

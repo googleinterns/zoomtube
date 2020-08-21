@@ -15,11 +15,9 @@
 import {timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
-const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
-const URL_PARAM_ID = 'id';
+const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
 const TRANSCRIPT_SLOT_TIME_RANGE = 'timestamp-range';
 const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
@@ -27,38 +25,6 @@ const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 let /** Element */ currentTranscriptLine;
 // TODO: Create an instance reference to currentTranscriptLine when
 // the code for seeking the transcript is refactored into a class.
-
-/**
- * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
- *
- * <p>This function assumes that the transcript lines have already
- * been added to the datastore.
- */
-export function loadTranscript() {
-  const url = new URL(ENDPOINT_TRANSCRIPT, window.location.origin);
-  url.searchParams.append(URL_PARAM_ID, window.LECTURE_ID);
-  fetch(url).then((response) => response.json()).then((transcriptLines) => {
-    addMultipleTranscriptLinesToDom(transcriptLines);
-  });
-}
-
-/**
- * Adds `transcriptLines` to the DOM as list elements.
- */
-function addMultipleTranscriptLinesToDom(transcriptLines) {
-  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-  if (transcriptContainer.firstChild) {
-    transcriptContainer.removeChild(transcriptContainer.firstChild);
-  }
-  const ulElement = document.createElement('ul');
-  ulElement.class = 'mx-auto';
-  transcriptContainer.appendChild(ulElement);
-
-  transcriptLines.forEach((transcriptLine) => {
-    ulElement.appendChild(
-        TranscriptLineElement.createTranscriptLineElement(transcriptLine));
-  });
-}
 
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
@@ -69,6 +35,9 @@ export function deleteTranscript() {
 
 /** Seeks transcript to `timeMs`. */
 export function seekTranscript(timeMs) {
+  if (currentTranscriptLine == null) {
+    currentTranscriptLine = document.getElementsByTagName('transcript-line')[0];
+  }
   if (timeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
   }
@@ -101,7 +70,7 @@ function scrollToTopOfTranscript(transcriptLineElement) {
  * Creates a transcript line element containing the text,
  * start time, and end time.
  */
-class TranscriptLineElement extends HTMLElement {
+export class TranscriptLineElement extends HTMLElement {
   /**
    * Creates a custom HTML element representing `transcriptLine`.
    *
