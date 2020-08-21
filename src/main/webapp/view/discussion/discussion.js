@@ -48,6 +48,7 @@ export async function intializeDiscussion() {
 /**
  * Renders a comment and its replies, with a form to post a new reply.
  */
+// TODO: PR #264 moves this to a new file.
 export class DiscussionComment extends HTMLElement {
   #discussion;
 
@@ -105,6 +106,7 @@ export class DiscussionComment extends HTMLElement {
       $(replyForm).collapse('hide');
     };
     this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
+      // TODO: Make this its own function.
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
       this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
     };
