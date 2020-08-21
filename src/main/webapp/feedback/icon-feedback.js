@@ -18,17 +18,19 @@ const PARAM_LECTURE_ID = 'lectureId';
 const PARAM_TIMESTAMP = 'timestamp';
 const PARAM_ICON_TYPE = 'iconType';
 
-window.iconOnClick = iconOnClick;
-
-/**
- * Sends `iconType`, video time stamp of when icon was clicked,
- * and lecture ID to be stored in database.
- */
-function iconOnClick(iconType) {
-  const videoTimeStamp = window.videoPlayer.getCurrentTime();
-  const url = new URL(ENDPOINT_FEEDBACK, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
-  url.searchParams.append(PARAM_TIMESTAMP, videoTimeStamp);
-  url.searchParams.append(PARAM_ICON_TYPE, iconType);
-  fetch(url, {method: 'POST'});
+export default class IconFeedback {
+  /**
+   * Sends `iconType`, video time stamp of when icon was clicked,
+   * and lecture ID to be stored in database.
+   */
+  static iconOnClick(iconType) {
+    const videoTimeStamp = window.videoPlayer.getCurrentTime();
+    const url = new URL(ENDPOINT_FEEDBACK, window.location.origin);
+    url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
+    url.searchParams.append(PARAM_TIMESTAMP, videoTimeStamp);
+    url.searchParams.append(PARAM_ICON_TYPE, iconType);
+    fetch(url, {method: 'POST'});
+  }
 }
+
+window.iconOnClick = IconFeedback.iconOnClick;
