@@ -27,13 +27,16 @@
 
 .comment-header {
   font-size: 18px;
-  font-weight: bold;
   margin-bottom: 0;
   margin-top: 20px;
 }
 
 discussion-comment {
   display: block;
+}
+
+discussion-comment[highlighted] > [slot='header'] {
+  font-weight: bold;
 }
 
 #discussion-comments {
