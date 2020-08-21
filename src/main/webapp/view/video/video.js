@@ -51,8 +51,8 @@ export default class Video {
   }
 
   /** Seeks video to `currentTime`. */
-  seekVideo(currentTime) {
+  seekVideo(timeMs) {
     // TODO: Removed and implement.
-    console.log('SEEKING VIDEO TO: ' + currentTime);
+    console.log('SEEKING VIDEO TO: ' + timeMs);
   }
 }

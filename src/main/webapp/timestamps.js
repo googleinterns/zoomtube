@@ -35,7 +35,16 @@ export function timestampToString(timestampMs) {
 /**
  * Converts `seconds` to milliseconds.
  */
-// TODO: Remove once #158 is addressed.
 export function secondsToMilliseconds(seconds) {
   return Math.round(seconds * MILLISECONDS_PER_SECOND);
+}
+
+/**
+ * Returns a time range string in the form of
+ * `startTimestampMs` - `endTimestampMs`.
+ */
+export function timestampRangeToString(startTimestampMs, endTimestampMs) {
+  const startTimestamp = timestampToString(startTimestampMs);
+  const endTimestamp = timestampToString(endTimestampMs);
+  return `${startTimestamp} - ${endTimestamp}`;
 }
