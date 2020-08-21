@@ -14,11 +14,6 @@
 
 import {timestampRangeToString} from '../../timestamps.js';
 
-const DEFAULT_FONT_WEIGHT = 'text-muted';
-const BOLD_FONT_WEIGHT = 'font-weight-bold';
-const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
-const TRANSCRIPT_SLOT_TIME_RANGE = 'timestamp-range';
-const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 /**
@@ -33,42 +28,79 @@ export function deleteTranscript() {
  * start time, and end time.
  */
 export class TranscriptLineElement extends HTMLElement {
-  /**
-   * Creates a custom HTML element representing `transcriptLine`.
-   *
-   * @param template The template that will be cloned to create the
-   *     transcript line.
-   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
-   *     whose `attributes` should be used.
-   */
-  constructor(template, transcriptLine) {
-    super();
-    this.attachShadow({mode: 'open'});
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.transcriptLine = transcriptLine;
-  }
+  static #DEFAULT_FONT_WEIGHT = 'text-muted';
+  static #BOLD_FONT_WEIGHT = 'font-weight-bold';
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
    * the text and time range appended to the element.
    *
-   * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
-   * help create the transcript line.
-   *
    * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
    *     whose `attributes` should be used.
    */
   static createTranscriptLineElement(transcriptLine) {
-    const template = document.getElementById(TRANSCRIPT_TEMPLATE);
-    const transcriptLineElement =
-        new TranscriptLineElement(template, transcriptLine);
     const timestampRange = timestampRangeToString(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-    transcriptLineElement.updateTemplateSlot(
-        TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);
-    transcriptLineElement.updateTemplateSlot(
-        TRANSCRIPT_SLOT_CONTENT, transcriptLine.content);
-    return transcriptLineElement;
+    return new TranscriptLineElement(timestampRange, transcriptLine);
+  }
+
+  /**
+   * Creates a custom HTML element representing `transcriptLine`.
+   *
+   * @param timestampRange The timestamp for the transcript line.
+   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
+   *     whose `attributes` should be used.
+   */
+  constructor(timestampRange, transcriptLine) {
+    super();
+    const contentDivElement = TranscriptLineElement.createContentDivElement();
+    TranscriptLineElement.appendParagraphToContainer(
+        timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
+    TranscriptLineElement.appendParagraphToContainer(
+        transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+    this.classList.add(
+        'align-self-center', 'mb-2',
+        TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
+    this.appendChild(contentDivElement);
+    this.appendChild(TranscriptLineElement.createHrElement());
+    this.transcriptLine = transcriptLine;
+  }
+
+  /**
+   * Creates a stylized div element that will be used to store
+   * the time range and text in a `TranscriptLineElement`.
+   */
+  static createContentDivElement() {
+    const contentDivElement = document.createElement('div');
+    contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
+    return contentDivElement;
+  }
+
+  /**
+   * Creates a stylized hr element that will be used to create a
+   * `TranscriptLineElement`.
+   */
+  static createHrElement() {
+    const hrElement = document.createElement('hr');
+    hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+    return hrElement;
+  }
+
+  /**
+   * Creates a p tag to store the given `text` inside the
+   * `container`.
+   *
+   * <p>Adds classes the the p tag if `classList` is provided.
+   */
+  static appendParagraphToContainer(text, container, classes = []) {
+    const pTag = document.createElement('p');
+    pTag.innerText = text;
+    container.appendChild(pTag);
+
+    if (classes.length == 0) {
+      return;
+    }
+    pTag.classList.add(...classes);
   }
 
   /**
@@ -83,7 +115,7 @@ export class TranscriptLineElement extends HTMLElement {
 
   /** Returns true if this element is bolded. */
   isBolded() {
-    return this.classList.contains(BOLD_FONT_WEIGHT);
+    return this.classList.contains(TranscriptLineElement.#BOLD_FONT_WEIGHT);
   }
 
   /**
@@ -93,8 +125,8 @@ export class TranscriptLineElement extends HTMLElement {
     if (this.isBolded()) {
       return;
     }
-    this.classList.add(BOLD_FONT_WEIGHT);
-    this.classList.remove(DEFAULT_FONT_WEIGHT);
+    this.classList.add(TranscriptLineElement.#BOLD_FONT_WEIGHT);
+    this.classList.remove(TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
   }
 
   /**
@@ -104,8 +136,8 @@ export class TranscriptLineElement extends HTMLElement {
     if (!this.isBolded()) {
       return;
     }
-    this.classList.add(DEFAULT_FONT_WEIGHT);
-    this.classList.remove(BOLD_FONT_WEIGHT);
+    this.classList.add(TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
+    this.classList.remove(TranscriptLineElement.#BOLD_FONT_WEIGHT);
   }
 
   /**
@@ -123,12 +155,6 @@ export class TranscriptLineElement extends HTMLElement {
   isBeforeTimeMs(timeMs) {
     return this.transcriptLine.startTimestampMs < timeMs;
   }
-  // /**
-  //  * Returns true if the ending time of `transcriptLine` if after `timeMs`.
-  //  */
-  // isAfterTimeMs(transcriptLine, timeMs) {
-  //   return transcriptLine.endTimestampMs > timeMs;
-  // }
 }
 
 customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLineElement);
