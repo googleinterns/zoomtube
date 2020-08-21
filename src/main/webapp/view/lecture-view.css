@@ -79,6 +79,6 @@ discussion-comment[highlighted] > [slot='header'] {
 }
 
 #transcript-lines-container ul {
-  height: 100%;
   list-style-type: none;
+  padding-bottom: calc(100vh - 620px);
 }
