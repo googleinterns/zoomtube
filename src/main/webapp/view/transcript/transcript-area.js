@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {TranscriptLineElement} from './transcript.js';
+import {TranscriptScrollContainer} from '../../scroll-container.js';
 
 /** Loads the transcript lines onto the DOM. */
 export default class TranscriptArea {
