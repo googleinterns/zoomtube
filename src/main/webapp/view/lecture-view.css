@@ -66,6 +66,11 @@ discussion-comment {
 
 /* Transcript */
 
+.scroll-banner {
+  background-color: #4c8bf5;
+  visibility: hidden;
+}
+
 #transcript-container {
   height: calc(100% - 390px);
 }

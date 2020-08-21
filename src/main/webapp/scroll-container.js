@@ -21,23 +21,17 @@ export class ScrollContainer extends HTMLDivElement {
 
   constructor() {
     super();
-    this.createScrollBanner();
-    this.appendChild(this.#scrollBanner);
-    this.appendChild(this.#scrollBanner);
+    this.appendChild(this.createScrollBanner());
     this.onscroll = this.stopAutoScroll();
     this.#autoScrollIsActive = true;
   }
 
   createScrollBanner() {
-    const scrollBanner = document.createElement('div');
-    console.log(this.#scrollBanner);
-    this.#scrollBanner = scrollBanner;
-    scrollBanner.innerText = 'Click here to continue auto-scroll';
-    scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
-    scrollBanner.onclick = this.startAutoScroll();
-    console.log(this.#scrollBanner);
-    console.log(scrollBanner);
-    this.appendChild(scrollBanner);
+    this.#scrollBanner = document.createElement('div');
+    this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
+    this.#scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
+    this.#scrollBanner.onclick = this.startAutoScroll();
+    return this.#scrollBanner;
   }
 
   /** De-activates the automatic scrolling of the transcript. */
