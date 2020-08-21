@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {secondsToMilliseconds, timestampToString} from '../../timestamps.js';
+import {timestampToString} from '../../timestamps.js';
 
 import DiscussionArea, {ELEMENT_DISCUSSION} from './discussion-area.js';
 
@@ -150,8 +150,7 @@ export class DiscussionComment extends HTMLElement {
 // Custom element names must contain a hyphen.
 customElements.define('discussion-comment', DiscussionComment);
 
-/** Seeks discussion to `currentTimeSeconds`. */
-export function seekDiscussion(currentTimeSeconds) {
-  const currentTimeMilliseconds = secondsToMilliseconds(currentTimeSeconds);
-  discussion.seek(currentTimeMilliseconds);
+/** Seeks discussion to `timeMs`. */
+export function seekDiscussion(timeMs) {
+  discussion.seek(timeMs);
 }
