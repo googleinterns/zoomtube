@@ -14,7 +14,6 @@
 
 import {seekDiscussion} from './view/discussion/discussion.js';
 import {seekTranscript} from './view/transcript/transcript.js';
-// import Video from './view/video/video.js';
 
 let lastSyncedTimeMs;
 
