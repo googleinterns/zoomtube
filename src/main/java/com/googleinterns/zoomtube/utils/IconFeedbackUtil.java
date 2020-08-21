@@ -16,16 +16,17 @@ package com.googleinterns.zoomtube.utils;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.common.annotations.VisibleForTesting;
 import com.googleinterns.zoomtube.data.IconFeedback;
 
-/** Utility for creating Feedback Entities and Feedback. */
+/** Utility for creating IconFeedback Entities and IconFeedback. */
 public final class IconFeedbackUtil {
-  public static final String KIND = "Feedback";
-  public static final String LECTURE = "lecture";
-  public static final String TIMESTAMP_MS = "timestampMs";
-  public static final String TYPE = "type";
+  @VisibleForTesting static final String KIND = "Feedback";
+  @VisibleForTesting static final String LECTURE = "lecture";
+  @VisibleForTesting static final String TIMESTAMP_MS = "timestampMs";
+  @VisibleForTesting static final String TYPE = "type";
 
-  /** Creates and returns a Feedback from {@code entity}. */
+  /** Creates and returns an IconFeedback from {@code entity}. */
   public static IconFeedback createIconFeedback(Entity entity) {
     Key iconFeedbackKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
