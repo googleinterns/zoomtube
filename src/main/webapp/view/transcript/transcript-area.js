@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {TranscriptLineElement} from './transcript.js';
 import {TranscriptScrollContainer} from '../../scroll-container.js';
+
+import {TranscriptLineElement} from './transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
 export default class TranscriptArea {
   static #ENDPOINT_TRANSCRIPT = '/transcript';
-  static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+  static #transcriptContainer;
   static #PARAM_ID = 'id';
 
   #transcriptSeeker;
@@ -59,8 +60,7 @@ export default class TranscriptArea {
    * `loadTranscript()`.
    */
   static addMultipleTranscriptLinesToDom(transcriptLines) {
-    const transcriptContainer =
-        document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
+    const transcriptContainer = TranscriptArea.transcriptScrollContainer();
     // Removes the transcript lines from the container if there are any.
     // This prevents having multiple sets of ul tags every time the page
     // is refreshed.
@@ -75,6 +75,15 @@ export default class TranscriptArea {
       ulElement.appendChild(
           TranscriptLineElement.createTranscriptLineElement(transcriptLine));
     });
+  }
+
+  static transcriptScrollContainer() {
+    if (this.#transcriptContainer == null) {
+      this.#transcriptContainer = new TranscriptScrollContainer();
+      const parentContainer = document.getElementById('transcript-container');
+      parentContainer.appendChild(this.#transcriptContainer);
+    }
+    return this.#transcriptContainer;
   }
 
   // TODO: Add a getter method for the transcriptSeeker object.

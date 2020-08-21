@@ -12,26 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export class ScrollContainer extends HTMLElement {
-  static #SCROLL_BANNER_CLASSES = 'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
-  
+export class ScrollContainer extends HTMLDivElement {
+  static #SCROLL_BANNER_CLASSES =
+      'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
+
   #autoScrollIsActive;
   #scrollBanner;
+  static #TRANSCRIPT_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
+  #TRANSCRIPT_CONTAINER_ID = 'transcript-lines-container';
 
   constructor() {
     super();
-    this.#scrollBanner = ScrollContainer.createScrollBanner();
-    this.appendChild(this.#scrollBanner);
+    this.appendChild(this.createScrollBanner());
+    console.log(this.getElementsByTagName('div'));
     this.onscroll = this.stopAutoScroll();
     this.#autoScrollIsActive = true;
   }
 
-  static createScrollBanner() {
-    const scrollBanner = document.createElement('div');
-    scrollBanner.innerText = 'Click here to continue auto-scroll';
-    scrollBanner.class = this.#SCROLL_BANNER_CLASSES;
-    scrollBanner.onclick = this.startAutoScroll();
-    return scrollBanner;
+  static createTranscriptScrollContainer() {
+    const scrollContainer = new ScrollContainer();
+  }
+
+  createScrollBanner() {
+    this.#scrollBanner = document.createElement('div');
+    this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
+    this.#scrollBanner.class = ScrollContainer.#SCROLL_BANNER_CLASSES;
+    this.#scrollBanner.onclick = this.startAutoScroll();
+    console.log(this.#scrollBanner);
+    return this.#scrollBanner;
   }
 
   /** De-activates the automatic scrolling of the transcript. */
@@ -47,13 +55,19 @@ export class ScrollContainer extends HTMLElement {
   }
 }
 
+customElements.define('scroll-container', ScrollContainer, {extends: 'div'});
+
 export class TranscriptScrollContainer extends ScrollContainer {
-  #TRANSCRIPT_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
+  static #TRANSCRIPT_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
   #TRANSCRIPT_CONTAINER_ID = 'transcript-lines-container';
-  
-    constructor() {
-      super();
-      this.id = this.#TRANSCRIPT_CONTAINER_ID;
-      this.class = this.#TRANSCRIPT_CONTAINER_CLASSES;
-    }
+
+  constructor() {
+    super();
+    this.id = this.#TRANSCRIPT_CONTAINER_ID;
+    this.className = TranscriptScrollContainer.#TRANSCRIPT_CONTAINER_CLASSES;
+    console.log(this.class);
   }
+}
+
+customElements.define(
+    'transcript-scroll-container', TranscriptScrollContainer, {extends: 'div'});
