@@ -15,7 +15,6 @@
 import Synchronizer from '../synchronizer.js';
 
 import {intializeDiscussion} from '../view/discussion/discussion.js';
-
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
 
