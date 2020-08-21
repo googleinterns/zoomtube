@@ -14,8 +14,6 @@
 
 import {timestampRangeToString} from '../../timestamps.js';
 
-const DEFAULT_FONT_WEIGHT = 'text-muted';
-const BOLD_FONT_WEIGHT = 'font-weight-bold';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
 /**
@@ -32,7 +30,6 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
-  static #CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
@@ -61,7 +58,9 @@ export class TranscriptLineElement extends HTMLElement {
         timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
-    this.classList.add('align-self-center', 'mb-2', TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
+    this.classList.add(
+        'align-self-center', 'mb-2',
+        TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
     this.appendChild(contentDivElement);
     this.appendChild(TranscriptLineElement.createHrElement());
     this.transcriptLine = transcriptLine;
@@ -116,7 +115,7 @@ export class TranscriptLineElement extends HTMLElement {
 
   /** Returns true if this element is bolded. */
   isBolded() {
-    return this.classList.contains(BOLD_FONT_WEIGHT);
+    return this.classList.contains(TranscriptLineElement.#BOLD_FONT_WEIGHT);
   }
 
   /**
