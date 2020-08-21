@@ -19,10 +19,6 @@ const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
-  constructor() {
-    Video.synchronizer = new Synchronizer();
-  }
-
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
     window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
