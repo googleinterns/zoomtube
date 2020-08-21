@@ -31,7 +31,7 @@ export default class Synchronizer {
    */
   startVideoSyncTimer() {
     setInterval(() => {
-      const currentTimeSeconds = window.videoPlayer.getCurrentTime();
+      const currentTimeSeconds = window.video.videoPlayer.getCurrentTime();
       this.sync(secondsToMilliseconds(currentTimeSeconds));
     }, /* ms= */ TIME_INTERVAL_MS);
   }
