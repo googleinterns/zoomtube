@@ -26,8 +26,8 @@ export default class DiscussionManager {
   #lecture;
 
   /**
-   * @param lecture The current lecture, which is used when making requests to
-   *     the discussion endpoint.
+   * Creates a `DiscussionManager` to manage posting and fetching comments for
+   * the `lecture`.
    */
   constructor(lecture) {
     this.#lecture = lecture;
