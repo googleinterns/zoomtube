@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {startVideoSyncTimer} from '../../synchronizer.js';
+import {secondsToMilliseconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
 
@@ -46,18 +46,17 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    startVideoSyncTimer();
+    window.synchronizer.startVideoSyncTimer();
   }
 
-  /** Returns current video time of 'videoPlayer'. */
-  // TODO: Convert to ms.
-  getCurrentVideoTimeSeconds() {
-    return this.videoPlayer.getCurrentTime();
+  /** Returns current video time of 'videoPlayer' in milliseconds. */
+  getCurrentVideoTimeMs() {
+    return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
   }
 
   /** Seeks video to `currentTime`. */
-  seekVideo(currentTime) {
+  seekVideo(timeMs) {
     // TODO: Removed and implement.
-    console.log('SEEKING VIDEO TO: ' + currentTime);
+    console.log('SEEKING VIDEO TO: ' + timeMs);
   }
 }
