@@ -18,8 +18,6 @@ export class ScrollContainer extends HTMLDivElement {
 
   #autoScrollIsActive;
   #scrollBanner;
-  static #TRANSCRIPT_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
-  #TRANSCRIPT_CONTAINER_ID = 'transcript-lines-container';
 
   constructor() {
     super();
@@ -27,10 +25,6 @@ export class ScrollContainer extends HTMLDivElement {
     console.log(this.getElementsByTagName('div'));
     this.onscroll = this.stopAutoScroll();
     this.#autoScrollIsActive = true;
-  }
-
-  static createTranscriptScrollContainer() {
-    const scrollContainer = new ScrollContainer();
   }
 
   createScrollBanner() {
@@ -71,3 +65,4 @@ export class TranscriptScrollContainer extends ScrollContainer {
 
 customElements.define(
     'transcript-scroll-container', TranscriptScrollContainer, {extends: 'div'});
+    
