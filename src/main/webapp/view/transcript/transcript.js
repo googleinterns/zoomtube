@@ -96,6 +96,19 @@ function scrollToTopOfTranscript(transcriptLineElement) {
  * start time, and end time.
  */
 class TranscriptLineElement extends HTMLElement {
+    /**
+   * Creates a custom HTML element representing `transcriptLine` with
+   * the text and time range appended to the element.
+   *
+   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
+   *     whose `attributes` should be used.
+   */
+  static createTranscriptLineElement(transcriptLine) {
+    const timestampRange = timestampRangeToString(
+        transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
+    return new TranscriptLineElement(timestampRange, transcriptLine);
+  }
+
   /**
    * Creates a custom HTML element representing `transcriptLine`.
    *
@@ -114,19 +127,6 @@ class TranscriptLineElement extends HTMLElement {
     this.appendChild(contentDivElement);
     this.appendChild(TranscriptLineElement.createHrElement());
     this.transcriptLine = transcriptLine;
-  }
-
-  /**
-   * Creates a custom HTML element representing `transcriptLine` with
-   * the text and time range appended to the element.
-   *
-   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
-   *     whose `attributes` should be used.
-   */
-  static createTranscriptLineElement(transcriptLine) {
-    const timestampRange = timestampRangeToString(
-        transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-    return new TranscriptLineElement(timestampRange, transcriptLine);
   }
 
   /**
