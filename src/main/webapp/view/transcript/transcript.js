@@ -81,13 +81,13 @@ export class TranscriptLineElement extends HTMLElement {
     this.appendChild(span);
   }
 
-  /** Returns true if the element is already bolded. */
+  /** Returns true if this element is bolded. */
   isBolded() {
     return this.classList.contains(BOLD_FONT_WEIGHT);
   }
 
   /**
-   * Bolds the element if it is not already bolded.
+   * Bolds this element if it is not already bolded.
    */
   addBold() {
     if (this.isBolded()) {
@@ -98,7 +98,7 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Removes bold from the element if it is currently bolded.
+   * Removes bold from this element if it is currently bolded.
    */
   removeBold() {
     if (!this.isBolded()) {
@@ -109,12 +109,19 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Returns true if `timestampMs` is within the time range for
-   * this transcript line.
+   * Returns true if `timestampMs` is within the time range of
+   * this transcript line element.
    */
   isWithinTimeRange(timestampMs) {
     return this.transcriptLine.startTimestampMs <= timestampMs &&
         timestampMs <= this.transcriptLine.endTimestampMs;
+  }
+
+  /**
+   * Returns true if the starting time of this element is before `timeMs`.
+   */
+  isBeforeTimeMs(timeMs) {
+    return this.startTimestampMs < timeMs;
   }
 }
 
