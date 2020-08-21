@@ -43,7 +43,7 @@ async function initialize() {
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
   await transcript.loadTranscript();
-  
+
   await intializeDiscussion();
 }
 
