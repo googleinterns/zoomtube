@@ -46,10 +46,12 @@ export function seekTranscript(timeMs) {
     return;
   }
   currentTranscriptLine.removeBold();
-  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  currentTranscriptLine = transcriptLineWithTime(timeMs);
   scrollToTopOfTranscript(currentTranscriptLine);
   currentTranscriptLine.addBold();
   // TODO: Handle the case where the video isn't only playing.
+  // TODO: Check if currentTranscriptLine is within the time range. If
+  // it isn't, do not bold the transcript line.
 }
 
 /**
@@ -117,13 +119,13 @@ export class TranscriptLineElement extends HTMLElement {
     this.appendChild(span);
   }
 
-  /** Returns true if the element is already bolded. */
+  /** Returns true if this element is bolded. */
   isBolded() {
     return this.classList.contains(BOLD_FONT_WEIGHT);
   }
 
   /**
-   * Bolds the element if it is not already bolded.
+   * Bolds this element if it is not already bolded.
    */
   addBold() {
     if (this.isBolded()) {
@@ -134,7 +136,7 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Removes bold from the element if it is currently bolded.
+   * Removes bold from this element if it is currently bolded.
    */
   removeBold() {
     if (!this.isBolded()) {
@@ -145,13 +147,60 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Returns true if `timestampMs` is within the time range for
-   * this transcript line.
+   * Returns true if `timestampMs` is within the time range of
+   * this transcript line element.
    */
   isWithinTimeRange(timestampMs) {
     return this.transcriptLine.startTimestampMs <= timestampMs &&
         timestampMs <= this.transcriptLine.endTimestampMs;
   }
+
+  /**
+   * Returns true if the starting time of this element is before `timeMs`.
+   */
+  isBeforeTimeMs(timeMs) {
+    return this.startTimestampMs < timeMs;
+  }
+}
+
+/**
+ * Returns the next transcript line for `timeMs`.
+ */
+function transcriptLineWithTime(timeMs) {
+  const nextTranscript = currentTranscriptLine.nextElementSibling;
+  // If the video is playing normally, the next transcript line
+  // is the one immediately after it. This check is done before
+  // the search is conducted because it is more time efficient
+  // to check the next element than to conduct a search.
+  if (nextTranscript.isWithinTimeRange(timeMs)) {
+    return nextTranscript;
+  }
+  // This call happens if the user seeks to a certain timestamp instead.
+  return findClosestTranscriptLine(timeMs);
+}
+
+/**
+ * Searches for and returns the closest transcript line
+ * based on `timeMs`.
+ */
+function findClosestTranscriptLine(timeMs) {
+  // TODO: Create a global variable for the list of transcript line elements
+  // once the pull request separating transcript.js into classes is merged.
+  const transcriptLineElements = document.getElementsByTagName('li');
+  let transcriptLinePointer = transcriptLineElements[0];
+  while (transcriptLinePointer != null &&
+         !transcriptLinePointer.isWithinTimeRange(timeMs) &&
+         transcriptLinePointer.isBeforeTimeMs(timeMs)) {
+    transcriptLinePointer = transcriptLinePointer.nextElementSibling;
+  }
+  // This happens when `timeMs` is after the last transcriptLine's ending
+  // timestamp. `TranscriptLinePointer` is updated to be the last transcriptLine
+  // because it is the closest line that the transcript can scroll to.
+  if (transcriptLinePointer === null) {
+    transcriptLinePointer =
+        transcriptLineElements[transcriptLineElements.length - 1];
+  }
+  return transcriptLinePointer;
 }
 
 customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLineElement);
