@@ -2,8 +2,8 @@
 
 .halfpage {
   height: calc(100vh - 56px);
-  width: 50vw;
   overflow: hidden;
+  width: 50vw;
 }
 
 #page {
@@ -33,8 +33,8 @@
 
 #discussion {
   height: calc(100vh - 86px);
-  padding: 15px;
   margin: 15px;
+  padding: 15px;
 }
 
 discussion-comment {
@@ -50,8 +50,8 @@ discussion-comment {
 #new-comment-row {
   border-bottom: 2px solid #eee;
   height: 160px;
-  padding-bottom: 10px;
   overflow: hidden;
+  padding-bottom: 10px;
 }
 
 #new-comment-row textarea {
@@ -101,8 +101,8 @@ transcript-line [slot='timestamp-range'] {
 
 #transcript-lines-container ul {
   height: 100%;
-  padding: 0;
   list-style-type: none;
+  padding: 0;
 }
 
 /* Video */
