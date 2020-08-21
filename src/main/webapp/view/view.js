@@ -35,14 +35,15 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  // TODO: Move TranscriptArea initialization outside of initialize()
-  // and replace string parameter with a controller object.
 
   const video = new Video();
   const transcript = new TranscriptArea('event controller');
 
   await video.loadVideoApi();
+  // TODO: Move TranscriptArea initialization outside of initialize()
+  // and replace string parameter with a controller object.
   await transcript.loadTranscript();
+  
   await intializeDiscussion();
 }
 
