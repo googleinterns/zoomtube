@@ -30,6 +30,10 @@ export function deleteTranscript() {
  * start time, and end time.
  */
 export class TranscriptLineElement extends HTMLElement {
+  static #DEFAULT_FONT_WEIGHT = 'text-muted';
+  static #BOLD_FONT_WEIGHT = 'font-weight-bold';
+  static #CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
+
   /**
    * Creates a custom HTML element representing `transcriptLine` with
    * the text and time range appended to the element.
@@ -57,7 +61,7 @@ export class TranscriptLineElement extends HTMLElement {
         timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
-    this.classList.add('align-self-center', 'mb-2', DEFAULT_FONT_WEIGHT);
+    this.classList.add('align-self-center', 'mb-2', TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
     this.appendChild(contentDivElement);
     this.appendChild(TranscriptLineElement.createHrElement());
     this.transcriptLine = transcriptLine;
@@ -122,8 +126,8 @@ export class TranscriptLineElement extends HTMLElement {
     if (this.isBolded()) {
       return;
     }
-    this.classList.add(BOLD_FONT_WEIGHT);
-    this.classList.remove(DEFAULT_FONT_WEIGHT);
+    this.classList.add(TranscriptLineElement.#BOLD_FONT_WEIGHT);
+    this.classList.remove(TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
   }
 
   /**
@@ -133,8 +137,8 @@ export class TranscriptLineElement extends HTMLElement {
     if (!this.isBolded()) {
       return;
     }
-    this.classList.add(DEFAULT_FONT_WEIGHT);
-    this.classList.remove(BOLD_FONT_WEIGHT);
+    this.classList.add(TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
+    this.classList.remove(TranscriptLineElement.#BOLD_FONT_WEIGHT);
   }
 
   /**
@@ -152,12 +156,6 @@ export class TranscriptLineElement extends HTMLElement {
   isBeforeTimeMs(timeMs) {
     return this.transcriptLine.startTimestampMs < timeMs;
   }
-  // /**
-  //  * Returns true if the ending time of `transcriptLine` if after `timeMs`.
-  //  */
-  // isAfterTimeMs(transcriptLine, timeMs) {
-  //   return transcriptLine.endTimestampMs > timeMs;
-  // }
 }
 
 customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLineElement);
