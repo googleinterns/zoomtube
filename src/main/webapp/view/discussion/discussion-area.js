@@ -31,6 +31,7 @@ export default class DiscussionArea {
   #manager;
   #currentTimeMs;
   #currentRootCommentElements;
+  #nearestComments;
 
   /**
    * Creates a `DiscussionArea` for a `lecture`.
@@ -40,6 +41,7 @@ export default class DiscussionArea {
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#currentRootCommentElements = [];
+    this.#nearestComments = [];
   }
 
   /**
@@ -103,17 +105,33 @@ export default class DiscussionArea {
   }
 
   /**
+   * Removes highlights on nearest comments.
+   */
+  unhightlightNearestComments() {
+    this.#nearestComments.forEach((comment) => comment.unhighlight());
+  }
+
+  /**
+   * Highlights nearest comments.
+   */
+  highlightNearestComments() {
+    this.#nearestComments.forEach((comment) => comment.highlight());
+  }
+
+  /**
    * Seeks discussion to `timeMs`.
    */
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
         timestampToString(timeMs);
-    const nearestComments = this.getNearestDiscussionComments(timeMs);
-    if (nearestComments.length == 0) {
-      return;
+
+    this.unhightlightNearestComments();
+    this.#nearestComments = this.getNearestDiscussionComments(timeMs);
+    if (this.#nearestComments.length > 0) {
+      this.#nearestComments[0].scrollToTopOfDiscussion();
     }
-    nearestComments[0].scrollToTopOfDiscussion();
+    this.highlightNearestComments();
   }
 
   /**
