@@ -23,7 +23,7 @@ export class ScrollContainer extends HTMLDivElement {
     super();
     this.appendChild(this.createScrollBanner());
     this.onscroll = function() {
-      this.stopAutoScroll()
+      this.stopAutoScroll();
     };
     this.#autoScrollIsActive = true;
   }
