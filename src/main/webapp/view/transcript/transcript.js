@@ -14,7 +14,6 @@
 
 import {timestampRangeToString} from '../../timestamps.js';
 
-const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
 const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
