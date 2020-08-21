@@ -22,7 +22,9 @@ export class ScrollContainer extends HTMLDivElement {
   constructor() {
     super();
     this.appendChild(this.createScrollBanner());
-    this.onscroll = this.stopAutoScroll();
+    this.onscroll = function() {
+      this.stopAutoScroll()
+    };
     this.#autoScrollIsActive = true;
   }
 
@@ -30,7 +32,10 @@ export class ScrollContainer extends HTMLDivElement {
     this.#scrollBanner = document.createElement('div');
     this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
     this.#scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
-    this.#scrollBanner.onclick = this.startAutoScroll();
+    const container = this;
+    this.#scrollBanner.onclick = function() {
+      container.startAutoScroll();
+    };
     return this.#scrollBanner;
   }
 
