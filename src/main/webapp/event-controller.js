@@ -42,7 +42,7 @@ export default class EventController {
    */
   broadcastEvent(eventName, ...params) {
     if (!this.eventListeners.has(eventName)) {
-      console.error('No event listeners found.');
+      console.warn(eventName + ' not found.');
       return false;
     }
     const callBacks = this.eventListeners.get(eventName);
@@ -52,3 +52,6 @@ export default class EventController {
     return true;
   }
 }
+
+const eventController = new EventController();
+eventController.broadcastEvent('hello');
