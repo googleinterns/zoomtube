@@ -18,6 +18,10 @@ const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
+  constructor(synchronizer) {
+    this.synchronizer = synchronizer;
+  }
+
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
     window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
@@ -46,7 +50,7 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    window.synchronizer.startVideoSyncTimer();
+    this.synchronizer.startVideoSyncTimer();
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */

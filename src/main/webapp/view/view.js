@@ -22,14 +22,9 @@ const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
 
-// TODO: Remove global scope and add to view object.
-window.video = new Video();
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
-
-// TODO: Remove global scope and link to a View object.
-window.synchronizer = new Synchronizer();
 
 /** Sets {@code window.LECTURE} as Lecture for view page. */
 getLecture().then((lecture) => {
@@ -43,12 +38,16 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  window.video.loadVideoApi();
-  intializeDiscussion();
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
+
+  const synchronizer = new Synchronizer();
+  const video = new Video(synchronizer);
   const transcript = new TranscriptArea('event controller');
+
+  await video.loadVideoApi();
   await transcript.loadTranscript();
+  await intializeDiscussion();
 }
 
 /**
