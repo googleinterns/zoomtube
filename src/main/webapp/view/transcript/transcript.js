@@ -96,7 +96,7 @@ function scrollToTopOfTranscript(transcriptLineElement) {
  * start time, and end time.
  */
 class TranscriptLineElement extends HTMLElement {
-    /**
+  /**
    * Creates a custom HTML element representing `transcriptLine` with
    * the text and time range appended to the element.
    *
