@@ -19,7 +19,7 @@ let lastTime;
 
 const TIME_INTERVAL_MS = 100;
 
-/** Handles when to seek transcript and discussion areas. */
+/** Handles when to seek transcript and discussion areas according to video time. */
 export default class Synchronizer {
   /**
    * Starts timer which broadcasts current video time every
