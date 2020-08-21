@@ -28,18 +28,17 @@
   <div id="page">
     <div class="halfpage" id="player-transcript">
       <div id="player"></div>
-      <div id="transcript-container">
-        <h2>Transcript:</h2>
-        <div id="transcript-lines-container" class="mx-5 my-3 bg-light pb-3 pt-4 rounded"></div>
+      <div id="transcript-container" class="bg-light rounded">
+        <div id="transcript-lines-container"></div>
       </div>
     </div>
-    <div class="halfpage" id="discussion">
+    <div class="halfpage rounded bg-light" id="discussion">
       <div id="new-comment-row">
         <div id="new-comment-form" class="form-group">
           <label for="post-textarea">Leave a Comment at <span id="timestamp-span">00:00</span></label>
           <textarea class="form-control" id="post-textarea" rows="2"></textarea>
         </div>
-        <button class="btn btn-primary mb-2" type="button" onclick="postNewComment()">
+        <button class="btn btn-primary mb-2 float-right" type="button" onclick="postNewComment()">
           Post Comment
         </button>
       </div>
@@ -59,7 +58,7 @@
   <link rel="stylesheet" href="/view/lecture-view.css" />
   <div class="comment">
     <div>
-      <h1 class="comment-header"><slot name="header"></slot>&nbsp;</h1>
+      <span class="comment-header"><slot name="header"></slot>&nbsp;</span>
       <div class="comment-content">
         <div><slot name="content"></slot></div>
         <div class="actions-bar">
@@ -96,7 +95,7 @@
       <span class="justify-content-start mb-1"><slot name="timestamp-range"></slot></span>
       <span class="ml-4 mb-1"><slot name="content"></slot></span>
     </div>
-    <hr class="my-1 align-middle mr-5" />
+    <hr class="my-1 align-middle" />
   </li>
 </template>
 
