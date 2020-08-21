@@ -14,7 +14,7 @@
 
 import {seekDiscussion} from './view/discussion/discussion.js';
 import {seekTranscript} from './view/transcript/transcript.js';
-import Video from './view/video/video.js';
+// import Video from './view/video/video.js';
 
 let lastSyncedTimeMs;
 
@@ -25,13 +25,18 @@ const TIME_INTERVAL_MS = 100;
  * time.
  */
 export default class Synchronizer {
+  /** Links a `Video` to a `Synchronizer`. */
+  constructor(video) {
+    this.video = video;
+  }
+
   /**
    * Starts timer which broadcasts current video time every
    * `TIME_INTERVAL_MS` milliseconds.
    */
-  static startVideoSyncTimer() {
+  startVideoSyncTimer() {
     setInterval(() => {
-      Synchronizer.sync(Video.getCurrentVideoTimeMs());
+      this.sync(this.video.getCurrentVideoTimeMs());
     }, /* ms= */ TIME_INTERVAL_MS);
   }
 
@@ -40,7 +45,7 @@ export default class Synchronizer {
    * `currentVideoTimeMs` if the `currentVideoTimeMs` changed from the last time
    * this method was called.
    */
-  static sync(currentVideoTimeMs) {
+  sync(currentVideoTimeMs) {
     if (currentVideoTimeMs == lastSyncedTimeMs) {
       return;
     }

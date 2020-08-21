@@ -19,9 +19,15 @@ const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
+  /** Links a new `Synchronizer` to a `Video`. */
+  constructor() {
+    this.synchronizer = new Synchronizer(this);
+  }
+
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
     window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+    window.onPlayerReady = this.onPlayerReady.bind(this);
     const videoApiScript = document.createElement(SCRIPT);
     const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
     videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -34,12 +40,12 @@ export default class Video {
    */
   // TODO: Support dynamic video height and width.
   onYouTubeIframeAPIReady() {
-    Video.videoPlayer = new window.YT.Player('player', {
+    this.videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
       videoId: window.LECTURE.videoId,
       events: {
-        onReady: this.onPlayerReady,
+        onReady: window.onPlayerReady,
       },
     });
   }
@@ -47,12 +53,12 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    Synchronizer.startVideoSyncTimer();
+    this.synchronizer.startVideoSyncTimer();
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */
-  static getCurrentVideoTimeMs() {
-    return secondsToMilliseconds(Video.videoPlayer.getCurrentTime());
+  getCurrentVideoTimeMs() {
+    return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
   }
 
   /** Seeks video to `currentTime`. */
