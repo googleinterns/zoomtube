@@ -14,12 +14,11 @@
 
 import {timestampToString} from '../../timestamps.js';
 
-const ENDPOINT_DISCUSSION = '/discussion';
+import DiscussionManager from './discussion-manager.js';
 
-const PARAM_LECTURE = 'lecture';
-const PARAM_PARENT = 'parent';
-const PARAM_TIMESTAMP = 'timestamp';
-const PARAM_TYPE = 'type';
+export const COMMENT_TYPE_REPLY = 'REPLY';
+export const COMMENT_TYPE_QUESTION = 'QUESTION';
+export const COMMENT_TYPE_NOTE = 'NOTE';
 
 const ELEMENT_DISCUSSION = document.querySelector('#discussion-comments');
 const ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
@@ -37,16 +36,8 @@ const SELECTOR_CANCEL_REPLY = '#cancel-reply';
 const SELECTOR_POST_REPLY = '#post-reply';
 const SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
-const COMMENT_TYPE_REPLY = 'REPLY';
-const COMMENT_TYPE_QUESTION = 'QUESTION';
-/* eslint-disable no-unused-vars */
-const COMMENT_TYPE_NOTE = 'NOTE';
-/* eslint-disable no-unused-vars */
-
 // 10 seconds.
 const TIME_TOLERANCE_MS = 10000;
-
-window.postNewComment = postNewComment;
 
 // TODO: Refactor these global variables into a namespace, module, or class.
 // See: #191.
@@ -60,54 +51,18 @@ export async function intializeDiscussion() {
   await loadDiscussion();
 }
 
-/**
- * Posts a new comment using the main post textarea.
- */
-async function postNewComment() {
+// This is used as the `onclick` handler of the new comment area submit button.
+window.postNewComment = () => {
+  const manager = new DiscussionManager(window.LECTURE);
   // TODO: Add support for submitting types other than QUESTION.
-  postAndReload(ELEMENT_POST_TEXTAREA, {
-    [PARAM_TIMESTAMP]: newCommentTimestampMs,
-    [PARAM_TYPE]: COMMENT_TYPE_QUESTION,
-  });
-}
-
-/**
- * Posts the content of `inputField` as a reply to `parentId`.
- */
-async function postReply(inputField, parentId) {
-  postAndReload(inputField, {
-    [PARAM_PARENT]: parentId,
-    [PARAM_TYPE]: COMMENT_TYPE_REPLY,
-  });
-}
-
-/**
- * Posts comment from `inputField` and reloads the discussion. Adds query
- * parameters from `params` to the request. Different types of comments
- * require different parameters, such as `PARAM_TIMESTAMP` or `PARAM_PARENT`.
- * The caller should ensure the correct parameters are supplied for the type
- * of comment being posted.
- */
-async function postAndReload(inputField, params) {
-  const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-  for (const param in params) {
-    // This is recommended by the style guide, but disallowed by linter.
-    /* eslint-disable no-prototype-builtins */
-    if (params.hasOwnProperty(param)) {
-      url.searchParams.append(param, params[param]);
-    }
-    /* eslint-enable no-prototype-builtins */
-  }
-
-  fetch(url, {
-    method: 'POST',
-    body: inputField.value,
-  }).then(() => {
-    inputField.value = '';
-    loadDiscussion();
-  });
-}
+  manager
+      .postRootComment(
+          ELEMENT_POST_TEXTAREA.value, newCommentTimestampMs,
+          COMMENT_TYPE_QUESTION)
+      .then(() => {
+        loadDiscussion();
+      });
+};
 
 /**
  * Adds comments to the discussion element.
@@ -117,53 +72,13 @@ async function loadDiscussion() {
   ELEMENT_DISCUSSION.textContent = '';
   currentRootDiscussionComments = [];
 
-  const comments = await fetchDiscussion();
-  const preparedComments = prepareComments(comments);
-  for (const comment of preparedComments) {
-    const commentElement = new DiscussionComment(comment);
-    currentRootDiscussionComments.push(commentElement);
-    ELEMENT_DISCUSSION.appendChild(commentElement);
+  const manager = new DiscussionManager(window.LECTURE);
+  const rootComments = await manager.fetchRootComments();
+  for (const rootComment of rootComments) {
+    const rootCommentElement = new DiscussionComment(rootComment, manager);
+    currentRootDiscussionComments.push(rootCommentElement);
+    ELEMENT_DISCUSSION.appendChild(rootCommentElement);
   }
-}
-
-/**
- * Organizes comments into threads with nested replies.
- *
- * <p>All comments are sent from the servlet without any structure, so the
- * client needs to organize them before displaying.
- */
-function prepareComments(comments) {
-  const commentKeys = {};
-  for (const comment of comments) {
-    comment.replies = [];
-    commentKeys[comment.commentKey.id] = comment;
-  }
-
-  const rootComments = [];
-  for (const comment of comments) {
-    if (comment.type === COMMENT_TYPE_REPLY) {
-      const parent = commentKeys[comment.parentKey.value.id];
-      parent.replies.push(comment);
-    } else {
-      // Top level comments don't have parents.
-      rootComments.push(comment);
-    }
-  }
-  // Sort comments such that earliest timestamp is first.
-  rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value));
-  return rootComments;
-}
-
-/**
- * Requests all comments in the lecture specified by `LECTURE_ID` from
- * the {@link java.com.googleinterns.zoomtube.servlets.DiscussionServlet}.
- */
-async function fetchDiscussion() {
-  const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
-
-  const request = await fetch(url);
-  return request.json();
 }
 
 /**
@@ -203,7 +118,10 @@ function getNearbyDiscussionComments(timestampMs) {
 /**
  * Renders a comment and its replies, with a form to post a new reply.
  */
+// TODO: PR #264 moves this to a new file.
 class DiscussionComment extends HTMLElement {
+  #manager;
+
   /**
    * Creates an custom HTML element representing a comment.  This uses the
    * template and slots defined by `TEMPLATE_COMMENT` to render the
@@ -211,9 +129,11 @@ class DiscussionComment extends HTMLElement {
    *
    * @param comment The comment from the servlet that this element should
    *     render.
+   * @param {DiscussionManager} manager The current discussion's manager.
    */
-  constructor(comment) {
+  constructor(comment, manager) {
     super();
+    this.#manager = manager;
     this.comment = comment;
     this.attachShadow({mode: 'open'});
     const shadow = TEMPLATE_COMMENT.content.cloneNode(true);
@@ -255,8 +175,12 @@ class DiscussionComment extends HTMLElement {
       $(replyForm).collapse('hide');
     };
     this.shadowRoot.querySelector(SELECTOR_POST_REPLY).onclick = () => {
+      // TODO: Make this its own function.
       const textarea = this.shadowRoot.querySelector(SELECTOR_REPLY_TEXTAREA);
-      postReply(textarea, this.comment.commentKey.id);
+      this.#manager.postReply(textarea.value, this.comment.commentKey.id)
+          .then(() => {
+            loadDiscussion();
+          });
     };
   }
 
@@ -268,7 +192,7 @@ class DiscussionComment extends HTMLElement {
     const replyDiv = document.createElement('div');
     replyDiv.slot = SLOT_REPLIES;
     for (const reply of replies) {
-      replyDiv.appendChild(new DiscussionComment(reply));
+      replyDiv.appendChild(new DiscussionComment(reply, this.#manager));
     }
     this.appendChild(replyDiv);
   }
