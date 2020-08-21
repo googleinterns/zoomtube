@@ -121,8 +121,14 @@ export class TranscriptLineElement extends HTMLElement {
    * Returns true if the starting time of this element is before `timeMs`.
    */
   isBeforeTimeMs(timeMs) {
-    return this.startTimestampMs < timeMs;
+    return this.transcriptLine.startTimestampMs < timeMs;
   }
+  // /**
+  //  * Returns true if the ending time of `transcriptLine` if after `timeMs`.
+  //  */
+  // isAfterTimeMs(transcriptLine, timeMs) {
+  //   return transcriptLine.endTimestampMs > timeMs;
+  // }
 }
 
 customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLineElement);
