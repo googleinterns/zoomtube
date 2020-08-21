@@ -55,7 +55,9 @@ export default class DiscussionArea {
 
   /**
    * Returns an array of the `DiscussionComment`s with the nearest time to
-   * `timeMs`. This typically returns an array with a single element, but
+   * `timeMs`.
+   *
+   * <p>This typically returns an array with a single element, but
    * if there are multiple comments the same distance away, they will all be
    * returned. This can also return an empty array if there are no comments.
    */
