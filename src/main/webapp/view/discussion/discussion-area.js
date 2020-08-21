@@ -20,6 +20,10 @@ import {COMMENT_TYPE_QUESTION} from './discussion.js';
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
 
+/*
+ * Displays the entire Discussion Area UI, and implements posting
+ * new comments and loading existing ones to the current lecture.
+ */
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
@@ -29,6 +33,9 @@ export default class DiscussionArea {
   #currentTimeMs;
   #currentRootCommentElements;
 
+  /**
+   * Creates a `DiscussionArea` for a `lecture`.
+   */
   constructor(lecture) {
     this.#lecture = lecture;
     this.#manager = new DiscussionManager(this.#lecture);
@@ -36,10 +43,16 @@ export default class DiscussionArea {
     this.#currentRootCommentElements = [];
   }
 
+  /**
+   * Initialize the discussion area by loading the current comments.
+   */
   async initialize() {
     await this.loadDiscussion();
   }
 
+  /**
+   * Fetches and displays the current comments.
+   */
   async loadDiscussion() {
     // Clear any existing comments before loading.
     ELEMENT_DISCUSSION.textContent = '';
@@ -65,11 +78,11 @@ export default class DiscussionArea {
     // currentRootCommentElements is already sorted by timestamp.
     for (const element of this.#currentRootCommentElements) {
       const commentTime = element.comment.timestampMs.value;
-      if (commentTime < timestampMs - DiscussionArea.#TIME_TOLERANCE_MS) {
+      if (commentTime < (timestampMs - DiscussionArea.#TIME_TOLERANCE_MS)) {
         // Before the start of the range, continue to next.
         continue;
       }
-      if (commentTime > timestampMs + DiscussionArea.#TIME_TOLERANCE_MS) {
+      if (commentTime > (timestampMs + DiscussionArea.#TIME_TOLERANCE_MS)) {
         // Outside of range, there will be no more.
         return nearby;
       }
@@ -78,6 +91,10 @@ export default class DiscussionArea {
     return nearby;
   }
 
+  /**
+   * Seeks the discussion area to `timeMs`. This involves scrolling the
+   * comments, and updating the time displayed in the new comment area.
+   */
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
@@ -89,6 +106,9 @@ export default class DiscussionArea {
     nearbyComments[0].scrollToTopOfDiscussion();
   }
 
+  /**
+   * Posts the comment in the new comment area, and reloads the discussion.
+   */
   postNewComment() {
     this.#manager
         .postRootComment(
@@ -99,6 +119,9 @@ export default class DiscussionArea {
         });
   }
 
+  /**
+   * Posts `content` as a reply to `parentId`, and reloads the discussion.
+   */
   postReply(content, parentId) {
     this.#manager.postReply(content, parentId).then(() => {
       this.loadDiscussion();
