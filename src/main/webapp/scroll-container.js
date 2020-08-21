@@ -21,19 +21,23 @@ export class ScrollContainer extends HTMLDivElement {
 
   constructor() {
     super();
-    this.appendChild(this.createScrollBanner());
-    console.log(this.getElementsByTagName('div'));
+    this.createScrollBanner();
+    this.appendChild(this.#scrollBanner);
+    this.appendChild(this.#scrollBanner);
     this.onscroll = this.stopAutoScroll();
     this.#autoScrollIsActive = true;
   }
 
   createScrollBanner() {
-    this.#scrollBanner = document.createElement('div');
-    this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
-    this.#scrollBanner.class = ScrollContainer.#SCROLL_BANNER_CLASSES;
-    this.#scrollBanner.onclick = this.startAutoScroll();
+    const scrollBanner = document.createElement('div');
     console.log(this.#scrollBanner);
-    return this.#scrollBanner;
+    this.#scrollBanner = scrollBanner;
+    scrollBanner.innerText = 'Click here to continue auto-scroll';
+    scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
+    scrollBanner.onclick = this.startAutoScroll();
+    console.log(this.#scrollBanner);
+    console.log(scrollBanner);
+    this.appendChild(scrollBanner);
   }
 
   /** De-activates the automatic scrolling of the transcript. */
@@ -59,10 +63,8 @@ export class TranscriptScrollContainer extends ScrollContainer {
     super();
     this.id = this.#TRANSCRIPT_CONTAINER_ID;
     this.className = TranscriptScrollContainer.#TRANSCRIPT_CONTAINER_CLASSES;
-    console.log(this.class);
   }
 }
 
 customElements.define(
     'transcript-scroll-container', TranscriptScrollContainer, {extends: 'div'});
-    
