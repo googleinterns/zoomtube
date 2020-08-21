@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Synchronizer from '../synchronizer.js';
-
 import {intializeDiscussion} from '../view/discussion/discussion.js';
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
+import EventController from '../event-controller.js';
 
 const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
-
 
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
@@ -41,8 +39,7 @@ async function initialize() {
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
 
-  const synchronizer = new Synchronizer();
-  const video = new Video(synchronizer);
+  const video = new Video();
   const transcript = new TranscriptArea('event controller');
 
   await video.loadVideoApi();

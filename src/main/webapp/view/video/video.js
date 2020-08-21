@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import Synchronizer from '../../synchronizer.js';
 import {secondsToMilliseconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
-  constructor(synchronizer) {
-    this.synchronizer = synchronizer;
+  constructor() {
+    Video.synchronizer = new Synchronizer();
   }
 
   /** Loads YouTube iFrame API. */
@@ -37,7 +38,7 @@ export default class Video {
    */
   // TODO: Support dynamic video height and width.
   onYouTubeIframeAPIReady() {
-    this.videoPlayer = new window.YT.Player('player', {
+    Video.videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
       videoId: window.LECTURE.videoId,
@@ -50,12 +51,12 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    this.synchronizer.startVideoSyncTimer();
+    Synchronizer.startVideoSyncTimer();
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */
-  getCurrentVideoTimeMs() {
-    return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
+  static getCurrentVideoTimeMs() {
+    return secondsToMilliseconds(Video.videoPlayer.getCurrentTime());
   }
 
   /** Seeks video to `currentTime`. */
