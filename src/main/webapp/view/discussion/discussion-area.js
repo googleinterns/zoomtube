@@ -13,14 +13,17 @@
 // limitations under the License.
 
 import {timestampToString} from '../../timestamps.js';
-
-import {DiscussionComment} from './discussion-comment.js';
+import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_QUESTION} from './discussion.js';
 
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
 
+/*
+ * Displays the entire Discussion Area UI, and implements posting
+ * new comments and loading existing ones to the current lecture.
+ */
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
@@ -29,6 +32,9 @@ export default class DiscussionArea {
   #currentTimeMs;
   #currentRootCommentElements;
 
+  /**
+   * Creates a `DiscussionArea` for a `lecture`.
+   */
   constructor(lecture) {
     this.#lecture = lecture;
     this.#manager = new DiscussionManager(this.#lecture);
@@ -36,10 +42,16 @@ export default class DiscussionArea {
     this.#currentRootCommentElements = [];
   }
 
+  /**
+   * Initialize the discussion area by loading the current comments.
+   */
   async initialize() {
     await this.loadDiscussion();
   }
 
+  /**
+   * Fetches and displays the current comments.
+   */
   async loadDiscussion() {
     // Clear any existing comments before loading.
     ELEMENT_DISCUSSION.textContent = '';
@@ -47,7 +59,8 @@ export default class DiscussionArea {
 
     const rootComments = await this.#manager.fetchRootComments();
     for (const rootComment of rootComments) {
-      const rootCommentElement = new DiscussionComment(rootComment, this);
+      const rootCommentElement = new DiscussionComment(this);
+      rootCommentElement.setComment(rootComment);
       this.#currentRootCommentElements.push(rootCommentElement);
       ELEMENT_DISCUSSION.appendChild(rootCommentElement);
     }
@@ -89,6 +102,9 @@ export default class DiscussionArea {
     return nearest;
   }
 
+  /**
+   * Seeks discussion to `timeMs`.
+   */
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
@@ -100,6 +116,9 @@ export default class DiscussionArea {
     nearestComments[0].scrollToTopOfDiscussion();
   }
 
+  /**
+   * Posts the comment in the new comment area, and reloads the discussion.
+   */
   postNewComment() {
     this.#manager
         .postRootComment(
@@ -110,6 +129,9 @@ export default class DiscussionArea {
         });
   }
 
+  /**
+   * Posts `content` as a reply to `parentId`, and reloads the discussion.
+   */
   postReply(content, parentId) {
     this.#manager.postReply(content, parentId).then(() => {
       this.loadDiscussion();
