@@ -15,11 +15,9 @@
 import {timestampRangeToString} from '../../timestamps.js';
 
 const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
-const ENDPOINT_TRANSCRIPT = '/transcript';
 const DEFAULT_FONT_WEIGHT = 'text-muted';
 const BOLD_FONT_WEIGHT = 'font-weight-bold';
-const URL_PARAM_ID = 'id';
+const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
 const TRANSCRIPT_SLOT_TIME_RANGE = 'timestamp-range';
 const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
@@ -27,38 +25,6 @@ const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 let /** Element */ currentTranscriptLine;
 // TODO: Create an instance reference to currentTranscriptLine when
 // the code for seeking the transcript is refactored into a class.
-
-/**
- * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
- *
- * <p>This function assumes that the transcript lines have already
- * been added to the datastore.
- */
-export function loadTranscript() {
-  const url = new URL(ENDPOINT_TRANSCRIPT, window.location.origin);
-  url.searchParams.append(URL_PARAM_ID, window.LECTURE_ID);
-  fetch(url).then((response) => response.json()).then((transcriptLines) => {
-    addMultipleTranscriptLinesToDom(transcriptLines);
-  });
-}
-
-/**
- * Adds `transcriptLines` to the DOM as list elements.
- */
-function addMultipleTranscriptLinesToDom(transcriptLines) {
-  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-  if (transcriptContainer.firstChild) {
-    transcriptContainer.removeChild(transcriptContainer.firstChild);
-  }
-  const ulElement = document.createElement('ul');
-  ulElement.class = 'mx-auto';
-  transcriptContainer.appendChild(ulElement);
-
-  transcriptLines.forEach((transcriptLine) => {
-    ulElement.appendChild(
-        TranscriptLineElement.createTranscriptLineElement(transcriptLine));
-  });
-}
 
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
@@ -69,6 +35,9 @@ export function deleteTranscript() {
 
 /** Seeks transcript to `timeMs`. */
 export function seekTranscript(timeMs) {
+  if (currentTranscriptLine == null) {
+    currentTranscriptLine = document.getElementsByTagName('transcript-line')[0];
+  }
   if (timeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
     return;
   }
@@ -77,10 +46,12 @@ export function seekTranscript(timeMs) {
     return;
   }
   currentTranscriptLine.removeBold();
-  currentTranscriptLine = currentTranscriptLine.nextElementSibling;
+  currentTranscriptLine = transcriptLineWithTime(timeMs);
   scrollToTopOfTranscript(currentTranscriptLine);
   currentTranscriptLine.addBold();
   // TODO: Handle the case where the video isn't only playing.
+  // TODO: Check if currentTranscriptLine is within the time range. If
+  // it isn't, do not bold the transcript line.
 }
 
 /**
@@ -99,7 +70,7 @@ function scrollToTopOfTranscript(transcriptLineElement) {
  * Creates a transcript line element containing the text,
  * start time, and end time.
  */
-class TranscriptLineElement extends HTMLElement {
+export class TranscriptLineElement extends HTMLElement {
   /**
    * Creates a custom HTML element representing `transcriptLine`.
    *
@@ -148,13 +119,13 @@ class TranscriptLineElement extends HTMLElement {
     this.appendChild(span);
   }
 
-  /** Returns true if the element is already bolded. */
+  /** Returns true if this element is bolded. */
   isBolded() {
     return this.classList.contains(BOLD_FONT_WEIGHT);
   }
 
   /**
-   * Bolds the element if it is not already bolded.
+   * Bolds this element if it is not already bolded.
    */
   addBold() {
     if (this.isBolded()) {
@@ -165,7 +136,7 @@ class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Removes bold from the element if it is currently bolded.
+   * Removes bold from this element if it is currently bolded.
    */
   removeBold() {
     if (!this.isBolded()) {
@@ -176,13 +147,60 @@ class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Returns true if `timestampMs` is within the time range for
-   * this transcript line.
+   * Returns true if `timestampMs` is within the time range of
+   * this transcript line element.
    */
   isWithinTimeRange(timestampMs) {
     return this.transcriptLine.startTimestampMs <= timestampMs &&
         timestampMs <= this.transcriptLine.endTimestampMs;
   }
+
+  /**
+   * Returns true if the starting time of this element is before `timeMs`.
+   */
+  isBeforeTimeMs(timeMs) {
+    return this.startTimestampMs < timeMs;
+  }
+}
+
+/**
+ * Returns the next transcript line for `timeMs`.
+ */
+function transcriptLineWithTime(timeMs) {
+  const nextTranscript = currentTranscriptLine.nextElementSibling;
+  // If the video is playing normally, the next transcript line
+  // is the one immediately after it. This check is done before
+  // the search is conducted because it is more time efficient
+  // to check the next element than to conduct a search.
+  if (nextTranscript.isWithinTimeRange(timeMs)) {
+    return nextTranscript;
+  }
+  // This call happens if the user seeks to a certain timestamp instead.
+  return findClosestTranscriptLine(timeMs);
+}
+
+/**
+ * Searches for and returns the closest transcript line
+ * based on `timeMs`.
+ */
+function findClosestTranscriptLine(timeMs) {
+  // TODO: Create a global variable for the list of transcript line elements
+  // once the pull request separating transcript.js into classes is merged.
+  const transcriptLineElements = document.getElementsByTagName('li');
+  let transcriptLinePointer = transcriptLineElements[0];
+  while (transcriptLinePointer != null &&
+         !transcriptLinePointer.isWithinTimeRange(timeMs) &&
+         transcriptLinePointer.isBeforeTimeMs(timeMs)) {
+    transcriptLinePointer = transcriptLinePointer.nextElementSibling;
+  }
+  // This happens when `timeMs` is after the last transcriptLine's ending
+  // timestamp. `TranscriptLinePointer` is updated to be the last transcriptLine
+  // because it is the closest line that the transcript can scroll to.
+  if (transcriptLinePointer === null) {
+    transcriptLinePointer =
+        transcriptLineElements[transcriptLineElements.length - 1];
+  }
+  return transcriptLinePointer;
 }
 
 customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLineElement);
