@@ -20,6 +20,7 @@ export class ScrollContainer extends HTMLDivElement {
 
   #autoScrollIsActive;
   #scrollBanner;
+  browserScrolled;
 
   /** Creates a `ScrollContainer` .*/
   constructor() {
@@ -46,6 +47,10 @@ export class ScrollContainer extends HTMLDivElement {
 
   /** De-activates the automatic scrolling of the transcript. */
   stopAutoScroll() {
+    if (this.browserScrolled) {
+      this.browserScrolled = false;
+      return;
+    }
     this.#autoScrollIsActive = false;
     this.#scrollBanner.style.visibility = 'visible';
   }
@@ -54,6 +59,10 @@ export class ScrollContainer extends HTMLDivElement {
   startAutoScroll() {
     this.#autoScrollIsActive = true;
     this.#scrollBanner.style.visibility = 'hidden';
+  }
+
+  autoScrollIsActive() {
+    return this.#autoScrollIsActive;
   }
 }
 

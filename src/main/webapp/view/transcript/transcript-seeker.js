@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import TranscriptArea from './transcript-area.js';
+
 /** Seeks to a line in the transcript. */
 export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
@@ -50,10 +52,14 @@ export default class TranscriptSeeker {
    * of the container.
    */
   static scrollToTopOfTranscript(transcriptLine) {
+    if (!TranscriptArea.transcriptScrollContainer().autoScrollIsActive()) {
+      return;
+    }
     const transcriptContainer =
         document.getElementById(TranscriptSeeker.#TRANSCRIPT_CONTAINER);
     const ulElementOffset = transcriptLine.parentElement.offsetTop;
     transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
+    TranscriptArea.transcriptScrollContainer().browserScrolled = true;
   }
 
   /** Seeks transcript to `timeMs`. */
@@ -64,7 +70,6 @@ export default class TranscriptSeeker {
     }
     this.currentTranscriptLine().removeBold();
     this.#currentTranscriptLine = this.transcriptLineWithTime(timeMs);
-    TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
       this.currentTranscriptLine().addBold();
     }
