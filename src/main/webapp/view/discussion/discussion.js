@@ -12,28 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {timestampToString} from '../../timestamps.js';
 import View from '../view.js';
-import DiscussionArea from './discussion-area.js';
 
 export const COMMENT_TYPE_REPLY = 'REPLY';
 export const COMMENT_TYPE_QUESTION = 'QUESTION';
 export const COMMENT_TYPE_NOTE = 'NOTE';
 
-export let /** DiscussionArea */ discussion;
-
-/**
- * Loads the lecture discussion.
- */
-export async function intializeDiscussion() {
-  discussion = new DiscussionArea(window.LECTURE);
-  discussion.initialize();
-  // This is used as the `onclick` handler of the new comment area submit
-  // button. It must be set after discussion is initialized.
-  window.postNewComment = discussion.postNewComment.bind(discussion);
-}
-
 /** Seeks discussion to `timeMs`. */
 export function seekDiscussion(timeMs) {
-  discussion.seek(timeMs);
+  View.discussion.seek(timeMs);
 }

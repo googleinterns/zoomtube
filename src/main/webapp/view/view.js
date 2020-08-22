@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {intializeDiscussion} from '../view/discussion/discussion.js';
+import DiscussionArea from './discussion/discussion-area.js'
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
 
@@ -37,15 +37,20 @@ export default class View {
   async initialize() {
     this.setLectureName();
 
-    const video = new Video();
-    const transcript = new TranscriptArea('event controller');
+    View.video = new Video();
+    View.transcript = new TranscriptArea('event controller');
+    View.discussion = new DiscussionArea(View.lecture);
 
-    await video.loadVideoApi();
+    await View.video.loadVideoApi();
     // TODO: Move TranscriptArea initialization outside of initialize()
     // and replace string parameter with a controller object.
-    await transcript.loadTranscript();
+    await View.transcript.loadTranscript();
+    await View.discussion.initialize();
 
-    await intializeDiscussion();
+    // This is used as the `onclick` handler of the new comment area submit
+    // button. It must be set after discussion is initialized.
+    window.postNewComment =
+        View.discussion.postNewComment.bind(View.discussion);
   }
 
   /**
