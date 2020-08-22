@@ -54,6 +54,10 @@ export default class DiscussionArea {
    */
   async updateDiscussion() {
     const newComments = await this.#manager.fetchNewComments();
+    if (newComments.length == 0) {
+      return;
+    }
+
     for (const comment of newComments) {
       const commentElement = new DiscussionComment(this);
       commentElement.setComment(comment);
@@ -77,10 +81,12 @@ export default class DiscussionArea {
    * Inserts a new root comment into the DOM, maintaining order by timestamp.
    */
   insertRootComment(newComment) {
+    const newCommentTime = newComment.timestampMs.value;
     // For now, we use a linear search. This can be improved if it becomes
     // an issue.
     for (const commentElement of ELEMENT_DISCUSSION.children) {
-      if (commentElement.comment.timestampMs >= newComment.timestampMs) {
+      const commentTime = commentElement.comment.timestampMs.value;
+      if (commentTime >= newCommentTime) {
         commentElement.before(newComment.element);
         return;
       }
