@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {TranscriptScrollContainer} from '../../scroll-container.js';
-
+import {ScrollContainer} from '../../scroll-container.js';
+import TranscriptSeeker from './transcript-seeker.js';
 import {TranscriptLineElement} from './transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
@@ -34,7 +34,7 @@ export default class TranscriptArea {
    */
   constructor(eventController) {
     this.#eventController = eventController;
-    // TODO: Create a transcriptSeeker object with the
+    this.#transcriptSeeker = new TranscriptSeeker(eventController);
     // eventController as the parameter.
   }
 
@@ -79,12 +79,18 @@ export default class TranscriptArea {
 
   static transcriptScrollContainer() {
     if (this.#transcriptContainer == null) {
-      this.#transcriptContainer = new TranscriptScrollContainer();
+      this.#transcriptContainer = new ScrollContainer();
+      this.#transcriptContainer.id = 'transcript-lines-container';
       const parentContainer = document.getElementById('transcript-container');
       parentContainer.appendChild(this.#transcriptContainer);
     }
     return this.#transcriptContainer;
   }
 
-  // TODO: Add a getter method for the transcriptSeeker object.
+  /**
+   * Returns the `transcriptSeeker`.
+   */
+  transcriptSeeker() {
+    return this.#transcriptSeeker;
+  }
 }

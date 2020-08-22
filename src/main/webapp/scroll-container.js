@@ -15,6 +15,7 @@
 export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
       'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
+  static #SCROLL_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
 
   #autoScrollIsActive;
   #scrollBanner;
@@ -25,6 +26,7 @@ export class ScrollContainer extends HTMLDivElement {
     this.onscroll = function() {
       this.stopAutoScroll();
     };
+    this.className = ScrollContainer.#SCROLL_CONTAINER_CLASSES;
     this.#autoScrollIsActive = true;
   }
 
@@ -53,17 +55,3 @@ export class ScrollContainer extends HTMLDivElement {
 }
 
 customElements.define('scroll-container', ScrollContainer, {extends: 'div'});
-
-export class TranscriptScrollContainer extends ScrollContainer {
-  static #TRANSCRIPT_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
-  #TRANSCRIPT_CONTAINER_ID = 'transcript-lines-container';
-
-  constructor() {
-    super();
-    this.id = this.#TRANSCRIPT_CONTAINER_ID;
-    this.className = TranscriptScrollContainer.#TRANSCRIPT_CONTAINER_CLASSES;
-  }
-}
-
-customElements.define(
-    'transcript-scroll-container', TranscriptScrollContainer, {extends: 'div'});
