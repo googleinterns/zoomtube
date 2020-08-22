@@ -30,7 +30,7 @@ export class ScrollContainer extends HTMLDivElement {
     this.#autoScrollIsActive = true;
   }
   
-  /** Creates a banner for scrolling. */
+  /** Creates a banner for scrolling.*/
   createScrollBanner() {
     this.#scrollBanner = document.createElement('div');
     this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
