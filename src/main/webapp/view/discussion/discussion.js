@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {timestampToString} from '../../timestamps.js';
+import View from '../view.js';
 
 const ENDPOINT_DISCUSSION = '/discussion';
 
@@ -90,7 +91,7 @@ async function postReply(inputField, parentId) {
  */
 async function postAndReload(inputField, params) {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
+  url.searchParams.append(PARAM_LECTURE, View.lectureId);
   for (const param in params) {
     // This is recommended by the style guide, but disallowed by linter.
     /* eslint-disable no-prototype-builtins */
@@ -155,12 +156,12 @@ function prepareComments(comments) {
 }
 
 /**
- * Requests all comments in the lecture specified by `LECTURE_ID` from
+ * Requests all comments in the lecture specified by `View.lectureId` from
  * the {@link java.com.googleinterns.zoomtube.servlets.DiscussionServlet}.
  */
 async function fetchDiscussion() {
   const url = new URL(ENDPOINT_DISCUSSION, window.location.origin);
-  url.searchParams.append(PARAM_LECTURE, window.LECTURE_ID);
+  url.searchParams.append(PARAM_LECTURE, View.lectureId);
 
   const request = await fetch(url);
   return request.json();

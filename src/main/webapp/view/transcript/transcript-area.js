@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import View from '../view.js';
 import {TranscriptLineElement} from './transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
@@ -45,7 +46,7 @@ export default class TranscriptArea {
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
+    url.searchParams.append(TranscriptArea.#PARAM_ID, View.lectureId);
     fetch(url).then((response) => response.json()).then((transcriptLines) => {
       TranscriptArea.addMultipleTranscriptLinesToDom(transcriptLines);
     });

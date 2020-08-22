@@ -20,54 +20,58 @@ const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
 
-/* exported LECTURE_ID */
-window.LECTURE_ID = getLectureId();
+export default class View {
+  /** Sets {@code window.LECTURE} as Lecture for view page. */
+  constructor() {
+    View.lectureId = this.getLectureId();
+    this.getLecture().then((lecture) => {
+      View.lecture = lecture;
+      this.initialize();
+    });
+  }
 
-/** Sets {@code window.LECTURE} as Lecture for view page. */
-getLecture().then((lecture) => {
-  window.LECTURE = lecture;
-  initialize();
-});
+  /**
+   * Initializes the video player, discussion
+   * and transcript sections for the lecture view page.
+   */
+  async initialize() {
+    this.setLectureName();
 
-/**
- * Initializes the video player, discussion
- * and transcript sections for the lecture view page.
- */
-async function initialize() {
-  setLectureName();
+    const video = new Video();
+    const transcript = new TranscriptArea('event controller');
 
-  const video = new Video();
-  const transcript = new TranscriptArea('event controller');
+    await video.loadVideoApi();
+    // TODO: Move TranscriptArea initialization outside of initialize()
+    // and replace string parameter with a controller object.
+    await transcript.loadTranscript();
 
-  await video.loadVideoApi();
-  // TODO: Move TranscriptArea initialization outside of initialize()
-  // and replace string parameter with a controller object.
-  await transcript.loadTranscript();
+    await intializeDiscussion();
+  }
 
-  await intializeDiscussion();
+  /**
+   * Returns lecture in database associated with `View.lectureId`
+   * obtained from `ENDPOINT_LECTURE`.
+   */
+  async getLecture() {
+    const url = new URL(ENDPOINT_LECTURE, window.location.origin);
+    url.searchParams.append(PARAM_ID, View.lectureId);
+    const response = await fetch(url);
+    return response.json();
+  }
+
+  /**
+   * Returns the lecture id obtained from the current page's URL parameters.
+   */
+  getLectureId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(PARAM_ID);
+  }
+
+  /** Sets the lecture name in `header-text`. */
+  setLectureName() {
+    const headerText = document.getElementById('header-text');
+    headerText.innerText = View.lecture.lectureName;
+  }
 }
 
-/**
- * Returns lecture in database associated with `window.LECTURE_ID`
- * obtained from `ENDPOINT_LECTURE`.
- */
-async function getLecture() {
-  const url = new URL(ENDPOINT_LECTURE, window.location.origin);
-  url.searchParams.append(PARAM_ID, window.LECTURE_ID);
-  const response = await fetch(url);
-  return response.json();
-}
-
-/**
- * Returns the lecture id obtained from the current page's URL parameters.
- */
-function getLectureId() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(PARAM_ID);
-}
-
-/** Sets the lecture name in `header-text`. */
-function setLectureName() {
-  const headerText = document.getElementById('header-text');
-  headerText.innerText = window.LECTURE.lectureName;
-}
+window.lectureView = new View();

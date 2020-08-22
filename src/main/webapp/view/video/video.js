@@ -14,6 +14,7 @@
 
 import Synchronizer from '../../synchronizer.js';
 import {secondsToMilliseconds} from '../../timestamps.js';
+import View from '../view.js';
 
 const SCRIPT = 'script';
 
@@ -43,7 +44,7 @@ export default class Video {
     this.videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
-      videoId: window.LECTURE.videoId,
+      videoId: View.lecture.videoId,
       events: {
         onReady: window.onPlayerReady,
       },
