@@ -65,11 +65,13 @@ export default class TranscriptSeeker {
   /** Seeks transcript to `timeMs`. */
   seekTranscript(timeMs) {
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
+      TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
       this.currentTranscriptLine().addBold();
       return;
     }
     this.currentTranscriptLine().removeBold();
     this.#currentTranscriptLine = this.transcriptLineWithTime(timeMs);
+    TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
       this.currentTranscriptLine().addBold();
     }
