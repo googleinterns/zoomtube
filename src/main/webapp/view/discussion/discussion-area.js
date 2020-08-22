@@ -15,7 +15,7 @@
 import {timestampToString} from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
-import {COMMENT_TYPE_QUESTION} from './discussion.js';
+import {COMMENT_TYPE_QUESTION, COMMENT_TYPE_REPLY} from './discussion.js';
 
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
@@ -30,7 +30,6 @@ export default class DiscussionArea {
   #lecture;
   #manager;
   #currentTimeMs;
-  #currentRootCommentElements;
   #nearestComments;
 
   /**
@@ -40,7 +39,6 @@ export default class DiscussionArea {
     this.#lecture = lecture;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
-    this.#currentRootCommentElements = [];
     this.#nearestComments = [];
   }
 
@@ -48,24 +46,47 @@ export default class DiscussionArea {
    * Initialize the discussion area by loading the current comments.
    */
   async initialize() {
-    await this.loadDiscussion();
+    await this.updateDiscussion();
   }
 
   /**
-   * Fetches and displays the current comments.
+   * Fetches and updates the currently displayed comments.
    */
-  async loadDiscussion() {
-    // Clear any existing comments before loading.
-    ELEMENT_DISCUSSION.textContent = '';
-    this.#currentRootCommentElements = [];
-
-    const rootComments = await this.#manager.fetchRootComments();
-    for (const rootComment of rootComments) {
-      const rootCommentElement = new DiscussionComment(this);
-      rootCommentElement.setComment(rootComment);
-      this.#currentRootCommentElements.push(rootCommentElement);
-      ELEMENT_DISCUSSION.appendChild(rootCommentElement);
+  async updateDiscussion() {
+    const newComments = await this.#manager.fetchNewComments();
+    for (const comment of newComments) {
+      const commentElement = new DiscussionComment(this);
+      commentElement.setComment(comment);
+      comment.element = commentElement;
     }
+
+    for (const comment of newComments) {
+      if (comment.type === COMMENT_TYPE_REPLY) {
+        comment.parent.element.insertReply(comment);
+        continue;
+      }
+      this.insertRootComment(comment);
+    }
+
+    // It's possible that the comment we should be seeked to has changed,
+    // So we run seek again.
+    this.seek(this.#currentTimeMs);
+  }
+
+  /**
+   * Inserts a new root comment into the DOM, maintaining order by timestamp.
+   */
+  insertRootComment(newComment) {
+    // For now, we use a linear search. This can be improved if it becomes
+    // an issue.
+    for (const commentElement of ELEMENT_DISCUSSION.children) {
+      if (commentElement.comment.timestampMs >= newComment.timestampMs) {
+        commentElement.before(newComment.element);
+        return;
+      }
+    }
+    // If it isn't before any existing comments, it must belong at the end.
+    ELEMENT_DISCUSSION.appendChild(newComment.element);
   }
 
   /**
@@ -79,8 +100,8 @@ export default class DiscussionArea {
   getNearestDiscussionComments(timeMs) {
     let nearest = [];
     let nearestDistance = Infinity;
-    // #currentRootCommentElements is sorted by timestamp.
-    for (const element of this.#currentRootCommentElements) {
+    // ELEMENT_DISCUSSION is sorted by timestamp.
+    for (const element of ELEMENT_DISCUSSION.children) {
       const commentTimeMs = element.comment.timestampMs.value;
       const distance = Math.abs(timeMs - commentTimeMs);
       if (nearest.length == 0) {
@@ -135,7 +156,7 @@ export default class DiscussionArea {
   }
 
   /**
-   * Posts the comment in the new comment area, and reloads the discussion.
+   * Posts the comment in the new comment area, and updates the discussion.
    */
   postNewComment() {
     this.#manager
@@ -143,16 +164,16 @@ export default class DiscussionArea {
             DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
             COMMENT_TYPE_QUESTION)
         .then(() => {
-          this.loadDiscussion();
+          this.updateDiscussion();
         });
   }
 
   /**
-   * Posts `content` as a reply to `parentId`, and reloads the discussion.
+   * Posts `content` as a reply to `parentId`, and updates the discussion.
    */
   postReply(content, parentId) {
     this.#manager.postReply(content, parentId).then(() => {
-      this.loadDiscussion();
+      this.updateDiscussion();
     });
   }
 }
