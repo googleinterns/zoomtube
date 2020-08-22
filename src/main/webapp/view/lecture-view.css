@@ -41,6 +41,10 @@ discussion-comment {
   display: block;
 }
 
+discussion-comment[highlighted] > [slot='header'] {
+  font-weight: bold;
+}
+
 #discussion-comments {
   height: calc(100vh - 206px);
   overflow: scroll;
@@ -89,9 +93,9 @@ discussion-comment {
   padding: 15px;
 }
 
-transcript-line [slot='timestamp-range'] {
+.transcript-line-timestamp {
   display: inline-block;
-  width: 100px;
+  width: 110px;
 }
 
 #transcript-lines-container {
@@ -100,9 +104,8 @@ transcript-line [slot='timestamp-range'] {
 }
 
 #transcript-lines-container ul {
-  height: 100%;
   list-style-type: none;
-  padding: 0;
+  padding: 0 0 calc(100vh - 620px);
 }
 
 /* Video */

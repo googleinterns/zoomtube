@@ -12,44 +12,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {startVideoSyncTimer} from '../../synchronizer.js';
+import {secondsToMilliseconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
 
-window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+/** Initializes and stores video player information. */
+export default class Video {
+  /** Loads YouTube iFrame API. */
+  async loadVideoApi() {
+    window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+    const videoApiScript = document.createElement(SCRIPT);
+    const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
+    videoApiScript.src = 'https://www.youtube.com/iframe_api';
+    firstScriptTag.parentNode.insertBefore(videoApiScript, firstScriptTag);
+  }
 
-/** Loads YouTube iFrame API. */
-export async function loadVideoApi() {
-  const videoApiScript = document.createElement(SCRIPT);
-  const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
-  videoApiScript.src = 'https://www.youtube.com/iframe_api';
-  firstScriptTag.parentNode.insertBefore(videoApiScript, firstScriptTag);
-}
+  /**
+   * Creates a YouTube Video iFrame that plays lecture video after
+   * the API calls it. This is a required callback from the API.
+   */
+  // TODO: Support dynamic video height and width.
+  onYouTubeIframeAPIReady() {
+    this.videoPlayer = new window.YT.Player('player', {
+      height: '390',
+      width: '640',
+      videoId: window.LECTURE.videoId,
+      events: {
+        onReady: this.onPlayerReady,
+      },
+    });
+  }
 
-/**
- * Creates a YouTube Video iFrame that plays lecture video after
- * the API calls it. This is a required callback from the API.
- */
-// TODO: Change height and width.
-function onYouTubeIframeAPIReady() {
-  window.videoPlayer = new window.YT.Player('player', {
-    height: '390',
-    width: '640',
-    videoId: window.LECTURE.videoId,
-    events: {
-      onReady: onPlayerReady,
-    },
-  });
-}
+  /** `event` plays the YouTube video. */
+  onPlayerReady(event) {
+    event.target.playVideo();
+    window.synchronizer.startVideoSyncTimer();
+  }
 
-/** `event` plays the YouTube video. */
-function onPlayerReady(event) {
-  event.target.playVideo();
-  startVideoSyncTimer();
-}
+  /** Returns current video time of 'videoPlayer' in milliseconds. */
+  getCurrentVideoTimeMs() {
+    return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
+  }
 
-/** Seeks video to `timeMs`. */
-export function seekVideo(timeMs) {
-  // TODO: Remove log and implement.
-  console.log('SEEKING VIDEO TO: ' + timeMs);
+  /** Seeks video to `currentTime`. */
+  seekVideo(timeMs) {
+    // TODO: Removed and implement.
+    console.log('SEEKING VIDEO TO: ' + timeMs);
+  }
 }
