@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Creates a `ScrollContainer` used .*/
 export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
       'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
@@ -20,6 +21,7 @@ export class ScrollContainer extends HTMLDivElement {
   #autoScrollIsActive;
   #scrollBanner;
 
+  /** Creates a `ScrollContainer` .*/
   constructor() {
     super();
     this.appendChild(this.createScrollBanner());

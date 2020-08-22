@@ -71,6 +71,12 @@ export default class TranscriptArea {
     });
   }
 
+  /**
+   * Returns `transcriptContainer`.
+   * 
+   * <p>If `transcriptContainer` is undefined, a new ScrollContainer is
+   * created and returned.
+   */
   static transcriptScrollContainer() {
     if (this.#transcriptContainer == null) {
       this.#transcriptContainer = new ScrollContainer();
