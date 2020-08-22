@@ -14,17 +14,7 @@
 
 import {timestampRangeToString} from '../../timestamps.js';
 
-const TRANSCRIPT_CONTAINER = 'transcript-lines-container';
-const DEFAULT_FONT_WEIGHT = 'text-muted';
-const BOLD_FONT_WEIGHT = 'font-weight-bold';
-const TRANSCRIPT_TEMPLATE = 'transcript-line-template';
-const TRANSCRIPT_SLOT_TIME_RANGE = 'timestamp-range';
-const TRANSCRIPT_SLOT_CONTENT = 'content';
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
-
-let /** Element */ currentTranscriptLine;
-// TODO: Create an instance reference to currentTranscriptLine when
-// the code for seeking the transcript is refactored into a class.
 
 /**
  * Sends a POST request to delete all of the transcript lines from datastore.
@@ -33,80 +23,84 @@ export function deleteTranscript() {
   fetch('/delete-transcript', {method: 'POST'});
 }
 
-/** Seeks transcript to `timeMs`. */
-export function seekTranscript(timeMs) {
-  if (currentTranscriptLine == null) {
-    currentTranscriptLine = document.getElementsByTagName('transcript-line')[0];
-  }
-  if (timeMs < currentTranscriptLine.transcriptLine.startTimestampMs) {
-    return;
-  }
-  if (currentTranscriptLine.isWithinTimeRange(timeMs)) {
-    currentTranscriptLine.addBold();
-    return;
-  }
-  currentTranscriptLine.removeBold();
-  currentTranscriptLine = transcriptLineWithTime(timeMs);
-  scrollToTopOfTranscript(currentTranscriptLine);
-  currentTranscriptLine.addBold();
-  // TODO: Handle the case where the video isn't only playing.
-  // TODO: Check if currentTranscriptLine is within the time range. If
-  // it isn't, do not bold the transcript line.
-}
-
-/**
- * Scrolls 'transcriptLineElement` to the top of the transcript area.
- */
-// TODO: Make this function static and move it into the
-// class that seeks the transcript.
-function scrollToTopOfTranscript(transcriptLineElement) {
-  const transcriptContainer = document.getElementById(TRANSCRIPT_CONTAINER);
-  const ulElementOffset = transcriptLineElement.parentElement.offsetTop;
-  transcriptContainer.scrollTop =
-      transcriptLineElement.offsetTop - ulElementOffset;
-}
-
 /**
  * Creates a transcript line element containing the text,
  * start time, and end time.
  */
 export class TranscriptLineElement extends HTMLElement {
-  /**
-   * Creates a custom HTML element representing `transcriptLine`.
-   *
-   * @param template The template that will be cloned to create the
-   *     transcript line.
-   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
-   *     whose `attributes` should be used.
-   */
-  constructor(template, transcriptLine) {
-    super();
-    this.attachShadow({mode: 'open'});
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.transcriptLine = transcriptLine;
-  }
+  static #DEFAULT_FONT_WEIGHT = 'text-muted';
+  static #BOLD_FONT_WEIGHT = 'font-weight-bold';
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
    * the text and time range appended to the element.
    *
-   * <p>Uses the template and slots defined in `TRANSCRIPT_TEMPLATE` to
-   * help create the transcript line.
-   *
    * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
    *     whose `attributes` should be used.
    */
   static createTranscriptLineElement(transcriptLine) {
-    const template = document.getElementById(TRANSCRIPT_TEMPLATE);
-    const transcriptLineElement =
-        new TranscriptLineElement(template, transcriptLine);
     const timestampRange = timestampRangeToString(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
-    transcriptLineElement.updateTemplateSlot(
-        TRANSCRIPT_SLOT_TIME_RANGE, timestampRange);
-    transcriptLineElement.updateTemplateSlot(
-        TRANSCRIPT_SLOT_CONTENT, transcriptLine.content);
-    return transcriptLineElement;
+    return new TranscriptLineElement(timestampRange, transcriptLine);
+  }
+
+  /**
+   * Creates a custom HTML element representing `transcriptLine`.
+   *
+   * @param timestampRange The timestamp for the transcript line.
+   * @param transcriptLine The transcriptLine from `ENDPOINT_TRANSCRIPT`
+   *     whose `attributes` should be used.
+   */
+  constructor(timestampRange, transcriptLine) {
+    super();
+    const contentDivElement = TranscriptLineElement.createContentDivElement();
+    TranscriptLineElement.appendParagraphToContainer(
+        timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
+    TranscriptLineElement.appendParagraphToContainer(
+        transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+    this.classList.add(
+        'align-self-center', 'mb-2',
+        TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
+    this.appendChild(contentDivElement);
+    this.appendChild(TranscriptLineElement.createHrElement());
+    this.transcriptLine = transcriptLine;
+  }
+
+  /**
+   * Creates a stylized div element that will be used to store
+   * the time range and text in a `TranscriptLineElement`.
+   */
+  static createContentDivElement() {
+    const contentDivElement = document.createElement('div');
+    contentDivElement.classList.add('d-flex', 'flex-row', 'mb-1');
+    return contentDivElement;
+  }
+
+  /**
+   * Creates a stylized hr element that will be used to create a
+   * `TranscriptLineElement`.
+   */
+  static createHrElement() {
+    const hrElement = document.createElement('hr');
+    hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+    return hrElement;
+  }
+
+  /**
+   * Creates a p tag to store the given `text` inside the
+   * `container`.
+   *
+   * <p>Adds classes the the p tag if `classList` is provided.
+   */
+  static appendParagraphToContainer(text, container, classes = []) {
+    const pTag = document.createElement('p');
+    pTag.innerText = text;
+    container.appendChild(pTag);
+
+    if (classes.length == 0) {
+      return;
+    }
+    pTag.classList.add(...classes);
   }
 
   /**
@@ -121,7 +115,7 @@ export class TranscriptLineElement extends HTMLElement {
 
   /** Returns true if this element is bolded. */
   isBolded() {
-    return this.classList.contains(BOLD_FONT_WEIGHT);
+    return this.classList.contains(TranscriptLineElement.#BOLD_FONT_WEIGHT);
   }
 
   /**
@@ -131,8 +125,8 @@ export class TranscriptLineElement extends HTMLElement {
     if (this.isBolded()) {
       return;
     }
-    this.classList.add(BOLD_FONT_WEIGHT);
-    this.classList.remove(DEFAULT_FONT_WEIGHT);
+    this.classList.add(TranscriptLineElement.#BOLD_FONT_WEIGHT);
+    this.classList.remove(TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
   }
 
   /**
@@ -142,8 +136,8 @@ export class TranscriptLineElement extends HTMLElement {
     if (!this.isBolded()) {
       return;
     }
-    this.classList.add(DEFAULT_FONT_WEIGHT);
-    this.classList.remove(BOLD_FONT_WEIGHT);
+    this.classList.add(TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
+    this.classList.remove(TranscriptLineElement.#BOLD_FONT_WEIGHT);
   }
 
   /**
@@ -159,48 +153,8 @@ export class TranscriptLineElement extends HTMLElement {
    * Returns true if the starting time of this element is before `timeMs`.
    */
   isBeforeTimeMs(timeMs) {
-    return this.startTimestampMs < timeMs;
+    return this.transcriptLine.startTimestampMs < timeMs;
   }
-}
-
-/**
- * Returns the next transcript line for `timeMs`.
- */
-function transcriptLineWithTime(timeMs) {
-  const nextTranscript = currentTranscriptLine.nextElementSibling;
-  // If the video is playing normally, the next transcript line
-  // is the one immediately after it. This check is done before
-  // the search is conducted because it is more time efficient
-  // to check the next element than to conduct a search.
-  if (nextTranscript.isWithinTimeRange(timeMs)) {
-    return nextTranscript;
-  }
-  // This call happens if the user seeks to a certain timestamp instead.
-  return findClosestTranscriptLine(timeMs);
-}
-
-/**
- * Searches for and returns the closest transcript line
- * based on `timeMs`.
- */
-function findClosestTranscriptLine(timeMs) {
-  // TODO: Create a global variable for the list of transcript line elements
-  // once the pull request separating transcript.js into classes is merged.
-  const transcriptLineElements = document.getElementsByTagName('li');
-  let transcriptLinePointer = transcriptLineElements[0];
-  while (transcriptLinePointer != null &&
-         !transcriptLinePointer.isWithinTimeRange(timeMs) &&
-         transcriptLinePointer.isBeforeTimeMs(timeMs)) {
-    transcriptLinePointer = transcriptLinePointer.nextElementSibling;
-  }
-  // This happens when `timeMs` is after the last transcriptLine's ending
-  // timestamp. `TranscriptLinePointer` is updated to be the last transcriptLine
-  // because it is the closest line that the transcript can scroll to.
-  if (transcriptLinePointer === null) {
-    transcriptLinePointer =
-        transcriptLineElements[transcriptLineElements.length - 1];
-  }
-  return transcriptLinePointer;
 }
 
 customElements.define(CUSTOM_ELEMENT_TRANSCRIPT_LINE, TranscriptLineElement);
