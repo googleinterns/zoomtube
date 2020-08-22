@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import View from '../view.js';
+import TranscriptSeeker from './transcript-seeker.js';
 import {TranscriptLineElement} from './transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
@@ -33,7 +34,7 @@ export default class TranscriptArea {
    */
   constructor(eventController) {
     this.#eventController = eventController;
-    // TODO: Create a transcriptSeeker object with the
+    this.#transcriptSeeker = new TranscriptSeeker(eventController);
     // eventController as the parameter.
   }
 
@@ -77,5 +78,10 @@ export default class TranscriptArea {
     });
   }
 
-  // TODO: Add a getter method for the transcriptSeeker object.
+  /**
+   * Returns the `transcriptSeeker`.
+   */
+  transcriptSeeker() {
+    return this.#transcriptSeeker;
+  }
 }
