@@ -21,7 +21,7 @@ const ENDPOINT_LECTURE = '/lecture';
 const PARAM_ID = 'id';
 
 export default class View {
-  /** Sets {@code window.LECTURE} as Lecture for view page. */
+  /** Sets `lectureId``lecture` and initializes view page components. */
   constructor() {
     View.lectureId = this.getLectureId();
     this.getLecture().then((lecture) => {
