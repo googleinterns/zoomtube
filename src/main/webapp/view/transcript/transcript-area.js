@@ -61,12 +61,6 @@ export default class TranscriptArea {
    */
   static addMultipleTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer = TranscriptArea.transcriptScrollContainer();
-    // Removes the transcript lines from the container if there are any.
-    // This prevents having multiple sets of ul tags every time the page
-    // is refreshed.
-    if (transcriptContainer.childElementCount == 2) {
-      transcriptContainer.removeChild(transcriptContainer.lastChild);
-    }
     const ulElement = document.createElement('ul');
     // TODO: Move the class assignment to the HTML.
     ulElement.class = 'mx-auto';
