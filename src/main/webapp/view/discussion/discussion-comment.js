@@ -114,25 +114,28 @@ export default class DiscussionComment extends HTMLElement {
     const textarea = this.shadowRoot.querySelector(
         DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
     this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
+
+    textarea.value = '';
     const replyForm =
         this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_REPLY_FORM);
-    textarea.value = '';
     $(replyForm).collapse('hide');
   }
 
   /**
-   * Inserts a new reply comment, with no regard to order.
+   * Inserts a new reply comment, maintaining order by time created.
    */
   insertReply(newComment) {
+    const newCommentDate = new Date(newComment.created);
     // For now, we use a linear search. This can be improved if it becomes
     // an issue.
-    // for (const commentElement of ELEMENT_DISCUSSION.children) {
-    //   if (commentElement.comment.timestampMs > newComment.timestampMs) {
-    //     commentElement.before(newComment.element);
-    //     return;
-    //   }
-    // }
-    // If it isn't before any existing comments, it must belong at the end.
+    for (const commentElement of this.#replyDiv.children) {
+      const commentDate = new Date(commentElement.comment.created);
+      if (newCommentDate >= commentDate) {
+        commentElement.before(newComment.element);
+        return;
+      }
+    }
+    // If it isn't before any existing replies, it must belong at the end.
     this.#replyDiv.appendChild(newComment.element);
   }
 
