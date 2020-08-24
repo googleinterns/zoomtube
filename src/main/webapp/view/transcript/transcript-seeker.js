@@ -58,7 +58,7 @@ export default class TranscriptSeeker {
     transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
   }
 
-  /** Seeks transcript to `timeMs`. */
+  /** Seeks transcript to `timeMs` if transcript exists. */
   seekTranscript(timeMs) {
     if (!TranscriptArea.hasTranscript()) {
       return;

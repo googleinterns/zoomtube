@@ -22,7 +22,8 @@ export default class TranscriptArea {
   static #PARAM_ID = 'id';
   static #TRANSCRIPT_ERROR_MESSAGE =
       'Sorry, there is no transcript available for this lecture recording. :(';
-
+  // TODO: Update hasTranscript in the getter method for the transcript container
+  // once #286 is merged.
   static #hasTranscript = true;
   #transcriptSeeker;
   #eventController;
@@ -42,7 +43,9 @@ export default class TranscriptArea {
   }
 
   /**
-   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
+   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`. If there
+   * are no transcript lines, an error message is displayed in the
+   * transcript container instead.
    *
    * <p>This function assumes that the transcript lines have already
    * been added to the datastore.
@@ -53,6 +56,7 @@ export default class TranscriptArea {
     url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
+    // No transcript lines are available for this lecture.
     if (transcriptLines.length == 0) {
       TranscriptArea.displayNoTranscriptMessage();
       return;
@@ -100,6 +104,9 @@ export default class TranscriptArea {
     return this.#transcriptSeeker;
   }
 
+  /**
+   * Returns true if there is a transcript.
+   */
   static hasTranscript() {
     return TranscriptArea.#hasTranscript;
   }
