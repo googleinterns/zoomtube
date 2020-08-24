@@ -67,7 +67,7 @@ export default class LectureView {
   }
 }
 
-/** Obtains lecture id from stored in URL. */
+/** Lecture ID stored in `window.location.serach`. */
 const lectureId = getLectureId(window.location.search);
 
 /** Creates a LectureView with `lecture`. */
