@@ -20,6 +20,8 @@ export default class TranscriptArea {
   static #ENDPOINT_TRANSCRIPT = '/transcript';
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
+  static #TRANSCRIPT_ERROR_MESSAGE =
+      'Sorry, there is no transcript for this lecture recording.';
 
   #transcriptSeeker;
   #eventController;
@@ -49,7 +51,18 @@ export default class TranscriptArea {
     url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
+    if (transcriptLines.length == 0) {
+      this.displayNoTranscriptMessage();
+    }
     TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+  }
+
+  static displayNoTranscriptMessage() {
+    // TODO: Get the transcript container from a getter method once #286
+    // is merged.
+    const transcriptContainer =
+        document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
+    transcriptContainer.innerText = TranscriptArea.#TRANSCRIPT_ERROR_MESSAGE;
   }
 
   /**
