@@ -21,11 +21,14 @@ const ENDPOINT_LECTURE = '/lecture';
 const PARAM_ID = 'id';
 
 export default class View {
-  /** Sets `lectureId``lecture` and initializes view page components. */
+  #lecture;
+  #lectureId;
+
+  /** Sets `lectureId`, `lecture` and initializes view page components. */
   constructor() {
-    View.lectureId = this.getLectureId();
+    this.#lectureId = this.getLectureId();
     this.getLecture().then((lecture) => {
-      View.lecture = lecture;
+      this.#lecture = lecture;
       this.initialize();
     });
   }
@@ -37,11 +40,12 @@ export default class View {
   async initialize() {
     this.setLectureName();
 
-    View.video = new Video();
+    // TODO: Make these private once event controller is created.
+    View.video = new Video(this.#lecture);
     // TODO: Move TranscriptArea initialization outside of initialize()
     // and replace string parameter with a controller object.
-    View.transcript = new TranscriptArea('event controller');
-    View.discussion = new DiscussionArea(View.lecture);
+    View.transcript = new TranscriptArea(this.#lecture, 'event controller');
+    View.discussion = new DiscussionArea(this.#lecture);
 
     await View.video.loadVideoApi();
     await View.transcript.loadTranscript();
@@ -59,7 +63,7 @@ export default class View {
    */
   async getLecture() {
     const url = new URL(ENDPOINT_LECTURE, window.location.origin);
-    url.searchParams.append(PARAM_ID, View.lectureId);
+    url.searchParams.append(PARAM_ID, this.#lectureId);
     const response = await fetch(url);
     return response.json();
   }
@@ -75,7 +79,7 @@ export default class View {
   /** Sets the lecture name in `header-text`. */
   setLectureName() {
     const headerText = document.getElementById('header-text');
-    headerText.innerText = View.lecture.lectureName;
+    headerText.innerText = this.#lecture.lectureName;
   }
 }
 

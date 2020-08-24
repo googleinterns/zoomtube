@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import View from '../view.js';
 import TranscriptSeeker from './transcript-seeker.js';
 import {TranscriptLineElement} from './transcript.js';
 
@@ -22,8 +21,9 @@ export default class TranscriptArea {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
 
-  #transcriptSeeker;
+  #lecture
   #eventController;
+  #transcriptSeeker;
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -32,7 +32,8 @@ export default class TranscriptArea {
    * @param eventController An event controller object that
    *     that will be passed into a seekTranscript object.
    */
-  constructor(eventController) {
+  constructor(lecture, eventController) {
+    this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
     // eventController as the parameter.
@@ -47,7 +48,7 @@ export default class TranscriptArea {
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, View.lectureId);
+    url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
     fetch(url).then((response) => response.json()).then((transcriptLines) => {
       TranscriptArea.addMultipleTranscriptLinesToDom(transcriptLines);
     });

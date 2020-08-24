@@ -14,15 +14,18 @@
 
 import Synchronizer from '../../synchronizer.js';
 import {secondsToMilliseconds} from '../../timestamps.js';
-import View from '../view.js';
 
 const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
-  /** Links a new `Synchronizer` to a `Video`. */
-  constructor() {
-    this.synchronizer = new Synchronizer(this);
+  #lecture;
+  #synchronizer;
+
+  /** Creates a new `Synchronizer` linked to `this`. */
+  constructor(lecture) {
+    this.#lecture = lecture;
+    this.#synchronizer = new Synchronizer(this);
   }
 
   /** Loads YouTube iFrame API. */
@@ -44,7 +47,7 @@ export default class Video {
     this.videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
-      videoId: View.lecture.videoId,
+      videoId: this.#lecture.videoId,
       events: {
         onReady: window.onPlayerReady,
       },
@@ -54,7 +57,7 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    this.synchronizer.startVideoSyncTimer();
+    this.#synchronizer.startVideoSyncTimer();
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */
