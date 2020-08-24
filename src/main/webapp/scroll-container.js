@@ -23,6 +23,7 @@ export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
       'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
   static #SCROLL_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
+  static #AUTO_SCROLL_MESSAGE = 'Click here to continue auto-scroll';
 
   #autoScrollIsActive;
   #scrollBanner;
@@ -40,7 +41,7 @@ export class ScrollContainer extends HTMLDivElement {
   /** Creates a banner for scrolling.*/
   createScrollBanner() {
     this.#scrollBanner = document.createElement('div');
-    this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
+    this.#scrollBanner.innerText = ScrollContainer.#AUTO_SCROLL_MESSAGE;
     this.#scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
     this.#scrollBanner.onclick = this.startAutoScroll.bind(this);
     return this.#scrollBanner;
