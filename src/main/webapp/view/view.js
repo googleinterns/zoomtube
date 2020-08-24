@@ -38,12 +38,12 @@ export default class View {
     this.setLectureName();
 
     View.video = new Video();
+    // TODO: Move TranscriptArea initialization outside of initialize()
+    // and replace string parameter with a controller object.
     View.transcript = new TranscriptArea('event controller');
     View.discussion = new DiscussionArea(View.lecture);
 
     await View.video.loadVideoApi();
-    // TODO: Move TranscriptArea initialization outside of initialize()
-    // and replace string parameter with a controller object.
     await View.transcript.loadTranscript();
     await View.discussion.initialize();
 
