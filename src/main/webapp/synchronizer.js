@@ -31,7 +31,6 @@ const transcriptSeeker = new TranscriptSeeker('event controller');
 export default class Synchronizer {
   #video;
 
-  /** Creates a reference to `video` in `Synchronizer`. */
   constructor(video) {
     this.#video = video;
   }
