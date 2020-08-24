@@ -42,7 +42,6 @@ export class ScrollContainer extends HTMLDivElement {
     this.#scrollBanner = document.createElement('div');
     this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
     this.#scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
-    const container = this;
     this.#scrollBanner.onclick = this.startAutoScroll.bind(this);
     return this.#scrollBanner;
   }
