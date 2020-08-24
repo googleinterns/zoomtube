@@ -14,7 +14,10 @@
 
 /**
  * Creates a `ScrollContainer` responsible for hiding and displaying
- * a clickable banner to restart auto-scrolling.
+ * a clickable banner to restart automatic scrolling.
+ *
+ * <p>Automatic scrolling is when the elements in the container are scrolled
+ * to the top of the container automatically.
  */
 export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
