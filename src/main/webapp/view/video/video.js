@@ -21,11 +21,13 @@ const SCRIPT = 'script';
 export default class Video {
   #lecture;
   #synchronizer;
+  #eventController
 
   /** Creates a new `Synchronizer` linked to `this`. */
-  constructor(lecture) {
+  constructor(lecture, eventController) {
     this.#lecture = lecture;
     this.#synchronizer = new Synchronizer(this);
+    this.#eventController = eventController;
   }
 
   /** Loads YouTube iFrame API. */

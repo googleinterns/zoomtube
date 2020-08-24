@@ -28,6 +28,7 @@ export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
   #lecture;
+  #eventController;
   #manager;
   #currentTimeMs;
   #currentRootCommentElements;
@@ -36,8 +37,9 @@ export default class DiscussionArea {
   /**
    * Creates a `DiscussionArea` for a `lecture`.
    */
-  constructor(lecture) {
+  constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#currentRootCommentElements = [];

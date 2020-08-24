@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import EventController from '../event-controller.js';
 import DiscussionArea from './discussion/discussion-area.js';
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
@@ -41,11 +42,12 @@ export default class View {
     this.setLectureName();
 
     // TODO: Make these private once event controller is created.
-    View.video = new Video(this.#lecture);
+    View.eventController = new EventController();
+    View.video = new Video(this.#lecture, View.eventController);
     // TODO: Move TranscriptArea initialization outside of initialize()
     // and replace string parameter with a controller object.
-    View.transcript = new TranscriptArea(this.#lecture, 'event controller');
-    View.discussion = new DiscussionArea(this.#lecture);
+    View.transcript = new TranscriptArea(this.#lecture, View.eventController);
+    View.discussion = new DiscussionArea(this.#lecture, View.eventController);
 
     await View.video.loadVideoApi();
     await View.transcript.loadTranscript();
