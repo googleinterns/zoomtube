@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import TranscriptArea from './transcript-area';
+
 /** Seeks to a line in the transcript. */
 export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
@@ -58,6 +60,9 @@ export default class TranscriptSeeker {
 
   /** Seeks transcript to `timeMs`. */
   seekTranscript(timeMs) {
+    if (!TranscriptArea.hasTranscript()) {
+      return;
+    }
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
       this.currentTranscriptLine().addBold();
       return;

@@ -25,6 +25,7 @@ export default class TranscriptArea {
 
   #transcriptSeeker;
   #eventController;
+  #hasTranscript = true;
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -51,6 +52,7 @@ export default class TranscriptArea {
     url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
+    console.log(transcriptLines);
     if (transcriptLines.length == 0) {
       this.displayNoTranscriptMessage();
     }
@@ -63,6 +65,7 @@ export default class TranscriptArea {
     const transcriptContainer =
         document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
     transcriptContainer.innerText = TranscriptArea.#TRANSCRIPT_ERROR_MESSAGE;
+    this.#hasTranscript = false;
   }
 
   /**
@@ -95,5 +98,9 @@ export default class TranscriptArea {
    */
   transcriptSeeker() {
     return this.#transcriptSeeker;
+  }
+
+  hasTranscript() {
+    return this.#hasTranscript;
   }
 }
