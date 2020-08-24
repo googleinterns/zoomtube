@@ -64,7 +64,7 @@ export class ScrollContainer extends HTMLDivElement {
     this.#scrollBanner.style.visibility = 'hidden';
   }
 
-  /** Returns `autoScrollIsActive. */
+  /** Returns `autoScrollIsActive`. */
   autoScrollIsActive() {
     return this.#autoScrollIsActive;
   }
