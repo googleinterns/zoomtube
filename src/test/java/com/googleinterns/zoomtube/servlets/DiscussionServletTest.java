@@ -279,7 +279,7 @@ public class DiscussionServletTest {
 
   private List<Comment> getCommentsFromJson(String json) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
-    Type listType = new TypeToken<ArrayList<Comment>>() {}.getType();
+    Type listType = (new ArrayList<Comment>()).getClass();
     return gson.fromJson(json, listType);
   }
 }
