@@ -22,8 +22,8 @@ export default class TranscriptArea {
   static #PARAM_ID = 'id';
   static #TRANSCRIPT_ERROR_MESSAGE =
       'Sorry, there is no transcript available for this lecture recording. :(';
-  // TODO: Update hasTranscript in the getter method for the transcript container
-  // once #286 is merged.
+  // TODO: Update hasTranscript in the getter method for the transcript
+  // container once #286 is merged.
   static #hasTranscript = true;
   #transcriptSeeker;
   #eventController;
