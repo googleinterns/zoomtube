@@ -19,6 +19,8 @@ import {TranscriptLineElement} from './transcript.js';
 /** Loads the transcript lines onto the DOM. */
 export default class TranscriptArea {
   static #ENDPOINT_TRANSCRIPT = '/transcript';
+  static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+  static #TRANSCRIPT_PARENT_CONTAINER = 'transcript-container';
   static #transcriptContainer;
   static #PARAM_ID = 'id';
 
@@ -80,8 +82,9 @@ export default class TranscriptArea {
   static transcriptScrollContainer() {
     if (this.#transcriptContainer == null) {
       this.#transcriptContainer = new ScrollContainer();
-      this.#transcriptContainer.id = 'transcript-lines-container';
-      const parentContainer = document.getElementById('transcript-container');
+      this.#transcriptContainer.id = TranscriptArea.#TRANSCRIPT_CONTAINER;
+      const parentContainer =
+          document.getElementById(TranscriptArea.#TRANSCRIPT_PARENT_CONTAINER);
       parentContainer.appendChild(this.#transcriptContainer);
     }
     return this.#transcriptContainer;
