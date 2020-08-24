@@ -68,6 +68,19 @@ export class ScrollContainer extends HTMLDivElement {
   autoScrollIsActive() {
     return this.#autoScrollIsActive;
   }
+
+  /**
+   * Scrolls the container so that `element` is at the top
+   * of the container.
+   */
+  scrollToTopOfContainer(element) {
+    if (!this.autoScrollIsActive()) {
+      return;
+    }
+    const innerContainer = element.parentElement;
+    this.scrollTop = element.offsetTop - innerContainer.offsetTop;
+    this.browserScrolled = true;
+  }
 }
 
 customElements.define('scroll-container', ScrollContainer, {extends: 'div'});
