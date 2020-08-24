@@ -29,9 +29,11 @@ const transcriptSeeker = new TranscriptSeeker('event controller');
  * time.
  */
 export default class Synchronizer {
-  /** Links a `Video` to a `Synchronizer`. */
+  #video;
+
+  /** Creates a reference to `video` in `Synchronizer`. */
   constructor(video) {
-    this.video = video;
+    this.#video = video;
   }
 
   /**
@@ -40,7 +42,7 @@ export default class Synchronizer {
    */
   startVideoSyncTimer() {
     setInterval(() => {
-      this.sync(this.video.getCurrentVideoTimeMs());
+      this.sync(this.#video.getCurrentVideoTimeMs());
     }, /* ms= */ TIME_INTERVAL_MS);
   }
 
