@@ -23,11 +23,10 @@ export default class Video {
   #synchronizer;
   #eventController
 
-  /** Creates a new `Synchronizer` linked to `this`. */
   constructor(lecture, eventController) {
     this.#lecture = lecture;
-    this.#synchronizer = new Synchronizer(this);
     this.#eventController = eventController;
+    this.#synchronizer = new Synchronizer(this);
   }
 
   /** Loads YouTube iFrame API. */
