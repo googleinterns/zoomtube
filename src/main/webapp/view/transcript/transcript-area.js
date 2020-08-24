@@ -74,9 +74,9 @@ export default class TranscriptArea {
   }
 
   /**
-   * Returns `transcriptContainer`.
+   * Returns the container storing the transcript.
    *
-   * <p>If `transcriptContainer` is undefined, a new ScrollContainer is
+   * <p>If the container is undefined, a new ScrollContainer is
    * created and returned.
    */
   static transcriptScrollContainer() {
