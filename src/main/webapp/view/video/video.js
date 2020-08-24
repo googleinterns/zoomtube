@@ -22,7 +22,10 @@ export default class Video {
   #lecture;
   #synchronizer;
 
-  /** Creates a new `Synchronizer` linked to `this`. */
+  /** 
+   * Creates a new `Synchronizer` linked to `this`. 
+   * Stores `lecture` information. 
+   */
   constructor(lecture) {
     this.#lecture = lecture;
     this.#synchronizer = new Synchronizer(this);

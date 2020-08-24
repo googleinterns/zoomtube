@@ -22,7 +22,7 @@ const HEADER_TEXT = 'header-text';
 
 const PARAM_ID = 'id';
 
-/** Stores  */
+/** Initilises and stores instances related to video, transcript, and disscussion. */
 export default class LectureView {
   #lecture;
   #lectureId;
