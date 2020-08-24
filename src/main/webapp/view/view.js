@@ -42,6 +42,7 @@ getLecture().then((lecture) => {
  * and transcript sections for the lecture view page.
  */
 async function initialize() {
+  console.log('HERE');
   setLectureName();
   window.video.loadVideoApi();
   intializeDiscussion();

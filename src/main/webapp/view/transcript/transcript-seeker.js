@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import TranscriptArea from './transcript-area';
+import TranscriptArea from './transcript-area.js';
 
 /** Seeks to a line in the transcript. */
 export default class TranscriptSeeker {

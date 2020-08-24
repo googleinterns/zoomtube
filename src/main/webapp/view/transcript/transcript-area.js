@@ -21,11 +21,12 @@ export default class TranscriptArea {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
   static #TRANSCRIPT_ERROR_MESSAGE =
-      'Sorry, there is no transcript for this lecture recording.';
+      'Sorry, there is no transcript for this lecture recording. :(';
 
+  static #hasTranscript = true;
   #transcriptSeeker;
   #eventController;
-  #hasTranscript = true;
+
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -52,20 +53,25 @@ export default class TranscriptArea {
     url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
-    console.log(transcriptLines);
     if (transcriptLines.length == 0) {
-      this.displayNoTranscriptMessage();
+      TranscriptArea.displayNoTranscriptMessage();
+      return;
     }
     TranscriptArea.addTranscriptLinesToDom(transcriptLines);
   }
 
+  /**
+   * Displays a message in the transcript container if there is no
+   * transcript available for the lecture recording.
+   */
   static displayNoTranscriptMessage() {
     // TODO: Get the transcript container from a getter method once #286
     // is merged.
     const transcriptContainer =
         document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
     transcriptContainer.innerText = TranscriptArea.#TRANSCRIPT_ERROR_MESSAGE;
-    this.#hasTranscript = false;
+    transcriptContainer.classList.add('text-center');
+    TranscriptArea.#hasTranscript = false;
   }
 
   /**
@@ -77,12 +83,6 @@ export default class TranscriptArea {
   static addTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer =
         document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
-    // Removes the transcript lines from the container if there are any.
-    // This prevents having multiple sets of ul tags every time the page
-    // is refreshed.
-    if (transcriptContainer.firstChild) {
-      transcriptContainer.removeChild(transcriptContainer.firstChild);
-    }
     const ulElement = document.createElement('ul');
     // TODO: Move the class assignment to the HTML.
     ulElement.class = 'mx-auto';
@@ -100,7 +100,7 @@ export default class TranscriptArea {
     return this.#transcriptSeeker;
   }
 
-  hasTranscript() {
-    return this.#hasTranscript;
+  static hasTranscript() {
+    return TranscriptArea.#hasTranscript;
   }
 }
