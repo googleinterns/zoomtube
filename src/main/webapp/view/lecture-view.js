@@ -67,8 +67,10 @@ export default class LectureView {
   }
 }
 
+/** Obtains lecture id from stored in URL. */
 const lectureId = getLectureId(window.location.search);
 
+/**  */
 getLectureFromDatabase(lectureId).then((lecture) => {
   const lectureView = new LectureView(lecture);
   lectureView.initialize();
@@ -88,7 +90,7 @@ async function getLectureFromDatabase(lectureId) {
 /**
  * Returns the lecture id obtained from the current page's URL parameters.
  */
-function getLectureId(url) {
-  const urlParams = new URLSearchParams(url);
+function getLectureId(urlParams) {
+  const urlParams = new URLSearchParams(urlParams);
   return urlParams.get(PARAM_ID);
 }
