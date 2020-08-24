@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import DiscussionArea from './discussion/discussion-area.js'
+import DiscussionArea from './discussion/discussion-area.js';
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
 
