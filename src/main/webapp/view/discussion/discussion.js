@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import LectureView from '../view.js';
+import LectureView from '../lecture-view.js';
 
 export const COMMENT_TYPE_REPLY = 'REPLY';
 export const COMMENT_TYPE_QUESTION = 'QUESTION';
