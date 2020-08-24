@@ -61,9 +61,7 @@ export default class DiscussionComment extends HTMLElement {
     this.setSlotSpan(
         DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
     this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
-    if (comment.type !== COMMENT_TYPE_REPLY) {
-      this.setTypeTag(comment.type);
-    }
+    this.setTypeTag(comment.type);
     this.addReplies(comment.replies);
   }
 
@@ -139,6 +137,9 @@ export default class DiscussionComment extends HTMLElement {
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
    */
   setTypeTag(type) {
+    if (type === COMMENT_TYPE_REPLY) {
+      return;
+    }
     const typePill = document.createElement('span');
     typePill.innerText = COMMENT_TYPES[type].name;
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
