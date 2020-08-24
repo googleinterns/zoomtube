@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Video from '../view/video/video.js';
-
 const ENDPOINT_FEEDBACK = '/icon-feedback';
 
 const PARAM_LECTURE_ID = 'lectureId';
