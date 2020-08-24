@@ -32,9 +32,7 @@ export class ScrollContainer extends HTMLDivElement {
   constructor() {
     super();
     this.appendChild(this.createScrollBanner());
-    this.onscroll = function() {
-      this.stopAutoScroll();
-    };
+    this.onscroll = this.stopAutoScroll.bind(this);
     this.className = ScrollContainer.#SCROLL_CONTAINER_CLASSES;
     this.#autoScrollIsActive = true;
   }
@@ -45,9 +43,7 @@ export class ScrollContainer extends HTMLDivElement {
     this.#scrollBanner.innerText = 'Click here to continue auto-scroll';
     this.#scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
     const container = this;
-    this.#scrollBanner.onclick = function() {
-      container.startAutoScroll();
-    };
+    this.#scrollBanner.onclick = this.startAutoScroll.bind(this);
     return this.#scrollBanner;
   }
 
@@ -74,7 +70,7 @@ export class ScrollContainer extends HTMLDivElement {
    * happens.
    */
   scrollToTopOfContainer(element) {
-    if (!this.autoScrollIsActive()) {
+    if (!this.#autoScrollIsActive) {
       return;
     }
     const innerContainer = element.parentElement;
