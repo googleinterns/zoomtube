@@ -22,18 +22,15 @@ const HEADER_TEXT = 'header-text';
 
 const PARAM_ID = 'id';
 
-/** Initilises and stores instances related to video, transcript, and disscussion. */
+/**
+ * Initilises and stores instances related to video, transcript, and
+ * disscussion.
+ */
 export default class LectureView {
   #lecture;
-  #lectureId;
 
-  /** Sets `lectureId`, `lecture` and initializes view page components. */
-  constructor() {
-    this.#lectureId = this.getLectureId();
-    this.getLecture().then((lecture) => {
-      this.#lecture = lecture;
-      this.initialize();
-    });
+  constructor(lecture) {
+    this.#lecture = lecture;
   }
 
   /**
@@ -63,25 +60,6 @@ export default class LectureView {
         LectureView.discussion.postNewComment.bind(LectureView.discussion);
   }
 
-  /**
-   * Returns lecture in database associated with `View.lectureId`
-   * obtained from `ENDPOINT_LECTURE`.
-   */
-  async getLecture() {
-    const url = new URL(ENDPOINT_LECTURE, window.location.origin);
-    url.searchParams.append(PARAM_ID, this.#lectureId);
-    const response = await fetch(url);
-    return response.json();
-  }
-
-  /**
-   * Returns the lecture id obtained from the current page's URL parameters.
-   */
-  getLectureId() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(PARAM_ID);
-  }
-
   /** Sets the lecture name in `header-text`. */
   setLectureName() {
     const headerText = document.getElementById(HEADER_TEXT);
@@ -89,4 +67,28 @@ export default class LectureView {
   }
 }
 
-window.lectureView = new LectureView();
+const lectureId = getLectureId(window.location.search);
+
+getLectureFromDatabase(lectureId).then((lecture) => {
+  const lectureView = new LectureView(lecture);
+  lectureView.initialize();
+});
+
+/**
+ * Returns lecture in database associated with `lectureId`
+ * obtained from `ENDPOINT_LECTURE`.
+ */
+async function getLectureFromDatabase(lectureId) {
+  const url = new URL(ENDPOINT_LECTURE, window.location.origin);
+  url.searchParams.append(PARAM_ID, lectureId);
+  const response = await fetch(url);
+  return response.json();
+}
+
+/**
+ * Returns the lecture id obtained from the current page's URL parameters.
+ */
+function getLectureId(url) {
+  const urlParams = new URLSearchParams(url);
+  return urlParams.get(PARAM_ID);
+}
