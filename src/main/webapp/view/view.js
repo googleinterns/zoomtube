@@ -42,14 +42,12 @@ getLecture().then((lecture) => {
  * and transcript sections for the lecture view page.
  */
 async function initialize() {
-  console.log('HERE');
   setLectureName();
   window.video.loadVideoApi();
   intializeDiscussion();
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
   const transcript = new TranscriptArea('event controller');
-  console.log('HUH');
   await transcript.loadTranscript();
 }
 
