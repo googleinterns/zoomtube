@@ -21,7 +21,7 @@ export default class TranscriptArea {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
   static #TRANSCRIPT_ERROR_MESSAGE =
-      'Sorry, there is no transcript for this lecture recording. :(';
+      'Sorry, there is no transcript available for this lecture recording. :(';
 
   static #hasTranscript = true;
   #transcriptSeeker;
