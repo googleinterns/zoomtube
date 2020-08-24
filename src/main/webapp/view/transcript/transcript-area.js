@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO: Update this import statement once TranscriptLineElement is in master.
-import {appendTextToList} from './transcript.js';
+import TranscriptSeeker from './transcript-seeker.js';
+import {TranscriptLineElement} from './transcript.js';
 
 /** Loads the transcript lines onto the DOM. */
 export default class TranscriptArea {
@@ -32,8 +32,8 @@ export default class TranscriptArea {
    *     that will be passed into a seekTranscript object.
    */
   constructor(eventController) {
-    console.log(eventController);
-    // TODO: Create a transcriptSeeker object with the
+    this.#eventController = eventController;
+    this.#transcriptSeeker = new TranscriptSeeker(eventController);
     // eventController as the parameter.
   }
 
@@ -72,9 +72,15 @@ export default class TranscriptArea {
     ulElement.class = 'mx-auto';
     transcriptContainer.appendChild(ulElement);
     transcriptLines.forEach((transcriptLine) => {
-      appendTextToList(transcriptLine, ulElement);
+      ulElement.appendChild(
+          TranscriptLineElement.createTranscriptLineElement(transcriptLine));
     });
   }
 
-  // TODO: Add a getter method for the transcriptSeeker object.
+  /**
+   * Returns the `transcriptSeeker`.
+   */
+  transcriptSeeker() {
+    return this.#transcriptSeeker;
+  }
 }
