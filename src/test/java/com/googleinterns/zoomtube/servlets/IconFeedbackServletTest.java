@@ -25,14 +25,9 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.IconFeedback;
 import com.googleinterns.zoomtube.utils.IconFeedbackUtil;
-import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,17 +52,12 @@ public final class IconFeedbackServletTest {
   private DatastoreService datastoreService;
   private IconFeedbackServlet servlet;
 
-  /* Writer where response is written. */
-  private StringWriter content;
-
   @Before
   public void setUp() throws ServletException, IOException {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new IconFeedbackServlet();
     servlet.init();
-    content = new StringWriter();
-    when(response.getWriter()).thenReturn(new PrintWriter(content));
   }
 
   @After
@@ -76,7 +66,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_missingLectureId_ShouldRespondWithBadRequest()
+  public void doPost_missingLectureId_shouldRespondWithBadRequest()
       throws IOException, ServletException {
     servlet.doPost(request, response);
 
@@ -85,7 +75,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_missingTimestamp_ShouldRespondWithBadRequest()
+  public void doPost_missingTimestamp_shouldRespondWithBadRequest()
       throws IOException, ServletException {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
 
@@ -96,7 +86,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_missingIconType_ShouldRespondWithBadRequest()
+  public void doPost_missingIconType_shouldRespondWithBadRequest()
       throws IOException, ServletException {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
     when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn("456");
@@ -108,7 +98,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_validRequest_ShouldStoreInDatabase() throws IOException, ServletException {
+  public void doPost_validRequest_shouldStoreInDatabase() throws IOException, ServletException {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
     when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn("456");
     when(request.getParameter(IconFeedbackServlet.PARAM_ICON_TYPE)).thenReturn("GOOD");
