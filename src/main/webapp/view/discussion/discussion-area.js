@@ -15,7 +15,6 @@
 import {timestampToString} from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
-import {COMMENT_TYPE_QUESTION} from './discussion.js';
 
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
@@ -142,9 +141,11 @@ export default class DiscussionArea {
    * Posts the comment in the new comment area, and reloads the discussion.
    */
   postNewComment() {
+    /* eslint-disable indent */
     const type = DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
                      .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
                      .value;
+    /* eslint-enable indent */
 
     this.#manager
         .postRootComment(
