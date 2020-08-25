@@ -39,12 +39,6 @@ export default class TranscriptArea {
     // eventController as the parameter.
   }
 
-  addSeekingListener() {
-    this.#eventController.addEventListener((timeStamp) => {
-      this.#transcriptSeeker.seekTranscript(timeStamp);
-    }, 'seek');
-  }
-
   /**
    * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
    *

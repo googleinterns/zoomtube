@@ -56,7 +56,7 @@ export default class LectureView {
     await this.#transcript.loadTranscript();
     await this.#discussion.initialize();
 
-    this.#transcript.addSeekingListener();
+    this.#transcript.transcriptSeeker().addSeekingListener();
     this.#discussion.addSeekingListener();
 
     // This is used as the `onclick` handler of the new comment area submit

@@ -30,6 +30,13 @@ export default class TranscriptSeeker {
     this.#eventController = eventController;
   }
 
+  /** */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timeStamp) => {
+      this.seekTranscript(timeStamp);
+    }, 'seek');
+  }
+
   /**
    * Returns the `currentTranscriptLine` if it exists. Else, returns
    * undefined.
