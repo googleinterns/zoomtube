@@ -15,7 +15,7 @@
 const ENDPOINT_FEEDBACK = '/icon-feedback';
 
 const PARAM_LECTURE_ID = 'lectureId';
-const PARAM_TIMESTAMP = 'timestamp';
+const PARAM_TIMESTAMP = 'timestampMs';
 const PARAM_ICON_TYPE = 'iconType';
 
 export default class IconFeedback {
