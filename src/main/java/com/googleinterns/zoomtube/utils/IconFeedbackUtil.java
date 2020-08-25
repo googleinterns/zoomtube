@@ -20,7 +20,7 @@ import com.googleinterns.zoomtube.data.IconFeedback;
 
 /** Utility for creating IconFeedback Entities and IconFeedback. */
 public final class IconFeedbackUtil {
-  public static final String KIND = "Feedback";
+  public static final String KIND = "IconFeedback";
   public static final String LECTURE = "lecture";
   public static final String TIMESTAMP_MS = "timestampMs";
   public static final String TYPE = "type";
