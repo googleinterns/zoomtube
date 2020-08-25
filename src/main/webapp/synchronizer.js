@@ -12,17 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {seekDiscussion} from './view/discussion/discussion.js';
-import TranscriptSeeker from './view/transcript/transcript-seeker.js';
-
 let lastSyncedTimeMs;
 
 const TIME_INTERVAL_MS = 100;
-// TODO: Retrieve the transcriptSeeker from the TranscriptArea instead
-// once #255 is merged into master.
-// TODO: Move transcriptSeeker to a different class once the eventListeners
-// are added.
-const transcriptSeeker = new TranscriptSeeker('event controller');
 
 /**
  * Handles when to seek transcript and discussion areas according to video
@@ -30,9 +22,11 @@ const transcriptSeeker = new TranscriptSeeker('event controller');
  */
 export default class Synchronizer {
   #video;
+  #eventController;
 
-  constructor(video) {
+  constructor(video, eventController) {
     this.#video = video;
+    this.#eventController = eventController;
   }
 
   /**
@@ -46,7 +40,7 @@ export default class Synchronizer {
   }
 
   /**
-   * Calls functions that seek transcript, and discussion to
+   * Broadcasts event that seeks transcript, and discussion to
    * `currentVideoTimeMs` if the `currentVideoTimeMs` changed from the last time
    * this method was called.
    */
@@ -55,7 +49,6 @@ export default class Synchronizer {
       return;
     }
     lastSyncedTimeMs = currentVideoTimeMs;
-    transcriptSeeker.seekTranscript(currentVideoTimeMs);
-    seekDiscussion(currentVideoTimeMs);
+    this.#eventController.broadcastEvent('sync', currentVideoTimeMs);
   }
 }

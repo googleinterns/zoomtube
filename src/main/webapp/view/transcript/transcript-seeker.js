@@ -17,7 +17,7 @@ export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 
   #currentTranscriptLine;
-  #eventController;
+  eventController;
 
   /**
    * Creates an instance of `TranscriptSeeker` for seeking
@@ -27,8 +27,7 @@ export default class TranscriptSeeker {
    *    will help relay the current time to other objects.
    */
   constructor(eventController) {
-    this.#eventController = eventController;
-    // TODO: Add the event listeners.
+    this.eventController = eventController;
   }
 
   /**

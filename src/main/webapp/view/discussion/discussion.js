@@ -12,13 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import LectureView from '../lecture-view.js';
-
 export const COMMENT_TYPE_REPLY = 'REPLY';
 export const COMMENT_TYPE_QUESTION = 'QUESTION';
 export const COMMENT_TYPE_NOTE = 'NOTE';
-
-/** Seeks discussion to `timeMs`. */
-export function seekDiscussion(timeMs) {
-  LectureView.discussion.seek(timeMs);
-}

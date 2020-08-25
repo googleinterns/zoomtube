@@ -46,6 +46,12 @@ export default class DiscussionArea {
     this.#nearestComments = [];
   }
 
+  addSeekingListener() {
+    this.#eventController.addEventListener((timeStamp) => {
+      this.seek(timeStamp);
+    }, 'sync');
+  }
+
   /**
    * Initialize the discussion area by loading the current comments.
    */

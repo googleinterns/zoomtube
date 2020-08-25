@@ -28,6 +28,10 @@ const PARAM_ID = 'id';
  */
 export default class LectureView {
   #lecture;
+  #eventController;
+  #video;
+  #transcript;
+  #discussion;
 
   constructor(lecture) {
     this.#lecture = lecture;
@@ -41,23 +45,24 @@ export default class LectureView {
     this.setLectureName();
 
     // TODO: Make these private once event controller is created.
-    LectureView.eventController = new EventController();
-    LectureView.video = new Video(this.#lecture, LectureView.eventController);
+    this.#eventController = new EventController();
+    this.#video = new Video(this.#lecture, this.#eventController);
     // TODO: Move TranscriptArea initialization outside of initialize()
     // and replace string parameter with a controller object.
-    LectureView.transcript =
-        new TranscriptArea(this.#lecture, LectureView.eventController);
-    LectureView.discussion =
-        new DiscussionArea(this.#lecture, LectureView.eventController);
+    this.#transcript = new TranscriptArea(this.#lecture, this.#eventController);
+    this.#discussion = new DiscussionArea(this.#lecture, this.#eventController);
 
-    await LectureView.video.loadVideoApi();
-    await LectureView.transcript.loadTranscript();
-    await LectureView.discussion.initialize();
+    await this.#video.loadVideoApi();
+    await this.#transcript.loadTranscript();
+    await this.#discussion.initialize();
+
+    this.#transcript.addSeekingListener();
+    this.#discussion.addSeekingListener();
 
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment =
-        LectureView.discussion.postNewComment.bind(LectureView.discussion);
+        this.#discussion.postNewComment.bind(this.#discussion);
   }
 
   /** Sets the lecture name in `header-text`. */
