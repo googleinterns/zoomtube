@@ -112,7 +112,7 @@ discussion-comment[highlighted] > [slot='header'] {
 
 iframe {
   display: block;
-  margin: auto;
+  width: 100%;
 }
 
 /* Feedback Icons */
