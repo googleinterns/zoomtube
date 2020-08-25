@@ -124,7 +124,8 @@ export default class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Inserts a new reply comment, maintaining order by time created.
+   * Inserts a new reply such that replies are sorted with the earliest created
+   * appearing first.
    */
   insertReply(newComment) {
     const newCommentDate = new Date(newComment.created);
@@ -132,7 +133,7 @@ export default class DiscussionComment extends HTMLElement {
     // an issue.
     for (const commentElement of this.#replyDiv.children) {
       const commentDate = new Date(commentElement.comment.created);
-      if (newCommentDate >= commentDate) {
+      if (newCommentDate <= commentDate) {
         commentElement.before(newComment.element);
         return;
       }
