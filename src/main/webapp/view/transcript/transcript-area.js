@@ -22,7 +22,6 @@ export default class TranscriptArea {
   static #PARAM_ID = 'id';
 
   #lecture
-  #eventController;
   #transcriptSeeker;
 
   /**
@@ -34,9 +33,7 @@ export default class TranscriptArea {
    */
   constructor(lecture, eventController) {
     this.#lecture = lecture;
-    this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
-    // eventController as the parameter.
   }
 
   /**
