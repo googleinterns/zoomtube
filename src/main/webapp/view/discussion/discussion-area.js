@@ -58,12 +58,16 @@ export default class DiscussionArea {
       return;
     }
 
+    // Create a new element for every new comment.
+    // This must be done first for all comments because comment order is
+    // not guarenteed.
     for (const comment of newComments) {
       const commentElement = new DiscussionComment(this);
       commentElement.setComment(comment);
       comment.element = commentElement;
     }
 
+    // Insert comments.
     for (const comment of newComments) {
       if (comment.type === COMMENT_TYPE_REPLY) {
         comment.parent.element.insertReply(comment);
@@ -81,12 +85,12 @@ export default class DiscussionArea {
    * Inserts a new root comment into the DOM, maintaining order by timestamp.
    */
   insertRootComment(newComment) {
-    const newCommentTime = newComment.timestampMs.value;
+    const newCommentTimeMs = newComment.timestampMs.value;
     // For now, we use a linear search. This can be improved if it becomes
     // an issue.
     for (const commentElement of ELEMENT_DISCUSSION.children) {
-      const commentTime = commentElement.comment.timestampMs.value;
-      if (commentTime >= newCommentTime) {
+      const commentTimeMs = commentElement.comment.timestampMs.value;
+      if (commentTimeMs >= newCommentTimeMs) {
         commentElement.before(newComment.element);
         return;
       }

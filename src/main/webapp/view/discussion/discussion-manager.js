@@ -43,6 +43,9 @@ export default class DiscussionManager {
    */
   processNewComments(allComments) {
     const newComments = [];
+
+    // Comments are not guarenteed to have any specific order, so we need to do
+    // this loop before the other one to filter new comments and initialze fields.
     for (const comment of allComments) {
       const id = comment.commentKey.id;
       if (this.#displayedComments.has(id)) {
