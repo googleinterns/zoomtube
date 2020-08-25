@@ -138,6 +138,8 @@ public final class TranscriptParser {
 
       transaction.commit();
     } finally {
+      // If the transaction was interruped, we should make sure it is rolled back
+      // to avoid a partial datastore commit.
       if (transaction.isActive()) {
         transaction.rollback();
       }
