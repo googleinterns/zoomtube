@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let lastSyncedTimeMs;
-
-const TIME_INTERVAL_MS = 100;
-
 /**
  * Handles when to seek transcript and discussion areas according to video
  * time.
  */
 export default class Synchronizer {
+  static #TIME_INTERVAL_MS = 100;
+
   #video;
   #eventController;
+  #lastSyncedTimeMs;
 
   constructor(video, eventController) {
     this.#video = video;
@@ -36,7 +35,7 @@ export default class Synchronizer {
   startVideoSyncTimer() {
     setInterval(() => {
       this.sync(this.#video.getCurrentVideoTimeMs());
-    }, /* ms= */ TIME_INTERVAL_MS);
+    }, /* ms= */ Synchronizer.#TIME_INTERVAL_MS);
   }
 
   /**
@@ -45,10 +44,10 @@ export default class Synchronizer {
    * this method was called.
    */
   sync(currentVideoTimeMs) {
-    if (currentVideoTimeMs == lastSyncedTimeMs) {
+    if (currentVideoTimeMs == this.#lastSyncedTimeMs) {
       return;
     }
-    lastSyncedTimeMs = currentVideoTimeMs;
+    this.#lastSyncedTimeMs = currentVideoTimeMs;
     this.#eventController.broadcastEvent('seek', currentVideoTimeMs);
   }
 }

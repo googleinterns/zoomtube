@@ -53,11 +53,6 @@ export default class LectureView {
     await this.#video.loadVideoApi();
     await this.#transcript.initialize();
     await this.#discussion.initialize();
-
-    // This is used as the `onclick` handler of the new comment area submit
-    // button. It must be set after discussion is initialized.
-    window.postNewComment =
-        this.#discussion.postNewComment.bind(this.#discussion);
   }
 
   /** Sets the lecture name in `header-text`. */

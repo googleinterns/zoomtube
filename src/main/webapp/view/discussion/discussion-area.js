@@ -47,7 +47,7 @@ export default class DiscussionArea {
   }
 
   /**
-   * Adds event listener to `eventController` allowing seeking discussion area
+   * Adds event listener allowing seeking discussion area
    * on event broadcast.
    */
   addSeekingListener() {
@@ -62,6 +62,10 @@ export default class DiscussionArea {
    */
   async initialize() {
     this.addSeekingListener();
+    // This is used as the `onclick` handler of the new comment area submit
+    // button. It must be set after discussion is initialized.
+    window.postNewComment = this.postNewComment.bind(this);
+
     await this.loadDiscussion();
   }
 
