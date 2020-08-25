@@ -22,6 +22,8 @@ import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 export default class DiscussionComment extends HTMLElement {
   static #TEMPLATE = document.querySelector('#comment-template');
 
+  static #ATTR_HIGHLIGHTED = 'highlighted';
+
   static #SLOT_HEADER = 'header';
   static #SLOT_CONTENT = 'content';
   static #SLOT_REPLIES = 'replies';
@@ -52,8 +54,9 @@ export default class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * @param comment The comment from the discussion that this element should
-   *     render.
+   * Sets the `comment` from the discussion that this element should
+   * render. This also adds nested `DiscussionComment`s as children for any
+   * replies.
    */
   setComment(comment) {
     this.comment = comment;
@@ -99,12 +102,18 @@ export default class DiscussionComment extends HTMLElement {
       $(replyForm).collapse('hide');
     };
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_POST_REPLY)
-        .onclick = () => {
-      const textarea = this.shadowRoot.querySelector(
-          DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
-      this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
-    };
+        .onclick = this.postReplyClicked.bind(this);
     /* eslint-enable indent */
+  }
+
+  /**
+   * Posts the content of the reply textarea as a reply to this comment,
+   * and reloads the discussion area.
+   */
+  postReplyClicked() {
+    const textarea = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
+    this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
   }
 
   /**
@@ -156,6 +165,21 @@ export default class DiscussionComment extends HTMLElement {
     const elementTop = this.offsetTop;
     const offset = elementTop - scrollPaneTop;
     ELEMENT_DISCUSSION.scrollTop = offset;
+  }
+
+  /**
+   * Highlights this element on the DOM.
+   */
+  highlight() {
+    // We just want to add the attribute, the value doesn't matter.
+    this.setAttribute(DiscussionComment.#ATTR_HIGHLIGHTED, /* value= */ '');
+  }
+
+  /**
+   * Unhighlights this element on the DOM.
+   */
+  unhighlight() {
+    this.removeAttribute(DiscussionComment.#ATTR_HIGHLIGHTED);
   }
 }
 
