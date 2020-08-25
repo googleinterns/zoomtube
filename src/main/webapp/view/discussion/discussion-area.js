@@ -15,10 +15,11 @@
 import {timestampToString} from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
-import {COMMENT_TYPE_QUESTION} from './discussion.js';
 
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
+
+const COMMENT_TYPE_QUESTION = 'QUESTION';
 
 /*
  * Displays the entire Discussion Area UI, and implements posting
@@ -46,6 +47,10 @@ export default class DiscussionArea {
     this.#nearestComments = [];
   }
 
+  /**
+   * Adds event listener to `eventController` allowing seeking discussion area
+   * on event broadcast.
+   */
   addSeekingListener() {
     this.#eventController.addEventListener((timeStamp) => {
       this.seek(timeStamp);
