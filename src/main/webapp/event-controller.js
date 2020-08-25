@@ -52,6 +52,3 @@ export default class EventController {
     return true;
   }
 }
-
-const eventController = new EventController();
-eventController.broadcastEvent('hello');

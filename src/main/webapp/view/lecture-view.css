@@ -114,3 +114,17 @@ iframe {
   display: block;
   margin: auto;
 }
+
+/* Feedback Icons */
+
+#icons {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#video-icons {
+  display: flex;
+  flex-direction: row;
+}
