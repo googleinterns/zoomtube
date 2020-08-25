@@ -54,10 +54,10 @@ export default class TranscriptArea {
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
-    fetch(url).then((response) => response.json()).then((transcriptLines) => {
-      TranscriptArea.addMultipleTranscriptLinesToDom(transcriptLines);
-    });
+    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
+    const transcriptResponse = await fetch(url);
+    const transcriptLines = await transcriptResponse.json();
+    TranscriptArea.addTranscriptLinesToDom(transcriptLines);
   }
 
   /**
@@ -66,7 +66,7 @@ export default class TranscriptArea {
    * <p>This is a private method that should only be called in
    * `loadTranscript()`.
    */
-  static addMultipleTranscriptLinesToDom(transcriptLines) {
+  static addTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer =
         document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
     // Removes the transcript lines from the container if there are any.
