@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.IconFeedback;
 import com.googleinterns.zoomtube.utils.IconFeedbackUtil;
@@ -36,15 +37,17 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Obtains list of available Lectures stored in Datastore. */
 public class IconFeedbackServlet extends HttpServlet {
-  private DatastoreService datastore;
+  /* URL search parameters used in request. */
+  @VisibleForTesting static final String PARAM_LECTURE_ID = "lectureId";
+  @VisibleForTesting static final String PARAM_TIMESTAMP = "timestampMs";
+  @VisibleForTesting static final String PARAM_ICON_TYPE = "iconType";
 
-  private static final String PARAM_LECTURE_ID = "lectureId";
-  private static final String PARAM_TIMESTAMP = "timestampMs";
-  private static final String PARAM_ICON_TYPE = "iconType";
-
+  /* Error messages for missing parameters. */
   private static final String ERROR_MISSING_LECTURE_ID = "Missing lecture id parameter.";
   private static final String ERROR_MISSING_TIMESTAMP = "Missing timestamp parameter.";
   private static final String ERROR_MISSING_ICON_TYPE = "Missing icon type parameter.";
+
+  private DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
@@ -53,24 +56,24 @@ public class IconFeedbackServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Optional<String> error = validatePostRequest(request);
-    if (error.isPresent()) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
+    Optional<String> postRequestError = validatePostRequest(request);
+    if (postRequestError.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, postRequestError.get());
       return;
     }
+    datastore.put(createEntityFromRequest(request));
+  }
 
+  /** Returns an IconFeedback Entity from parameter found in {@code request}. */
+  public Entity createEntityFromRequest(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     long videoTimeStamp = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
     IconFeedback.Type type = IconFeedback.Type.valueOf(request.getParameter(PARAM_ICON_TYPE));
     Key lectureEntityKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-
-    Entity iconFeedbackEntity =
-        IconFeedbackUtil.createEntity(lectureEntityKey, videoTimeStamp, type);
-    System.out.println(iconFeedbackEntity);
-    System.out.println();
-    datastore.put(iconFeedbackEntity);
+    return IconFeedbackUtil.createEntity(lectureEntityKey, videoTimeStamp, type);
   }
 
+  /** Ensures request paramters are present. Returns error message if any of them are missing. */
   private Optional<String> validatePostRequest(HttpServletRequest request) {
     if (request.getParameter(PARAM_LECTURE_ID) == null) {
       return Optional.of(ERROR_MISSING_LECTURE_ID);
