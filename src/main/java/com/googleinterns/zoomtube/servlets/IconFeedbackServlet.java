@@ -19,8 +19,6 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.IconFeedback;
@@ -64,7 +62,7 @@ public class IconFeedbackServlet extends HttpServlet {
     datastore.put(createEntityFromRequest(request));
   }
 
-  /** Returns an IconFeedback Entity from parameter found in {@code request}. */
+  /** Returns an IconFeedback Entity from parameters found in {@code request}. */
   public Entity createEntityFromRequest(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     long videoTimeStamp = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));

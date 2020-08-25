@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -59,10 +60,6 @@ public final class IconFeedbackServletTest {
   /* Writer where response is written. */
   private StringWriter content;
 
-  private static final String TEST_LECTURE_ID = "123456789";
-  private static final String TEST_TIMESTAMP = "987654321";
-  private static final String TEST_ICON_TYPE = "GOOD";
-
   @Before
   public void setUp() throws ServletException, IOException {
     testServices.setUp();
@@ -90,7 +87,7 @@ public final class IconFeedbackServletTest {
   @Test
   public void doPost_missingTimestamp_ShouldRespondWithBadRequest()
       throws IOException, ServletException {
-    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn(TEST_LECTURE_ID);
+    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
 
     servlet.doPost(request, response);
 
@@ -101,8 +98,8 @@ public final class IconFeedbackServletTest {
   @Test
   public void doPost_missingIconType_ShouldRespondWithBadRequest()
       throws IOException, ServletException {
-    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn(TEST_LECTURE_ID);
-    when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn(TEST_TIMESTAMP);
+    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
+    when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn("456");
 
     servlet.doPost(request, response);
 
@@ -112,13 +109,17 @@ public final class IconFeedbackServletTest {
 
   @Test
   public void doPost_validRequest_ShouldStoreInDatabase() throws IOException, ServletException {
-    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn(TEST_LECTURE_ID);
-    when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn(TEST_TIMESTAMP);
-    when(request.getParameter(IconFeedbackServlet.PARAM_ICON_TYPE)).thenReturn(TEST_ICON_TYPE);
+    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
+    when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn("456");
+    when(request.getParameter(IconFeedbackServlet.PARAM_ICON_TYPE)).thenReturn("GOOD");
 
     servlet.doPost(request, response);
 
-    assertThat(datastoreService.prepare(new Query(IconFeedbackUtil.KIND)).countEntities())
-        .isEqualTo(1);
+    PreparedQuery query = datastoreService.prepare(new Query(IconFeedbackUtil.KIND));
+    assertThat(query.countEntities()).isEqualTo(1);
+    IconFeedback iconFeedback = IconFeedbackUtil.createIconFeedback(query.asSingleEntity());
+    assertThat(iconFeedback.lectureKey().getId()).isEqualTo(123);
+    assertThat(iconFeedback.timestampMs()).isEqualTo(456);
+    assertThat(iconFeedback.type().toString()).isEqualTo("GOOD");
   }
 }
