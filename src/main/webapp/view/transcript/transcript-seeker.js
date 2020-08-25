@@ -17,7 +17,7 @@ export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 
   #currentTranscriptLine;
-  eventController;
+  #eventController;
 
   /**
    * Creates an instance of `TranscriptSeeker` for seeking
