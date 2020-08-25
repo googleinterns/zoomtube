@@ -114,3 +114,14 @@ iframe {
   display: block;
   margin: auto;
 }
+
+/* Comment Indicator */
+
+.indicator {
+  background-color: lightgray !important;
+  color: black !important;
+  font-size: 20px !important;
+  height: 40px;
+  margin-left: auto;
+  padding-top: 10px !important;
+}

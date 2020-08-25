@@ -59,6 +59,8 @@ export class TranscriptLineElement extends HTMLElement {
         ['justify-content-start', 'mb-1', 'transcript-line-timestamp']);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+    contentDivElement.appendChild(
+        TranscriptLineElement.createCommentIndicator());
     this.classList.add(
         'align-self-center', 'mb-2',
         TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
@@ -85,6 +87,13 @@ export class TranscriptLineElement extends HTMLElement {
     const hrElement = document.createElement('hr');
     hrElement.classList.add('my-1', 'align-middle');
     return hrElement;
+  }
+
+  static createCommentIndicator() {
+    const span = document.createElement('span');
+    span.className = 'indicator badge badge-pill rounded-circle'
+    span.innerText = 12;
+    return span;
   }
 
   /**
