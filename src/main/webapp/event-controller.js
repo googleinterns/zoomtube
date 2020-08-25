@@ -51,8 +51,4 @@ export default class EventController {
     });
     return true;
   }
-
-  hello() {
-    console.log('sup');
-  }
 }
