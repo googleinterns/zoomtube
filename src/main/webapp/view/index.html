@@ -17,9 +17,9 @@
 <script type="module" src="/view/discussion/discussion.js" defer></script>
 <script type="module" src="/view/video/video.js" defer></script>
 <script type="module" src="/view/transcript/transcript.js" defer></script>
+<script type="module" src="../feedback/icon-feedback.js" defer></script>
 <script type="module" src="../event-controller.js" defer></script>
 <script type="module" src="/view/view.js" defer></script>
-<script type="module" src="../event-controller.js" defer></script>
 
 <body>
   <nav class="navbar navbar-light">
@@ -29,21 +29,26 @@
 
   <div id="page">
     <div class="halfpage" id="player-transcript">
-      <div id="player"></div>
-      <div id="transcript-container">
-        <h2>Transcript:</h2>
-        <div id="transcript-lines-container" class="mx-5 my-3 bg-light pb-3 pt-4 rounded"></div>
+      <div id="video-icons">
+        <div id="player"></div>
+        <div id="icons">
+          <button type="button" onclick="iconOnClick('GOOD')">Thumbs Up</button>
+          <button type="button" onclick="iconOnClick('BAD')">Thumbs Down</button>
+          <button type="button" onclick="iconOnClick('TOO_FAST')">Too Fast</button>
+          <button type="button" onclick="iconOnClick('TOO_SLOW')">Too Slow</button>
+        </div>
+      </div>
+      <div id="transcript-container" class="bg-light rounded">
+        <div id="transcript-lines-container"></div>
       </div>
     </div>
-    <div class="halfpage" id="discussion">
+    <div class="halfpage rounded bg-light" id="discussion">
       <div id="new-comment-row">
         <div id="new-comment-form" class="form-group">
           <label for="post-textarea">Leave a Comment at <span id="timestamp-span">00:00</span></label>
           <textarea class="form-control" id="post-textarea" rows="2"></textarea>
         </div>
-        <button class="btn btn-primary mb-2" type="button" onclick="postNewComment()">
-          Post Comment
-        </button>
+        <button class="btn btn-primary mb-2 float-right" type="button" onclick="postNewComment()">Post Comment</button>
       </div>
       <div class="container" id="discussion-comments"></div>
     </div>
@@ -61,13 +66,15 @@
   <link rel="stylesheet" href="/view/lecture-view.css" />
   <div class="comment">
     <div>
-      <h1 class="comment-header"><slot name="header"></slot>&nbsp;</h1>
+      <h1 class="comment-header">
+        <slot name="header"></slot>
+        &nbsp;
+        <slot name="type-tag"></slot>
+      </h1>
       <div class="comment-content">
         <div><slot name="content"></slot></div>
         <div class="actions-bar">
-          <button type="button" class="btn btn-primary btn-sm" id="show-reply">
-            Reply
-          </button>
+          <button type="button" class="btn btn-primary btn-sm" id="show-reply">Reply</button>
         </div>
       </div>
       <div class="replies">

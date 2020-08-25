@@ -14,7 +14,7 @@
 
 import {timestampToString} from '../../timestamps.js';
 import {ELEMENT_DISCUSSION} from './discussion-area.js';
-import {COMMENT_TYPE_REPLY} from './discussion.js';
+import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 
 /**
  * Renders a comment and its replies, with a form to post a new reply.
@@ -27,6 +27,7 @@ export default class DiscussionComment extends HTMLElement {
   static #SLOT_HEADER = 'header';
   static #SLOT_CONTENT = 'content';
   static #SLOT_REPLIES = 'replies';
+  static #SLOT_TYPE_TAG = 'type-tag';
 
   static #SELECTOR_SHOW_REPLY = '#show-reply';
   static #SELECTOR_REPLY_FORM = '#reply-form';
@@ -66,6 +67,7 @@ export default class DiscussionComment extends HTMLElement {
     this.setSlotSpan(
         DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
     this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
+    this.setTypeTag(comment.type);
   }
 
   /**
@@ -149,6 +151,21 @@ export default class DiscussionComment extends HTMLElement {
     span.slot = name;
     this.appendChild(span);
   }
+
+  /**
+   * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
+   */
+  setTypeTag(type) {
+    if (type === COMMENT_TYPE_REPLY) {
+      return;
+    }
+    const typePill = document.createElement('span');
+    typePill.innerText = COMMENT_TYPES[type].name;
+    typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
+    typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
+    this.appendChild(typePill);
+  }
+
 
   /**
    * Scroll such that this element is at the top of the discussion area.
