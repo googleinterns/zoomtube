@@ -18,7 +18,22 @@ export const COMMENT_TYPE_REPLY = 'REPLY';
 export const COMMENT_TYPE_QUESTION = 'QUESTION';
 export const COMMENT_TYPE_NOTE = 'NOTE';
 
-export let /** DiscussionArea */ discussion;
+export const COMMENT_TYPES = {
+  [COMMENT_TYPE_REPLY]: {
+    name: 'Reply',
+    badgeStyles: ['badge-secondary', 'float-right', 'badge', 'badge-pill'],
+  },
+  [COMMENT_TYPE_NOTE]: {
+    name: 'Note',
+    badgeStyles: ['badge-secondary', 'float-right', 'badge', 'badge-pill'],
+  },
+  [COMMENT_TYPE_QUESTION]: {
+    name: 'Question',
+    badgeStyles: ['badge-danger', 'float-right', 'badge', 'badge-pill'],
+  },
+};
+
+export let discussion;
 
 /**
  * Loads the lecture discussion.
