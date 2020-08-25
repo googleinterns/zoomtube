@@ -37,6 +37,15 @@ export default class TranscriptArea {
   }
 
   /**
+   * Adds event listener for seeking and initializes the transcript area by
+   * loading the transcript lines.
+   */
+  async initialize() {
+    this.#transcriptSeeker.addSeekingListener();
+    await this.loadTranscript();
+  }
+
+  /**
    * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
    *
    * <p>This function assumes that the transcript lines have already

@@ -51,11 +51,8 @@ export default class LectureView {
     this.#discussion = new DiscussionArea(this.#lecture, this.#eventController);
 
     await this.#video.loadVideoApi();
-    await this.#transcript.loadTranscript();
+    await this.#transcript.initialize();
     await this.#discussion.initialize();
-
-    this.#transcript.transcriptSeeker().addSeekingListener();
-    this.#discussion.addSeekingListener();
 
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
