@@ -63,7 +63,7 @@ public class IconFeedbackServlet extends HttpServlet {
   }
 
   /** Returns an IconFeedback Entity from parameters found in {@code request}. */
-  public Entity createEntityFromRequest(HttpServletRequest request) {
+  private Entity createEntityFromRequest(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     long videoTimeStamp = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
     IconFeedback.Type type = IconFeedback.Type.valueOf(request.getParameter(PARAM_ICON_TYPE));
