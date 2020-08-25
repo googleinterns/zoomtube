@@ -58,6 +58,8 @@ export default class DiscussionManager {
       this.#displayedComments.set(id, comment);
     }
 
+    // Sets parent element, and adds comments as replies, since all are
+    // initialized in first loop.
     for (const comment of newComments) {
       if (comment.type === COMMENT_TYPE_REPLY) {
         const parentId = comment.parentKey.value.id;
