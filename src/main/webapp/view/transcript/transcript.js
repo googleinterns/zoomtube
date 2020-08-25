@@ -91,7 +91,7 @@ export class TranscriptLineElement extends HTMLElement {
 
   static createCommentIndicator() {
     const span = document.createElement('span');
-    span.className = 'indicator badge badge-pill rounded-circle'
+    span.className = 'indicator badge badge-pill rounded-circle';
     span.innerText = 12;
     return span;
   }
