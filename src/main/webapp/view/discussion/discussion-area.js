@@ -49,7 +49,7 @@ export default class DiscussionArea {
   addSeekingListener() {
     this.#eventController.addEventListener((timeStamp) => {
       this.seek(timeStamp);
-    }, 'sync');
+    }, 'seek');
   }
 
   /**

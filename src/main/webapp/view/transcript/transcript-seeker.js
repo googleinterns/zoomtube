@@ -27,7 +27,7 @@ export default class TranscriptSeeker {
    *    will help relay the current time to other objects.
    */
   constructor(eventController) {
-    this.eventController = eventController;
+    this.#eventController = eventController;
   }
 
   /**

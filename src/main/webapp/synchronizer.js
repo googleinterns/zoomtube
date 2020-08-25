@@ -49,6 +49,6 @@ export default class Synchronizer {
       return;
     }
     lastSyncedTimeMs = currentVideoTimeMs;
-    this.#eventController.broadcastEvent('sync', currentVideoTimeMs);
+    this.#eventController.broadcastEvent('seek', currentVideoTimeMs);
   }
 }

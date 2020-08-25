@@ -42,7 +42,7 @@ export default class TranscriptArea {
   addSeekingListener() {
     this.#eventController.addEventListener((timeStamp) => {
       this.#transcriptSeeker.seekTranscript(timeStamp);
-    }, 'sync');
+    }, 'seek');
   }
 
   /**
