@@ -20,7 +20,7 @@ const PARAM_ICON_TYPE = 'iconType';
 
 export default class IconFeedback {
   /**
-   * Sends `iconType`, video time stamp of when icon was clicked,
+   * Sends `iconType`, video timestamp of when icon was clicked,
    * and lecture ID to be stored in database.
    */
   static iconOnClick(iconType) {
