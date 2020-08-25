@@ -27,6 +27,10 @@ export const ELEMENT_DISCUSSION =
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
+  static #ELEMENT_NEW_COMMENT_TYPES =
+      document.querySelector('#new-comment-types');
+  static #SELECTOR_SELECTED_TYPE = 'label.active > input';
+
   #lecture;
   #manager;
   #currentTimeMs;
@@ -138,10 +142,14 @@ export default class DiscussionArea {
    * Posts the comment in the new comment area, and reloads the discussion.
    */
   postNewComment() {
+    const type = DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
+                     .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
+                     .value;
+
     this.#manager
         .postRootComment(
             DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            COMMENT_TYPE_QUESTION)
+            type)
         .then(() => {
           this.loadDiscussion();
         });

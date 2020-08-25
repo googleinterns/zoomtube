@@ -76,6 +76,11 @@ discussion-comment[highlighted] > [slot='header'] {
   width: calc(100% - 4px);
 }
 
+#new-comment-types .btn {
+  border-radius: 50px;
+  margin: -8px 3px;
+}
+
 #new-comment-form,
 #reply-form {
   width: 100%;
