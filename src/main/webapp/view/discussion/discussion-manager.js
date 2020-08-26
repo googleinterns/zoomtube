@@ -38,19 +38,19 @@ export default class DiscussionManager {
   /**
    * Adds new comments to threads with nested replies by setting comment's
    * parent and replies fields. Only processes and returns comments with ids
-   * that haven't already been seen. This is a private method and should only
-   * be called by `DiscussionManager`.
+   * that haven't already been seen.
+   *
+   * <p>This is a private method and should only be called by
+   * `DiscussionManager`.
    */
   processNewComments(allComments) {
     const newComments = [];
 
     // Comments are not guarenteed to have any specific order, so we need to do
-    // this loop before the other one to filter new comments and initialze
-    // fields.
+    // this loop before the other one to initialze fields on new comments.
     for (const comment of allComments) {
       const id = comment.commentKey.id;
       if (this.#displayedComments.has(id)) {
-        // This comment is already displayed.
         continue;
       }
       comment.replies = [];
@@ -72,8 +72,8 @@ export default class DiscussionManager {
   }
 
   /**
-   * Fetches all of the lecture comments from the `ENDPOINT`. This
-   * returns an array of all comments that haven't been fetched before.
+   * Fetches and returns all of the lecture comments that haven't been fetched
+   * before from `ENDPOINT`.
    */
   async fetchNewComments() {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);

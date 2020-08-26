@@ -77,7 +77,7 @@ export default class DiscussionArea {
     }
 
     // It's possible that the comment we should be seeked to has changed,
-    // So we run seek again.
+    // so we run seek again.
     this.seek(this.#currentTimeMs);
   }
 
