@@ -30,6 +30,7 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
+  static #COMMENT_INDICATOR_CLASSES = 'indicator badge badge-pill rounded-circle';
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
@@ -94,8 +95,7 @@ export class TranscriptLineElement extends HTMLElement {
    */
   static createCommentIndicator() {
     const span = document.createElement('span');
-    span.className = 'indicator badge badge-pill rounded-circle';
-    span.innerText = 12;
+    span.className = TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
     return span;
   }
 
