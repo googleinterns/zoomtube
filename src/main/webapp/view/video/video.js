@@ -23,7 +23,6 @@ export default class Video {
 
   constructor() {
     this.#synchronizer = new Synchronizer(this);
-    window.getCurrentVideoTimeMs = this.getCurrentVideoTimeMs.bind(this);
   }
 
   /** Loads YouTube iFrame API. */
@@ -55,7 +54,8 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    this.#synchronizer.startVideoSyncTimer(this.getCurrentVideoTimeMs);
+    this.#synchronizer.startVideoSyncTimer(
+        this.getCurrentVideoTimeMs.bind(this));
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */
