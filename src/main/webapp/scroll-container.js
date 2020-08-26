@@ -23,7 +23,7 @@ export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
       'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
   static #SCROLL_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
-  static #AUTO_SCROLL_MESSAGE = 'Click here to continue auto-scroll';
+  static #AUTO_SCROLL_MESSAGE = 'Jump back to video';
 
   #autoScrollIsActive;
   #scrollBanner;
