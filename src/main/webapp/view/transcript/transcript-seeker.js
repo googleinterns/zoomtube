@@ -81,7 +81,7 @@ export default class TranscriptSeeker {
     // is the one immediately after it. This check is done before
     // the search is conducted because it is more time efficient
     // to check the next element than to conduct a search.
-    if (nextTranscript && nextTranscript.isWithinTimeRange(timeMs)) {
+    if (nextTranscript != null && nextTranscript.isWithinTimeRange(timeMs)) {
       return nextTranscript;
     }
     // This call happens if the user seeks to a certain timestamp instead.
