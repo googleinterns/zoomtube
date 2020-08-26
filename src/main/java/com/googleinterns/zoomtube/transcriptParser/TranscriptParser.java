@@ -151,7 +151,7 @@ public final class TranscriptParser {
    * transcript for the lecture referenced by {@code lectureKey}.
    */
   private Entity createTranscriptLineFromElement(Key lectureKey, Element transcriptLineElement) {
-    String lineContent = StringEscapeUtils.unescapeXml(transcriptLineElement.getTextContent());
+    String lineContent = cleanupTranscriptContent(transcriptLineElement.getTextContent());
 
     float lineStartSeconds = Float.parseFloat(transcriptLineElement.getAttribute(ATTR_START));
     float lineDurationSeconds = Float.parseFloat(transcriptLineElement.getAttribute(ATTR_DURATION));
@@ -163,5 +163,18 @@ public final class TranscriptParser {
 
     return TranscriptLineUtil.createEntity(
         lectureKey, lineContent, lineStartMs, lineDurationMs, lineEndMs);
+  }
+
+  /**
+   * Cleans the {@code content} of a transcript line by unescaping XML characters, and
+   * removing newlines.
+   */
+  private String cleanupTranscriptContent(String content) {
+    String unescapedXml = StringEscapeUtils.unescapeXml(content);
+
+    // We ignore '\r' for now.
+    String cleanedContent = unescapedXml.replace('\n', ' ');
+
+    return cleanedContent;
   }
 }
