@@ -39,7 +39,7 @@ export default class Synchronizer {
    */
   startVideoSyncTimer() {
     setInterval(() => {
-      this.sync(this.video.getCurrentVideoTimeMs());
+      this.sync(window.getCurrentVideoTimeMs());
     }, /* ms= */ TIME_INTERVAL_MS);
   }
 
