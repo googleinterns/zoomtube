@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Obtains list of available Lectures stored in Datastore. */
+/** Handles storing and retrieving IconFeedback from database. */
 public class IconFeedbackServlet extends HttpServlet {
   /* URL search parameters used in request. */
   @VisibleForTesting static final String PARAM_LECTURE_ID = "lectureId";
