@@ -21,7 +21,6 @@ const SCRIPT = 'script';
 export default class Video {
   #synchronizer;
 
-  /** Creates a new `Synchronizer` linked to `this`. */
   constructor() {
     this.#synchronizer = new Synchronizer(this);
   }
@@ -59,7 +58,7 @@ export default class Video {
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */
-  getCurrentVideoTimeMs() {
+  static getCurrentVideoTimeMs() {
     return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
   }
 
