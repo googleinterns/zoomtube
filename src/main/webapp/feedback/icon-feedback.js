@@ -31,6 +31,21 @@ export default class IconFeedback {
     url.searchParams.append(PARAM_ICON_TYPE, iconType);
     fetch(url, {method: 'POST'});
   }
+
+  /**
+   * Fetches avaiable Lectures from `ENDPOINT_FEEDBACK`
+   * and sets them in the lecture selection page.
+   */
+  static async loadIconFeedbackList() {
+    const url = new URL(ENDPOINT_FEEDBACK, window.location.origin);
+    url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
+    const response = await fetch(url);
+    const jsonData = await response.json();
+
+    for (const iconFeedback of jsonData) {
+      console.log(iconFeedback);
+    }
+  }
 }
 
 window.iconOnClick = IconFeedback.iconOnClick;

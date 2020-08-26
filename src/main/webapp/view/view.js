@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import IconFeedback from '../feedback/icon-feedback.js';
 import Synchronizer from '../synchronizer.js';
-
 import {intializeDiscussion} from '../view/discussion/discussion.js';
+
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
 
@@ -45,6 +46,7 @@ async function initialize() {
   setLectureName();
   window.video.loadVideoApi();
   intializeDiscussion();
+  IconFeedback.loadIconFeedbackList();
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
   const transcript = new TranscriptArea('event controller');
