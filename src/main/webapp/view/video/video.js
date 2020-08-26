@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import IconFeedback from '../../feedback/icon-feedback.js';
 import {secondsToMilliseconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
@@ -47,11 +48,16 @@ export default class Video {
   onPlayerReady(event) {
     event.target.playVideo();
     window.synchronizer.startVideoSyncTimer();
+    IconFeedback.loadIconFeedbackList();
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */
   getCurrentVideoTimeMs() {
     return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
+  }
+
+  getVideoDurationMs() {
+    return secondsToMilliseconds(this.videoPlayer.getDuration());
   }
 
   /** Seeks video to `currentTime`. */

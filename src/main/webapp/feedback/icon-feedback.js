@@ -41,7 +41,38 @@ export default class IconFeedback {
     url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
     const response = await fetch(url);
     const jsonData = await response.json();
-    console.log(jsonData);
+    const feedbackArray = IconFeedback.parseFeedback(jsonData);
+    console.log(feedbackArray);
+  }
+
+  static parseFeedback(jsonData) {
+    const videoDuration = window.video.getVideoDurationMs();
+    let parsedData = [];
+    let index = 0;
+    for (let interval = 0; interval < videoDuration; interval += 10000) {
+      let good = ['GOOD', 0, interval];
+      let bad = ['BAD', 0, interval];
+      let too_fast = ['TOO_FAST', 0, interval];
+      let too_slow = ['TOO_SLOW', 0, interval];
+      while (index < jsonData.length &&
+             jsonData[index].timestampMs < interval) {
+        if (jsonData.type == good[0]) {
+          good[1] = good[1] + 1;
+        } else if (jsonData.type == bad[0]) {
+          bad[1] = bad[1] + 1;
+        } else if (jsonData.type == too_fast[0]) {
+          too_fast[1] = too_fast[1] + 1;
+        } else {
+          too_slow[1] = too_slow[1] + 1;
+        }
+        index++;
+      }
+      parsedData.push(good);
+      parsedData.push(bad);
+      parsedData.push(too_fast);
+      parsedData.push(too_slow);
+    }
+    return parsedData;
   }
 }
 
