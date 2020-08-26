@@ -33,6 +33,8 @@ export class TranscriptLineElement extends HTMLElement {
   static #COMMENT_INDICATOR_CLASSES =
       'indicator badge badge-pill rounded-circle';
 
+  commentIndicator;
+
   /**
    * Creates a custom HTML element representing `transcriptLine` with
    * the text and time range appended to the element.
@@ -61,8 +63,8 @@ export class TranscriptLineElement extends HTMLElement {
         ['justify-content-start', 'mb-1', 'transcript-line-timestamp']);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
-    contentDivElement.appendChild(
-        TranscriptLineElement.createCommentIndicator());
+    this.commentIndicator = TranscriptLineElement.createCommentIndicator();
+    contentDivElement.appendChild(this.commentIndicator);
     this.classList.add(
         'align-self-center', 'mb-2',
         TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
@@ -98,6 +100,7 @@ export class TranscriptLineElement extends HTMLElement {
     const commentIndicatorBubble = document.createElement('span');
     commentIndicatorBubble.className =
         TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
+    commentIndicatorBubble.innerText = 12;
     return commentIndicatorBubble;
   }
 
