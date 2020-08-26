@@ -88,7 +88,7 @@ public class LectureServlet extends HttpServlet {
       return;
     }
 
-    Optional<Entity> existingEntity = checkVideoInDatabase(videoId.get());
+    Optional<Entity> existingEntity = queryForLectureWithVideoId(videoId.get());
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()));
       return;
@@ -153,7 +153,7 @@ public class LectureServlet extends HttpServlet {
    * Returns the Entity in database that has {@code videoId}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
-  private Optional<Entity> checkVideoInDatabase(String videoId) {
+  private Optional<Entity> queryForLectureWithVideoId(String videoId) {
     Filter videoIdFilter = new FilterPredicate(LectureUtil.VIDEO_ID, FilterOperator.EQUAL, videoId);
     Query query = new Query(LectureUtil.KIND).setFilter(videoIdFilter);
     PreparedQuery results = datastore.prepare(query);
