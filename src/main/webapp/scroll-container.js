@@ -33,8 +33,7 @@ export class ScrollContainer extends HTMLDivElement {
   /** Creates a `ScrollContainer`. */
   constructor() {
     super();
-    this.#scrollBanner = ScrollContainer.createScrollBanner();
-    this.#scrollBanner.onclick = this.startAutoScroll.bind(this);
+    this.#scrollBanner = this.createScrollBanner();
     this.appendChild(this.#scrollBanner);
     this.onscroll = this.stopAutoScroll.bind(this);
     this.className = ScrollContainer.#SCROLL_CONTAINER_CLASSES;
@@ -42,10 +41,11 @@ export class ScrollContainer extends HTMLDivElement {
   }
 
   /** Creates a banner for scrolling. */
-  static createScrollBanner() {
+  createScrollBanner() {
     const scrollBanner = document.createElement('div');
     scrollBanner.innerText = ScrollContainer.#AUTO_SCROLL_MESSAGE;
     scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
+    scrollBanner.onclick = this.startAutoScroll.bind(this);
     return scrollBanner;
   }
 
