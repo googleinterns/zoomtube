@@ -40,8 +40,8 @@ export default class Synchronizer {
 
   /**
    * Broadcasts event that seeks transcript and discussion to
-   * `currentVideoTimeMs`, if the `currentVideoTimeMs` changed from the last time
-   * this method was called.
+   * `currentVideoTimeMs`, if the `currentVideoTimeMs` changed from the last
+   * time this method was called.
    */
   sync(currentVideoTimeMs) {
     if (currentVideoTimeMs == this.#lastSyncedTimeMs) {
