@@ -89,6 +89,9 @@ export class TranscriptLineElement extends HTMLElement {
     return hrElement;
   }
 
+  /**
+   * Creates a stylized comment indicator element.
+   */
   static createCommentIndicator() {
     const span = document.createElement('span');
     span.className = 'indicator badge badge-pill rounded-circle';
