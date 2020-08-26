@@ -146,10 +146,12 @@ export default class DiscussionArea {
    */
   postNewComment() {
     /* eslint-disable indent */
-    const commentType = DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
-                     .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
-                     .value;
+    const commentType =
+        DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
+            .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
+            .value;
     /* eslint-enable indent */
+    const currentTranscripLine = TranscriptArea.currentTranscripLine();
 
     this.#manager
         .postRootComment(
