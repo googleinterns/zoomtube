@@ -46,7 +46,6 @@ export default class LectureView {
 
     this.#eventController = new EventController();
     this.#video = new Video(this.#lecture, this.#eventController);
-    // TODO: Move TranscriptArea initialization outside of initialize().
     this.#transcript = new TranscriptArea(this.#lecture, this.#eventController);
     this.#discussion = new DiscussionArea(this.#lecture, this.#eventController);
 
