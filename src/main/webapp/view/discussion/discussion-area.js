@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {ScrollContainer} from '../../scroll-container.js';
 import {timestampToString} from '../../timestamps.js';
+
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_QUESTION} from './discussion.js';
 
-export const ELEMENT_DISCUSSION =
-    document.querySelector('#discussion-comments');
 
 /*
  * Displays the entire Discussion Area UI, and implements posting
@@ -27,17 +27,25 @@ export const ELEMENT_DISCUSSION =
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
+  static #ELEMENT_DISCUSSION = document.querySelector('#discussion');
+  static #ID_DISCUSSION_CONTAINER = 'discussion-comments';
   #lecture;
   #manager;
   #currentTimeMs;
   #currentRootCommentElements;
   #nearestComments;
+  #scrollContainer;
+  #discussionCommentsDiv;
 
   /**
    * Creates a `DiscussionArea` for a `lecture`.
    */
   constructor(lecture) {
     this.#lecture = lecture;
+    this.#scrollContainer = new ScrollContainer();
+    this.#scrollContainer.id = DiscussionArea.#ID_DISCUSSION_CONTAINER;
+    this.#discussionCommentsDiv = document.createElement('div');
+    this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#currentRootCommentElements = [];
@@ -48,6 +56,7 @@ export default class DiscussionArea {
    * Initialize the discussion area by loading the current comments.
    */
   async initialize() {
+    DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
     await this.loadDiscussion();
   }
 
@@ -56,7 +65,7 @@ export default class DiscussionArea {
    */
   async loadDiscussion() {
     // Clear any existing comments before loading.
-    ELEMENT_DISCUSSION.textContent = '';
+    this.#discussionCommentsDiv.textContent = '';
     this.#currentRootCommentElements = [];
 
     const rootComments = await this.#manager.fetchRootComments();
@@ -64,7 +73,7 @@ export default class DiscussionArea {
       const rootCommentElement = new DiscussionComment(this);
       rootCommentElement.setComment(rootComment);
       this.#currentRootCommentElements.push(rootCommentElement);
-      ELEMENT_DISCUSSION.appendChild(rootCommentElement);
+      this.#discussionCommentsDiv.appendChild(rootCommentElement);
     }
   }
 
@@ -129,7 +138,7 @@ export default class DiscussionArea {
     this.unhightlightNearestComments();
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
     if (this.#nearestComments.length > 0) {
-      this.#nearestComments[0].scrollToTopOfDiscussion();
+      this.#scrollContainer.scrollToTopOfContainer(this.#nearestComments[0]);
     }
     this.highlightNearestComments();
   }

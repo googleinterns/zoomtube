@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import {timestampToString} from '../../timestamps.js';
-import {ELEMENT_DISCUSSION} from './discussion-area.js';
 import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 
 /**
@@ -154,17 +153,6 @@ export default class DiscussionComment extends HTMLElement {
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
     typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
     this.appendChild(typePill);
-  }
-
-
-  /**
-   * Scroll such that this element is at the top of the discussion area.
-   */
-  scrollToTopOfDiscussion() {
-    const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
-    const elementTop = this.offsetTop;
-    const offset = elementTop - scrollPaneTop;
-    ELEMENT_DISCUSSION.scrollTop = offset;
   }
 
   /**

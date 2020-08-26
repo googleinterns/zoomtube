@@ -48,7 +48,7 @@ discussion-comment[highlighted] > [slot='header'] {
 #discussion-comments {
   height: calc(100vh - 206px);
   overflow: scroll;
-  padding-bottom: calc(100vh - 306px);
+  padding-bottom: calc(100vh - 306px) !important;
 }
 
 #new-comment-row {
