@@ -124,4 +124,19 @@ iframe {
   height: 40px;
   margin-left: auto;
   padding-top: 10px !important;
+  width: 100%;
+}
+
+/* Feedback Icons */
+
+#icons {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#video-icons {
+  display: flex;
+  flex-direction: row;
 }
