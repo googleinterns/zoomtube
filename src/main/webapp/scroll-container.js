@@ -28,6 +28,7 @@ export class ScrollContainer extends HTMLDivElement {
   #autoScrollIsActive;
   #scrollBanner;
   #browserScrolled;
+  #currentElement;
 
   /** Creates a `ScrollContainer`.*/
   constructor() {
@@ -61,16 +62,18 @@ export class ScrollContainer extends HTMLDivElement {
   startAutoScroll() {
     this.#autoScrollIsActive = true;
     this.#scrollBanner.style.visibility = 'hidden';
+    scrollToTopOfContainer(this.#currentElement);
   }
 
   /**
    * Scrolls the container so that `element` is at the top
    * of the container. This is done if automatic scrolling is
    * enabled. If automatic scrolling is not enabled, nothing
-   * happens.
+   * happens, unless `forceScroll` is true.
    */
-  scrollToTopOfContainer(element) {
-    if (!this.#autoScrollIsActive) {
+  scrollToTopOfContainer(element, forceScroll=false) {
+    this.#currentElement = element;
+    if (!this.#autoScrollIsActive || forceScroll) {
       return;
     }
     const innerContainer = element.parentElement;
