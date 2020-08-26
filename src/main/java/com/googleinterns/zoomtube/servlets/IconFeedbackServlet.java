@@ -81,7 +81,7 @@ public class IconFeedbackServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(lectures));
   }
 
-  /** Returns IconFeedback for a lecture from the database. */
+  /** Returns IconFeedback (associated with a specific lecture) from the database. */
   private List<IconFeedback> getIconFeedback(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
