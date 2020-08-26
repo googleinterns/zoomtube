@@ -48,6 +48,10 @@ export default class DiscussionArea {
    * Initialize the discussion area by loading the current comments.
    */
   async initialize() {
+    // This is used as the `onclick` handler of the new comment area submit
+    // button. It must be set after discussion is initialized.
+    window.postNewComment = this.postNewComment.bind(this);
+
     await this.loadDiscussion();
   }
 
