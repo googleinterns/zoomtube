@@ -91,12 +91,13 @@ export default class DiscussionManager {
   }
 
   /**
-   * Posts `content` as a reply to `parentId`.
+   * Posts `content` as a reply to `parentId` with the specified `transcriptId`.
    */
-  async postReply(content, parentId) {
+  async postReply(content, parentId, transcriptLineId) {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_PARENT]: parentId,
       [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
+      [DiscussionManager.#PARAM_TRANSCRIPT_LINE]: transcriptLineId,
     });
   }
 

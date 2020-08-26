@@ -151,12 +151,14 @@ export default class DiscussionArea {
             .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
             .value;
     /* eslint-enable indent */
-    const currentTranscripLine = TranscriptArea.currentTranscripLine();
+
+    // TODO: Use TranscriptSeeker to send the correct transcript ID.
+    const currentTranscripLineId = '123';
 
     this.#manager
         .postRootComment(
             DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            commentType)
+            commentType, currentTranscripLineId)
         .then(() => {
           this.loadDiscussion();
         });

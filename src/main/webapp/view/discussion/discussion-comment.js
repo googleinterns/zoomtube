@@ -113,7 +113,9 @@ export default class DiscussionComment extends HTMLElement {
   postReplyClicked() {
     const textarea = this.shadowRoot.querySelector(
         DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
-    this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
+    this.#discussion.postReply(
+        textarea.value, this.comment.commentKey.id,
+        this.comment.transcriptLineKey.id);
   }
 
   /**
