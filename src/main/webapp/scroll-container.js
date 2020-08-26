@@ -27,7 +27,7 @@ export class ScrollContainer extends HTMLDivElement {
 
   #autoScrollIsActive;
   #scrollBanner;
-  browserScrolled;
+  #browserScrolled;
 
   /** Creates a `ScrollContainer`.*/
   constructor() {
@@ -49,8 +49,8 @@ export class ScrollContainer extends HTMLDivElement {
 
   /** De-activates the automatic scrolling of the transcript. */
   stopAutoScroll() {
-    if (this.browserScrolled) {
-      this.browserScrolled = false;
+    if (this.#browserScrolled) {
+      this.#browserScrolled = false;
       return;
     }
     this.#autoScrollIsActive = false;
@@ -75,7 +75,7 @@ export class ScrollContainer extends HTMLDivElement {
     }
     const innerContainer = element.parentElement;
     this.scrollTop = element.offsetTop - innerContainer.offsetTop;
-    this.browserScrolled = true;
+    this.#browserScrolled = true;
   }
 }
 
