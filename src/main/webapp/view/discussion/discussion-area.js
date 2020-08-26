@@ -142,7 +142,7 @@ export default class DiscussionArea {
    */
   postNewComment() {
     /* eslint-disable indent */
-    const type = DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
+    const commentType = DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
                      .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
                      .value;
     /* eslint-enable indent */
@@ -150,7 +150,7 @@ export default class DiscussionArea {
     this.#manager
         .postRootComment(
             DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            type)
+            commentType)
         .then(() => {
           this.loadDiscussion();
         });
