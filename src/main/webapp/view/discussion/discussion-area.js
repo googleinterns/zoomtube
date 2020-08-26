@@ -28,6 +28,10 @@ export default class DiscussionArea {
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
   static #ELEMENT_NEW_COMMENT_TYPES =
       document.querySelector('#new-comment-types');
+  /**
+   * A selector to query on `ELEMENT_NEW_COMMENT_TYPES`. It returns the
+   * selected type button in the new comment area.
+   */
   static #SELECTOR_SELECTED_TYPE = 'label.active > input';
 
   #lecture;
