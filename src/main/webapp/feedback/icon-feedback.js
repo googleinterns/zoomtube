@@ -41,10 +41,7 @@ export default class IconFeedback {
     url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
     const response = await fetch(url);
     const jsonData = await response.json();
-
-    for (const iconFeedback of jsonData) {
-      console.log(iconFeedback);
-    }
+    console.log(jsonData);
   }
 }
 
