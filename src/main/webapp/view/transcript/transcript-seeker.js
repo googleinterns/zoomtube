@@ -16,7 +16,7 @@
 export default class TranscriptSeeker {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
 
-  #currentTranscriptLine;
+  static #currentTranscriptLine;
   #eventController;
 
   /**
@@ -35,14 +35,14 @@ export default class TranscriptSeeker {
    * Returns the `currentTranscriptLine` if it exists. Else, returns
    * undefined.
    */
-  currentTranscriptLine() {
-    if (this.#currentTranscriptLine == null) {
+  static currentTranscriptLine() {
+    if (TranscriptSeeker.#currentTranscriptLine == null) {
       // If the first transcript line doesn't exist, `currentTranscriptLine` is
       // assigned to be undefined.
-      this.#currentTranscriptLine =
+      TranscriptSeeker.#currentTranscriptLine =
           document.getElementsByTagName('transcript-line')[0];
     }
-    return this.#currentTranscriptLine;
+    return TranscriptSeeker.#currentTranscriptLine;
   }
 
   /**
@@ -58,27 +58,30 @@ export default class TranscriptSeeker {
 
   /** Seeks transcript to `timeMs`. */
   seekTranscript(timeMs) {
-    if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
-      this.currentTranscriptLine().addBold();
+    if (TranscriptSeeker.currentTranscriptLine().isWithinTimeRange(timeMs)) {
+      TranscriptSeeker.currentTranscriptLine().addBold();
       return;
     }
-    this.currentTranscriptLine().removeBold();
-    this.#currentTranscriptLine = this.transcriptLineWithTime(timeMs);
-    TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
-    if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
-      this.currentTranscriptLine().addBold();
+    TranscriptSeeker.currentTranscriptLine().removeBold();
+    TranscriptSeeker.#currentTranscriptLine =
+        this.transcriptLineWithTime(timeMs);
+    TranscriptSeeker.scrollToTopOfTranscript(
+        TranscriptSeeker.currentTranscriptLine());
+    if (TranscriptSeeker.currentTranscriptLine().isWithinTimeRange(timeMs)) {
+      TranscriptSeeker.currentTranscriptLine().addBold();
     }
   }
   /**
    * Returns the next transcript line for `timeMs`.
    */
   transcriptLineWithTime(timeMs) {
-    const nextTranscript = this.currentTranscriptLine().nextElementSibling;
+    const nextTranscript =
+        TranscriptSeeker.currentTranscriptLine().nextElementSibling;
     // If the video is playing normally, the next transcript line
     // is the one immediately after it. This check is done before
     // the search is conducted because it is more time efficient
     // to check the next element than to conduct a search.
-    if (nextTranscript.isWithinTimeRange(timeMs)) {
+    if (nextTranscript && nextTranscript.isWithinTimeRange(timeMs)) {
       return nextTranscript;
     }
     // This call happens if the user seeks to a certain timestamp instead.
