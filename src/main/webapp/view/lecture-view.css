@@ -30,6 +30,10 @@ body {
   text-align: right;
 }
 
+#cancel-reply {
+  color: #555;
+}
+
 .comment-content {
   background: #fff;
   border: 2px solid #eee;
