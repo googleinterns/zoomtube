@@ -94,7 +94,13 @@ public class LectureServlet extends HttpServlet {
     String lectureName = request.getParameter(PARAM_NAME);
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
-    initializeTranscript(lectureEntity);
+    try {
+      initializeTranscript(lectureEntity);
+    } catch (IOException | ServletException e) {
+      // If there was an error initializing the transcript, then this lecture won't have one.
+      // Luckily that's still ok, so we suppress these errors so we can redirect.
+      // We might want to log these somewhere, but that's beyond the scope of this project.
+    }
     response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
