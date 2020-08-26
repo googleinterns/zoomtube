@@ -23,11 +23,12 @@ export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
       'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
   static #SCROLL_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
-  static #AUTO_SCROLL_MESSAGE = 'Click here to continue auto-scroll';
+  static #AUTO_SCROLL_MESSAGE = 'Jump back to video';
 
   #autoScrollIsActive;
   #scrollBanner;
-  browserScrolled;
+  #browserScrolled;
+  #currentElement;
 
   /** Creates a `ScrollContainer`.*/
   constructor() {
@@ -49,8 +50,8 @@ export class ScrollContainer extends HTMLDivElement {
 
   /** De-activates the automatic scrolling of the transcript. */
   stopAutoScroll() {
-    if (this.browserScrolled) {
-      this.browserScrolled = false;
+    if (this.#browserScrolled) {
+      this.#browserScrolled = false;
       return;
     }
     this.#autoScrollIsActive = false;
@@ -61,21 +62,23 @@ export class ScrollContainer extends HTMLDivElement {
   startAutoScroll() {
     this.#autoScrollIsActive = true;
     this.#scrollBanner.style.visibility = 'hidden';
+    this.scrollToTopOfContainer(this.#currentElement);
   }
 
   /**
    * Scrolls the container so that `element` is at the top
    * of the container. This is done if automatic scrolling is
    * enabled. If automatic scrolling is not enabled, nothing
-   * happens.
+   * happens, unless `forceScroll` is true.
    */
-  scrollToTopOfContainer(element) {
-    if (!this.#autoScrollIsActive) {
+  scrollToTopOfContainer(element, forceScroll = false) {
+    this.#currentElement = element;
+    if (!this.#autoScrollIsActive || forceScroll) {
       return;
     }
     const innerContainer = element.parentElement;
     this.scrollTop = element.offsetTop - innerContainer.offsetTop;
-    this.browserScrolled = true;
+    this.#browserScrolled = true;
   }
 }
 

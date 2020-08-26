@@ -89,6 +89,7 @@ discussion-comment[highlighted] > [slot='header'] {
 
 .scroll-banner {
   background-color: #4c8bf5;
+  cursor: pointer;
   visibility: hidden;
 }
 
