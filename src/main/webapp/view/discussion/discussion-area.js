@@ -14,7 +14,6 @@
 
 import {ScrollContainer} from '../../scroll-container.js';
 import {timestampToString} from '../../timestamps.js';
-
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_QUESTION} from './discussion.js';
@@ -42,10 +41,6 @@ export default class DiscussionArea {
    */
   constructor(lecture) {
     this.#lecture = lecture;
-    this.#scrollContainer = new ScrollContainer();
-    this.#scrollContainer.id = DiscussionArea.#ID_DISCUSSION_CONTAINER;
-    this.#discussionCommentsDiv = document.createElement('div');
-    this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#currentRootCommentElements = [];
@@ -56,6 +51,10 @@ export default class DiscussionArea {
    * Initialize the discussion area by loading the current comments.
    */
   async initialize() {
+    this.#scrollContainer = new ScrollContainer();
+    this.#scrollContainer.id = DiscussionArea.#ID_DISCUSSION_CONTAINER;
+    this.#discussionCommentsDiv = document.createElement('div');
+    this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
     await this.loadDiscussion();
   }
