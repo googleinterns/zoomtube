@@ -47,16 +47,6 @@ export default class DiscussionArea {
   }
 
   /**
-   * Adds event listener allowing seeking discussion area
-   * on event broadcast.
-   */
-  addSeekingListener() {
-    this.#eventController.addEventListener((timestampMs) => {
-      this.seek(timestampMs);
-    }, 'seek');
-  }
-
-  /**
    * Adds event listener for seeking and initializes the discussion area by
    * loading the current comments.
    */
@@ -67,6 +57,16 @@ export default class DiscussionArea {
     window.postNewComment = this.postNewComment.bind(this);
 
     await this.loadDiscussion();
+  }
+
+  /**
+   * Adds event listener allowing seeking discussion area
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timestampMs) => {
+      this.seek(timestampMs);
+    }, 'seek');
   }
 
   /**
