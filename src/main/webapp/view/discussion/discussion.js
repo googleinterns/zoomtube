@@ -30,16 +30,3 @@ export const COMMENT_TYPES = {
     badgeStyles: ['badge-danger', 'float-right', 'badge', 'badge-pill'],
   },
 };
-
-export let discussion;
-
-/**
- * Loads the lecture discussion.
- */
-export async function intializeDiscussion() {
-  discussion = new DiscussionArea(window.LECTURE);
-  discussion.initialize();
-  // This is used as the `onclick` handler of the new comment area submit
-  // button. It must be set after discussion is initialized.
-  window.postNewComment = discussion.postNewComment.bind(discussion);
-}
