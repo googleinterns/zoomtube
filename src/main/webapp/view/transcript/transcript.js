@@ -97,11 +97,11 @@ export class TranscriptLineElement extends HTMLElement {
    * Creates a stylized comment indicator element.
    */
   static createCommentIndicator() {
-    const commentIndicatorBubble = document.createElement('span');
-    commentIndicatorBubble.className =
+    const commentIndicator = document.createElement('span');
+    commentIndicator.className =
         TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
-    commentIndicatorBubble.innerText = 12;
-    return commentIndicatorBubble;
+    commentIndicator.innerText = 12;
+    return commentIndicator;
   }
 
   /**
