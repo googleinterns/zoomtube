@@ -48,7 +48,7 @@ export default class TranscriptArea {
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
+    url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
     TranscriptArea.addTranscriptLinesToDom(transcriptLines);
