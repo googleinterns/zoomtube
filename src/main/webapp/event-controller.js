@@ -41,8 +41,6 @@ export default class EventController {
    *  were no callbacks, `true` otherwise.
    */
   broadcastEvent(eventName, ...params) {
-    console.log(eventName);
-    console.log(...params);
     if (!this.eventListeners.has(eventName)) {
       console.warn(eventName + ' not found.');
       return false;
