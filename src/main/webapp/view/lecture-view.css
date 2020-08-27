@@ -106,6 +106,14 @@ discussion-comment[highlighted] > [slot='header'] {
   padding-left: 8px;
 }
 
+/* Scroll Container */
+
+.scroll-banner {
+  background-color: #4c8bf5;
+  cursor: pointer;
+  visibility: hidden;
+}
+
 /* Transcript */
 
 #transcript-container {
