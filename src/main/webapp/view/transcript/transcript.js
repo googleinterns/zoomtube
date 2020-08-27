@@ -55,7 +55,8 @@ export class TranscriptLineElement extends HTMLElement {
     super();
     const contentDivElement = TranscriptLineElement.createContentDivElement();
     TranscriptLineElement.appendParagraphToContainer(
-        timestampRange, contentDivElement, ['justify-content-start', 'mb-1']);
+        timestampRange, contentDivElement,
+        ['justify-content-start', 'mb-1', 'transcript-line-timestamp']);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
     this.classList.add(
@@ -82,7 +83,7 @@ export class TranscriptLineElement extends HTMLElement {
    */
   static createHrElement() {
     const hrElement = document.createElement('hr');
-    hrElement.classList.add('my-1', 'align-middle', 'mr-5');
+    hrElement.classList.add('my-1', 'align-middle');
     return hrElement;
   }
 
