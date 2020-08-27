@@ -102,11 +102,15 @@ export class TranscriptLineElement extends HTMLElement {
     commentIndicator.className =
         TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
     commentIndicator.innerText = 0;
-    TranscriptLineElement.addHoverToCommentIndicator(commentIndicator);
+    TranscriptLineElement.addPopoverToCommentIndicator(commentIndicator);
     return commentIndicator;
   }
 
-  static addHoverToCommentIndicator(commentIndicator) {
+  /**
+   * Adds a popover to `commentIndicator` that will appear upon
+   * hover over it.
+   */
+  static addPopoverToCommentIndicator(commentIndicator) {
     commentIndicator.setAttribute(
         'data-content',
         TranscriptLineElement.#COMMENT_INDICATOR_POPOVER_MESSAGE);
