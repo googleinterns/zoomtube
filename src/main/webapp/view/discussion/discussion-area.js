@@ -15,7 +15,7 @@
 import {timestampToString} from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
-import {COMMENT_TYPE_QUESTION, COMMENT_TYPE_REPLY} from './discussion.js';
+import {COMMENT_TYPE_REPLY} from './discussion.js';
 
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
@@ -27,6 +27,14 @@ export const ELEMENT_DISCUSSION =
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
+  static #ELEMENT_NEW_COMMENT_TYPES =
+      document.querySelector('#new-comment-types');
+  /**
+   * A selector to query on `ELEMENT_NEW_COMMENT_TYPES`. It returns the
+   * selected type button in the new comment area.
+   */
+  static #SELECTOR_SELECTED_TYPE = 'label.active > input';
+
   #lecture;
   #manager;
   #currentTimeMs;
@@ -169,10 +177,17 @@ export default class DiscussionArea {
    * Posts the comment in the new comment area, and updates the discussion.
    */
   postNewComment() {
+    /* eslint-disable indent */
+    const commentType =
+        DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
+            .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
+            .value;
+    /* eslint-enable indent */
+
     this.#manager
         .postRootComment(
             DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            COMMENT_TYPE_QUESTION)
+            commentType)
         .then(() => {
           this.updateDiscussion();
         });

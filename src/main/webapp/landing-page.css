@@ -12,7 +12,7 @@
   align-items: center !important;
   display: flex !important;
   justify-content: center !important;
-  margin: 30px auto auto auto;
+  margin: 30px auto 60px;
 }
 
 #view-btn-cont a {
