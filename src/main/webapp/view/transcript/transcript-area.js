@@ -104,4 +104,3 @@ export default class TranscriptArea {
   }
 }
 
-console.log('he');
