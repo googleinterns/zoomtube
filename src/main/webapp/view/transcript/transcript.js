@@ -31,6 +31,7 @@ export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
   static #COMMENT_INDICATOR_CLASSES = 'indicator badge badge-pill';
+  static #COMMENT_INDICATOR_POPOVER_MESSAGE = 'The number of comments at this transcript line';
 
   commentIndicator;
 
@@ -106,7 +107,7 @@ export class TranscriptLineElement extends HTMLElement {
 
   static addHoverToCommentIndicator(commentIndicator) {
     commentIndicator.setAttribute(
-        'data-content', 'The number of comments at this transcript line');
+        'data-content', TranscriptLineElement.#COMMENT_INDICATOR_POPOVER_MESSAGE);
     commentIndicator.setAttribute('data-toggle', 'popover');
   }
 
