@@ -24,7 +24,7 @@ export default class IconFeedback {
    * and lecture ID to be stored in database.
    */
   static iconOnClick(iconType) {
-    const videoTimeStamp = window.videoPlayer.getCurrentTime();
+    const videoTimeStamp = window.video.getCurrentVideoTimeMs();
     const url = new URL(ENDPOINT_FEEDBACK, window.location.origin);
     url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
     url.searchParams.append(PARAM_TIMESTAMP, videoTimeStamp);
