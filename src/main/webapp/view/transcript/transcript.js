@@ -67,6 +67,10 @@ export class TranscriptLineElement extends HTMLElement {
     this.transcriptLine = transcriptLine;
   }
 
+  attachEventListener(eventController) {
+    this.onclick = eventController.broadcastEvent('seekAll', this.transcriptLine.startTimestampMs);
+  }
+
   /**
    * Creates a stylized div element that will be used to store
    * the time range and text in a `TranscriptLineElement`.
