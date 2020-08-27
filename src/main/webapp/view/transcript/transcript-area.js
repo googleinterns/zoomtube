@@ -75,7 +75,7 @@ export default class TranscriptArea {
       ulElement.appendChild(
           TranscriptLineElement.createTranscriptLineElement(transcriptLine));
     });
-    $('.indicator').popover({trigger: 'hover'})
+    $('.indicator').popover({trigger: 'hover'});
   }
 
   /**
