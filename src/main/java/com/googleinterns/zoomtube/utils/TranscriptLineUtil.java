@@ -59,7 +59,7 @@ public final class TranscriptLineUtil {
    */
   public static Entity createEntity(
       Key lectureKey, String lineContent, long lineStartMs, long lineDurationMs, long lineEndMs) {
-    Entity lineEntity = new Entity(KIND);
+    Entity lineEntity = new Entity(KIND, lectureKey);
     lineEntity.setProperty(LECTURE, lectureKey);
     lineEntity.setProperty(CONTENT, lineContent);
     lineEntity.setProperty(START_TIMESTAMP_MS, lineStartMs);
