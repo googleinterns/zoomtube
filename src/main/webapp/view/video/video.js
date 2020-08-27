@@ -19,9 +19,11 @@ const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
+  #lecture;
   #synchronizer;
 
-  constructor() {
+  constructor(lecture) {
+    this.#lecture = lecture;
     this.#synchronizer = new Synchronizer();
   }
 
@@ -44,7 +46,7 @@ export default class Video {
     this.videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
-      videoId: window.LECTURE.videoId,
+      videoId: this.#lecture.videoId,
       events: {
         onReady: window.onPlayerReady,
       },
