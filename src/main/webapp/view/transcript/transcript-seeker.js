@@ -38,6 +38,7 @@ export default class TranscriptSeeker {
    */
   addSeekingListener() {
     this.#eventController.addEventListener((timestampMs) => {
+      console.log(timestampMs);
       this.seekTranscript(timestampMs);
     }, 'seek', 'seekAll');
   }
