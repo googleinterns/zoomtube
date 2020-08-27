@@ -21,8 +21,11 @@ export default class TranscriptArea {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
 
+  static transcriptLineMap = new Map();
+
   #transcriptSeeker;
   #eventController;
+
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -72,9 +75,25 @@ export default class TranscriptArea {
     ulElement.class = 'mx-auto';
     transcriptContainer.appendChild(ulElement);
     transcriptLines.forEach((transcriptLine) => {
-      ulElement.appendChild(
-          TranscriptLineElement.createTranscriptLineElement(transcriptLine));
+      const transcriptLineElement =
+          TranscriptLineElement.createTranscriptLineElement(transcriptLine);
+      ulElement.appendChild(transcriptLineElement);
+      TranscriptArea.transcriptLineMap.set(
+          transcriptLine.transcriptKey.id, transcriptLineElement);
     });
+  }
+
+  /** Increments the indicator corresponding to `transcriptLineKey` by 1. */
+  static incrementCommentIndicatorAt(transcriptLineKeyId) {
+    if (!TranscriptArea.transcriptLineMap.has(transcriptLineKeyId)) {
+      return;
+    }
+    const commentIndicatorElement =
+        TranscriptArea.transcriptLineMap.get(transcriptLineKeyId)
+            .commentIndicator;
+    commentIndicatorElement.innerText =
+        parseInt(commentIndicatorElement.innerText) + 1;
+    commentIndicatorElement.style.visibility = 'visible';
   }
 
   /**
