@@ -22,7 +22,7 @@ export default class Video {
   #lecture;
   #synchronizer;
 
-  constructor(lecture) {
+  constructor(lecture, eventController) {
     this.#lecture = lecture;
     this.#synchronizer = new Synchronizer(eventController);
   }
