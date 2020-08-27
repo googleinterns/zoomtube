@@ -30,8 +30,7 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
-  static #COMMENT_INDICATOR_CLASSES =
-      'indicator badge badge-pill';
+  static #COMMENT_INDICATOR_CLASSES = 'indicator badge badge-pill';
 
   commentIndicator;
 
@@ -101,7 +100,14 @@ export class TranscriptLineElement extends HTMLElement {
     commentIndicator.className =
         TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
     commentIndicator.innerText = 0;
+    TranscriptLineElement.addHoverToCommentIndicator(commentIndicator);
     return commentIndicator;
+  }
+
+  static addHoverToCommentIndicator(commentIndicator) {
+    commentIndicator.setAttribute(
+        'data-content', 'The number of comments at this transcript line');
+    commentIndicator.setAttribute('data-toggle', 'popover');
   }
 
   /**
