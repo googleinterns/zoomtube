@@ -25,6 +25,7 @@ export default class DiscussionManager {
   static #PARAM_TYPE = 'type';
   static #PARAM_TRANSCRIPT_LINE = 'transcript-line';
   #lecture;
+  #displayedComments;
 
   /**
    * Creates a `DiscussionManager` to manage posting and fetching comments for
@@ -32,42 +33,50 @@ export default class DiscussionManager {
    */
   constructor(lecture) {
     this.#lecture = lecture;
+    this.#displayedComments = new Map();
   }
 
   /**
-   * Organizes comments into threads with nested replies.
+   * Adds new comments to threads with nested replies by setting comment's
+   * parent and replies fields. Only processes and returns comments with ids
+   * that haven't already been seen.
    *
-   * <p>All comments are sent from the servlet without any structure, so the
-   * client needs to organize them before displaying.
+   * <p>This is a private method and should only be called by
+   * `DiscussionManager`.
    */
-  structureComments(allComments) {
-    const commentIds = {};
+  processNewComments(allComments) {
+    const newComments = [];
+
+    // Comments are not guarenteed to have any specific order, so we need to do
+    // this loop before the other one to initialze fields on new comments.
     for (const comment of allComments) {
+      const id = comment.commentKey.id;
+      if (this.#displayedComments.has(id)) {
+        continue;
+      }
       comment.replies = [];
-      commentIds[comment.commentKey.id] = comment;
+      newComments.push(comment);
+      this.#displayedComments.set(id, comment);
     }
 
-    const rootComments = [];
-    for (const comment of allComments) {
+    // Sets parent element, and adds comments as replies, since all are
+    // initialized in first loop.
+    for (const comment of newComments) {
       if (comment.type === COMMENT_TYPE_REPLY) {
-        const parent = commentIds[comment.parentKey.value.id];
+        const parentId = comment.parentKey.value.id;
+        const parent = this.#displayedComments.get(parentId);
         parent.replies.push(comment);
-      } else {
-        // Top level comments don't have parents.
-        rootComments.push(comment);
+        comment.parent = parent;
       }
     }
-    // Sort comments such that earliest timestamp is first.
-    rootComments.sort((a, b) => (a.timestampMs.value - b.timestampMs.value));
-    return rootComments;
+    return newComments;
   }
 
   /**
-   * Fetches all of the lecture comments from the `ENDPOINT`. This
-   * returns a sorted array of all root comments, with replies added to
-   * their parents.
+   * Fetches and returns all of the lecture comments that haven't been fetched
+   * before from `ENDPOINT`.
    */
-  async fetchRootComments() {
+  async fetchNewComments() {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
     url.searchParams.append(
         DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
@@ -75,7 +84,7 @@ export default class DiscussionManager {
     const request = await fetch(url);
     const json = await request.json();
 
-    return this.structureComments(json);
+    return this.processNewComments(json);
   }
 
   /**
