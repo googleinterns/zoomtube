@@ -62,7 +62,7 @@ export default class TranscriptArea {
     url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
-    TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+    this.addTranscriptLinesToDom(transcriptLines);
   }
 
   /**
@@ -71,7 +71,7 @@ export default class TranscriptArea {
    * <p>This is a private method that should only be called in
    * `loadTranscript()`.
    */
-  static addTranscriptLinesToDom(transcriptLines) {
+  addTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer = TranscriptArea.transcriptScrollContainer();
     const ulElement = document.createElement('ul');
     // TODO: Move the class assignment to the HTML.

@@ -30,6 +30,9 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
+  static #TIME_OFFSET = 1;
+
+  #timestamp;
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
@@ -54,9 +57,10 @@ export class TranscriptLineElement extends HTMLElement {
   constructor(timestampRange, transcriptLine) {
     super();
     const contentDivElement = TranscriptLineElement.createContentDivElement();
-    TranscriptLineElement.appendParagraphToContainer(
-        timestampRange, contentDivElement,
+    this.#timestamp = TranscriptLineElement.createParagraphWithClasses(
+        timestampRange,
         ['justify-content-start', 'mb-1', 'transcript-line-timestamp']);
+    contentDivElement.appendChild(this.#timestamp);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
     this.classList.add(
@@ -68,8 +72,10 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   attachEventListener(eventController) {
-    this.onclick = eventController.broadcastEvent(
-        'seekAll', this.transcriptLine.startTimestampMs);
+    this.#timestamp.onclick = eventController.broadcastEvent.bind(
+        eventController, 'seekAll',
+        this.transcriptLine.startTimestampMs +
+            TranscriptLineElement.#TIME_OFFSET);
   }
 
   /**
@@ -99,14 +105,23 @@ export class TranscriptLineElement extends HTMLElement {
    * <p>Adds classes the the p tag if `classList` is provided.
    */
   static appendParagraphToContainer(text, container, classes = []) {
+    container.appendChild(
+        TranscriptLineElement.createParagraphWithClasses(text, classes));
+  }
+
+  /**
+   * Creates a p tag to store the given `text`.
+   *
+   * <p>Adds classes the the p tag if `classList` is provided.
+   */
+  static createParagraphWithClasses(text, classes = []) {
     const pTag = document.createElement('p');
     pTag.innerText = text;
-    container.appendChild(pTag);
-
     if (classes.length == 0) {
       return;
     }
     pTag.classList.add(...classes);
+    return pTag;
   }
 
   /**

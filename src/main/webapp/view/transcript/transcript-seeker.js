@@ -59,6 +59,9 @@ export default class TranscriptSeeker {
 
   /** Seeks transcript to `timeMs`. */
   seekTranscript(timeMs) {
+    if (this.currentTranscriptLine() == null) {
+      return;
+    }
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
       TranscriptArea.transcriptScrollContainer().scrollToTopOfContainer(
           this.currentTranscriptLine());
