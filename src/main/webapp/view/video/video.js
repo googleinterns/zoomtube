@@ -12,15 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import Synchronizer from '../../synchronizer.js';
 import {secondsToMilliseconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
+  #synchronizer;
+
+  constructor() {
+    this.#synchronizer = new Synchronizer();
+  }
+
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
     window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+    window.onPlayerReady = this.onPlayerReady.bind(this);
     const videoApiScript = document.createElement(SCRIPT);
     const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
     videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -38,7 +46,7 @@ export default class Video {
       width: '640',
       videoId: window.LECTURE.videoId,
       events: {
-        onReady: this.onPlayerReady,
+        onReady: window.onPlayerReady,
       },
     });
   }
@@ -46,7 +54,8 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    window.synchronizer.startVideoSyncTimer();
+    this.#synchronizer.startVideoSyncTimer(
+        this.getCurrentVideoTimeMs.bind(this));
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */

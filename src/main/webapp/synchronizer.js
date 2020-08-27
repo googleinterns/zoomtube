@@ -31,11 +31,12 @@ const transcriptSeeker = new TranscriptSeeker('event controller');
 export default class Synchronizer {
   /**
    * Starts timer which broadcasts current video time every
-   * `TIME_INTERVAL_MS` milliseconds.
+   * `TIME_INTERVAL_MS` milliseconds. `getCurrentVideoTimeMs` is
+   * a reference to a function.
    */
-  startVideoSyncTimer() {
+  startVideoSyncTimer(getCurrentVideoTimeMs) {
     setInterval(() => {
-      this.sync(window.video.getCurrentVideoTimeMs());
+      this.sync(getCurrentVideoTimeMs());
     }, /* ms= */ TIME_INTERVAL_MS);
   }
 
