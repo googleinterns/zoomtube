@@ -19,22 +19,21 @@
 export default class Synchronizer {
   static #TIME_INTERVAL_MS = 100;
 
-  #video;
   #eventController;
   #lastSyncedTimeMs;
 
-  constructor(video, eventController) {
-    this.#video = video;
+  constructor(eventController) {
     this.#eventController = eventController;
   }
 
   /**
    * Starts timer which broadcasts current video time every
-   * `TIME_INTERVAL_MS` milliseconds.
+   * `TIME_INTERVAL_MS` milliseconds. `getCurrentVideoTimeMs` is
+   * a reference to a function.
    */
-  startVideoSyncTimer() {
+  startVideoSyncTimer(getCurrentVideoTimeMs) {
     setInterval(() => {
-      this.sync(this.#video.getCurrentVideoTimeMs());
+      this.sync(getCurrentVideoTimeMs());
     }, /* ms= */ Synchronizer.#TIME_INTERVAL_MS);
   }
 
