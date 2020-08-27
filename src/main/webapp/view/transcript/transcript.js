@@ -100,7 +100,7 @@ export class TranscriptLineElement extends HTMLElement {
     const commentIndicator = document.createElement('span');
     commentIndicator.className =
         TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
-    commentIndicator.innerText = 12;
+    commentIndicator.innerText = 0;
     return commentIndicator;
   }
 
