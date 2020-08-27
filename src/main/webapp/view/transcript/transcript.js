@@ -60,7 +60,7 @@ export class TranscriptLineElement extends HTMLElement {
     this.#timestamp =
         TranscriptLineElement.createParagraphWithClasses(timestampRange, [
           'justify-content-start', 'mb-1', 'transcript-line-timestamp',
-          'timestamp'
+          'timestamp',
         ]);
     contentDivElement.appendChild(this.#timestamp);
     TranscriptLineElement.appendParagraphToContainer(
