@@ -22,7 +22,7 @@ export default class Video {
   #synchronizer;
 
   constructor() {
-    this.#synchronizer = new Synchronizer(this);
+    this.#synchronizer = new Synchronizer();
   }
 
   /** Loads YouTube iFrame API. */
