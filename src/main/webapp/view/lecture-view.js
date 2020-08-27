@@ -28,13 +28,10 @@ const PARAM_ID = 'id';
  */
 export default class LectureView {
   #lecture;
-<<<<<<< HEAD
   #eventController;
   #video;
   #transcript;
   #discussion;
-=======
->>>>>>> master
 
   constructor(lecture) {
     this.#lecture = lecture;
@@ -47,7 +44,6 @@ export default class LectureView {
   async initialize() {
     this.setLectureName();
 
-<<<<<<< HEAD
     this.#eventController = new EventController();
     this.#video = new Video(this.#lecture, this.#eventController);
     this.#transcript = new TranscriptArea(this.#lecture, this.#eventController);
@@ -56,21 +52,6 @@ export default class LectureView {
     await this.#video.loadVideoApi();
     await this.#transcript.initialize();
     await this.#discussion.initialize();
-=======
-    // TODO: Make these private once event controller is created.
-    LectureView.eventController = new EventController();
-    LectureView.video = new Video(this.#lecture, LectureView.eventController);
-    // TODO: Move TranscriptArea initialization outside of initialize()
-    // and replace string parameter with a controller object.
-    LectureView.transcript =
-        new TranscriptArea(this.#lecture, LectureView.eventController);
-    LectureView.discussion =
-        new DiscussionArea(this.#lecture, LectureView.eventController);
-
-    await LectureView.video.loadVideoApi();
-    await LectureView.transcript.loadTranscript();
-    await LectureView.discussion.initialize();
->>>>>>> master
   }
 
   /** Sets the lecture name in `header-text`. */
