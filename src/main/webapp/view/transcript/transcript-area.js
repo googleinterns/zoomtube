@@ -103,3 +103,5 @@ export default class TranscriptArea {
     return this.#transcriptSeeker;
   }
 }
+
+console.log('he');
