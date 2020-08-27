@@ -36,6 +36,7 @@ export default class DiscussionArea {
   static #SELECTOR_SELECTED_TYPE = 'label.active > input';
 
   #lecture;
+  #eventController;
   #manager;
   #currentTimeMs;
   #nearestComments;
@@ -43,22 +44,35 @@ export default class DiscussionArea {
   /**
    * Creates a `DiscussionArea` for a `lecture`.
    */
-  constructor(lecture) {
+  constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
   }
 
   /**
-   * Initialize the discussion area by loading the current comments.
+   * Adds event listener for seeking and initializes the discussion area by
+   * loading the current comments.
    */
   async initialize() {
+    this.addSeekingListener();
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment = this.postNewComment.bind(this);
 
     await this.updateDiscussion();
+  }
+
+  /**
+   * Adds event listener allowing seeking discussion area
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timestampMs) => {
+      this.seek(timestampMs);
+    }, 'seek');
   }
 
   /**

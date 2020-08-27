@@ -39,7 +39,15 @@ export default class TranscriptArea {
     this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
-    // eventController as the parameter.
+  }
+
+  /**
+   * Adds event listener for seeking and initializes the transcript area by
+   * loading the transcript lines.
+   */
+  async initialize() {
+    this.#transcriptSeeker.addSeekingListener();
+    await this.loadTranscript();
   }
 
   /**

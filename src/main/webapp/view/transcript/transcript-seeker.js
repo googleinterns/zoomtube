@@ -30,7 +30,16 @@ export default class TranscriptSeeker {
    */
   constructor(eventController) {
     this.#eventController = eventController;
-    // TODO: Add the event listeners.
+  }
+
+  /**
+   * Adds event listener to `eventController` allowing seeking transcript area
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timestampMs) => {
+      this.seekTranscript(timestampMs);
+    }, 'seek');
   }
 
   /**
