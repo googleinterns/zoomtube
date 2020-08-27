@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * Creates a `ScrollContainer` responsible for hiding and displaying
- * a clickable banner to restart automatic scrolling.
+ * Responsible for hiding and displaying a clickable banner to
+ * restart automatic scrolling.
  *
  * <p>Automatic scrolling is when the elements in the container are scrolled
  * to the top of the container automatically.
@@ -30,22 +30,23 @@ export class ScrollContainer extends HTMLDivElement {
   #browserScrolled;
   #currentElement;
 
-  /** Creates a `ScrollContainer`.*/
+  /** Creates a `ScrollContainer`. */
   constructor() {
     super();
-    this.appendChild(this.createScrollBanner());
+    this.#scrollBanner = this.createScrollBanner();
+    this.appendChild(this.#scrollBanner);
     this.onscroll = this.stopAutoScroll.bind(this);
     this.className = ScrollContainer.#SCROLL_CONTAINER_CLASSES;
     this.#autoScrollIsActive = true;
   }
 
-  /** Creates a banner for scrolling.*/
+  /** Creates a banner for scrolling. */
   createScrollBanner() {
-    this.#scrollBanner = document.createElement('div');
-    this.#scrollBanner.innerText = ScrollContainer.#AUTO_SCROLL_MESSAGE;
-    this.#scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
-    this.#scrollBanner.onclick = this.startAutoScroll.bind(this);
-    return this.#scrollBanner;
+    const scrollBanner = document.createElement('div');
+    scrollBanner.innerText = ScrollContainer.#AUTO_SCROLL_MESSAGE;
+    scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
+    scrollBanner.onclick = this.startAutoScroll.bind(this);
+    return scrollBanner;
   }
 
   /** De-activates the automatic scrolling of the transcript. */
@@ -66,10 +67,10 @@ export class ScrollContainer extends HTMLDivElement {
   }
 
   /**
-   * Scrolls the container so that `element` is at the top
-   * of the container. This is done if automatic scrolling is
-   * enabled. If automatic scrolling is not enabled, nothing
-   * happens, unless `forceScroll` is true.
+   * If automatic scrolling is enabled or `forceScroll` is true, then scrolls
+   * the container such that `element` is at the top of the container.
+   * Otherwise, does nothing.
+   *
    */
   scrollToTopOfContainer(element, forceScroll = false) {
     this.#currentElement = element;

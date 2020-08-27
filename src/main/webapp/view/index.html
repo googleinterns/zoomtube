@@ -24,7 +24,7 @@
 <body>
   <nav class="navbar navbar-light">
     <h2 id="header-text">ZoomTube</h2>
-    <a type="button" class="btn btn-outline-primary" href="/lectures/">All Lectures</a>
+    <a type="button" class="btn zt-btn btn-outline-primary" href="/lectures/">All Lectures</a>
   </nav>
 
   <div id="page">
@@ -46,7 +46,19 @@
           <label for="post-textarea">Leave a Comment at <span id="timestamp-span">00:00</span></label>
           <textarea class="form-control" id="post-textarea" rows="2"></textarea>
         </div>
-        <button class="btn btn-primary mb-2 float-right" type="button" onclick="postNewComment()">Post Comment</button>
+        <div class="btn-group-toggle" data-toggle="buttons" id="new-comment-types">
+          <label class="badge btn btn-outline-danger btn-sm float-left">
+            <input type="radio" value="QUESTION" />Question
+          </label>
+          <label class="badge btn btn-outline-secondary btn-sm float-left active">
+            <input type="radio" value="NOTE" />Note
+          </label>
+        </div>
+        <div>
+          <button class="zt-btn btn btn-primary mb-2 btn-sm float-right" type="button" onclick="postNewComment()">
+            Post Comment
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -71,15 +83,15 @@
       <div class="comment-content">
         <div><slot name="content"></slot></div>
         <div class="actions-bar">
-          <button type="button" class="btn btn-primary btn-sm" id="show-reply">Reply</button>
+          <button type="button" class="btn btn-link btn-sm" id="show-reply">Reply</button>
         </div>
       </div>
       <div class="replies">
         <div id="reply-form" class="collapse">
           <textarea class="form-control" id="reply-textarea" rows="3"></textarea>
           <div class="actions-bar">
-            <button class="btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post</button>
-            <button class="btn btn-sm btn-secondary mb-2" type="button" id="cancel-reply">Cancel</button>
+            <button class="btn btn-sm btn-link mb-2" type="button" id="cancel-reply">Cancel</button>
+            <button class="zt-btn btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post Reply</button>
           </div>
         </div>
         <slot name="replies"></slot>
