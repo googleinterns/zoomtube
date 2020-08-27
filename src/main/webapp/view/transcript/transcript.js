@@ -68,7 +68,8 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   attachEventListener(eventController) {
-    this.onclick = eventController.broadcastEvent('seekAll', this.transcriptLine.startTimestampMs);
+    this.onclick = eventController.broadcastEvent(
+        'seekAll', this.transcriptLine.startTimestampMs);
   }
 
   /**

@@ -78,10 +78,11 @@ export default class TranscriptArea {
     ulElement.class = 'mx-auto';
     transcriptContainer.appendChild(ulElement);
     transcriptLines.forEach((transcriptLine) => {
-      const transcriptLineElement = TranscriptLineElement.createTranscriptLineElement(transcriptLine);
-      transcriptLineElement.attachEventListener(this.TranscriptSeeker().eventController());
-      ulElement.appendChild(
-        transcriptLineElement);
+      const transcriptLineElement =
+          TranscriptLineElement.createTranscriptLineElement(transcriptLine);
+      transcriptLineElement.attachEventListener(
+          this.transcriptSeeker().eventController());
+      ulElement.appendChild(transcriptLineElement);
     });
   }
 
