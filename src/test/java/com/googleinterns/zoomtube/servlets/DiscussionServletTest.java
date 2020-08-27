@@ -130,7 +130,7 @@ public class DiscussionServletTest {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
-        .thenReturn(Comment.Type.QUESTION.toString());
+        .thenReturn(Comment.Type.QUESTION_UNANSWERED.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
 
     servlet.doPost(request, response);
@@ -186,7 +186,7 @@ public class DiscussionServletTest {
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP)).thenReturn("2000");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
-        .thenReturn(Comment.Type.QUESTION.toString());
+        .thenReturn(Comment.Type.QUESTION_UNANSWERED.toString());
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader("Random untested content")));
 
@@ -197,7 +197,7 @@ public class DiscussionServletTest {
     Comment comment = CommentUtil.createComment(query.asSingleEntity());
     assertThat(comment.parentKey().isPresent()).isFalse();
     assertThat(comment.timestampMs().get()).isEqualTo(2000);
-    assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION);
+    assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION_UNANSWERED);
   }
 
   @Test
@@ -274,7 +274,7 @@ public class DiscussionServletTest {
     Date dateNow = new Date();
 
     return CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, author,
-        /* content= */ "Untested comment content", dateNow, Comment.Type.QUESTION);
+        /* content= */ "Untested comment content", dateNow, Comment.Type.QUESTION_UNANSWERED);
   }
 
   private List<Comment> getCommentsFromJson(String json) {

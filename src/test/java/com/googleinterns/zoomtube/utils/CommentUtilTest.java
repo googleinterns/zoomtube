@@ -81,7 +81,7 @@ public final class CommentUtilTest {
     String content = "Test content";
     Date dateNow = new Date();
     Entity entity = new Entity(CommentUtil.KIND);
-    Comment.Type type = Comment.Type.QUESTION;
+    Comment.Type type = Comment.Type.QUESTION_UNANSWERED;
     entity.setProperty(CommentUtil.LECTURE, lectureKey);
     entity.setProperty(CommentUtil.TIMESTAMP_MS, timestamp);
     entity.setProperty(CommentUtil.AUTHOR, author);
@@ -109,7 +109,7 @@ public final class CommentUtilTest {
     User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     String content = "Test content";
     Date dateNow = new Date();
-    Comment.Type type = Comment.Type.QUESTION;
+    Comment.Type type = Comment.Type.QUESTION_UNANSWERED;
 
     Entity entity =
         CommentUtil.createRootEntity(lectureKey, timestampMs, author, content, dateNow, type);

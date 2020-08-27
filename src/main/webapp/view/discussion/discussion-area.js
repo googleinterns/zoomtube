@@ -15,7 +15,7 @@
 import {timestampToString} from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
-import {COMMENT_TYPE_QUESTION} from './discussion.js';
+import {COMMENT_TYPE_QUESTION_UNANSWERED} from './discussion.js';
 
 export const ELEMENT_DISCUSSION =
     document.querySelector('#discussion-comments');
@@ -141,7 +141,7 @@ export default class DiscussionArea {
     this.#manager
         .postRootComment(
             DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            COMMENT_TYPE_QUESTION)
+            COMMENT_TYPE_QUESTION_UNANSWERED)
         .then(() => {
           this.loadDiscussion();
         });
