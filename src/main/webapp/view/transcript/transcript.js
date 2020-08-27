@@ -108,7 +108,7 @@ export class TranscriptLineElement extends HTMLElement {
 
   /**
    * Adds a popover to `commentIndicator` that will appear upon
-   * hover over it.
+   * hovering over it.
    */
   static addPopoverToCommentIndicator(commentIndicator) {
     commentIndicator.setAttribute(
