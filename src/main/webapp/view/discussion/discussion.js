@@ -34,7 +34,7 @@ export const COMMENT_TYPES = {
   },
   [COMMENT_TYPE_QUESTION_ANSWERED]: {
     name: 'Answered',
-    badgeStyles: ['badge-danger', 'float-right', 'badge', 'badge-pill'],
+    badgeStyles: ['badge-success', 'float-right', 'badge', 'badge-pill'],
   },
 };
 
