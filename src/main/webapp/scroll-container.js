@@ -82,9 +82,6 @@ export class ScrollContainer extends HTMLDivElement {
     this.scrollTop = element.offsetTop - innerContainer.offsetTop;
     this.#browserScrolled = true;
   }
-
-  // TODO: Add a function that checks if if an element with an onclick
-  // event handler was clicked.
 }
 
 customElements.define('scroll-container', ScrollContainer, {extends: 'div'});
