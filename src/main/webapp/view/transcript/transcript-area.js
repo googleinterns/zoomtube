@@ -24,8 +24,9 @@ export default class TranscriptArea {
   static #transcriptContainer;
   static #PARAM_ID = 'id';
 
-  #transcriptSeeker;
+  #lecture
   #eventController;
+  #transcriptSeeker;
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -34,10 +35,19 @@ export default class TranscriptArea {
    * @param eventController An event controller object that
    *     that will be passed into a seekTranscript object.
    */
-  constructor(eventController) {
+  constructor(lecture, eventController) {
+    this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
-    // eventController as the parameter.
+  }
+
+  /**
+   * Adds event listener for seeking and initializes the transcript area by
+   * loading the transcript lines.
+   */
+  async initialize() {
+    this.#transcriptSeeker.addSeekingListener();
+    await this.loadTranscript();
   }
 
   /**
@@ -49,7 +59,7 @@ export default class TranscriptArea {
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
+    url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
     TranscriptArea.addTranscriptLinesToDom(transcriptLines);

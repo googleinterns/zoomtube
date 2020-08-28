@@ -37,6 +37,7 @@ export default class DiscussionArea {
   static #SELECTOR_SELECTED_TYPE = 'label.active > input';
 
   #lecture;
+  #eventController;
   #manager;
   #currentTimeMs;
   #nearestComments;
@@ -46,15 +47,17 @@ export default class DiscussionArea {
   /**
    * Creates a `DiscussionArea` for a `lecture`.
    */
-  constructor(lecture) {
+  constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
   }
 
   /**
-   * Initialize the discussion area by loading the current comments.
+   * Adds event listener for seeking and initializes the discussion area by
+   * loading the current comments.
    */
   async initialize() {
     this.#scrollContainer = new ScrollContainer();
@@ -62,7 +65,22 @@ export default class DiscussionArea {
     this.#discussionCommentsDiv = document.createElement('div');
     this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
+    this.addSeekingListener();
+
+    // This is used as the `onclick` handler of the new comment area submit
+    // button. It must be set after discussion is initialized.
+    window.postNewComment = this.postNewComment.bind(this);
     await this.updateDiscussion();
+  }
+
+  /**
+   * Adds event listener allowing seeking discussion area
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timestampMs) => {
+      this.seek(timestampMs);
+    }, 'seek');
   }
 
   /**
@@ -185,6 +203,8 @@ export default class DiscussionArea {
    * Posts the comment in the new comment area, and updates the discussion.
    */
   postNewComment() {
+    const commentContent = DiscussionArea.#ELEMENT_POST_TEXTAREA.value;
+    const commentTimestampMs = this.#currentTimeMs;
     /* eslint-disable indent */
     const commentType =
         DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
@@ -193,12 +213,12 @@ export default class DiscussionArea {
     /* eslint-enable indent */
 
     this.#manager
-        .postRootComment(
-            DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            commentType)
+        .postRootComment(commentContent, commentTimestampMs, commentType)
         .then(() => {
           this.updateDiscussion();
         });
+
+    DiscussionArea.#ELEMENT_POST_TEXTAREA.value = '';
   }
 
   /**
