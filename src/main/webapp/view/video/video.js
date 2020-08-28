@@ -68,6 +68,6 @@ export default class Video {
 
   /** Seeks video to `timeMs`. */
   seek(timeMs) {
-    this.#videoPlayer.seekTo(millisecondsToSeconds(timeMs));
+    this.#videoPlayer.seekTo(millisecondsToSeconds(timeMs), /* allowSeekAhead= */ true);
   }
 }
