@@ -88,23 +88,23 @@ public class DiscussionServlet extends HttpServlet {
 
     final Entity commentEntity;
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
-    Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     // TODO: Validate that the transcript line contains the timestampMs.
     long transcriptId = Long.parseLong(request.getParameter(PARAM_TRANSCRIPT_LINE));
-    Key transcriptLine = KeyFactory.createKey(TranscriptLineUtil.KIND, transcriptId);
+    Key transcriptLineKey = KeyFactory.createKey(TranscriptLineUtil.KIND, transcriptId);
     String content = CharStreams.toString(request.getReader());
     Date dateNow = new Date(Clock.systemUTC().millis());
 
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
     if (type == Comment.Type.REPLY) {
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
-      Key parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
+      Key parentKey = KeyFactory.createKey(CommentUtil.KIND, parentId);
       commentEntity =
-          CommentUtil.createReplyEntity(lecture, parent, transcriptLine, author, content, dateNow);
+          CommentUtil.createReplyEntity(lectureKey, parentKey, transcriptLineKey, author, content, dateNow);
     } else {
       long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
       commentEntity = CommentUtil.createRootEntity(
-          lecture, timestampMs, transcriptLine, author, content, dateNow, type);
+          lectureKey, timestampMs, transcriptLineKey, author, content, dateNow, type);
     }
     datastore.put(commentEntity);
 
