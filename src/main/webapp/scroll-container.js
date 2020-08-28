@@ -73,7 +73,7 @@ export class ScrollContainer extends HTMLDivElement {
    *
    */
   scrollToTopOfContainer(
-      element = this.lastChild.firstChild, forceScroll = false) {
+      element, forceScroll = false) {
     this.#currentElement = element;
     if (!this.#autoScrollIsActive || forceScroll) {
       return;

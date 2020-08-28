@@ -116,10 +116,6 @@ discussion-comment[highlighted] > [slot='header'] {
 
 /* Transcript */
 
-.timestamp {
-  cursor: pointer;
-}
-
 #transcript-container {
   height: calc(100% - 420px);
   margin: 15px;
@@ -127,6 +123,7 @@ discussion-comment[highlighted] > [slot='header'] {
 }
 
 .transcript-line-timestamp {
+  cursor: pointer;
   display: inline-block;
   width: 110px;
 }

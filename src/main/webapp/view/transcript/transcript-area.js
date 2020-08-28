@@ -80,7 +80,7 @@ export default class TranscriptArea {
     transcriptLines.forEach((transcriptLine) => {
       const transcriptLineElement =
           TranscriptLineElement.createTranscriptLineElement(transcriptLine);
-      transcriptLineElement.attachEventListener(
+      transcriptLineElement.attachSeekingEventListener(
           this.transcriptSeeker().eventController());
       ulElement.appendChild(transcriptLineElement);
     });

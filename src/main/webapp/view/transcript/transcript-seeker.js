@@ -117,6 +117,9 @@ export default class TranscriptSeeker {
     return transcriptLinePointer;
   }
 
+  /**
+   * Returns the eventController.
+   */
   eventController() {
     return this.#eventController;
   }

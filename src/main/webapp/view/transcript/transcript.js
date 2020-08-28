@@ -30,9 +30,11 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
-  static #TIME_OFFSET = 1;
+  // Shifts the time to seek so that the seeked time is within
+  // the transcript line's time range.
+  static #SEEK_TIME_OFFSET_MS = 1;
 
-  #timestamp;
+  #timestampElement;
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
@@ -57,14 +59,13 @@ export class TranscriptLineElement extends HTMLElement {
   constructor(timestampRange, transcriptLine) {
     super();
     const contentDivElement = TranscriptLineElement.createContentDivElement();
-    this.#timestamp =
+    this.#timestampElement =
         TranscriptLineElement.createParagraphWithClasses(timestampRange, [
           'justify-content-start',
           'mb-1',
           'transcript-line-timestamp',
-          'timestamp',
         ]);
-    contentDivElement.appendChild(this.#timestamp);
+    contentDivElement.appendChild(this.#timestampElement);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
     this.classList.add(
@@ -75,11 +76,14 @@ export class TranscriptLineElement extends HTMLElement {
     this.transcriptLine = transcriptLine;
   }
 
-  attachEventListener(eventController) {
-    this.#timestamp.onclick = eventController.broadcastEvent.bind(
+  /**
+   * Attaches an event listener
+   */
+  attachSeekingEventListener(eventController) {
+    this.#timestampElement.onclick = eventController.broadcastEvent.bind(
         eventController, 'seekAll',
         this.transcriptLine.startTimestampMs +
-            TranscriptLineElement.#TIME_OFFSET);
+            TranscriptLineElement.#SEEK_TIME_OFFSET_MS);
   }
 
   /**
@@ -103,10 +107,10 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Creates a p tag to store the given `text` inside the
+   * Creates a `p` tag to store the given `text` inside the
    * `container`.
    *
-   * <p>Adds classes the the p tag if `classList` is provided.
+   * <p>Adds classes to the p tag if `classList` is provided.
    */
   static appendParagraphToContainer(text, container, classes = []) {
     container.appendChild(
@@ -114,9 +118,9 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Creates a p tag to store the given `text`.
+   * Creates a `p` tag to store the given `text`.
    *
-   * <p>Adds classes the the p tag if `classList` is provided.
+   * <p>Adds classes to the p tag if `classList` is provided.
    */
   static createParagraphWithClasses(text, classes = []) {
     const pTag = document.createElement('p');
