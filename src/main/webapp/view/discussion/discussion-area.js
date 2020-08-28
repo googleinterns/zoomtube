@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {ScrollContainer} from '../../scroll-container.js';
-import {timestampToString} from '../../timestamps.js';
+import TimestampUtil from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_REPLY} from './discussion.js';
@@ -189,7 +189,7 @@ export default class DiscussionArea {
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
-        timestampToString(timeMs);
+        TimestampUtil.timestampToString(timeMs);
 
     this.unhightlightNearestComments();
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
