@@ -70,10 +70,8 @@ export class ScrollContainer extends HTMLDivElement {
    * If automatic scrolling is enabled or `forceScroll` is true, then scrolls
    * the container such that `element` is at the top of the container.
    * Otherwise, does nothing.
-   *
    */
-  scrollToTopOfContainer(
-      element, forceScroll = false) {
+  scrollToTopOfContainer(element, forceScroll = false) {
     this.#currentElement = element;
     if (!this.#autoScrollIsActive || forceScroll) {
       return;
