@@ -12,44 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {seekDiscussion} from './view/discussion/discussion.js';
-import TranscriptSeeker from './view/transcript/transcript-seeker.js';
-
-let lastSyncedTimeMs;
-
-const TIME_INTERVAL_MS = 100;
-// TODO: Retrieve the transcriptSeeker from the TranscriptArea instead
-// once #255 is merged into master.
-// TODO: Move transcriptSeeker to a different class once the eventListeners
-// are added.
-const transcriptSeeker = new TranscriptSeeker('event controller');
-
 /**
  * Handles when to seek transcript and discussion areas according to video
  * time.
  */
 export default class Synchronizer {
-  /**
-   * Starts timer which broadcasts current video time every
-   * `TIME_INTERVAL_MS` milliseconds.
-   */
-  startVideoSyncTimer() {
-    setInterval(() => {
-      this.sync(window.video.getCurrentVideoTimeMs());
-    }, /* ms= */ TIME_INTERVAL_MS);
+  static #TIME_INTERVAL_MS = 100;
+
+  #eventController;
+  #lastSyncedTimeMs;
+
+  constructor(eventController) {
+    this.#eventController = eventController;
   }
 
   /**
-   * Calls functions that seek transcript, and discussion to
-   * `currentVideoTimeMs` if the `currentVideoTimeMs` changed from the last time
-   * this method was called.
+   * Starts timer which broadcasts current video time every
+   * `TIME_INTERVAL_MS` milliseconds. `getCurrentVideoTimeMs` is
+   * a reference to a function.
+   */
+  startVideoSyncTimer(getCurrentVideoTimeMs) {
+    setInterval(() => {
+      this.sync(getCurrentVideoTimeMs());
+    }, /* ms= */ Synchronizer.#TIME_INTERVAL_MS);
+  }
+
+  /**
+   * Broadcasts event that seeks transcript and discussion to
+   * `currentVideoTimeMs`, if the `currentVideoTimeMs` changed from the last
+   * time this method was called.
    */
   sync(currentVideoTimeMs) {
-    if (currentVideoTimeMs == lastSyncedTimeMs) {
+    if (currentVideoTimeMs == this.#lastSyncedTimeMs) {
       return;
     }
-    lastSyncedTimeMs = currentVideoTimeMs;
-    transcriptSeeker.seekTranscript(currentVideoTimeMs);
-    seekDiscussion(currentVideoTimeMs);
+    this.#lastSyncedTimeMs = currentVideoTimeMs;
+    this.#eventController.broadcastEvent('seek', currentVideoTimeMs);
   }
 }

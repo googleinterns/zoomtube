@@ -19,7 +19,7 @@
 <script type="module" src="/view/transcript/transcript.js" defer></script>
 <script type="module" src="../feedback/icon-feedback.js" defer></script>
 <script type="module" src="../event-controller.js" defer></script>
-<script type="module" src="/view/view.js" defer></script>
+<script type="module" src="/view/lecture-view.js" defer></script>
 
 <body>
   <nav class="navbar navbar-light">
@@ -38,9 +38,7 @@
           <button type="button" onclick="iconOnClick('TOO_SLOW')">Too Slow</button>
         </div>
       </div>
-      <div id="transcript-container" class="bg-light rounded">
-        <div id="transcript-lines-container"></div>
-      </div>
+      <div id="transcript-container" class="bg-light rounded"></div>
     </div>
     <div class="halfpage rounded bg-light" id="discussion">
       <div id="new-comment-row">
@@ -48,9 +46,19 @@
           <label for="post-textarea">Leave a Comment at <span id="timestamp-span">00:00</span></label>
           <textarea class="form-control" id="post-textarea" rows="2"></textarea>
         </div>
-        <button class="zt-btn btn btn-primary mb-2 float-right" type="button" onclick="postNewComment()">
-          Post Comment
-        </button>
+        <div class="btn-group-toggle" data-toggle="buttons" id="new-comment-types">
+          <label class="badge btn btn-outline-danger btn-sm float-left">
+            <input type="radio" value="QUESTION_UNANSWERED" />Question
+          </label>
+          <label class="badge btn btn-outline-secondary btn-sm float-left active">
+            <input type="radio" value="NOTE" />Note
+          </label>
+        </div>
+        <div>
+          <button class="zt-btn btn btn-primary mb-2 btn-sm float-right" type="button" onclick="postNewComment()">
+            Post Comment
+          </button>
+        </div>
       </div>
       <div class="container" id="discussion-comments"></div>
     </div>

@@ -70,7 +70,6 @@ discussion-comment[highlighted] > [slot='header'] {
 
 #new-comment-row {
   border-bottom: 2px solid #eee;
-  height: 160px;
   overflow: hidden;
   padding-bottom: 10px;
 }
@@ -79,6 +78,11 @@ discussion-comment[highlighted] > [slot='header'] {
   border: 2px solid #eee;
   margin: 2px;
   width: calc(100% - 4px);
+}
+
+#new-comment-types .btn {
+  border-radius: 50px;
+  margin: -8px 3px;
 }
 
 #new-comment-form,
@@ -100,6 +104,14 @@ discussion-comment[highlighted] > [slot='header'] {
   border-left: 5px solid #ddd;
   margin-left: 8px;
   padding-left: 8px;
+}
+
+/* Scroll Container */
+
+.scroll-banner {
+  background-color: #4c8bf5;
+  cursor: pointer;
+  visibility: hidden;
 }
 
 /* Transcript */
