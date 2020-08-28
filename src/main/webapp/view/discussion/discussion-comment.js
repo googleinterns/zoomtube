@@ -64,10 +64,36 @@ export default class DiscussionComment extends HTMLElement {
    */
   setComment(comment) {
     this.comment = comment;
-    this.setSlotSpan(
-        DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
-    this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
+    this.setHeader();
+    this.setContent();
     this.setTypeTag(comment.type);
+  }
+
+  /**
+   * Adds the comment's header to the header slot. For root comments, adds
+   * a click event handler to seek everything to the comment's timestamp.
+   */
+  setHeader() {
+    const headerSpan = document.createElement('span');
+    headerSpan.innerText = this.getHeaderString();
+    headerSpan.slot = DiscussionComment.#SLOT_HEADER;
+    this.appendChild(headerSpan);
+
+    if (this.comment.type !== COMMENT_TYPE_REPLY) {
+      headerSpan.onclick = () => {
+        this.#discussion.timestampClicked(this.comment.timestampMs.value);
+      };
+    }
+  }
+
+  /**
+   * Adds the comment's content to the content slot.
+   */
+  setContent() {
+    const contentSpan = document.createElement('span');
+    contentSpan.innerText = this.comment.content;
+    contentSpan.slot = DiscussionComment.#SLOT_CONTENT;
+    this.appendChild(contentSpan);
   }
 
   /**
@@ -75,14 +101,15 @@ export default class DiscussionComment extends HTMLElement {
    * the `comment`.  The timestamp is not displayed for replies to
    * other comments.
    */
-  getHeaderString(comment) {
-    const username = comment.author.email.split('@')[0];
+  getHeaderString() {
+    const username = this.comment.author.email.split('@')[0];
     let timestampPrefix = '';
-    if (comment.type !== COMMENT_TYPE_REPLY) {
+    if (this.comment.type !== COMMENT_TYPE_REPLY) {
       // Don't show timestamp on replies.
-      timestampPrefix = `${timestampToString(comment.timestampMs.value)} - `;
+      timestampPrefix =
+          `${timestampToString(this.comment.timestampMs.value)} - `;
     }
-    return `${timestampPrefix}${username} on ${comment.created}`;
+    return `${timestampPrefix}${username} on ${this.comment.created}`;
   }
 
   /**
@@ -140,17 +167,6 @@ export default class DiscussionComment extends HTMLElement {
     }
     // If it isn't before any existing replies, it must belong at the end.
     this.#replyDiv.appendChild(newComment.element);
-  }
-
-  /**
-   * Sets the content of the shadow-dom slot named `name` to a span
-   * element containing `value` as text.
-   */
-  setSlotSpan(name, value) {
-    const span = document.createElement('span');
-    span.innerText = value;
-    span.slot = name;
-    this.appendChild(span);
   }
 
   /**

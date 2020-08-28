@@ -72,7 +72,15 @@ export default class DiscussionArea {
   addSeekingListener() {
     this.#eventController.addEventListener((timestampMs) => {
       this.seek(timestampMs);
-    }, 'seek');
+    }, 'seek', 'seekAll');
+  }
+
+  /**
+   * Broadcasts a `seekAll` event for a specific `timestampMs` that was clicked.
+   */
+  timestampClicked(timestampMs) {
+    // TODO: Enable scroll container autoscroll.
+    this.#eventController.broadcastEvent('seekAll', timestampMs);
   }
 
   /**

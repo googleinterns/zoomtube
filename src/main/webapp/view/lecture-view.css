@@ -68,6 +68,11 @@ discussion-comment[highlighted] > [slot='header'] {
   padding-bottom: calc(100vh - 306px);
 }
 
+#discussion-comments > discussion-comment > [slot='header'] {
+  cursor: pointer;
+  font-weight: bold;
+}
+
 #new-comment-row {
   border-bottom: 2px solid #eee;
   overflow: hidden;
