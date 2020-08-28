@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import Synchronizer from '../../synchronizer.js';
-import TimestampUtil from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 
 const SCRIPT = 'script';
 

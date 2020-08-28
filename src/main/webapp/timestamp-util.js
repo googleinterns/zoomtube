@@ -14,6 +14,7 @@
 
 export default class TimestampUtil {
   static #MILLISECONDS_PER_SECOND = 1000;
+
   /**
    * Converts a `timestampMs` in milliseconds into a string.
    */

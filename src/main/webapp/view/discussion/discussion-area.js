@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {ScrollContainer} from '../../scroll-container.js';
-import TimestampUtil from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_REPLY} from './discussion.js';

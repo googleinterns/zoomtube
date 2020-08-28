@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import TimestampUtil from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 
 /**
