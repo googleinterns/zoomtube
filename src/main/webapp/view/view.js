@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import Synchronizer from '../synchronizer.js';
+
 import {intializeDiscussion} from '../view/discussion/discussion.js';
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
@@ -21,14 +22,8 @@ const ENDPOINT_LECTURE = '/lecture';
 
 const PARAM_ID = 'id';
 
-// TODO: Remove global scope and add to view object.
-window.video = new Video();
-
 /* exported LECTURE_ID */
 window.LECTURE_ID = getLectureId();
-
-// TODO: Remove global scope and link to a View object.
-window.synchronizer = new Synchronizer();
 
 /** Sets {@code window.LECTURE} as Lecture for view page. */
 getLecture().then((lecture) => {
@@ -42,12 +37,15 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-  window.video.loadVideoApi();
-  intializeDiscussion();
+
+  const video = new Video();
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
   const transcript = new TranscriptArea('event controller');
+
+  await video.loadVideoApi();
   await transcript.loadTranscript();
+  await intializeDiscussion();
 }
 
 /**
