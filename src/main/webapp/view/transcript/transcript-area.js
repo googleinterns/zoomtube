@@ -21,7 +21,7 @@ export default class TranscriptArea {
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
   static #PARAM_ID = 'id';
 
-  static transcriptLineMap = new Map();
+  static #transcriptLineMap = new Map();
 
   #transcriptSeeker;
   #eventController;
@@ -78,18 +78,18 @@ export default class TranscriptArea {
       const transcriptLineElement =
           TranscriptLineElement.createTranscriptLineElement(transcriptLine);
       ulElement.appendChild(transcriptLineElement);
-      TranscriptArea.transcriptLineMap.set(
+      TranscriptArea.#transcriptLineMap.set(
           transcriptLine.transcriptKey.id, transcriptLineElement);
     });
   }
 
   /** Increments the indicator corresponding to `transcriptLineKey` by 1. */
   static incrementCommentIndicatorAt(transcriptLineKeyId) {
-    if (!TranscriptArea.transcriptLineMap.has(transcriptLineKeyId)) {
+    if (!TranscriptArea.#transcriptLineMap.has(transcriptLineKeyId)) {
       return;
     }
     const commentIndicatorElement =
-        TranscriptArea.transcriptLineMap.get(transcriptLineKeyId)
+        TranscriptArea.#transcriptLineMap.get(transcriptLineKeyId)
             .commentIndicator;
     commentIndicatorElement.innerText =
         parseInt(commentIndicatorElement.innerText) + 1;
