@@ -95,9 +95,13 @@ export default class DiscussionComment extends HTMLElement {
     /* eslint-disable indent */
     const replyForm =
         this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_REPLY_FORM);
+    const replyTextarea = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
+
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_SHOW_REPLY)
         .onclick = () => {
       $(replyForm).collapse('show');
+      $(replyTextarea).focus();
     };
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_CANCEL_REPLY)
         .onclick = () => {
