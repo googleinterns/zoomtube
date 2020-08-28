@@ -26,10 +26,9 @@ export class ScrollContainer extends HTMLDivElement {
       'mx-5 my-3 bg-light pb-3 rounded smooth-scrolling';
   static #AUTO_SCROLL_MESSAGE = 'Jump back to video';
   /**
-   * Scroll events within this time of each other are treated
-   * as having the same trigger.
+   * How long to wait after jumping to reenable smooth scrolling.
    */
-  static #SCROLL_TOLERANCE_MS = 50;
+  static #RESTORE_SMOOTH_TIMEOUT_MS = 50;
   /**
    * Scroll distances greater than this (in pixels) will not be smoothly
    * animated.
@@ -78,7 +77,6 @@ export class ScrollContainer extends HTMLDivElement {
    * If automatic scrolling is enabled or `forceScroll` is true, then scrolls
    * the container such that `element` is at the top of the container.
    * Otherwise, does nothing.
-   *
    */
   scrollToTopOfContainer(element, forceScroll = false) {
     this.#currentElement = element;
@@ -89,9 +87,11 @@ export class ScrollContainer extends HTMLDivElement {
     const scrollGoal = element.offsetTop - innerContainer.offsetTop;
     const scrollDistance = Math.abs(this.scrollTop - scrollGoal);
     if (scrollDistance > ScrollContainer.#SMOOTH_SCROLL_LIMIT) {
-      this.style.scrollBehavior = 'normal';
+      this.style.scrollBehavior = 'auto';
       this.scrollTop = scrollGoal;
-      this.style.scrollBehavior = 'smooth';
+      setTimeout(() => {
+        this.style.scrollBehavior = 'smooth';
+      }, ScrollContainer.#RESTORE_SMOOTH_TIMEOUT_MS);
     }
     this.scrollTop = scrollGoal;
   }
