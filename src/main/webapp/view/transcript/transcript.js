@@ -30,7 +30,7 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
-  // Shifts the time to seek so that the seeked time is within
+  // Shifts the time to seek such that the seeked time is within
   // the transcript line's time range.
   static #SEEK_TIME_OFFSET_MS = 1;
 
