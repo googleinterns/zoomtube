@@ -77,7 +77,9 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Attaches an event listener
+   * Attaches an event listener such that every time the timestamp is
+   * clicked on, the timestamp's starting time is broadcasted to the
+   * other event listeners subscribed for seeking.
    */
   attachSeekingEventListener(eventController) {
     this.#timestampElement.onclick = eventController.broadcastEvent.bind(
@@ -110,7 +112,7 @@ export class TranscriptLineElement extends HTMLElement {
    * Creates a `p` tag to store the given `text` inside the
    * `container`.
    *
-   * <p>Adds classes to the p tag if `classList` is provided.
+   * <p>Adds classes to the `p` tag if `classList` is provided.
    */
   static appendParagraphToContainer(text, container, classes = []) {
     container.appendChild(
@@ -120,7 +122,7 @@ export class TranscriptLineElement extends HTMLElement {
   /**
    * Creates a `p` tag to store the given `text`.
    *
-   * <p>Adds classes to the p tag if `classList` is provided.
+   * <p>Adds classes to the `p` tag if `classList` is provided.
    */
   static createParagraphWithClasses(text, classes = []) {
     const pTag = document.createElement('p');
