@@ -95,8 +95,9 @@ public class DiscussionServlet extends HttpServlet {
     final Optional<Key> transcriptLineKey;
     if (request.getParameter(PARAM_TRANSCRIPT_LINE) != null) {
       // TODO: Validate that the transcript line contains the timestampMs.
-      long transcriptId = Long.parseLong(request.getParameter(PARAM_TRANSCRIPT_LINE));
-      transcriptLineKey = Optional.of(KeyFactory.createKey(TranscriptLineUtil.KIND, transcriptId));
+      long transcriptLineId = Long.parseLong(request.getParameter(PARAM_TRANSCRIPT_LINE));
+      transcriptLineKey =
+          Optional.of(KeyFactory.createKey(TranscriptLineUtil.KIND, transcriptLineId));
     } else {
       transcriptLineKey = Optional.empty();
     }

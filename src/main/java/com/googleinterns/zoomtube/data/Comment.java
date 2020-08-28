@@ -50,8 +50,8 @@ public abstract class Comment {
   public abstract Optional<Long> timestampMs();
 
   /**
-   * Returns the key of the comment's transcript line, or {@code Optional.empty()} if it
-   * doesn't have one.
+   * Returns the transcript line key for which this comment is for, or {@code Optional.empty()} if
+   * it doesn't have one.
    */
   public abstract Optional<Key> transcriptLineKey();
 
