@@ -18,13 +18,13 @@
 <script type="module" src="/view/video/video.js" defer></script>
 <script type="module" src="/view/transcript/transcript.js" defer></script>
 <script type="module" src="../event-controller.js" defer></script>
-<script type="module" src="/view/view.js" defer></script>
 <script type="module" src="../feedback/icon-feedback.js" defer></script>
+<script type="module" src="/view/lecture-view.js" defer></script>
 
 <body>
   <nav class="navbar navbar-light">
     <h2 id="header-text">ZoomTube</h2>
-    <a type="button" class="btn btn-outline-primary" href="/lectures/">All Lectures</a>
+    <a type="button" class="btn zt-btn btn-outline-primary" href="/lectures/">All Lectures</a>
   </nav>
 
   <div id="page">
@@ -38,18 +38,27 @@
           <button type="button" onclick="iconOnClick('TOO_SLOW')">Too Slow</button>
         </div>
       </div>
-      <div id="transcript-container">
-        <h2>Transcript:</h2>
-        <div id="transcript-lines-container" class="mx-5 my-3 bg-light pb-3 pt-4 rounded"></div>
-      </div>
+      <div id="transcript-container" class="bg-light rounded"></div>
     </div>
-    <div class="halfpage" id="discussion">
+    <div class="halfpage rounded bg-light" id="discussion">
       <div id="new-comment-row">
         <div id="new-comment-form" class="form-group">
           <label for="post-textarea">Leave a Comment at <span id="timestamp-span">00:00</span></label>
           <textarea class="form-control" id="post-textarea" rows="2"></textarea>
         </div>
-        <button class="btn btn-primary mb-2" type="button" onclick="postNewComment()">Post Comment</button>
+        <div class="btn-group-toggle" data-toggle="buttons" id="new-comment-types">
+          <label class="badge btn btn-outline-danger btn-sm float-left">
+            <input type="radio" value="QUESTION" />Question
+          </label>
+          <label class="badge btn btn-outline-secondary btn-sm float-left active">
+            <input type="radio" value="NOTE" />Note
+          </label>
+        </div>
+        <div>
+          <button class="zt-btn btn btn-primary mb-2 btn-sm float-right" type="button" onclick="postNewComment()">
+            Post Comment
+          </button>
+        </div>
       </div>
       <div class="container" id="discussion-comments"></div>
     </div>
@@ -67,19 +76,23 @@
   <link rel="stylesheet" href="/view/lecture-view.css" />
   <div class="comment">
     <div>
-      <h1 class="comment-header"><slot name="header"></slot>&nbsp;</h1>
+      <h1 class="comment-header">
+        <slot name="header"></slot>
+        &nbsp;
+        <slot name="type-tag"></slot>
+      </h1>
       <div class="comment-content">
         <div><slot name="content"></slot></div>
         <div class="actions-bar">
-          <button type="button" class="btn btn-primary btn-sm" id="show-reply">Reply</button>
+          <button type="button" class="btn btn-link btn-sm" id="show-reply">Reply</button>
         </div>
       </div>
       <div class="replies">
         <div id="reply-form" class="collapse">
           <textarea class="form-control" id="reply-textarea" rows="3"></textarea>
           <div class="actions-bar">
-            <button class="btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post</button>
-            <button class="btn btn-sm btn-secondary mb-2" type="button" id="cancel-reply">Cancel</button>
+            <button class="btn btn-sm btn-link mb-2" type="button" id="cancel-reply">Cancel</button>
+            <button class="zt-btn btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post Reply</button>
           </div>
         </div>
         <slot name="replies"></slot>

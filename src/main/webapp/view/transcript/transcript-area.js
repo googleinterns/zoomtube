@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {ScrollContainer} from '../../scroll-container.js';
 import TranscriptSeeker from './transcript-seeker.js';
 import {TranscriptLineElement} from './transcript.js';
 
@@ -19,10 +20,13 @@ import {TranscriptLineElement} from './transcript.js';
 export default class TranscriptArea {
   static #ENDPOINT_TRANSCRIPT = '/transcript';
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+  static #TRANSCRIPT_PARENT_CONTAINER = 'transcript-container';
+  static #transcriptContainer;
   static #PARAM_ID = 'id';
 
-  #transcriptSeeker;
+  #lecture
   #eventController;
+  #transcriptSeeker;
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -31,10 +35,19 @@ export default class TranscriptArea {
    * @param eventController An event controller object that
    *     that will be passed into a seekTranscript object.
    */
-  constructor(eventController) {
+  constructor(lecture, eventController) {
+    this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
-    // eventController as the parameter.
+  }
+
+  /**
+   * Adds event listener for seeking and initializes the transcript area by
+   * loading the transcript lines.
+   */
+  async initialize() {
+    this.#transcriptSeeker.addSeekingListener();
+    await this.loadTranscript();
   }
 
   /**
@@ -46,10 +59,10 @@ export default class TranscriptArea {
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
-    fetch(url).then((response) => response.json()).then((transcriptLines) => {
-      TranscriptArea.addMultipleTranscriptLinesToDom(transcriptLines);
-    });
+    url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
+    const transcriptResponse = await fetch(url);
+    const transcriptLines = await transcriptResponse.json();
+    TranscriptArea.addTranscriptLinesToDom(transcriptLines);
   }
 
   /**
@@ -58,15 +71,8 @@ export default class TranscriptArea {
    * <p>This is a private method that should only be called in
    * `loadTranscript()`.
    */
-  static addMultipleTranscriptLinesToDom(transcriptLines) {
-    const transcriptContainer =
-        document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
-    // Removes the transcript lines from the container if there are any.
-    // This prevents having multiple sets of ul tags every time the page
-    // is refreshed.
-    if (transcriptContainer.firstChild) {
-      transcriptContainer.removeChild(transcriptContainer.firstChild);
-    }
+  static addTranscriptLinesToDom(transcriptLines) {
+    const transcriptContainer = TranscriptArea.transcriptScrollContainer();
     const ulElement = document.createElement('ul');
     // TODO: Move the class assignment to the HTML.
     ulElement.class = 'mx-auto';
@@ -75,6 +81,23 @@ export default class TranscriptArea {
       ulElement.appendChild(
           TranscriptLineElement.createTranscriptLineElement(transcriptLine));
     });
+  }
+
+  /**
+   * Returns the container storing the transcript.
+   *
+   * <p>If the container is undefined, a new ScrollContainer is
+   * created and returned.
+   */
+  static transcriptScrollContainer() {
+    if (this.#transcriptContainer == null) {
+      this.#transcriptContainer = new ScrollContainer();
+      this.#transcriptContainer.id = TranscriptArea.#TRANSCRIPT_CONTAINER;
+      const parentContainer =
+          document.getElementById(TranscriptArea.#TRANSCRIPT_PARENT_CONTAINER);
+      parentContainer.appendChild(this.#transcriptContainer);
+    }
+    return this.#transcriptContainer;
   }
 
   /**

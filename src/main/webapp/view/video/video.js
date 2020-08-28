@@ -13,15 +13,25 @@
 // limitations under the License.
 
 import IconFeedback from '../../feedback/icon-feedback.js';
+import Synchronizer from '../../synchronizer.js';
 import {secondsToMilliseconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
 
 /** Initializes and stores video player information. */
 export default class Video {
+  #lecture;
+  #synchronizer;
+
+  constructor(lecture, eventController) {
+    this.#lecture = lecture;
+    this.#synchronizer = new Synchronizer(eventController);
+  }
+
   /** Loads YouTube iFrame API. */
   async loadVideoApi() {
     window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+    window.onPlayerReady = this.onPlayerReady.bind(this);
     const videoApiScript = document.createElement(SCRIPT);
     const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
     videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -37,9 +47,9 @@ export default class Video {
     this.videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
-      videoId: window.LECTURE.videoId,
+      videoId: this.#lecture.videoId,
       events: {
-        onReady: this.onPlayerReady,
+        onReady: window.onPlayerReady,
       },
     });
   }
@@ -47,8 +57,9 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    window.synchronizer.startVideoSyncTimer();
     IconFeedback.loadIconFeedbackList();
+    this.#synchronizer.startVideoSyncTimer(
+        this.getCurrentVideoTimeMs.bind(this));
   }
 
   /** Returns current video time of 'videoPlayer' in milliseconds. */
