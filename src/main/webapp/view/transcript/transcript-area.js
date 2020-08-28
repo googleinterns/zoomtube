@@ -57,8 +57,8 @@ export default class TranscriptArea {
    * are no transcript lines, an error message is displayed in the
    * transcript container instead.
    *
-   * <p>This function assumes that the transcript lines have already
-   * been added to the datastore.
+   * <p>This function assumes that if there is a transcript for the
+   * current lecture, the lines have already been added to the datastore.
    */
   async loadTranscript() {
     const url =
