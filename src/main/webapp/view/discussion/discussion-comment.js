@@ -14,7 +14,7 @@
 
 import {timestampToString} from '../../timestamps.js';
 import {ELEMENT_DISCUSSION} from './discussion-area.js';
-import {COMMENT_TYPE_REPLY} from './discussion.js';
+import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 
 /**
  * Renders a comment and its replies, with a form to post a new reply.
@@ -27,6 +27,7 @@ export default class DiscussionComment extends HTMLElement {
   static #SLOT_HEADER = 'header';
   static #SLOT_CONTENT = 'content';
   static #SLOT_REPLIES = 'replies';
+  static #SLOT_TYPE_TAG = 'type-tag';
 
   static #SELECTOR_SHOW_REPLY = '#show-reply';
   static #SELECTOR_REPLY_FORM = '#reply-form';
@@ -35,6 +36,7 @@ export default class DiscussionComment extends HTMLElement {
   static #SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
 
   #discussion;
+  #replyDiv;
 
   /**
    * Creates an custom HTML element representing a comment.  This uses the
@@ -49,21 +51,23 @@ export default class DiscussionComment extends HTMLElement {
     this.attachShadow({mode: 'open'});
     const shadow = DiscussionComment.#TEMPLATE.content.cloneNode(true);
     this.shadowRoot.appendChild(shadow);
+    this.#replyDiv = document.createElement('div');
+    this.#replyDiv.slot = DiscussionComment.#SLOT_REPLIES;
+    this.appendChild(this.#replyDiv);
     this.addReplyEventListeners();
   }
 
   /**
    * Sets the `comment` from the discussion that this element should
-   * render. This also adds nested `DiscussionComment`s as children for any
-   * replies.
+   * render. This does not add any nested reply elements. Those must be
+   * added separately by the caller using `insertReply`.
    */
   setComment(comment) {
     this.comment = comment;
-    this.textContent = '';
     this.setSlotSpan(
         DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
     this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
-    this.addReplies(comment.replies);
+    this.setTypeTag(comment.type);
   }
 
   /**
@@ -106,27 +110,36 @@ export default class DiscussionComment extends HTMLElement {
 
   /**
    * Posts the content of the reply textarea as a reply to this comment,
-   * and reloads the discussion area.
+   * and resets the reply form.
    */
   postReplyClicked() {
     const textarea = this.shadowRoot.querySelector(
         DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
     this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
+
+    textarea.value = '';
+    const replyForm =
+        this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_REPLY_FORM);
+    $(replyForm).collapse('hide');
   }
 
   /**
-   * Creates a `DiscussionComment` for every reply to this comment, and
-   * adds them to a `<div>` in the replies slot of the DOM template.
+   * Inserts a new reply such that replies are sorted with the earliest created
+   * appearing first.
    */
-  addReplies(replies) {
-    const replyDiv = document.createElement('div');
-    replyDiv.slot = DiscussionComment.#SLOT_REPLIES;
-    for (const reply of replies) {
-      const child = new DiscussionComment(this.#discussion);
-      child.setComment(reply);
-      replyDiv.appendChild(child);
+  insertReply(newComment) {
+    const newCommentDate = new Date(newComment.created);
+    // For now, we use a linear search. This can be improved if it becomes
+    // an issue.
+    for (const commentElement of this.#replyDiv.children) {
+      const commentDate = new Date(commentElement.comment.created);
+      if (newCommentDate <= commentDate) {
+        commentElement.before(newComment.element);
+        return;
+      }
     }
-    this.appendChild(replyDiv);
+    // If it isn't before any existing replies, it must belong at the end.
+    this.#replyDiv.appendChild(newComment.element);
   }
 
   /**
@@ -139,6 +152,21 @@ export default class DiscussionComment extends HTMLElement {
     span.slot = name;
     this.appendChild(span);
   }
+
+  /**
+   * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
+   */
+  setTypeTag(type) {
+    if (type === COMMENT_TYPE_REPLY) {
+      return;
+    }
+    const typePill = document.createElement('span');
+    typePill.innerText = COMMENT_TYPES[type].name;
+    typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
+    typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
+    this.appendChild(typePill);
+  }
+
 
   /**
    * Scroll such that this element is at the top of the discussion area.

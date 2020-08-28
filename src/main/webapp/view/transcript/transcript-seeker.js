@@ -30,7 +30,16 @@ export default class TranscriptSeeker {
    */
   constructor(eventController) {
     this.#eventController = eventController;
-    // TODO: Add the event listeners.
+  }
+
+  /**
+   * Adds event listener to `eventController` allowing seeking transcript area
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timestampMs) => {
+      this.seekTranscript(timestampMs);
+    }, 'seek');
   }
 
   /**
@@ -47,33 +56,26 @@ export default class TranscriptSeeker {
     return this.#currentTranscriptLine;
   }
 
-  /**
-   * Scrolls the transcript container so that `transcriptLine` is at the top
-   * of the container.
-   */
-  static scrollToTopOfTranscript(transcriptLine) {
-    const transcriptContainer =
-        document.getElementById(TranscriptSeeker.#TRANSCRIPT_CONTAINER);
-    const ulElementOffset = transcriptLine.parentElement.offsetTop;
-    transcriptContainer.scrollTop = transcriptLine.offsetTop - ulElementOffset;
-  }
-
   /** Seeks transcript to `timeMs` if transcript exists. */
   seekTranscript(timeMs) {
-    if (!TranscriptArea.hasTranscript()) {
+    if (this.currentTranscriptLine() == null) {
       return;
     }
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
+      TranscriptArea.transcriptScrollContainer().scrollToTopOfContainer(
+          this.currentTranscriptLine());
       this.currentTranscriptLine().addBold();
       return;
     }
     this.currentTranscriptLine().removeBold();
     this.#currentTranscriptLine = this.transcriptLineWithTime(timeMs);
-    TranscriptSeeker.scrollToTopOfTranscript(this.currentTranscriptLine());
+    TranscriptArea.transcriptScrollContainer().scrollToTopOfContainer(
+        this.currentTranscriptLine());
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
       this.currentTranscriptLine().addBold();
     }
   }
+
   /**
    * Returns the next transcript line for `timeMs`.
    */
