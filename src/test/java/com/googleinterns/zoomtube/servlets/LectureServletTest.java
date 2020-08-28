@@ -125,8 +125,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_videoHasNoTranscript_shouldReturnLectureAnyways()
-      throws IOException, ServletException {
+  public void doPost_videoHasNoTranscript_shouldReturnLectureAnyways() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(NO_TRANSCRIPT_LINK);
     datastoreService.put(LectureUtil.createEntity(TEST_NAME, NO_TRANSCRIPT_LINK, NO_TRANSCRIPT_ID));
