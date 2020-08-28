@@ -195,6 +195,8 @@ export default class DiscussionArea {
    * Posts the comment in the new comment area, and updates the discussion.
    */
   postNewComment() {
+    const commentContent = DiscussionArea.#ELEMENT_POST_TEXTAREA.value;
+    const commentTimestampMs = this.#currentTimeMs;
     /* eslint-disable indent */
     const commentType =
         DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
@@ -203,12 +205,12 @@ export default class DiscussionArea {
     /* eslint-enable indent */
 
     this.#manager
-        .postRootComment(
-            DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            commentType)
+        .postRootComment(commentContent, commentTimestampMs, commentType)
         .then(() => {
           this.updateDiscussion();
         });
+
+    DiscussionArea.#ELEMENT_POST_TEXTAREA.value = '';
   }
 
   /**
