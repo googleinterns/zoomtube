@@ -41,36 +41,35 @@ export default class IconFeedback {
     url.searchParams.append(PARAM_LECTURE_ID, window.LECTURE_ID);
     const response = await fetch(url);
     const jsonData = await response.json();
-    const feedbackArray = IconFeedback.parseFeedback(jsonData);
-    console.log(feedbackArray);
+    IconFeedback.parseFeedback(jsonData);
   }
 
   static parseFeedback(jsonData) {
     const videoDuration = window.video.getVideoDurationMs();
-    let parsedData = [];
+    const parsedData = [[], [], [], []];
     let index = 0;
     for (let interval = 0; interval < videoDuration; interval += 10000) {
-      let good = ['GOOD', 0, interval];
-      let bad = ['BAD', 0, interval];
-      let too_fast = ['TOO_FAST', 0, interval];
-      let too_slow = ['TOO_SLOW', 0, interval];
+      const good = [interval / 1000, 0];
+      const bad = [interval / 1000, 0];
+      const tooFast = [interval / 1000, 0];
+      const tooSlow = [interval / 1000, 0];
       while (index < jsonData.length &&
              jsonData[index].timestampMs < interval) {
-        if (jsonData.type == good[0]) {
+        if (jsonData.type == 'GOOD') {
           good[1] = good[1] + 1;
-        } else if (jsonData.type == bad[0]) {
+        } else if (jsonData.type == 'BAD') {
           bad[1] = bad[1] + 1;
-        } else if (jsonData.type == too_fast[0]) {
-          too_fast[1] = too_fast[1] + 1;
+        } else if (jsonData.type == 'TOO_FAST') {
+          tooFast[1] = tooFast[1] + 1;
         } else {
-          too_slow[1] = too_slow[1] + 1;
+          tooSlow[1] = tooSlow[1] + 1;
         }
         index++;
       }
-      parsedData.push(good);
-      parsedData.push(bad);
-      parsedData.push(too_fast);
-      parsedData.push(too_slow);
+      parsedData[0].push(good);
+      parsedData[1].push(bad);
+      parsedData[2].push(tooFast);
+      parsedData[3].push(tooSlow);
     }
     return parsedData;
   }
