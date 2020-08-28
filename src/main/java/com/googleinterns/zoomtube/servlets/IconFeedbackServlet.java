@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** Handles storing and retrieving IconFeedback from database. */
 public class IconFeedbackServlet extends HttpServlet {
   /* URL search parameters used in request. */
@@ -99,7 +98,7 @@ public class IconFeedbackServlet extends HttpServlet {
     ImmutableList<IconFeedback> iconFeedbackList = iconFeedbackListBuilder.build();
     return iconFeedbackList;
   }
-  
+
   /** Returns an IconFeedback Entity from parameters found in {@code request}. */
   private Entity createEntityFromRequest(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
