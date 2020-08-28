@@ -70,7 +70,6 @@ discussion-comment[highlighted] > [slot='header'] {
 
 #discussion-comments > discussion-comment > [slot='header'] {
   cursor: pointer;
-  font-weight: bold;
 }
 
 #new-comment-row {
