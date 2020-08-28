@@ -21,7 +21,7 @@ const SCRIPT = 'script';
 export default class Video {
   #lecture;
   #synchronizer;
-  #videoPlayer;
+  #videoPlayer
 
   constructor(lecture, eventController) {
     this.#lecture = lecture;
@@ -61,13 +61,14 @@ export default class Video {
         this.getCurrentVideoTimeMs.bind(this));
   }
 
+  /** Seeks video to `timeMs`. */
+  seek(timeMs) {
+    this.#videoPlayer.seekTo(
+        millisecondsToSeconds(timeMs), /* allowSeekAhead= */ true);
+  }
+
   /** Returns current video time of 'videoPlayer' in milliseconds. */
   getCurrentVideoTimeMs() {
     return secondsToMilliseconds(this.#videoPlayer.getCurrentTime());
-  }
-
-  /** Seeks video to `timeMs`. */
-  seek(timeMs) {
-    this.#videoPlayer.seekTo(millisecondsToSeconds(timeMs), /* allowSeekAhead= */ true);
   }
 }
