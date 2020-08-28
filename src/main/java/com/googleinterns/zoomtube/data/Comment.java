@@ -50,9 +50,10 @@ public abstract class Comment {
   public abstract Optional<Long> timestampMs();
 
   /**
-   * Returns the key of the transcript line where an indicator should appear.
+   * Returns the key of the comment's transcript line, or {@code Optional.empty()} if it
+   * doesn't have one.
    */
-  public abstract Key transcriptLineKey();
+  public abstract Optional<Key> transcriptLineKey();
 
   /**
    * Returns the comment's author.
@@ -81,6 +82,7 @@ public abstract class Comment {
     public abstract Builder setTimestampMs(long timestampMs);
     public abstract Builder setTimestampMs(Optional<Long> timestampMs);
     public abstract Builder setTranscriptLineKey(Key transcriptLineKey);
+    public abstract Builder setTranscriptLineKey(Optional<Key> transcriptLineKey);
     public abstract Builder setAuthor(User author);
     public abstract Builder setContent(String content);
     public abstract Builder setCreated(Date created);

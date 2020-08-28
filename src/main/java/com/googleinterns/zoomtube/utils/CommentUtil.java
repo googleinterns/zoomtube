@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.googleinterns.zoomtube.data.Comment;
 import java.util.Date;
+import java.util.Optional;
 
 /** Provides methods to create Comment Entities and Comments. */
 public final class CommentUtil {
@@ -38,7 +39,8 @@ public final class CommentUtil {
   public static Comment createComment(Entity entity) {
     Key commentKey = entity.getKey();
     Key lectureKey = (Key) entity.getProperty(LECTURE);
-    Key transcriptLineKey = (Key) entity.getProperty(TRANSCRIPT_LINE);
+    Optional<Key> transcriptLineKey =
+        Optional.ofNullable((Key) entity.getProperty(TRANSCRIPT_LINE));
     User author = (User) entity.getProperty(AUTHOR);
     String content = (String) entity.getProperty(CONTENT);
     Date created = (Date) entity.getProperty(CREATED);
@@ -67,12 +69,15 @@ public final class CommentUtil {
   /**
    * Creates and returns an entity with the specified properties and no parent comment.
    */
-  public static Entity createRootEntity(Key lectureKey, long timestampMs, Key transcriptLineKey,
-      User author, String content, Date created, Comment.Type type) {
+  public static Entity createRootEntity(Key lectureKey, long timestampMs,
+      Optional<Key> transcriptLineKey, User author, String content, Date created,
+      Comment.Type type) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
     entity.setProperty(TIMESTAMP_MS, timestampMs);
-    entity.setProperty(TRANSCRIPT_LINE, transcriptLineKey);
+    if (transcriptLineKey.isPresent()) {
+      entity.setProperty(TRANSCRIPT_LINE, transcriptLineKey.get());
+    }
     entity.setProperty(AUTHOR, author);
     entity.setProperty(CONTENT, content);
     entity.setProperty(CREATED, created);
@@ -83,12 +88,14 @@ public final class CommentUtil {
   /**
    * Creates and returns an entity with the specified properties as a reply to a parent comment.
    */
-  public static Entity createReplyEntity(Key lectureKey, Key parentKey, Key transcriptLineKey,
-      User author, String content, Date created) {
+  public static Entity createReplyEntity(Key lectureKey, Key parentKey,
+      Optional<Key> transcriptLineKey, User author, String content, Date created) {
     Entity entity = new Entity(KIND);
     entity.setProperty(LECTURE, lectureKey);
     entity.setProperty(PARENT, parentKey);
-    entity.setProperty(TRANSCRIPT_LINE, transcriptLineKey);
+    if (transcriptLineKey.isPresent()) {
+      entity.setProperty(TRANSCRIPT_LINE, transcriptLineKey.get());
+    }
     entity.setProperty(AUTHOR, author);
     entity.setProperty(CONTENT, content);
     entity.setProperty(CREATED, created);

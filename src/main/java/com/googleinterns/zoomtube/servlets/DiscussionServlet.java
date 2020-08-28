@@ -57,7 +57,6 @@ public class DiscussionServlet extends HttpServlet {
 
   private static final String ERROR_MISSING_LECTURE = "Missing lecture parameter.";
   private static final String ERROR_MISSING_COMMENT_TYPE = "Missing comment type parameter.";
-  private static final String ERROR_MISSING_TRANSCRIPT_LINE = "Missing transcript line parameter.";
   private static final String ERROR_MISSING_PARENT = "Missing parent parameter for reply comment.";
   private static final String ERROR_MISSING_TIMESTAMP =
       "Missing timestamp parameter for root comment.";
@@ -89,18 +88,25 @@ public class DiscussionServlet extends HttpServlet {
     final Entity commentEntity;
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    // TODO: Validate that the transcript line contains the timestampMs.
-    long transcriptId = Long.parseLong(request.getParameter(PARAM_TRANSCRIPT_LINE));
-    Key transcriptLineKey = KeyFactory.createKey(TranscriptLineUtil.KIND, transcriptId);
     String content = CharStreams.toString(request.getReader());
     Date dateNow = new Date(Clock.systemUTC().millis());
+
+    // We use Optional to avoid duplicating the creation code below for each case.
+    final Optional<Key> transcriptLineKey;
+    if (request.getParameter(PARAM_TRANSCRIPT_LINE) != null) {
+      // TODO: Validate that the transcript line contains the timestampMs.
+      long transcriptId = Long.parseLong(request.getParameter(PARAM_TRANSCRIPT_LINE));
+      transcriptLineKey = Optional.of(KeyFactory.createKey(TranscriptLineUtil.KIND, transcriptId));
+    } else {
+      transcriptLineKey = Optional.empty();
+    }
 
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
     if (type == Comment.Type.REPLY) {
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
       Key parentKey = KeyFactory.createKey(CommentUtil.KIND, parentId);
-      commentEntity =
-          CommentUtil.createReplyEntity(lectureKey, parentKey, transcriptLineKey, author, content, dateNow);
+      commentEntity = CommentUtil.createReplyEntity(
+          lectureKey, parentKey, transcriptLineKey, author, content, dateNow);
     } else {
       long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
       commentEntity = CommentUtil.createRootEntity(
@@ -118,9 +124,6 @@ public class DiscussionServlet extends HttpServlet {
     }
     if (request.getParameter(PARAM_TYPE) == null) {
       return Optional.of(ERROR_MISSING_COMMENT_TYPE);
-    }
-    if (request.getParameter(PARAM_TRANSCRIPT_LINE) == null) {
-      return Optional.of(ERROR_MISSING_TRANSCRIPT_LINE);
     }
 
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
