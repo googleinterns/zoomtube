@@ -184,6 +184,7 @@ public final class IconFeedbackServletTest {
   private List<IconFeedback> getIconFeedbackFromJson(String json) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Type listType = new TypeToken<ArrayList<IconFeedback>>() {}.getType();
+    // Type listType = (new ArrayList<IconFeedback>()).getClass();
     return gson.fromJson(json, listType);
   }
 }
