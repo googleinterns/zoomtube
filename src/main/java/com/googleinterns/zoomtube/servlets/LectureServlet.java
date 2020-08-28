@@ -22,6 +22,9 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
@@ -85,7 +88,7 @@ public class LectureServlet extends HttpServlet {
       return;
     }
 
-    Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
+    Optional<Entity> existingEntity = queryForLectureWithVideoId(videoId.get());
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()));
       return;
@@ -147,21 +150,15 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns the Entity in database that has {@code url}, or
+   * Returns the Entity in database that has {@code videoId}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
-  // TODO: Use a filter to avoid fetching all lectures.  See: #185.
-  private Optional<Entity> checkUrlInDatabase(String url) {
-    Query query = new Query(LectureUtil.KIND);
+  private Optional<Entity> queryForLectureWithVideoId(String videoId) {
+    Filter videoIdFilter = new FilterPredicate(LectureUtil.VIDEO_ID, FilterOperator.EQUAL, videoId);
+    Query query = new Query(LectureUtil.KIND).setFilter(videoIdFilter);
     PreparedQuery results = datastore.prepare(query);
-    Iterable<Entity> resultsIterable = results.asIterable();
 
-    for (Entity lecture : resultsIterable) {
-      if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
-        return Optional.of(lecture);
-      }
-    }
-    return Optional.empty();
+    return Optional.ofNullable(results.asSingleEntity());
   }
 
   @VisibleForTesting
