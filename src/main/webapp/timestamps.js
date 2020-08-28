@@ -40,6 +40,13 @@ export function secondsToMilliseconds(seconds) {
 }
 
 /**
+ * Converts `milliseconds` to seconds.
+ */
+export function millisecondsToSeconds(milliseconds) {
+  return Math.round(milliseconds / MILLISECONDS_PER_SECOND);
+}
+
+/**
  * Returns a time range string in the form of
  * `startTimestampMs` - `endTimestampMs`.
  */

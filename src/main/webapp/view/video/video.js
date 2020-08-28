@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import Synchronizer from '../../synchronizer.js';
-import {secondsToMilliseconds} from '../../timestamps.js';
+import {secondsToMilliseconds, millisecondsToSeconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
 
@@ -67,7 +67,7 @@ export default class Video {
 
   /** Seeks video to `currentTime`. */
   seekVideo(timeMs) {
-    // TODO: Removed and implement.
-    console.log('SEEKING VIDEO TO: ' + timeMs);
+    console.log(millisecondsToSeconds(timeMs));
+    this.videoPlayer.seekTo(millisecondsToSeconds(timeMs));
   }
 }
