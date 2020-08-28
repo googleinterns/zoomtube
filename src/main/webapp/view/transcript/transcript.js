@@ -59,7 +59,9 @@ export class TranscriptLineElement extends HTMLElement {
     const contentDivElement = TranscriptLineElement.createContentDivElement();
     this.#timestamp =
         TranscriptLineElement.createParagraphWithClasses(timestampRange, [
-          'justify-content-start', 'mb-1', 'transcript-line-timestamp',
+          'justify-content-start',
+          'mb-1',
+          'transcript-line-timestamp',
           'timestamp',
         ]);
     contentDivElement.appendChild(this.#timestamp);
