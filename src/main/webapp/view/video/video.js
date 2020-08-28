@@ -13,7 +13,8 @@
 // limitations under the License.
 
 import Synchronizer from '../../synchronizer.js';
-import {millisecondsToSeconds, secondsToMilliseconds} from '../../timestamps.js';
+import {millisecondsToSeconds} from '../../timestamps.js';
+import {secondsToMilliseconds} from '../../timestamps.js';
 
 const SCRIPT = 'script';
 
