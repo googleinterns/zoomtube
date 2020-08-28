@@ -38,19 +38,18 @@ export class ScrollContainer extends HTMLDivElement {
 
   #autoScrollIsActive;
   #scrollBanner;
-  #browserScrolled;
   #currentElement;
-  #lastBrowserScrollTimestampMs;
 
   /** Creates a `ScrollContainer`. */
   constructor() {
     super();
     this.#scrollBanner = this.createScrollBanner();
     this.appendChild(this.#scrollBanner);
-    this.onscroll = this.filterScrollEvent.bind(this);
     this.className = ScrollContainer.#SCROLL_CONTAINER_CLASSES;
     this.#autoScrollIsActive = true;
-    this.#lastBrowserScrollTimestampMs = 0;
+    this.onwheel = this.stopAutoScroll.bind(this);
+    this.onmousedown = this.stopAutoScroll.bind(this);
+    this.onkeydown = this.stopAutoScroll.bind(this);
   }
 
   /** Creates a banner for scrolling. */
@@ -62,37 +61,8 @@ export class ScrollContainer extends HTMLDivElement {
     return scrollBanner;
   }
 
-  /**
-   * Disables automatic scrolling if the scroll `event` was
-   * not triggered `this.scrollToTopOfContainer`.
-   *
-   * <p>With smooth scrolling, hundreds of scroll events are fired from a
-   * single scroll. This filters events that occured at the same time and
-   * treats them as a single event to determine if they were triggered by a user
-   * or not.
-   */
-  filterScrollEvent(event) {
-    if (this.#browserScrolled) {
-      this.#lastBrowserScrollTimestampMs = event.timeStamp;
-      this.#browserScrolled = false;
-    }
-
-    const timeDifferenceMs =
-        event.timeStamp - this.#lastBrowserScrollTimestampMs;
-    if (timeDifferenceMs < ScrollContainer.#SCROLL_TOLERANCE_MS) {
-      this.#lastBrowserScrollTimestampMs = event.timeStamp;
-      return;
-    }
-
-    this.stopAutoScroll();
-  }
-
   /** De-activates the automatic scrolling of the transcript. */
   stopAutoScroll() {
-    if (this.#browserScrolled) {
-      this.#browserScrolled = false;
-      return;
-    }
     this.#autoScrollIsActive = false;
     this.#scrollBanner.style.visibility = 'visible';
   }
@@ -115,7 +85,6 @@ export class ScrollContainer extends HTMLDivElement {
     if (!this.#autoScrollIsActive || forceScroll) {
       return;
     }
-    this.#browserScrolled = true;
     const innerContainer = element.parentElement;
     const scrollGoal = element.offsetTop - innerContainer.offsetTop;
     const scrollDistance = Math.abs(this.scrollTop - scrollGoal);
