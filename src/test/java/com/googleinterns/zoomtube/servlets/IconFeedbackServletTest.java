@@ -68,7 +68,7 @@ public final class IconFeedbackServletTest {
   private StringWriter content;
 
   @Before
-  public void setUp() throws ServletException, IOException {
+  public void setUp() throws IOException, ServletException {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new IconFeedbackServlet();
@@ -153,8 +153,9 @@ public final class IconFeedbackServletTest {
   @Test
   public void doGet_oneIconFeedback_shouldReturnOneIconFeedback()
       throws IOException, ServletException {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 123);
-    datastoreService.put(IconFeedbackUtil.createEntity(lectureKey, 456L, IconFeedback.Type.GOOD));
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
+    datastoreService.put(
+        IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
 
     servlet.doGet(request, response);
@@ -170,8 +171,9 @@ public final class IconFeedbackServletTest {
   @Test
   public void doGet_oneIconFeedbackLectureIdDoesntMatch_shouldReturnNoIconFeedback()
       throws IOException, ServletException {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, 123);
-    datastoreService.put(IconFeedbackUtil.createEntity(lectureKey, 456L, IconFeedback.Type.GOOD));
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
+    datastoreService.put(
+        IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("789");
 
     servlet.doGet(request, response);
@@ -184,7 +186,6 @@ public final class IconFeedbackServletTest {
   private List<IconFeedback> getIconFeedbackFromJson(String json) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     Type listType = new TypeToken<ArrayList<IconFeedback>>() {}.getType();
-    // Type listType = (new ArrayList<IconFeedback>()).getClass();
     return gson.fromJson(json, listType);
   }
 }
