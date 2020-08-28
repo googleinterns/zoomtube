@@ -79,7 +79,7 @@ export class TranscriptLineElement extends HTMLElement {
   /**
    * Attaches an event listener such that every time the timestamp is
    * clicked on, the timestamp's starting time is broadcasted to the
-   * other event listeners subscribed for seeking.
+   * other event listeners subscribed to seeking.
    */
   attachSeekingEventListener(eventController) {
     this.#timestampElement.onclick = eventController.broadcastEvent.bind(
