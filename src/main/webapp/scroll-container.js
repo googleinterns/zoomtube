@@ -22,22 +22,35 @@
 export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
       'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
-  static #SCROLL_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
+  static #SCROLL_CONTAINER_CLASSES =
+      'mx-5 my-3 bg-light pb-3 rounded smooth-scrolling';
   static #AUTO_SCROLL_MESSAGE = 'Jump back to video';
+  /**
+   * Scroll events within this time of each other are treated
+   * as having the same trigger.
+   */
+  static #SCROLL_TOLERANCE_MS = 50;
+  /**
+   * Scroll distances greater than this (in pixels) will not be smoothly
+   * animated.
+   */
+  static #SMOOTH_SCROLL_LIMIT = 200;
 
   #autoScrollIsActive;
   #scrollBanner;
   #browserScrolled;
   #currentElement;
+  #lastBrowserScrollTimestampMs;
 
   /** Creates a `ScrollContainer`. */
   constructor() {
     super();
     this.#scrollBanner = this.createScrollBanner();
     this.appendChild(this.#scrollBanner);
-    this.onscroll = this.stopAutoScroll.bind(this);
+    this.onscroll = this.filterScrollEvent.bind(this);
     this.className = ScrollContainer.#SCROLL_CONTAINER_CLASSES;
     this.#autoScrollIsActive = true;
+    this.#lastBrowserScrollTimestampMs = 0;
   }
 
   /** Creates a banner for scrolling. */
@@ -47,6 +60,31 @@ export class ScrollContainer extends HTMLDivElement {
     scrollBanner.className = ScrollContainer.#SCROLL_BANNER_CLASSES;
     scrollBanner.onclick = this.startAutoScroll.bind(this);
     return scrollBanner;
+  }
+
+  /**
+   * Disables automatic scrolling if the scroll `event` was
+   * not triggered `this.scrollToTopOfContainer`.
+   *
+   * <p>With smooth scrolling, hundreds of scroll events are fired from a
+   * single scroll. This filters events that occured at the same time and
+   * treats them as a single event to determine if they were triggered by a user
+   * or not.
+   */
+  filterScrollEvent(event) {
+    if (this.#browserScrolled) {
+      this.#lastBrowserScrollTimestampMs = event.timeStamp;
+      this.#browserScrolled = false;
+    }
+
+    const timeDifferenceMs =
+        event.timeStamp - this.#lastBrowserScrollTimestampMs;
+    if (timeDifferenceMs < ScrollContainer.#SCROLL_TOLERANCE_MS) {
+      this.#lastBrowserScrollTimestampMs = event.timeStamp;
+      return;
+    }
+
+    this.stopAutoScroll();
   }
 
   /** De-activates the automatic scrolling of the transcript. */
@@ -77,9 +115,16 @@ export class ScrollContainer extends HTMLDivElement {
     if (!this.#autoScrollIsActive || forceScroll) {
       return;
     }
-    const innerContainer = element.parentElement;
-    this.scrollTop = element.offsetTop - innerContainer.offsetTop;
     this.#browserScrolled = true;
+    const innerContainer = element.parentElement;
+    const scrollGoal = element.offsetTop - innerContainer.offsetTop;
+    const scrollDistance = Math.abs(this.scrollTop - scrollGoal);
+    if (scrollDistance > ScrollContainer.#SMOOTH_SCROLL_LIMIT) {
+      this.style.scrollBehavior = 'normal';
+      this.scrollTop = scrollGoal;
+      this.style.scrollBehavior = 'smooth';
+    }
+    this.scrollTop = scrollGoal;
   }
 }
 
