@@ -114,6 +114,8 @@ export default class TranscriptArea {
       this.#transcriptContainer.id = TranscriptArea.#TRANSCRIPT_CONTAINER;
       const parentContainer =
           document.getElementById(TranscriptArea.#TRANSCRIPT_PARENT_CONTAINER);
+      // Removes the loading spinner.
+      parentContainer.innerHTML = '';
       parentContainer.appendChild(this.#transcriptContainer);
     }
     return this.#transcriptContainer;

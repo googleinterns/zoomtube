@@ -54,6 +54,10 @@ body {
   padding: 15px;
 }
 
+#discussion .spinner-border {
+  margin-left: 45%;
+}
+
 discussion-comment {
   display: block;
 }
@@ -126,6 +130,10 @@ discussion-comment[highlighted] > [slot='header'] {
   height: calc(100% - 420px);
   margin: 15px;
   padding: 15px;
+}
+
+#transcript-container .spinner-border {
+  margin-left: 40%;
 }
 
 .transcript-line-timestamp {
