@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Contains functions used to convert timestamps. */
 export default class TimestampUtil {
   static #MILLISECONDS_PER_SECOND = 1000;
 
