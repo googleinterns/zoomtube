@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
@@ -88,7 +89,9 @@ public class IconFeedbackServlet extends HttpServlet {
     Filter lectureFilter =
         new FilterPredicate(IconFeedbackUtil.LECTURE, FilterOperator.EQUAL, lecture);
 
-    Query query = new Query(IconFeedbackUtil.KIND).setFilter(lectureFilter);
+    Query query = new Query(IconFeedbackUtil.KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(IconFeedbackUtil.TIMESTAMP_MS, SortDirection.ASCENDING);
     PreparedQuery pq = datastore.prepare(query);
     ImmutableList.Builder<IconFeedback> iconFeedbackListBuilder = new ImmutableList.Builder<>();
 

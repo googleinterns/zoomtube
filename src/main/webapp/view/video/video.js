@@ -22,9 +22,13 @@ const SCRIPT = 'script';
 export default class Video {
   #lecture;
   #synchronizer;
+  #iconFeedback;
+  #eventController;
 
   constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
+    this.#iconFeedback = new IconFeedback(lecture);
     this.#synchronizer = new Synchronizer(eventController);
   }
 
@@ -32,6 +36,7 @@ export default class Video {
   async loadVideoApi() {
     window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
     window.onPlayerReady = this.onPlayerReady.bind(this);
+    window.iconOnClick = this.iconOnClick.bind(this);
     const videoApiScript = document.createElement(SCRIPT);
     const firstScriptTag = document.getElementsByTagName(SCRIPT)[0];
     videoApiScript.src = 'https://www.youtube.com/iframe_api';
@@ -57,7 +62,6 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    IconFeedback.loadIconFeedbackList();
     this.#synchronizer.startVideoSyncTimer(
         this.getCurrentVideoTimeMs.bind(this));
   }
@@ -75,5 +79,9 @@ export default class Video {
   seekVideo(timeMs) {
     // TODO: Removed and implement.
     console.log('SEEKING VIDEO TO: ' + timeMs);
+  }
+
+  iconOnClick(iconType) {
+    this.#iconFeedback.iconOnClick(iconType, this.getCurrentVideoTimeMs());
   }
 }
