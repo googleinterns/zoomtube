@@ -76,9 +76,12 @@ export default class DiscussionArea {
   }
 
   /**
-   * Broadcasts a `seekAll` event for a specific `timestampMs` that was clicked.
+   * Seeks the transcript, discussion, and video to `timestampMs`.
+   *
+   * <p>This is private and should be added as an event listener to every root
+   * discussion header's onclick event.
    */
-  timestampClicked(timestampMs) {
+  onTimestampClicked(timestampMs) {
     // TODO: Enable scroll container autoscroll.
     this.#eventController.broadcastEvent('seekAll', timestampMs);
   }

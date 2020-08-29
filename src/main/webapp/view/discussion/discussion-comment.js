@@ -79,11 +79,13 @@ export default class DiscussionComment extends HTMLElement {
     headerSpan.slot = DiscussionComment.#SLOT_HEADER;
     this.appendChild(headerSpan);
 
-    if (this.comment.type !== COMMENT_TYPE_REPLY) {
-      headerSpan.onclick = () => {
-        this.#discussion.timestampClicked(this.comment.timestampMs.value);
-      };
+    if (this.comment.type === COMMENT_TYPE_REPLY) {
+      return;
     }
+
+    headerSpan.onclick = () => {
+      this.#discussion.onTimestampClicked(this.comment.timestampMs.value);
+    };
   }
 
   /**
