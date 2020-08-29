@@ -68,14 +68,13 @@ export default class DiscussionArea {
     this.#discussionCommentsDiv = document.createElement('div');
     this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
-    DiscussionArea.#ELEMENT_DISCUSSION.removeChild(
-        DiscussionArea.#ELEMENT_LOADING_SPINNER);
     this.addSeekingListener();
-
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment = this.postNewComment.bind(this);
     await this.updateDiscussion();
+    DiscussionArea.#ELEMENT_DISCUSSION.removeChild(
+        DiscussionArea.#ELEMENT_LOADING_SPINNER);
   }
 
   /**
