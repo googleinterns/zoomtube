@@ -64,12 +64,6 @@ public class MarkAnsweredServlet extends HttpServlet {
       return;
     }
 
-    Comment.Type newType = Comment.Type.valueOf(request.getParameter(PARAM_NEW_TYPE));
-    if (newType != Comment.Type.QUESTION_UNANSWERED && newType != Comment.Type.QUESTION_ANSWERED) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, ERROR_INVALID_NEW_TYPE);
-      return;
-    }
-
     User author = userService.getCurrentUser();
     if (author == null) {
       response.sendError(HttpServletResponse.SC_FORBIDDEN, ERROR_NOT_LOGGED_IN);
@@ -78,24 +72,12 @@ public class MarkAnsweredServlet extends HttpServlet {
 
     long commentId = Long.parseLong(request.getParameter(PARAM_COMMENT));
     Key commentKey = KeyFactory.createKey(CommentUtil.KIND, commentId);
-    final Entity commentEntity;
-    try {
-      commentEntity = datastore.get(commentKey);
-    } catch (EntityNotFoundException e) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, ERROR_INVALID_COMMENT);
-      return;
-    }
+    Comment.Type newType = Comment.Type.valueOf(request.getParameter(PARAM_NEW_TYPE));
 
-    Comment comment = CommentUtil.createComment(commentEntity);
-    Comment.Type currentType = comment.type();
-    if (currentType != Comment.Type.QUESTION_UNANSWERED
-        && currentType != Comment.Type.QUESTION_ANSWERED) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, ERROR_INVALID_COMMENT_TYPE);
-      return;
+    error = updateCommentType(commentKey, newType);
+    if (error.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
     }
-
-    commentEntity.setProperty(CommentUtil.TYPE, newType.toString());
-    datastore.put(commentEntity);
 
     response.setStatus(HttpServletResponse.SC_ACCEPTED);
   }
@@ -109,5 +91,35 @@ public class MarkAnsweredServlet extends HttpServlet {
     }
 
     return Optional.empty();
+  }
+
+  /**
+   * Updates the question-type comment specified by `commentKey` to `newType`.  Returns
+   * {@Optional.empty()} if there were no errors, otherwise returns an error message.
+   */
+  private Optional<String> updateCommentType(Key commentKey, Comment.Type newType) {
+    if (!isQuestionType(newType)) {
+      return Optional.of(ERROR_INVALID_NEW_TYPE);
+    }
+
+    final Entity commentEntity;
+    try {
+      commentEntity = datastore.get(commentKey);
+    } catch (EntityNotFoundException e) {
+      return Optional.of(ERROR_INVALID_COMMENT);
+    }
+
+    Comment.Type currentType = CommentUtil.createComment(commentEntity).type();
+    if (!isQuestionType(currentType)) {
+      return Optional.of(ERROR_INVALID_COMMENT_TYPE);
+    }
+
+    commentEntity.setProperty(CommentUtil.TYPE, newType.toString());
+    datastore.put(commentEntity);
+    return Optional.empty();
+  }
+
+  private boolean isQuestionType(Comment.Type type) {
+    return type == Comment.Type.QUESTION_ANSWERED || type == Comment.Type.QUESTION_UNANSWERED;
   }
 }
