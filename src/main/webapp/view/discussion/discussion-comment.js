@@ -13,8 +13,10 @@
 // limitations under the License.
 
 import {timestampToString} from '../../timestamps.js';
+
 import {ELEMENT_DISCUSSION} from './discussion-area.js';
-import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
+import {COMMENT_TYPE_NOTE, COMMENT_TYPE_REPLY} from './discussion.js';
+import {COMMENT_TYPES} from './discussion.js';
 
 /**
  * Renders a comment and its replies, with a form to post a new reply.
@@ -34,6 +36,7 @@ export default class DiscussionComment extends HTMLElement {
   static #SELECTOR_CANCEL_REPLY = '#cancel-reply';
   static #SELECTOR_POST_REPLY = '#post-reply';
   static #SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
+  static #SELECTOR_MARK_AS_BUTTON = '#mark-as-button';
 
   #discussion;
   #replyDiv;
@@ -157,14 +160,35 @@ export default class DiscussionComment extends HTMLElement {
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
    */
   setTypeTag(type) {
+    const markAsButton = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_MARK_AS_BUTTON);
     if (type === COMMENT_TYPE_REPLY) {
+      markAsButton.style.visibility = 'hidden';
       return;
     }
+
     const typePill = document.createElement('span');
     typePill.innerText = COMMENT_TYPES[type].name;
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
     typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
     this.appendChild(typePill);
+    if (type === COMMENT_TYPE_NOTE) {
+      markAsButton.style.visibility = 'hidden';
+      return;
+    }
+
+    const oppositeType = COMMENT_TYPES[type].oppositeType;
+
+    const markAsText = COMMENT_TYPES[oppositeType].markAsText;
+    markAsButton.innerText = markAsText;
+
+    const markAsFunction = COMMENT_TYPES[oppositeType].markAsFunction;
+    const listener = async () => {
+      markAsButton.removeEventListener('click', listener);
+      await markAsFunction(this.comment.commentKey.id);
+      await this.#discussion.updateDiscussion();
+    };
+    markAsButton.onclick = listener;
   }
 
 
