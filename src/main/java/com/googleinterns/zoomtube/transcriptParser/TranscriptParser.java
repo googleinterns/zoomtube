@@ -166,7 +166,7 @@ public final class TranscriptParser {
   }
 
   /**
-   * Cleans the {@code content} of a transcript line by unescaping XML characters, and
+   * Cleans the {@code content} of a transcript line by unescaping XML characters and
    * removing newlines.
    */
   private String cleanupTranscriptLineContent(String content) {
