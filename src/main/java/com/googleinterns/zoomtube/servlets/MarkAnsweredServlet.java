@@ -73,7 +73,6 @@ public class MarkAnsweredServlet extends HttpServlet {
     long commentId = Long.parseLong(request.getParameter(PARAM_COMMENT));
     Key commentKey = KeyFactory.createKey(CommentUtil.KIND, commentId);
     Comment.Type newType = Comment.Type.valueOf(request.getParameter(PARAM_NEW_TYPE));
-
     error = updateCommentType(commentKey, newType);
     if (error.isPresent()) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
