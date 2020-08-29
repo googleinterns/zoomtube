@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.User;
@@ -17,9 +16,7 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.googleinterns.zoomtube.data.Comment;
 import com.googleinterns.zoomtube.utils.CommentUtil;
 import com.googleinterns.zoomtube.utils.LectureUtil;
-import java.io.IOException;
 import java.util.Date;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
