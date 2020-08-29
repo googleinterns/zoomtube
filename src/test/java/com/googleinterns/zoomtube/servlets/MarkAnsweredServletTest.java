@@ -110,7 +110,7 @@ public class MarkAnsweredServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_FORBIDDEN, /* message= */ "Specified comment could not be found.");
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Specified comment could not be found.");
   }
 
   @Test
@@ -124,7 +124,7 @@ public class MarkAnsweredServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_FORBIDDEN, /* message= */ "Invalid new type.");
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Invalid new type.");
   }
 
   @Test
@@ -145,7 +145,7 @@ public class MarkAnsweredServletTest {
     servlet.doPost(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_FORBIDDEN, /* message= */ "Specified comment is not a question.");
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Specified comment is not a question.");
   }
 
   @Test
