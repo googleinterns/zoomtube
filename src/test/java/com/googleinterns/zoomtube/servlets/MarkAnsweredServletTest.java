@@ -42,7 +42,7 @@ public class MarkAnsweredServletTest {
   private DatastoreService datastore;
 
   @Before
-  public void setUp() throws ServletException {
+  public void setUp() throws Exception {
     testServices.setUp();
     testServices.setEnvEmail("test@example.com");
     testServices.setEnvAuthDomain("example.com");
@@ -57,7 +57,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_loggedOut_postForbidden() throws ServletException, IOException {
+  public void doPost_loggedOut_postForbidden() throws Exception {
     testServices.setEnvIsLoggedIn(false);
     Entity testComment = createTestCommentEntity(/* entityId = */ 34);
     datastore.put(testComment);
@@ -72,7 +72,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_missingComment_badRequest() throws ServletException, IOException {
+  public void doPost_missingComment_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     Entity testComment = createTestCommentEntity(/* entityId = */ 34);
     datastore.put(testComment);
@@ -86,7 +86,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_missingNewType_badRequest() throws ServletException, IOException {
+  public void doPost_missingNewType_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     Entity testComment = createTestCommentEntity(/* entityId = */ 34);
     datastore.put(testComment);
@@ -99,7 +99,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_invalidCommentId_badRequest() throws ServletException, IOException {
+  public void doPost_invalidCommentId_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     Entity testComment = createTestCommentEntity(/* entityId = */ 34);
     datastore.put(testComment);
@@ -114,7 +114,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_invalidNewType_badRequest() throws ServletException, IOException {
+  public void doPost_invalidNewType_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     Entity testComment = createTestCommentEntity(/* entityId = */ 34);
     datastore.put(testComment);
@@ -128,7 +128,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_wrongExistingCommentType_badRequest() throws ServletException, IOException {
+  public void doPost_wrongExistingCommentType_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
     User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
@@ -149,8 +149,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_updatesTypeToAnswered()
-      throws ServletException, IOException, EntityNotFoundException {
+  public void doPost_updatesTypeToAnswered() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     Entity testComment = createTestCommentEntity(/* entityId = */ 34);
     datastore.put(testComment);
@@ -166,8 +165,7 @@ public class MarkAnsweredServletTest {
   }
 
   @Test
-  public void doPost_updatesTypeToUnanswered()
-      throws ServletException, IOException, EntityNotFoundException {
+  public void doPost_updatesTypeToUnanswered() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     Entity testComment = createTestCommentEntity(/* entityId = */ 34);
     datastore.put(testComment);
