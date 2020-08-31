@@ -160,7 +160,7 @@ public class LectureServlet extends HttpServlet {
   @VisibleForTesting
   /** Returns YouTube video ID for a given {@code videoUrl}. */
   // TODO: Move this function to a Utils class.
-  public Optional<String> getVideoId(String videoUrl) {
+  public static Optional<String> getVideoId(String videoUrl) {
     /* Pattern used to create a matcher for a video ID. */
     Pattern videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);

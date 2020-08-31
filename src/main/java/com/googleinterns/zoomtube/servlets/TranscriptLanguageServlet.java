@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 
 /** Provides information on a lecture. */
-public class LectureServlet extends HttpServlet {
+public class TranscriptLanguageServlet extends HttpServlet {
   /* Used to generate a Pattern for a Video URL. */
   private static final String YOUTUBE_VIDEO_URL_PATTERN =
       "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|"
@@ -69,7 +69,12 @@ public class LectureServlet extends HttpServlet {
       return;
     }
 
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LINK));
+    String videoUrl = request.getParameter(PARAM_LINK);
+    Optional<String> videoId = LectureServlet.getVideoId(videoUrl);
+    if (!videoId.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_INVALID_LINK);
+      return;
+    }
 
   }
 
