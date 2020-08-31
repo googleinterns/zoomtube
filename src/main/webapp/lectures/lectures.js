@@ -67,7 +67,7 @@ async function fetchTranscriptLanguages(inputElement) {
   let languagesResponse;
   try {
     languagesResponse = await fetch(url);
-  } catch(error) {
+  } catch (error) {
     return;
   }
   const languagesJson = await languagesResponse.json();
