@@ -12,24 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import IconFeedback from './icon-feedback.js';
-
-const ENDPOINT_FEEDBACK = '/icon-feedback';
-
-const PARAM_LECTURE_ID = 'lectureId';
-const PARAM_TIMESTAMP = 'timestampMs';
-const PARAM_ICON_TYPE = 'iconType';
+import ParsedIconFeedback from './parsed-icon-feedback.js';
 
 export default class LoadIconFeedback {
+  static #ENDPOINT_FEEDBACK = '/icon-feedback';
+  static #PARAM_LECTURE_ID = 'lectureId';
+
   #lectureId;
-  #iconFeedback;
+  #parsedIconFeedback;
 
   constructor(lectureId) {
     this.#lectureId = lectureId;
   }
 
   async initialize() {
-    this.#iconFeedback = new IconFeedback();
+    this.#parsedIconFeedback = new ParsedIconFeedback();
     await this.loadIconFeedbackList();
   }
 
@@ -37,13 +34,15 @@ export default class LoadIconFeedback {
    * Fetches avaiable Lectures from `ENDPOINT_FEEDBACK`
    * and sets them in the lecture selection page.
    */
-  async loadIconFeedbackList(lectureId) {
-    const url = new URL(ENDPOINT_FEEDBACK, window.location.origin);
-    url.searchParams.append(PARAM_LECTURE_ID, this.#lectureId);
+  async loadIconFeedbackList() {
+    const url =
+        new URL(LoadIconFeedback.#ENDPOINT_FEEDBACK, window.location.origin);
+    url.searchParams.append(
+        LoadIconFeedback.#PARAM_LECTURE_ID, this.#lectureId);
     const response = await fetch(url);
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
-    console.log(this.#iconFeedback);
+    console.log(this.#parsedIconFeedback);
   }
 
   parseFeedback(jsonData) {
@@ -67,11 +66,11 @@ export default class LoadIconFeedback {
         }
         index++;
       }
-      this.#iconFeedback.appendGood(goodCount);
-      this.#iconFeedback.appendBad(badCount);
-      this.#iconFeedback.appendTooFast(tooFastCount);
-      this.#iconFeedback.appendTooSlow(tooSlowCount);
-      this.#iconFeedback.appendInterval(interval / 1000);
+      this.#parsedIconFeedback.appendGoodCount(goodCount);
+      this.#parsedIconFeedback.appendBadCount(badCount);
+      this.#parsedIconFeedback.appendTooFastCount(tooFastCount);
+      this.#parsedIconFeedback.appendTooSlowCount(tooSlowCount);
+      this.#parsedIconFeedback.appendInterval(interval / 1000);
       interval += 10000;
     }
   }

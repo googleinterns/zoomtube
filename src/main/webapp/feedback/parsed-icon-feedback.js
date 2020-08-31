@@ -14,29 +14,29 @@
 
 /** Stores parsed icon feedback data. */
 export default class ParsedIconFeedback {
-  #good = [];
-  #bad = [];
-  #tooFast = [];
-  #tooSlow = [];
-  #interval = [];
+  #goodCounts = [];
+  #badCounts = [];
+  #tooFastCounts = [];
+  #tooSlowCounts = [];
+  #intervals = [];
 
-  appendGood(goodCount) {
-    this.#good.push(goodCount);
+  appendGoodCount(goodCount) {
+    this.#goodCounts.push(goodCount);
   }
 
-  appendBad(badCount) {
-    this.#bad.push(badCount);
+  appendBadCount(badCount) {
+    this.#badCounts.push(badCount);
   }
 
-  appendTooFast(tooFastCount) {
-    this.#tooFast.push(tooFastCount);
+  appendTooFastCount(tooFastCount) {
+    this.#tooFastCounts.push(tooFastCount);
   }
 
-  appendTooSlow(tooSlowCount) {
-    this.#tooSlow.push(tooSlowCount);
+  appendTooSlowCount(tooSlowCount) {
+    this.#tooSlowCounts.push(tooSlowCount);
   }
 
   appendInterval(interval) {
-    this.#interval.push(interval);
+    this.#intervals.push(interval);
   }
 }
