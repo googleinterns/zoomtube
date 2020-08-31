@@ -75,16 +75,15 @@ public class IconFeedbackServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, getRequestError.get());
       return;
     }
-
-    List<IconFeedback> lectures = getIconFeedback(request);
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    List<IconFeedback> lectures = getIconFeedback(lectureId);
     Gson gson = new Gson();
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(lectures));
   }
 
-  /** Returns IconFeedback (associated with a specific lecture) from the database. */
-  private List<IconFeedback> getIconFeedback(HttpServletRequest request) {
-    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+  /** Returns IconFeedback (associated with {@code lectureId}) from the database. */
+  private List<IconFeedback> getIconFeedback(long lectureId) {
     Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     Filter lectureFilter =
         new FilterPredicate(IconFeedbackUtil.LECTURE, FilterOperator.EQUAL, lecture);
