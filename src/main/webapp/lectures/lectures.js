@@ -66,4 +66,5 @@ function displayLanguages(languagesJson) {
   if (languagesJson.length == 0) {
     // TODO: Handle case where there is no transcripts
   }
+  return
 }
