@@ -62,14 +62,21 @@ function fetchTranscriptLanguages(inputElement) {
 }
 
 function displayLanguages(languages) {
-  const languageSelectorDivElement = document.getElementById('language-selector');
+  const languageSelectorDivElement =
+      document.getElementById('language-selector');
   if (languages.length == 0) {
-    languageSelectorDivElement.innerText = "Sorry, there is no transcript available for this lecture.";
+    languageSelectorDivElement.innerText =
+        'Sorry, there is no transcript available for this lecture.';
     return;
   }
+
   const languageSelectElement = document.createElement('select');
   languageSelectorDivElement.appendChild(languageSelectElement);
 
+  const defaultLanguageOptionElement = document.createElement('option');
+  defaultLanguageOptionElement.disabled = true;
+  defaultLanguageOptionElement.selected = true;
+  defaultLanguageOptionElement.innerText = "Select the language for the transcript."
   for (const language of languages) {
     const languageOptionElement = document.createElement('option');
     languageOptionElement.value = language.languageCode;
