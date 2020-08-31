@@ -35,7 +35,6 @@ getLecture().then((lecture) => {
  */
 async function initialize() {
   setLectureName();
-
   const video = new Video();
   // TODO: Move TranscriptArea initialization outside of initialize()
   // and replace string parameter with a controller object.
@@ -43,7 +42,7 @@ async function initialize() {
 
   await video.loadVideoApi();
   await transcript.loadTranscript();
-  await intializeDiscussion();
+  await intializeDiscussion(transcript.transcriptSeeker());
 }
 
 /**
