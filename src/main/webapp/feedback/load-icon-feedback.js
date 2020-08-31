@@ -47,6 +47,7 @@ export default class LoadIconFeedback {
     const response = await fetch(url);
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
+    console.log('HERE');
     console.log(this.#parsedIconFeedback);
   }
 
@@ -60,29 +61,29 @@ export default class LoadIconFeedback {
     let interval = 0;
     while (index < iconFeedbackJson.length) {
       const typeCountsAndInterval = {
-        [IconFeedbackUtil.#TYPE_GOOD]: 0,
-        [IconFeedbackUtil.#TYPE_BAD]: 0,
-        [IconFeedbackUtil.#TYPE_TOO_FAST]: 0,
-        [IconFeedbackUtil.#TYPE_TOO_SLOW]: 0,
-        [IconFeedbackUtil.#INTERVAl]: interval / 1000,
+        [IconFeedbackUtil.TYPE_GOOD]: 0,
+        [IconFeedbackUtil.TYPE_BAD]: 0,
+        [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
+        [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
+        [IconFeedbackUtil.INTERVAl]: interval / 1000,
       };
       while (index < iconFeedbackJson.length &&
              iconFeedbackJson[index].timestampMs < interval) {
-        if (iconFeedbackJson[index].type == IconFeedbackUtil.#TYPE_GOOD) {
-          typeCountsAndInterval[IconFeedbackUtil.#TYPE_GOOD]++;
-        } else if (iconFeedbackJson[index].type == IconFeedbackUtil.#TYPE_BAD) {
-          typeCountsAndInterval[IconFeedbackUtil.#TYPE_BAD]++;
+        if (iconFeedbackJson[index].type == IconFeedbackUtil.TYPE_GOOD) {
+          typeCountsAndInterval[IconFeedbackUtil.TYPE_GOOD]++;
+        } else if (iconFeedbackJson[index].type == IconFeedbackUtil.TYPE_BAD) {
+          typeCountsAndInterval[IconFeedbackUtil.TYPE_BAD]++;
         } else if (
-            iconFeedbackJson[index].type == IconFeedbackUtil.#TYPE_TOO_FAST) {
-          typeCountsAndInterval[IconFeedbackUtil.#TYPE_TOO_FAST]++;
+          iconFeedbackJson[index].type == IconFeedbackUtil.TYPE_TOO_FAST) {
+          typeCountsAndInterval[IconFeedbackUtil.TYPE_TOO_FAST]++;
         } else {
-          typeCountsAndInterval[IconFeedbackUtil.#TYPE_TOO_SLOW]++;
+          typeCountsAndInterval[IconFeedbackUtil.TYPE_TOO_SLOW]++;
         }
         index++;
       }
       this.#parsedIconFeedback.appendTypeCountsAndInterval(
           typeCountsAndInterval);
-      interval += LoadIconFeedback.#INCREMENT_INTERVAL;
+      interval += LoadIconFeedback.INCREMENT_INTERVAL;
     }
   }
 }

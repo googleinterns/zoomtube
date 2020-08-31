@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 export default class IconFeedbackUtil {
-  static #TYPE_GOOD = 'GOOD';
-  static #TYPE_BAD = 'BAD';
-  static #TYPE_TOO_FAST = 'TOO_FAST';
-  static #TYPE_TOO_SLOW = 'TOO_SLOW';
-  static #INTERVAL = 'INTERVAL';
+  static TYPE_GOOD = 'GOOD';
+  static TYPE_BAD = 'BAD';
+  static TYPE_TOO_FAST = 'TOO_FAST';
+  static TYPE_TOO_SLOW = 'TOO_SLOW';
+  static INTERVAL = 'INTERVAL';
 }

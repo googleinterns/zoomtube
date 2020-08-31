@@ -20,23 +20,23 @@ export default class ParsedIconFeedback {
    * icon type during that 10 seconds interval.
    */
   #counts = {
-    [IconFeedbackUtil.#TYPE_GOOD]: [],
-    [IconFeedbackUtil.#TYPE_BAD]: [],
-    [IconFeedbackUtil.#TYPE_TOO_FAST]: [],
-    [IconFeedbackUtil.#TYPE_TOO_SLOW]: [],
-    [IconFeedbackUtil.#INTERVAL]: [],
+    [IconFeedbackUtil.TYPE_GOOD]: [],
+    [IconFeedbackUtil.TYPE_BAD]: [],
+    [IconFeedbackUtil.TYPE_TOO_FAST]: [],
+    [IconFeedbackUtil.TYPE_TOO_SLOW]: [],
+    [IconFeedbackUtil.INTERVAL]: [],
   }
 
-  appendCounts(counts) {
-    this.#counts[IconFeedbackUtil.#TYPE_GOOD].push(
-        counts[IconFeedbackUtil.#TYPE_GOOD]);
-    this.#counts[IconFeedbackUtil.#TYPE_BAD].push(
-        counts[IconFeedbackUtil.#TYPE_BAD]);
-    this.#counts[IconFeedbackUtil.#TYPE_TOO_FAST].push(
-        counts[IconFeedbackUtil.#TYPE_TOO_FAST]);
-    this.#counts[IconFeedbackUtil.#TYPE_TOO_SLOW].push(
-        counts[IconFeedbackUtil.#TYPE_TOO_SLOW]);
-    this.#counts[IconFeedbackUtil.#INTERVAL].push(
-        counts[IconFeedbackUtil.#INTERVAL]);
+  appendTypeCountsAndInterval(counts) {
+    this.#counts[IconFeedbackUtil.TYPE_GOOD].push(
+        counts[IconFeedbackUtil.TYPE_GOOD]);
+    this.#counts[IconFeedbackUtil.TYPE_BAD].push(
+        counts[IconFeedbackUtil.TYPE_BAD]);
+    this.#counts[IconFeedbackUtil.TYPE_TOO_FAST].push(
+        counts[IconFeedbackUtil.TYPE_TOO_FAST]);
+    this.#counts[IconFeedbackUtil.TYPE_TOO_SLOW].push(
+        counts[IconFeedbackUtil.TYPE_TOO_SLOW]);
+    this.#counts[IconFeedbackUtil.INTERVAL].push(
+        counts[IconFeedbackUtil.INTERVAL]);
   }
 }
