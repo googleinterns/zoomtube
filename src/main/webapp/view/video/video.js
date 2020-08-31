@@ -65,10 +65,6 @@ export default class Video {
     return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
   }
 
-  getVideoDurationMs() {
-    return secondsToMilliseconds(this.videoPlayer.getDuration());
-  }
-
   /** Seeks video to `currentTime`. */
   seekVideo(timeMs) {
     // TODO: Removed and implement.
