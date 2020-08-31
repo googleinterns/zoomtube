@@ -95,34 +95,39 @@ export default class LoadIconFeedback {
     const iconFeedbackLineChart = new window.Chart(chartElement, {
       type: 'line',
       data: {
-        labels: this.#parsedIconFeedback.getInterval(),
+        labels:
+            this.#parsedIconFeedback.getTypeCount(IconFeedbackUtil.INTERVAL),
         datasets: [
           {
-            label: 'GOOD',
+            label: [IconFeedbackUtil.TYPE_GOOD],
             backgroundColor: [IconFeedbackUtil.chartColors.red],
             borderColor: [IconFeedbackUtil.chartColors.red],
-            data: this.#parsedIconFeedback.getGoodCounts(),
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_GOOD),
             fill: false,
           },
           {
-            label: 'BAD',
+            label: [IconFeedbackUtil.TYPE_BAD],
             backgroundColor: [IconFeedbackUtil.chartColors.blue],
             borderColor: [IconFeedbackUtil.chartColors.blue],
-            data: this.#parsedIconFeedback.getBadCounts(),
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_BAD),
             fill: false,
           },
           {
-            label: 'TOO_FAST',
+            label: [IconFeedbackUtil.TYPE_TOO_FAST],
             backgroundColor: [IconFeedbackUtil.chartColors.orange],
             borderColor: [IconFeedbackUtil.chartColors.orange],
-            data: this.#parsedIconFeedback.getTooFastCounts(),
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_TOO_FAST),
             fill: false,
           },
           {
-            label: 'TOO_SLOW',
+            label: [IconFeedbackUtil.TYPE_TOO_SLOW],
             backgroundColor: [IconFeedbackUtil.chartColors.green],
             borderColor: [IconFeedbackUtil.chartColors.green],
-            data: this.#parsedIconFeedback.getTooSlowCounts(),
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_TOO_SLOW),
             fill: false,
           },
         ],
