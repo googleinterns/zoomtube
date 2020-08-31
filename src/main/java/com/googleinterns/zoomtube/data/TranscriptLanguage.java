@@ -21,15 +21,14 @@ import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLanguage {
-
   /** Returns the name of the language. */
   public abstract String languageName();
 
-/** Returns the ISO language code for the language. */
-public abstract String languageCode();
+  /** Returns the ISO language code for the language. */
+  public abstract String languageCode();
 
-/** Returns the name of the language in English. */
-public abstract String languageTranslatedName();
+  /** Returns the name of the language in English. */
+  public abstract String languageTranslatedName();
 
   /**
    * Returns a builder instance that can be used to create TranscriptLines.
