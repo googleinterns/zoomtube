@@ -90,8 +90,9 @@ export default class LoadIconFeedback {
 
   /** Charts IconFeedback data into a graph. */
   makeGraph() {
-    var chartElement = document.getElementById('iconFeedbackChart')
-    var myLineChart = new Chart(chartElement, {
+    const chartElement = document.getElementById('iconFeedbackChart');
+    /* eslint-disable no-unused-vars */
+    const iconFeedbackLineChart = new window.Chart(chartElement, {
       type: 'line',
       data: {
         labels: this.#parsedIconFeedback.getInterval(),
@@ -162,6 +163,7 @@ export default class LoadIconFeedback {
         },
       },
     });
+    /* eslint-enable no-unused-vars*/
   }
 }
 
