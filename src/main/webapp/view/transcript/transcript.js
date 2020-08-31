@@ -30,6 +30,10 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
+  static #COMMENT_INDICATOR_CLASSES =
+      'indicator badge badge-pill';
+
+  commentIndicator;
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
@@ -59,6 +63,8 @@ export class TranscriptLineElement extends HTMLElement {
         ['justify-content-start', 'mb-1', 'transcript-line-timestamp']);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+    this.commentIndicator = TranscriptLineElement.createCommentIndicator();
+    contentDivElement.appendChild(this.commentIndicator);
     this.classList.add(
         'align-self-center', 'mb-2',
         TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
@@ -85,6 +91,19 @@ export class TranscriptLineElement extends HTMLElement {
     const hrElement = document.createElement('hr');
     hrElement.classList.add('my-1', 'align-middle');
     return hrElement;
+  }
+
+  /**
+   * Creates an invisible stylized comment indicator element.
+   *
+   * <p>Once the element is populated then it becomes visible.
+   */
+  static createCommentIndicator() {
+    const commentIndicator = document.createElement('span');
+    commentIndicator.className =
+        TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
+    commentIndicator.innerText = 0;
+    return commentIndicator;
   }
 
   /**
