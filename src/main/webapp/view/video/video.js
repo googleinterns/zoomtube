@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import Synchronizer from '../../synchronizer.js';
-import {secondsToMilliseconds} from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 
 const SCRIPT = 'script';
 
@@ -21,6 +21,7 @@ const SCRIPT = 'script';
 export default class Video {
   #lecture;
   #synchronizer;
+  #videoPlayer
 
   constructor(lecture, eventController) {
     this.#lecture = lecture;
@@ -43,7 +44,7 @@ export default class Video {
    */
   // TODO: Support dynamic video height and width.
   onYouTubeIframeAPIReady() {
-    this.videoPlayer = new window.YT.Player('player', {
+    this.#videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
       videoId: this.#lecture.videoId,
@@ -60,14 +61,16 @@ export default class Video {
         this.getCurrentVideoTimeMs.bind(this));
   }
 
-  /** Returns current video time of 'videoPlayer' in milliseconds. */
-  getCurrentVideoTimeMs() {
-    return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
+  /** Seeks video to `timeMs`. */
+  seek(timeMs) {
+    this.#videoPlayer.seekTo(
+        TimestampUtil.millisecondsToSeconds(timeMs),
+        /* allowSeekAhead= */ true);
   }
 
-  /** Seeks video to `currentTime`. */
-  seekVideo(timeMs) {
-    // TODO: Removed and implement.
-    console.log('SEEKING VIDEO TO: ' + timeMs);
+  /** Returns current video time of 'videoPlayer' in milliseconds. */
+  getCurrentVideoTimeMs() {
+    return TimestampUtil.secondsToMilliseconds(
+        this.#videoPlayer.getCurrentTime());
   }
 }

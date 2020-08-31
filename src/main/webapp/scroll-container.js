@@ -22,12 +22,21 @@
 export class ScrollContainer extends HTMLDivElement {
   static #SCROLL_BANNER_CLASSES =
       'scroll-banner sticky-top p-2 text-center text-white font-weight-bold';
-  static #SCROLL_CONTAINER_CLASSES = 'mx-5 my-3 bg-light pb-3 rounded';
+  static #SCROLL_CONTAINER_CLASSES =
+      'mx-5 my-3 bg-light pb-3 rounded smooth-scrolling';
   static #AUTO_SCROLL_MESSAGE = 'Jump back to video';
+  /**
+   * How long to wait after jumping to reenable smooth scrolling.
+   */
+  static #RESTORE_SMOOTH_TIMEOUT_MS = 50;
+  /**
+   * Scroll distances greater than this (in pixels) will not be smoothly
+   * animated.
+   */
+  static #SMOOTH_SCROLL_LIMIT = 200;
 
   #autoScrollIsActive;
   #scrollBanner;
-  #browserScrolled;
   #currentElement;
 
   /** Creates a `ScrollContainer`. */
@@ -35,9 +44,11 @@ export class ScrollContainer extends HTMLDivElement {
     super();
     this.#scrollBanner = this.createScrollBanner();
     this.appendChild(this.#scrollBanner);
-    this.onscroll = this.stopAutoScroll.bind(this);
     this.className = ScrollContainer.#SCROLL_CONTAINER_CLASSES;
     this.#autoScrollIsActive = true;
+    this.onwheel = this.stopAutoScroll.bind(this);
+    this.onmousedown = this.stopAutoScroll.bind(this);
+    this.onkeydown = this.stopAutoScroll.bind(this);
   }
 
   /** Creates a banner for scrolling. */
@@ -51,10 +62,6 @@ export class ScrollContainer extends HTMLDivElement {
 
   /** De-activates the automatic scrolling of the transcript. */
   stopAutoScroll() {
-    if (this.#browserScrolled) {
-      this.#browserScrolled = false;
-      return;
-    }
     this.#autoScrollIsActive = false;
     this.#scrollBanner.style.visibility = 'visible';
   }
@@ -70,7 +77,6 @@ export class ScrollContainer extends HTMLDivElement {
    * If automatic scrolling is enabled or `forceScroll` is true, then scrolls
    * the container such that `element` is at the top of the container.
    * Otherwise, does nothing.
-   *
    */
   scrollToTopOfContainer(element, forceScroll = false) {
     this.#currentElement = element;
@@ -78,8 +84,16 @@ export class ScrollContainer extends HTMLDivElement {
       return;
     }
     const innerContainer = element.parentElement;
-    this.scrollTop = element.offsetTop - innerContainer.offsetTop;
-    this.#browserScrolled = true;
+    const scrollGoal = element.offsetTop - innerContainer.offsetTop;
+    const scrollDistance = Math.abs(this.scrollTop - scrollGoal);
+    if (scrollDistance > ScrollContainer.#SMOOTH_SCROLL_LIMIT) {
+      this.style.scrollBehavior = 'auto';
+      this.scrollTop = scrollGoal;
+      setTimeout(() => {
+        this.style.scrollBehavior = 'smooth';
+      }, ScrollContainer.#RESTORE_SMOOTH_TIMEOUT_MS);
+    }
+    this.scrollTop = scrollGoal;
   }
 }
 
