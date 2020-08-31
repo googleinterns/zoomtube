@@ -117,7 +117,8 @@ public class TranscriptLanguageServlet extends HttpServlet {
     return transcriptLanguagesBuilder.build();
   }
 
-  private TranscriptLanguage createTranscriptLanguageFromElement(Element transcriptLanguageElement) {
+  private TranscriptLanguage createTranscriptLanguageFromElement(
+      Element transcriptLanguageElement) {
     String languageName = transcriptLanguageElement.getAttribute(ATTR_NAME);
     String languageCode = transcriptLanguageElement.getAttribute(ATTR_LANG_CODE);
     String languageTranslatedName = transcriptLanguageElement.getAttribute(ATTR_LANG_TRANSLATED);
