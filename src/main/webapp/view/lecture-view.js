@@ -14,7 +14,6 @@
 
 import EventController from '../event-controller.js';
 import PostIconFeedback from '../feedback/post-icon-feedback.js';
-
 import DiscussionArea from './discussion/discussion-area.js';
 import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
