@@ -32,6 +32,10 @@
   margin-bottom: 0 !important;
 }
 
+.smooth-scrolling {
+  scroll-behavior: smooth;
+}
+
 /* Zoomtube Buttons */
 
 .zt-btn {
