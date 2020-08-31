@@ -56,6 +56,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> error = validateGetRequest(request);
     if (error.isPresent()) {
+      // TODO: Display a message in the client.
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, error.get());
       return;
     }
