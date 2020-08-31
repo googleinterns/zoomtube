@@ -26,8 +26,7 @@ export default class TranscriptArea {
   static #TRANSCRIPT_ERROR_MESSAGE =
       'Sorry, there is no transcript available for this lecture recording. :(';
 
-  static #transcriptLineMap = new Map();
-
+  #transcriptLineToCommentCount;
   #transcriptSeeker;
   #lecture
   #eventController;
@@ -44,6 +43,7 @@ export default class TranscriptArea {
     this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
+    this.#transcriptLineToCommentCount = new Map();
   }
 
   /**
@@ -103,7 +103,7 @@ export default class TranscriptArea {
       const transcriptLineElement =
           TranscriptLineElement.createTranscriptLineElement(transcriptLine);
       ulElement.appendChild(transcriptLineElement);
-      TranscriptArea.#transcriptLineMap.set(
+      this.#transcriptLineToCommentCount.set(
           transcriptLine.transcriptKey.id, transcriptLineElement);
     });
     $('.indicator').popover({trigger: 'hover'});
@@ -127,12 +127,12 @@ export default class TranscriptArea {
   }
 
   /** Increments the indicator corresponding to `transcriptLineKey` by 1. */
-  static incrementCommentIndicatorAt(transcriptLineKeyId) {
-    if (!TranscriptArea.#transcriptLineMap.has(transcriptLineKeyId)) {
+  incrementCommentIndicatorAt(transcriptLineKeyId) {
+    if (!this.#transcriptLineToCommentCount.has(transcriptLineKeyId)) {
       return;
     }
     const commentIndicatorElement =
-        TranscriptArea.#transcriptLineMap.get(transcriptLineKeyId)
+        this.#transcriptLineToCommentCount.get(transcriptLineKeyId)
             .commentIndicator;
     commentIndicatorElement.innerText =
         parseInt(commentIndicatorElement.innerText) + 1;
