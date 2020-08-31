@@ -83,7 +83,7 @@ export default class DiscussionComment extends HTMLElement {
     }
 
     headerSpan.onclick = () => {
-      this.#discussion.onTimestampClicked(this.comment.timestampMs.value);
+      this.#discussion.onCommentHeaderClicked(this.comment.timestampMs.value);
     };
   }
 
