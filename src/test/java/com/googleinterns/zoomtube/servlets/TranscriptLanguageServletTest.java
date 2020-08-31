@@ -14,28 +14,13 @@
 
 package com.googleinterns.zoomtube.servlets;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.TranscriptLanguage;
-import com.googleinterns.zoomtube.data.TranscriptLine;
-import com.googleinterns.zoomtube.utils.LectureUtil;
-import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,9 +30,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,7 +68,7 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_invalidVideoLink_badRequest() throws ServletException, IOException {
-    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn(/* Invalid video id= */ "123456");
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("123456");
 
     transcriptLanguageServlet.doGet(request, response);
 
@@ -98,7 +81,7 @@ public final class TranscriptLanguageServletTest {
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("https://www.youtube.com/watch?v=fzQ6gRAEoy0");
 
     transcriptLanguageServlet.doGet(request, response);
-    
+
     List<TranscriptLanguage> actualTranscriptLanguages = transcriptLanguages(transcriptLanguages.toString());
     assertThat(actualTranscriptLanguages.size()).isEqualTo(38);
   }
