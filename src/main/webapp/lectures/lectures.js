@@ -57,6 +57,7 @@ function createLectureListItem(lecture) {
 
   return lectureLink;
 }
+
 /**
  * Fetches and displays the list of transcript languages.
  *
@@ -79,6 +80,10 @@ export async function fetchAndDisplayTranscriptLanguages(videoLinkInputElement) 
   displayLanguages(languagesJson);
 }
 
+/**
+ * Adds each language in `languages` as an element in a
+ * drop-down selector.
+ */
 function displayLanguages(languages) {
   const languageSelectorDivElement =
       document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
@@ -97,6 +102,10 @@ function displayLanguages(languages) {
   }
 }
 
+/**
+ * Creates a disabled default option, which contains a message telling users
+ * to select a language.
+ */
 function createDefaultDisabledLanguageOption() {
   const defaultLanguageOptionElement = document.createElement('option');
   defaultLanguageOptionElement.disabled = true;
