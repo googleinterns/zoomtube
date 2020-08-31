@@ -42,6 +42,13 @@ export default class TimestampUtil {
   }
 
   /**
+   * Converts `milliseconds` to seconds.
+   */
+  static millisecondsToSeconds(milliseconds) {
+    return Math.round(milliseconds / TimestampUtil.MILLISECONDS_PER_SECOND);
+  }
+
+  /**
    * Returns a time range string in the form of
    * `startTimestampMs` - `endTimestampMs`.
    */
