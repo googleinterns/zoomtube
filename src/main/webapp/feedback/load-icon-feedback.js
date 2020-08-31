@@ -44,6 +44,7 @@ export default class LoadIconFeedback {
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
     console.log(this.#parsedIconFeedback);
+    this.makeGraph();
   }
 
   /**
@@ -80,6 +81,91 @@ export default class LoadIconFeedback {
       this.#parsedIconFeedback.appendInterval(interval / 1000);
       interval += LoadIconFeedback.#INCREMENT_INTERVAL;
     }
+  }
+
+  makeGraph(parsedData) {
+    window.chartColors = {
+      red: 'rgb(255, 99, 132)',
+      orange: 'rgb(255, 159, 64)',
+      yellow: 'rgb(255, 205, 86)',
+      green: 'rgb(75, 192, 192)',
+      blue: 'rgb(54, 162, 235)',
+      purple: 'rgb(153, 102, 255)',
+      grey: 'rgb(201, 203, 207)',
+    };
+
+    var ctx = document.getElementById('myChart')
+    var myLineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: this.#parsedIconFeedback.getInterval(),
+        datasets: [
+          {
+            label: 'GOOD',
+            backgroundColor: window.chartColors.red,
+            borderColor: window.chartColors.red,
+            data: this.#parsedIconFeedback.getGoodCounts(),
+            fill: false,
+          },
+          {
+            label: 'BAD',
+            backgroundColor: window.chartColors.blue,
+            borderColor: window.chartColors.blue,
+            data: this.#parsedIconFeedback.getBadCounts(),
+            fill: false,
+          },
+          {
+            label: 'TOO_FAST',
+            backgroundColor: window.chartColors.orange,
+            borderColor: window.chartColors.orange,
+            data: this.#parsedIconFeedback.getTooFastCounts(),
+            fill: false,
+          },
+          {
+            label: 'TOO_SLOW',
+            backgroundColor: window.chartColors.green,
+            borderColor: window.chartColors.green,
+            data: this.#parsedIconFeedback.getTooSlowCounts(),
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: 'Icon Feedback Line Chart',
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false,
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true,
+        },
+        scales: {
+          xAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Timestamp (seconds)',
+              },
+            },
+          ],
+          yAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of clicks',
+              },
+            },
+          ],
+        },
+      },
+    });
   }
 }
 

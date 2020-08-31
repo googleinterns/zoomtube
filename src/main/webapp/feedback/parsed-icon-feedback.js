@@ -44,4 +44,24 @@ export default class ParsedIconFeedback {
   appendInterval(interval) {
     this.#intervals.push(interval);
   }
+
+  getGoodCounts() {
+    return this.#goodCounts;
+  }
+
+  getBadCounts() {
+    return this.#badCounts;
+  }
+
+  getTooFastCounts() {
+    return this.#tooFastCounts;
+  }
+
+  getTooSlowCounts() {
+    return this.#tooSlowCounts;
+  }
+
+  getInterval() {
+    return this.#intervals;
+  }
 }
