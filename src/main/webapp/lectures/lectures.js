@@ -58,7 +58,7 @@ function createLectureListItem(lecture) {
   return lectureLink;
 }
 
-export async function fetchTranscriptLanguages(inputElement) {
+async function fetchTranscriptLanguages(inputElement) {
   const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES);
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
