@@ -128,11 +128,6 @@ discussion-comment[highlighted] > [slot='header'] {
   padding: 15px;
 }
 
-.transcript-line-timestamp {
-  display: inline-block;
-  width: 110px;
-}
-
 #transcript-lines-container {
   height: 100%;
   overflow: scroll;
@@ -141,6 +136,11 @@ discussion-comment[highlighted] > [slot='header'] {
 #transcript-lines-container ul {
   list-style-type: none;
   padding: 0 0 calc(100vh - 560px);
+}
+
+.transcript-line-timestamp {
+  display: inline-block;
+  width: 110px;
 }
 
 /* Video */
