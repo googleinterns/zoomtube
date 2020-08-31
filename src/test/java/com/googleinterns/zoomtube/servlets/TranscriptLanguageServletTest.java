@@ -75,8 +75,7 @@ public final class TranscriptLanguageServletTest {
   }
 
   @Test
-  public void doGet_getListOfLanguages_videoWithManyLanguages()
-      throws Exception {
+  public void doGet_getListOfLanguages_videoWithManyLanguages() throws Exception {
     String videoWithManyLanguageOptions = "https://www.youtube.com/watch?v=fzQ6gRAEoy0";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithManyLanguageOptions);
@@ -102,8 +101,7 @@ public final class TranscriptLanguageServletTest {
   }
 
   @Test
-  public void doGet_getListOfLanguages_videoWithOnlyOneLanguage()
-      throws Exception {
+  public void doGet_getListOfLanguages_videoWithOnlyOneLanguage() throws Exception {
     String videoWithOnlyOneLanguage = "https://www.youtube.com/watch?v=9DwzBICPhdM";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithOnlyOneLanguage);
@@ -117,7 +115,9 @@ public final class TranscriptLanguageServletTest {
 
   private static List<TranscriptLanguage> transcriptLanguages(String transcriptLanguagesJson) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Class<? extends ArrayList> transcriptLanguageClass =
+        (new ArrayList<List<TranscriptLanguage>>().getClass());
     return (ArrayList<TranscriptLanguage>) gson.fromJson(
-        transcriptLanguagesJson, (new ArrayList<List<TranscriptLanguage>>().getClass()));
+        transcriptLanguagesJson, transcriptLanguageClass);
   }
 }
