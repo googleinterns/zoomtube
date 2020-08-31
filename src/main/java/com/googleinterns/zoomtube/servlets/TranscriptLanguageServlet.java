@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -53,7 +54,6 @@ public class TranscriptLanguageServlet extends HttpServlet {
   private static final String API_URL = "http://video.google.com/timedtext";
   private static final String API_PARAM_TYPE = "type";
   private static final String API_TYPE_LIST = "list";
-  private static final String API_LANG_ENGLISH = "en";
   private static final String API_PARAM_VIDEO = "v";
   private static final String ERROR_MISSING_LINK = "Missing link parameter.";
   private static final String ERROR_INVALID_LINK = "Invalid video link.";
@@ -62,8 +62,6 @@ public class TranscriptLanguageServlet extends HttpServlet {
   private static final String ATTR_NAME = "name";
   private static final String ATTR_LANG_TRANSLATED = "lang_translated";
 
-  /* Name of input field used for lecture name in lecture selection page. */
-  @VisibleForTesting static final String PARAM_NAME = "name-input";
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
   @VisibleForTesting static final String PARAM_ID = "id";
@@ -87,7 +85,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
     URL transcriptLanguagesUrl = getTranscriptLanguagesUrlForVideo(videoId.get());
     Document transcriptLanguagesDocument =
         TranscriptParser.fetchUrlAsXmlDocument(transcriptLanguagesUrl);
-    List transcriptLanguages = parseTranscriptLanguages(transcriptLanguagesDocument);
+    List<TranscriptLanguage> transcriptLanguages = parseTranscriptLanguages(transcriptLanguagesDocument);
   }
 
   private Optional<String> validateGetRequest(HttpServletRequest request) {
@@ -108,16 +106,14 @@ public class TranscriptLanguageServlet extends HttpServlet {
     }
   }
 
-  private List parseTranscriptLanguages(Document document) {
+  private List<TranscriptLanguage> parseTranscriptLanguages(Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
-    List transcriptLanguages = new ArrayList()<>;
+    List<TranscriptLanguage> transcriptLanguages = new ArrayList<TranscriptLanguage>();
     for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
       Element transcriptElement = (Element) transcriptNodes.item(nodeIndex);
-      Entity transcriptLineEntity =
       transcriptLanguages.add(createTranscriptLanguageFromElement(transcriptElement));
     }
-
-
+    return transcriptLanguages;
   }
 
   /**
