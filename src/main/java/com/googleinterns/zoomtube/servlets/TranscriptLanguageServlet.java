@@ -48,7 +48,6 @@ public class TranscriptLanguageServlet extends HttpServlet {
 
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
-  @VisibleForTesting static final String PARAM_ID = "id";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

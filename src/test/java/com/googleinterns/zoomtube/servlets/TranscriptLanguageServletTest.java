@@ -32,6 +32,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.googleinterns.zoomtube.data.TranscriptLanguage;
 import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
@@ -67,7 +68,6 @@ public final class TranscriptLanguageServletTest {
 
   @Before
   public void setUp() throws ServletException, IOException {
-    localServiceHelper.setUp();
     transcriptLanguageServlet = new TranscriptLanguageServlet();
     transcriptLanguageServlet.init();
     transcriptLanguages = new StringWriter();
@@ -75,34 +75,35 @@ public final class TranscriptLanguageServletTest {
     when(response.getWriter()).thenReturn(writer);
   }
 
-  @After
-  public void tearDown() {
-    localServiceHelper.tearDown();
-  }
-
   @Test
-  public void doGet_missingId_badRequest() throws ServletException, IOException {
+  public void doGet_missingVideoLink_badRequest() throws ServletException, IOException {
     transcriptLanguageServlet.doGet(request, response);
 
     verify(response).sendError(
-        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing id parameter.");
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing link parameter.");
   }
 
   @Test
-  public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(TranscriptLanguageServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
+  public void doGet_invalidVideoLink_badRequest() throws ServletException, IOException {
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn(/* Invalid video id= */ "123456");
 
     transcriptLanguageServlet.doGet(request, response);
 
-    List<TranscriptLine> expectedTranscriptLines = shortVideoTranscriptLines;
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(transcriptLanguages.toString());
-    assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Invalid video link.");
+  }
+
+  @Test
+  public void doGet_getListOfLanguages_videoWithManyLanguages() throws ServletException, IOException {
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("fzQ6gRAEoy0");
+
+    transcriptLanguageServlet.doGet(request, response);
+    List<TranscriptLanguage> actualTranscriptLines = transcriptLanguages(transcriptLanguages.toString());
+    assertThat(actualTranscriptLines.size()).isEqualTo(38);
   }
 
   @Test
   public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(TranscriptLanguageServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
     transcriptLanguageServlet.doGet(request, response);
@@ -121,50 +122,13 @@ public final class TranscriptLanguageServletTest {
 
     transcriptLanguageServlet.doGet(request, response);
 
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(transcriptLanguages.toString());
+    List<TranscriptLine> actualTranscriptLines = transcriptLanguages(transcriptLanguages.toString());
     assertThat(actualTranscriptLines.size()).isEqualTo(0);
   }
 
-  @Test
-  public void doGet_twoLecturesInDatastore_returnsOneLecture()
-      throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(TranscriptLanguageServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
-
-    transcriptLanguageServlet.doGet(request, response);
-
-    List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(transcriptLanguages.toString());
-    assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
-  }
-
-  private static List<TranscriptLine> transcriptLines(String transcriptLinesJson) {
+  private static List<TranscriptLanguage> transcriptLanguages(String transcriptLinesJson) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
-    return (ArrayList<TranscriptLine>) gson.fromJson(
-        transcriptLinesJson, (new ArrayList<List<TranscriptLine>>().getClass()));
-  }
-
-  private void putTranscriptLinesInDatastore(List<TranscriptLine> transcriptLines, Key lectureKey) {
-    for (int i = 0; i < transcriptLines.size(); i++) {
-      Entity lineEntity = TranscriptLineUtil.createEntity(lectureKey, "test content",
-          /* start= */ 0, /* duration= */ 0, /* end= */ 0);
-      datastore.put(lineEntity);
-    }
-  }
-
-  private int entitiesInDatastoreCount(long lectureId) {
-    // A limit of 100 for the maximum number of entities counted is used because
-    // we can assume that for this test datastore, there won't be more than 100 entities
-    // for a lecture key.
-    return datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureId))
-        .countEntities(withLimit(100));
-  }
-
-  private Query filteredQueryOfTranscriptLinesByLectureId(long lectureId) {
-    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    Filter lectureFilter =
-        new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
-    return new Query(TranscriptLineUtil.KIND).setFilter(lectureFilter);
+    return (ArrayList<TranscriptLanguage>) gson.fromJson(
+        transcriptLanguagesJson, (new ArrayList<List<TranscriptLanguage>>().getClass()));
   }
 }
