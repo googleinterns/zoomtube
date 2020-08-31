@@ -39,15 +39,18 @@ export default class DiscussionArea {
   #manager;
   #currentTimeMs;
   #nearestComments;
+  #transcriptSeeker;
 
   /**
-   * Creates a `DiscussionArea` for a `lecture`.
+   * Creates a `DiscussionArea` for a `lecture`
+   * with a `transcriptSeeker`.
    */
-  constructor(lecture) {
+  constructor(lecture, transcriptSeeker) {
     this.#lecture = lecture;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
+    this.#transcriptSeeker = transcriptSeeker;
   }
 
   /**
@@ -184,8 +187,7 @@ export default class DiscussionArea {
             .value;
     /* eslint-enable indent */
 
-    // TODO: Use TranscriptSeeker to send the correct transcript ID.
-    const currentTranscripLineId = '123';
+    const currentTranscripLineId = this.#transcriptSeeker.currentTranscriptLine();
 
     this.#manager
         .postRootComment(

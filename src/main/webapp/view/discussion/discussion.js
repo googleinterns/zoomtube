@@ -38,8 +38,8 @@ export let discussion;
 /**
  * Loads the lecture discussion.
  */
-export async function intializeDiscussion() {
-  discussion = new DiscussionArea(window.LECTURE);
+export async function intializeDiscussion(transcriptSeeker) {
+  discussion = new DiscussionArea(window.LECTURE, transcriptSeeker);
   discussion.initialize();
   // This is used as the `onclick` handler of the new comment area submit
   // button. It must be set after discussion is initialized.
