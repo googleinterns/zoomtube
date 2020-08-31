@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {ScrollContainer} from '../../scroll-container.js';
 import TranscriptSeeker from './transcript-seeker.js';
 import {TranscriptLineElement} from './transcript.js';
 
@@ -19,10 +20,15 @@ import {TranscriptLineElement} from './transcript.js';
 export default class TranscriptArea {
   static #ENDPOINT_TRANSCRIPT = '/transcript';
   static #TRANSCRIPT_CONTAINER = 'transcript-lines-container';
+  static #TRANSCRIPT_PARENT_CONTAINER = 'transcript-container';
+  static #transcriptContainer;
   static #PARAM_ID = 'id';
+  static #TRANSCRIPT_ERROR_MESSAGE =
+      'Sorry, there is no transcript available for this lecture recording. :(';
 
-  #transcriptSeeker;
+  #lecture
   #eventController;
+  #transcriptSeeker;
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -31,25 +37,51 @@ export default class TranscriptArea {
    * @param eventController An event controller object that
    *     that will be passed into a seekTranscript object.
    */
-  constructor(eventController) {
+  constructor(lecture, eventController) {
+    this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
-    // eventController as the parameter.
   }
 
   /**
-   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
+   * Adds event listener for seeking and initializes the transcript area by
+   * loading the transcript lines.
+   */
+  async initialize() {
+    this.#transcriptSeeker.addSeekingListener();
+    await this.loadTranscript();
+  }
+
+  /**
+   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`. If there
+   * are no transcript lines, an error message is displayed in the
+   * transcript container instead.
    *
-   * <p>This function assumes that the transcript lines have already
-   * been added to the datastore.
+   * <p>This function assumes that if there is a transcript for the
+   * current lecture, the lines have already been added to the datastore.
    */
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
+    url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
+    // No transcript lines are available for this lecture.
+    if (transcriptLines.length == 0) {
+      TranscriptArea.displayNoTranscriptMessage();
+      return;
+    }
     TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+  }
+
+  /**
+   * Displays a message in the transcript container if there is no
+   * transcript available for the lecture recording.
+   */
+  static displayNoTranscriptMessage() {
+    const transcriptContainer = TranscriptArea.transcriptScrollContainer();
+    transcriptContainer.innerText = TranscriptArea.#TRANSCRIPT_ERROR_MESSAGE;
+    transcriptContainer.classList.add('text-center');
   }
 
   /**
@@ -59,14 +91,7 @@ export default class TranscriptArea {
    * `loadTranscript()`.
    */
   static addTranscriptLinesToDom(transcriptLines) {
-    const transcriptContainer =
-        document.getElementById(TranscriptArea.#TRANSCRIPT_CONTAINER);
-    // Removes the transcript lines from the container if there are any.
-    // This prevents having multiple sets of ul tags every time the page
-    // is refreshed.
-    if (transcriptContainer.firstChild) {
-      transcriptContainer.removeChild(transcriptContainer.firstChild);
-    }
+    const transcriptContainer = TranscriptArea.transcriptScrollContainer();
     const ulElement = document.createElement('ul');
     // TODO: Move the class assignment to the HTML.
     ulElement.class = 'mx-auto';
@@ -76,6 +101,23 @@ export default class TranscriptArea {
           TranscriptLineElement.createTranscriptLineElement(transcriptLine));
     });
     $('.indicator').popover({trigger: 'hover'});
+  }
+
+  /**
+   * Returns the container storing the transcript.
+   *
+   * <p>If the container is undefined, a new ScrollContainer is
+   * created and returned.
+   */
+  static transcriptScrollContainer() {
+    if (this.#transcriptContainer == null) {
+      this.#transcriptContainer = new ScrollContainer();
+      this.#transcriptContainer.id = TranscriptArea.#TRANSCRIPT_CONTAINER;
+      const parentContainer =
+          document.getElementById(TranscriptArea.#TRANSCRIPT_PARENT_CONTAINER);
+      parentContainer.appendChild(this.#transcriptContainer);
+    }
+    return this.#transcriptContainer;
   }
 
   /**

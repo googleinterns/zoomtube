@@ -62,6 +62,8 @@ public final class LectureServletTest {
   private static final String TEST_NAME = "TestName";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=3ymwOvzhwHs";
   private static final String TEST_ID = "3ymwOvzhwHs";
+  private static final String NO_TRANSCRIPT_LINK = "https://www.youtube.com/watch?v=F6VnkwBBI1k";
+  private static final String NO_TRANSCRIPT_ID = "F6VnkwBBI1k";
 
   @Before
   public void setUp() throws ServletException, IOException {
@@ -115,6 +117,18 @@ public final class LectureServletTest {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(TEST_NAME, TEST_LINK, TEST_ID));
+
+    servlet.doPost(request, response);
+
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
+    verify(response).sendRedirect("/view/?id=1");
+  }
+
+  @Test
+  public void doPost_videoHasNoTranscript_shouldReturnLectureAnyways() throws Exception {
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(NO_TRANSCRIPT_LINK);
+    datastoreService.put(LectureUtil.createEntity(TEST_NAME, NO_TRANSCRIPT_LINK, NO_TRANSCRIPT_ID));
 
     servlet.doPost(request, response);
 
