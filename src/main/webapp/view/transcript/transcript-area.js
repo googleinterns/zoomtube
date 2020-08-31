@@ -31,7 +31,6 @@ export default class TranscriptArea {
   #transcriptSeeker;
   #lecture
   #eventController;
-  #transcriptSeeker;
 
 
   /**
