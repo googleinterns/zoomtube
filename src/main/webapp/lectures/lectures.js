@@ -59,9 +59,17 @@ function createLectureListItem(lecture) {
 }
 
 async function fetchTranscriptLanguages(inputElement) {
+  const languageSelectorDivElement =
+      document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
+  languageSelectorDivElement.innerHTML = '';
   const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES, window.location.origin);
   url.searchParams.append(inputElement.name, inputElement.value);
-  const languagesResponse = await fetch(url);
+  let languagesResponse;
+  try {
+    languagesResponse = await fetch(url);
+  } catch(error) {
+    return;
+  }
   const languagesJson = await languagesResponse.json();
   displayLanguages(languagesJson);
 }
@@ -69,7 +77,6 @@ async function fetchTranscriptLanguages(inputElement) {
 function displayLanguages(languages) {
   const languageSelectorDivElement =
       document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
-  languageSelectorDivElement.innerHTML = '';
   if (languages.length == 0) {
     languageSelectorDivElement.innerText = NO_LANGUAGES_AVAILABLE_MESSAGE;
     return;
