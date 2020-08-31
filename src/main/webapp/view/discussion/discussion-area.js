@@ -219,7 +219,9 @@ export default class DiscussionArea {
         this.#transcriptSeeker.currentTranscriptLine();
 
     this.#manager
-        .postRootComment(commentContent, commentTimestampMs, commentType, currentTranscripLineId)
+        .postRootComment(
+            commentContent, commentTimestampMs, commentType,
+            currentTranscripLineId)
         .then(() => {
           this.updateDiscussion();
         });
