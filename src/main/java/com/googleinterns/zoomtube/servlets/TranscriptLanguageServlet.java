@@ -42,17 +42,8 @@ import org.apache.http.client.utils.URIBuilder;
 
 /** Provides information on a lecture. */
 public class TranscriptLanguageServlet extends HttpServlet {
-  /* Used to generate a Pattern for a Video URL. */
-  private static final String YOUTUBE_VIDEO_URL_PATTERN =
-      "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|"
-      + "watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|"
-      + "embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
-  private static final String ERROR_MISSING_NAME = "Missing name parameter.";
   private static final String ERROR_MISSING_LINK = "Missing link parameter.";
-  private static final String ERROR_MISSING_ID = "Missing id parameter.";
   private static final String ERROR_INVALID_LINK = "Invalid video link.";
-  private static final String ERROR_LECTURE_NOT_FOUND = "Lecture not found in database.";
-  private static final String REDIRECT_URL = "/view/";
 
   /* Name of input field used for lecture name in lecture selection page. */
   @VisibleForTesting static final String PARAM_NAME = "name-input";
@@ -72,6 +63,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
     String videoUrl = request.getParameter(PARAM_LINK);
     Optional<String> videoId = LectureServlet.getVideoId(videoUrl);
     if (!videoId.isPresent()) {
+      // TODO: Display a message in the client.
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_INVALID_LINK);
       return;
     }
@@ -80,7 +72,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
 
   private Optional<String> validateGetRequest(HttpServletRequest request) {
     if (request.getParameter(PARAM_LINK) == null) {
-      return Optional.of(ERROR_MISSING_ID);
+      return Optional.of(ERROR_MISSING_LINK);
     }
     return Optional.empty();
   }
