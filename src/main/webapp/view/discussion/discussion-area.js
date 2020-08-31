@@ -187,7 +187,8 @@ export default class DiscussionArea {
             .value;
     /* eslint-enable indent */
 
-    const currentTranscripLineId = this.#transcriptSeeker.currentTranscriptLine();
+    const currentTranscripLineId =
+        this.#transcriptSeeker.currentTranscriptLine();
 
     this.#manager
         .postRootComment(
