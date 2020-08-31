@@ -100,7 +100,8 @@ export default class DiscussionManager {
   }
 
   /**
-   * Posts `content` as a reply to `parentId` with the specified `transcriptLineId`.
+   * Posts `content` as a reply to `parentId` with the specified
+   * `transcriptLineId`.
    */
   async postReply(content, parentId, transcriptLineId) {
     await this.postComment(content, {
