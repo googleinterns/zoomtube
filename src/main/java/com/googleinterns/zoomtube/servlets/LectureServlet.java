@@ -159,7 +159,6 @@ public class LectureServlet extends HttpServlet {
     return Optional.ofNullable(results.asSingleEntity());
   }
 
-  @VisibleForTesting
   /** Returns YouTube video ID for a given {@code videoUrl}. */
   // TODO: Move this function to a Utils class.
   public static Optional<String> getVideoId(String videoUrl) {
