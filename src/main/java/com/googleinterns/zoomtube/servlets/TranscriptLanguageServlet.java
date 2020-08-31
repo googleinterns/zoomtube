@@ -35,12 +35,15 @@ import org.w3c.dom.NodeList;
 
 /** Provides information on a lecture. */
 public class TranscriptLanguageServlet extends HttpServlet {
+  /* Properties of the API Url. */
   private static final String API_URL = "http://video.google.com/timedtext";
   private static final String API_PARAM_TYPE = "type";
   private static final String API_TYPE_LIST = "list";
   private static final String API_PARAM_VIDEO = "v";
+  /* Error messages for missing or invalid video link. */
   private static final String ERROR_MISSING_LINK = "Missing link parameter.";
   private static final String ERROR_INVALID_LINK = "Invalid video link.";
+  /* Attributes for parsing the XML. */
   private static final String TAG_TRACK = "track";
   private static final String ATTR_LANG_CODE = "lang_code";
   private static final String ATTR_NAME = "name";
@@ -73,6 +76,10 @@ public class TranscriptLanguageServlet extends HttpServlet {
     writeTranscriptLanguages(response, transcriptLanguages);
   }
 
+  /**
+   * Returns {@code Optional.empty()} if the video link is not missing. Else,
+   * returns an Optional containing an error message if it is.
+   */
   private Optional<String> validateGetRequest(HttpServletRequest request) {
     if (request.getParameter(PARAM_LINK) == null) {
       return Optional.of(ERROR_MISSING_LINK);
@@ -80,6 +87,10 @@ public class TranscriptLanguageServlet extends HttpServlet {
     return Optional.empty();
   }
 
+  /**
+   * Returns the API Url used to fetch the list of transcript language options
+   * for {@code videoId}.
+   */
   private URL getTranscriptLanguagesUrlForVideo(String videoId) throws IOException {
     try {
       URIBuilder urlBuilder = new URIBuilder(API_URL);
@@ -91,6 +102,10 @@ public class TranscriptLanguageServlet extends HttpServlet {
     }
   }
 
+  /**
+   * Returns the API Url used to fetch the list of transcript language options
+   * for {@code videoId}.
+   */
   private ImmutableList<TranscriptLanguage> parseTranscriptLanguages(Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
     ImmutableList.Builder<TranscriptLanguage> transcriptLanguagesBuilder =
@@ -102,10 +117,10 @@ public class TranscriptLanguageServlet extends HttpServlet {
     return transcriptLanguagesBuilder.build();
   }
 
-  private TranscriptLanguage createTranscriptLanguageFromElement(Element transcriptLineElement) {
-    String languageName = transcriptLineElement.getAttribute(ATTR_NAME);
-    String languageCode = transcriptLineElement.getAttribute(ATTR_LANG_CODE);
-    String languageTranslatedName = transcriptLineElement.getAttribute(ATTR_LANG_TRANSLATED);
+  private TranscriptLanguage createTranscriptLanguageFromElement(Element transcriptLanguageElement) {
+    String languageName = transcriptLanguageElement.getAttribute(ATTR_NAME);
+    String languageCode = transcriptLanguageElement.getAttribute(ATTR_LANG_CODE);
+    String languageTranslatedName = transcriptLanguageElement.getAttribute(ATTR_LANG_TRANSLATED);
     return TranscriptLanguage.builder()
         .setLanguageName(languageName)
         .setLanguageCode(languageCode)
