@@ -17,6 +17,7 @@ import ParsedIconFeedback from './parsed-icon-feedback.js';
 export default class LoadIconFeedback {
   static #ENDPOINT_FEEDBACK = '/icon-feedback';
   static #PARAM_LECTURE_ID = 'lectureId';
+  static #INCREMENT_INTERVAL = 10000;
 
   #lectureId;
   #parsedIconFeedback;
@@ -45,21 +46,26 @@ export default class LoadIconFeedback {
     console.log(this.#parsedIconFeedback);
   }
 
-  parseFeedback(jsonData) {
+  /**
+   * Parses `iconFeedbackJson` by couting how many times each IconFeedback type
+   * is clicked in each 10 second interval and stores that data in a
+   * ParseIconFeedback object.
+   */
+  parseFeedback(iconFeedbackJson) {
     let index = 0;
     let interval = 0;
-    while (index < jsonData.length) {
+    while (index < iconFeedbackJson.length) {
       let goodCount = 0;
       let badCount = 0;
       let tooFastCount = 0;
       let tooSlowCount = 0;
-      while (index < jsonData.length &&
-             jsonData[index].timestampMs < interval) {
-        if (jsonData[index].type == 'GOOD') {
+      while (index < iconFeedbackJson.length &&
+             iconFeedbackJson[index].timestampMs < interval) {
+        if (iconFeedbackJson[index].type == 'GOOD') {
           goodCount++;
-        } else if (jsonData[index].type == 'BAD') {
+        } else if (iconFeedbackJson[index].type == 'BAD') {
           badCount++;
-        } else if (jsonData[index].type == 'TOO_FAST') {
+        } else if (iconFeedbackJson[index].type == 'TOO_FAST') {
           tooFastCount++;
         } else {
           tooSlowCount++;
@@ -70,8 +76,9 @@ export default class LoadIconFeedback {
       this.#parsedIconFeedback.appendBadCount(badCount);
       this.#parsedIconFeedback.appendTooFastCount(tooFastCount);
       this.#parsedIconFeedback.appendTooSlowCount(tooSlowCount);
+      // TODO: Use timestamp to seconds function here.
       this.#parsedIconFeedback.appendInterval(interval / 1000);
-      interval += 10000;
+      interval += LoadIconFeedback.#INCREMENT_INTERVAL;
     }
   }
 }
