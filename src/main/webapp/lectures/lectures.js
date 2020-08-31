@@ -62,13 +62,19 @@ function fetchTranscriptLanguages(inputElement) {
   // TODO: Handle displaying the languages in the form
 }
 
-function displayLanguages(languagesJson) {
+function displayLanguages(languages) {
   const languageSelectorDivElement = document.getElementById('language-selector');
-  if (languagesJson.length == 0) {
+  if (languages.length == 0) {
     languageSelectorDivElement.innerText = "Sorry, there is no transcript available for this lecture.";
+    return;
   }
   const languageSelectElement = document.createElement('select');
   languageSelectorDivElement.appendChild(languageSelectElement);
 
-  return
+  for (const language of languages) {
+    const languageOptionElement = document.createElement('option');
+    languageOptionElement.value = language.languageCode;
+    languageOptionElement.innerText = language.languageTranslatedName;
+    languageSelectElement.appendChild(languageOptionElement);
+  }
 }
