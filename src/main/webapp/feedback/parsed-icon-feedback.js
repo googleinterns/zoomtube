@@ -26,8 +26,8 @@ export default class ParsedIconFeedback {
   }
 
   /**
-     Appends each value in `typeCountsAndInterval` to it's respective
-     dictionary value.
+   * Appends each value in `typeCountsAndInterval` to it's respective
+   * dictionary value.
    */
   appendTypeCountsAndInterval(typeCountsAndInterval) {
     for (const type in typeCountsAndInterval) {
