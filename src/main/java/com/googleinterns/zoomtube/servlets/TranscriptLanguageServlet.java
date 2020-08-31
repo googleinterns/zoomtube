@@ -30,7 +30,9 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,8 +41,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
-import java.net.URISyntaxException;
-import java.net.URL;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /** Provides information on a lecture. */
 public class TranscriptLanguageServlet extends HttpServlet {
@@ -75,8 +78,9 @@ public class TranscriptLanguageServlet extends HttpServlet {
       return;
     }
 
-    Url transcriptLanguagesUrl = getTranscriptLanguagesUrlForVideo(videoId);
-
+    URL transcriptLanguagesUrl = getTranscriptLanguagesUrlForVideo(videoId.get());
+    Document transcriptLanguagesDocument =
+        TranscriptParser.fetchUrlAsXmlDocument(transcriptLanguagesUrl);
   }
 
   private Optional<String> validateGetRequest(HttpServletRequest request) {

@@ -84,6 +84,7 @@ public final class TranscriptParser {
    * <p>This method is called from the {@code LectureServlet} upon adding a lecture to
    * datastore.
    */
+  // TODO: Move this to a Utils method.
   public void parseAndStoreTranscript(String videoId, Key lectureKey) throws IOException {
     URL url = getTranscriptUrlForVideo(videoId);
     Document document = fetchUrlAsXmlDocument(url);
@@ -107,7 +108,7 @@ public final class TranscriptParser {
    * @param url Indicates the url to fetch and parse.
    * @throws IOException if there is an error parsing the transcript.
    */
-  private Document fetchUrlAsXmlDocument(URL url) throws IOException {
+  public static Document fetchUrlAsXmlDocument(URL url) throws IOException {
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       Document document = documentBuilder.parse(url.openStream());
