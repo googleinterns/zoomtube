@@ -19,7 +19,7 @@
 <script type="module" src="/view/transcript/transcript.js" defer></script>
 <script type="module" src="../feedback/icon-feedback.js" defer></script>
 <script type="module" src="../event-controller.js" defer></script>
-<script type="module" src="/view/view.js" defer></script>
+<script type="module" src="/view/lecture-view.js" defer></script>
 
 <body>
   <nav class="navbar navbar-light">
@@ -60,7 +60,6 @@
           </button>
         </div>
       </div>
-      <div class="container" id="discussion-comments"></div>
     </div>
   </div>
 </body>
@@ -88,6 +87,7 @@
         </div>
       </div>
       <div class="replies">
+        <slot name="replies"></slot>
         <div id="reply-form" class="collapse">
           <textarea class="form-control" id="reply-textarea" rows="3"></textarea>
           <div class="actions-bar">
@@ -95,7 +95,6 @@
             <button class="zt-btn btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post Reply</button>
           </div>
         </div>
-        <slot name="replies"></slot>
       </div>
     </div>
   </div>

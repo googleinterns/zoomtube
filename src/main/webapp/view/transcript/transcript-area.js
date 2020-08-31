@@ -23,9 +23,12 @@ export default class TranscriptArea {
   static #TRANSCRIPT_PARENT_CONTAINER = 'transcript-container';
   static #transcriptContainer;
   static #PARAM_ID = 'id';
+  static #TRANSCRIPT_ERROR_MESSAGE =
+      'Sorry, there is no transcript available for this lecture recording. :(';
 
-  #transcriptSeeker;
+  #lecture
   #eventController;
+  #transcriptSeeker;
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -34,25 +37,51 @@ export default class TranscriptArea {
    * @param eventController An event controller object that
    *     that will be passed into a seekTranscript object.
    */
-  constructor(eventController) {
+  constructor(lecture, eventController) {
+    this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
-    // eventController as the parameter.
   }
 
   /**
-   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
+   * Adds event listener for seeking and initializes the transcript area by
+   * loading the transcript lines.
+   */
+  async initialize() {
+    this.#transcriptSeeker.addSeekingListener();
+    await this.loadTranscript();
+  }
+
+  /**
+   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`. If there
+   * are no transcript lines, an error message is displayed in the
+   * transcript container instead.
    *
-   * <p>This function assumes that the transcript lines have already
-   * been added to the datastore.
+   * <p>This function assumes that if there is a transcript for the
+   * current lecture, the lines have already been added to the datastore.
    */
   async loadTranscript() {
     const url =
         new URL(TranscriptArea.#ENDPOINT_TRANSCRIPT, window.location.origin);
-    url.searchParams.append(TranscriptArea.#PARAM_ID, window.LECTURE_ID);
+    url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
+    // No transcript lines are available for this lecture.
+    if (transcriptLines.length == 0) {
+      TranscriptArea.displayNoTranscriptMessage();
+      return;
+    }
     TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+  }
+
+  /**
+   * Displays a message in the transcript container if there is no
+   * transcript available for the lecture recording.
+   */
+  static displayNoTranscriptMessage() {
+    const transcriptContainer = TranscriptArea.transcriptScrollContainer();
+    transcriptContainer.innerText = TranscriptArea.#TRANSCRIPT_ERROR_MESSAGE;
+    transcriptContainer.classList.add('text-center');
   }
 
   /**
