@@ -81,7 +81,6 @@ public abstract class Comment {
     public abstract Builder setParentKey(Optional<Key> parentKey);
     public abstract Builder setTimestampMs(long timestampMs);
     public abstract Builder setTimestampMs(Optional<Long> timestampMs);
-    public abstract Builder setTranscriptLineKey(Key transcriptLineKey);
     public abstract Builder setTranscriptLineKey(Optional<Key> transcriptLineKey);
     public abstract Builder setAuthor(User author);
     public abstract Builder setContent(String content);
