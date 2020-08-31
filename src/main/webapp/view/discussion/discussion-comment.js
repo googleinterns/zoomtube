@@ -15,7 +15,7 @@
 import {timestampToString} from '../../timestamps.js';
 
 import {ELEMENT_DISCUSSION} from './discussion-area.js';
-import {COMMENT_TYPE_NOTE, COMMENT_TYPE_REPLY} from './discussion.js';
+import {COMMENT_TYPE_REPLY} from './discussion.js';
 import {COMMENT_TYPES} from './discussion.js';
 
 /**
@@ -71,6 +71,7 @@ export default class DiscussionComment extends HTMLElement {
         DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
     this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
     this.setTypeTag(comment.type);
+    this.setMarkAsButton(comment.type);
   }
 
   /**
@@ -160,10 +161,7 @@ export default class DiscussionComment extends HTMLElement {
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
    */
   setTypeTag(type) {
-    const markAsButton = this.shadowRoot.querySelector(
-        DiscussionComment.#SELECTOR_MARK_AS_BUTTON);
     if (type === COMMENT_TYPE_REPLY) {
-      markAsButton.style.visibility = 'hidden';
       return;
     }
 
@@ -172,7 +170,16 @@ export default class DiscussionComment extends HTMLElement {
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
     typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
     this.appendChild(typePill);
-    if (type === COMMENT_TYPE_NOTE) {
+  }
+
+  /**
+   * Sets the text and onclick event for the mark as button according to
+   * the comment's `type`.
+   */
+  setMarkAsButton(type) {
+    const markAsButton = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_MARK_AS_BUTTON);
+    if (!COMMENT_TYPES[type].hasMarkAs) {
       markAsButton.style.visibility = 'hidden';
       return;
     }
