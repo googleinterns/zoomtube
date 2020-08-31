@@ -53,7 +53,7 @@ function createLectureListItem(lecture) {
   return lectureLink;
 }
 
-function fetchTranscriptLanguages(inputElement) {
+async function fetchTranscriptLanguages(inputElement) {
   const url = new URL('/transcript-language');
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
