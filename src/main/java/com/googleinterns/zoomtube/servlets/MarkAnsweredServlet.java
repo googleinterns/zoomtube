@@ -94,7 +94,7 @@ public class MarkAnsweredServlet extends HttpServlet {
 
   /**
    * Updates the question-type comment specified by `commentKey` to `newType`.  Returns
-   * {@Optional.empty()} if there were no errors, otherwise returns an error message.
+   * {@code Optional.empty()} if there were no errors, otherwise returns an error message.
    */
   private Optional<String> updateCommentType(Key commentKey, Comment.Type newType) {
     if (!isQuestionType(newType)) {
