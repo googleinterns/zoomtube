@@ -76,7 +76,7 @@ function displayLanguages(languages) {
   const defaultLanguageOptionElement = document.createElement('option');
   defaultLanguageOptionElement.disabled = true;
   defaultLanguageOptionElement.selected = true;
-  defaultLanguageOptionElement.innerText = "Select the language for the transcript."
+  defaultLanguageOptionElement.innerText = 'Select the language for the transcript.';
   for (const language of languages) {
     const languageOptionElement = document.createElement('option');
     languageOptionElement.value = language.languageCode;
