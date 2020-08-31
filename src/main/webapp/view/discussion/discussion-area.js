@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {ScrollContainer} from '../../scroll-container.js';
-import {timestampToString} from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_REPLY} from './discussion.js';
@@ -41,18 +41,21 @@ export default class DiscussionArea {
   #manager;
   #currentTimeMs;
   #nearestComments;
+  #transcriptSeeker;
   #scrollContainer;
   #discussionCommentsDiv;
 
   /**
-   * Creates a `DiscussionArea` for a `lecture`.
+   * Creates a `DiscussionArea` for a `lecture`
+   * with a `transcriptSeeker`.
    */
-  constructor(lecture, eventController) {
+  constructor(lecture, eventController, transcriptSeeker) {
     this.#lecture = lecture;
     this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
+    this.#transcriptSeeker = transcriptSeeker;
   }
 
   /**
@@ -200,7 +203,7 @@ export default class DiscussionArea {
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
-        timestampToString(timeMs);
+        TimestampUtil.timestampToString(timeMs);
 
     this.unhightlightNearestComments();
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
@@ -223,8 +226,13 @@ export default class DiscussionArea {
             .value;
     /* eslint-enable indent */
 
+    const currentTranscripLineId =
+        this.#transcriptSeeker.currentTranscriptLine();
+
     this.#manager
-        .postRootComment(commentContent, commentTimestampMs, commentType)
+        .postRootComment(
+            commentContent, commentTimestampMs, commentType,
+            currentTranscripLineId)
         .then(() => {
           this.updateDiscussion();
         });

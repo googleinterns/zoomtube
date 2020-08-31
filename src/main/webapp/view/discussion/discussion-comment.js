@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {timestampToString} from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 
 /**
@@ -107,8 +107,9 @@ export default class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (this.comment.type !== COMMENT_TYPE_REPLY) {
       // Don't show timestamp on replies.
-      timestampPrefix =
-          `${timestampToString(this.comment.timestampMs.value)} - `;
+      const timestampString =
+          TimestampUtil.timestampToString(this.comment.timestampMs.value);
+      timestampPrefix = `${timestampString} - `;
     }
     return `${timestampPrefix}${username} on ${this.comment.created}`;
   }
@@ -147,7 +148,9 @@ export default class DiscussionComment extends HTMLElement {
   postReplyClicked() {
     const textarea = this.shadowRoot.querySelector(
         DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
-    this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
+    this.#discussion.postReply(
+        textarea.value, this.comment.commentKey.id,
+        this.comment.transcriptLineKey.id);
 
     textarea.value = '';
     const replyForm =
