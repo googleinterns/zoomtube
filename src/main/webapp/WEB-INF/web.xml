@@ -55,7 +55,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>transcript-language</servlet-name>
-    <url-pattern>/lang</url-pattern>
+    <url-pattern>/transcript-language</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>icon-feedback</servlet-name>
