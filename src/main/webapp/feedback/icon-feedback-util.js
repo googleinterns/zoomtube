@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Contains conts related to IconFeedback. */
+/** Contains counts related to IconFeedback. */
 export default class IconFeedbackUtil {
   static TYPE_GOOD = 'GOOD';
   static TYPE_BAD = 'BAD';
