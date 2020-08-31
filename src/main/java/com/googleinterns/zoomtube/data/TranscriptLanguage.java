@@ -17,7 +17,7 @@ package com.googleinterns.zoomtube.data;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
-/** Contains data pertaining to a single line of transcript. */
+/** Contains data pertaining to a single transcript language. */
 @GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLanguage {
@@ -31,14 +31,14 @@ public abstract class TranscriptLanguage {
   public abstract String languageTranslatedName();
 
   /**
-   * Returns a builder instance that can be used to create TranscriptLines.
+   * Returns a builder instance that can be used to create TranscriptLanguages.
    */
   public static Builder builder() {
     return new AutoValue_TranscriptLanguage.Builder();
   }
 
   /**
-   * Returns a builder instance that can be used to create TranscriptLines.
+   * Returns a builder instance that can be used to create TranscriptLanguages.
    */
   @AutoValue.Builder
   public abstract static class Builder {
