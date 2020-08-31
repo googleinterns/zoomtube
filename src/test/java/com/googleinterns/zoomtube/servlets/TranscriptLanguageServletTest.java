@@ -79,8 +79,9 @@ public final class TranscriptLanguageServletTest {
   @Test
   public void doGet_getListOfLanguages_videoWithManyLanguages()
       throws ServletException, IOException {
+    String videoWithManyLanguageOptions = "https://www.youtube.com/watch?v=fzQ6gRAEoy0";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
-        .thenReturn("https://www.youtube.com/watch?v=fzQ6gRAEoy0");
+        .thenReturn(videoWithManyLanguageOptions);
 
     transcriptLanguageServlet.doGet(request, response);
 
@@ -91,8 +92,9 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithNoLanguages() throws ServletException, IOException {
+    String videoWithNoLanguageOptions = "https://www.youtube.com/watch?v=QJO3ROT-A4E";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
-        .thenReturn("https://www.youtube.com/watch?v=QJO3ROT-A4E");
+        .thenReturn(videoWithNoLanguageOptions);
 
     transcriptLanguageServlet.doGet(request, response);
 
@@ -104,8 +106,9 @@ public final class TranscriptLanguageServletTest {
   @Test
   public void doGet_getListOfLanguages_videoWithOnlyOneLanguage()
       throws ServletException, IOException {
+    String videoWithOnlyOneLanguage = "https://www.youtube.com/watch?v=9DwzBICPhdM";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
-        .thenReturn("https://www.youtube.com/watch?v=9DwzBICPhdM");
+        .thenReturn(videoWithOnlyOneLanguage);
 
     transcriptLanguageServlet.doGet(request, response);
 
