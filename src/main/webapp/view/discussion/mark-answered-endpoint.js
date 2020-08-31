@@ -17,7 +17,6 @@
 import {COMMENT_TYPE_QUESTION_ANSWERED} from './discussion.js';
 import {COMMENT_TYPE_QUESTION_UNANSWERED} from './discussion.js';
 
-
 /*
  * Provides static utility methods for marking comments as answered or
  * unanswered.

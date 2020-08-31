@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import {timestampToString} from '../../timestamps.js';
-
 import {ELEMENT_DISCUSSION} from './discussion-area.js';
 import {COMMENT_TYPE_REPLY} from './discussion.js';
 import {COMMENT_TYPES} from './discussion.js';
