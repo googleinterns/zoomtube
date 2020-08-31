@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import TimestampUtil from '../timestamp-util.js';
+import IconFeedbackUtil from './icon-feedback-util.js';
 import ParsedIconFeedback from './parsed-icon-feedback.js';
 
+/* Handles loading IconFeedback from database and parses data for graph. */
 export default class LoadIconFeedback {
   static #ENDPOINT_FEEDBACK = '/icon-feedback';
   static #PARAM_LECTURE_ID = 'lectureId';
-  static #INCREMENT_INTERVAL = 10000;
+
+  /* Each interval is 10 seconds, used to increment interval. */
+  static #INCREMENT_INTERVAL_MS = 10000;
 
   #lectureId;
   #parsedIconFeedback;
@@ -32,7 +37,7 @@ export default class LoadIconFeedback {
   }
 
   /**
-   * Fetches avaiable IconFeedback from `ENDPOINT_FEEDBACK`
+   * Fetches available IconFeedback from `ENDPOINT_FEEDBACK`
    * and parses the data for it to be graphed.
    */
   async loadIconFeedbackList() {
@@ -53,34 +58,35 @@ export default class LoadIconFeedback {
    * ParseIconFeedback object.
    */
   parseFeedback(iconFeedbackJson) {
-    let index = 0;
-    let interval = 0;
-    while (index < iconFeedbackJson.length) {
-      let goodCount = 0;
-      let badCount = 0;
-      let tooFastCount = 0;
-      let tooSlowCount = 0;
-      while (index < iconFeedbackJson.length &&
-             iconFeedbackJson[index].timestampMs < interval) {
-        if (iconFeedbackJson[index].type == 'GOOD') {
-          goodCount++;
-        } else if (iconFeedbackJson[index].type == 'BAD') {
-          badCount++;
-        } else if (iconFeedbackJson[index].type == 'TOO_FAST') {
-          tooFastCount++;
-        } else {
-          tooSlowCount++;
-        }
-        index++;
+    let intervalLowerBound = 0;
+    let typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
+    for (const iconFeedback of iconFeedbackJson) {
+      if (intervalLowerBound < iconFeedback.timestampMs) {
+        this.#parsedIconFeedback.appendTypeCountsAndInterval(
+            typeCountsAndInterval);
+        intervalLowerBound += LoadIconFeedback.#INCREMENT_INTERVAL_MS;
+        typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
+      } else {
+        const type = iconFeedback.type;
+        typeCountsAndInterval[type]++;
       }
-      this.#parsedIconFeedback.appendGoodCount(goodCount);
-      this.#parsedIconFeedback.appendBadCount(badCount);
-      this.#parsedIconFeedback.appendTooFastCount(tooFastCount);
-      this.#parsedIconFeedback.appendTooSlowCount(tooSlowCount);
-      // TODO: Use timestamp util function here once in master.
-      this.#parsedIconFeedback.appendInterval(interval / 1000);
-      interval += LoadIconFeedback.#INCREMENT_INTERVAL;
     }
+    this.#parsedIconFeedback.appendTypeCountsAndInterval(typeCountsAndInterval);
+  }
+
+  /**
+   * Returns a dictionary mapping each icon type to a value which represents
+   * how many times that icon was clicked in an `intervalLowerBound`.
+   */
+  makeCountDictionary(intervalLowerBound) {
+    return {
+      [IconFeedbackUtil.TYPE_GOOD]: 0,
+      [IconFeedbackUtil.TYPE_BAD]: 0,
+      [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
+      [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
+      [IconFeedbackUtil.INTERVAL]:
+          TimestampUtil.millisecondsToSeconds(intervalLowerBound),
+    };
   }
 
   makeGraph(parsedData) {

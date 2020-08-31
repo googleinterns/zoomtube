@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import Synchronizer from '../../synchronizer.js';
-import {secondsToMilliseconds} from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 
 const SCRIPT = 'script';
 
@@ -21,9 +21,12 @@ const SCRIPT = 'script';
 export default class Video {
   #lecture;
   #synchronizer;
+  #eventController;
+  #videoPlayer
 
   constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
     this.#synchronizer = new Synchronizer(eventController);
   }
 
@@ -43,7 +46,7 @@ export default class Video {
    */
   // TODO: Support dynamic video height and width.
   onYouTubeIframeAPIReady() {
-    this.videoPlayer = new window.YT.Player('player', {
+    this.#videoPlayer = new window.YT.Player('player', {
       height: '390',
       width: '640',
       videoId: this.#lecture.videoId,
@@ -55,19 +58,32 @@ export default class Video {
 
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
+    this.addSeekingListener();
     event.target.playVideo();
     this.#synchronizer.startVideoSyncTimer(
         this.getCurrentVideoTimeMs.bind(this));
   }
 
-  /** Returns current video time of 'videoPlayer' in milliseconds. */
-  getCurrentVideoTimeMs() {
-    return secondsToMilliseconds(this.videoPlayer.getCurrentTime());
+  /**
+   * Adds event listener allowing seeking video
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timeMs) => {
+      this.seek(timeMs);
+    }, 'seekAll');
   }
 
-  /** Seeks video to `currentTime`. */
-  seekVideo(timeMs) {
-    // TODO: Removed and implement.
-    console.log('SEEKING VIDEO TO: ' + timeMs);
+  /** Seeks video to `timeMs`. */
+  seek(timeMs) {
+    this.#videoPlayer.seekTo(
+        TimestampUtil.millisecondsToSeconds(timeMs),
+        /* allowSeekAhead= */ true);
+  }
+
+  /** Returns current video time in milliseconds. */
+  getCurrentVideoTimeMs() {
+    return TimestampUtil.secondsToMilliseconds(
+        this.#videoPlayer.getCurrentTime());
   }
 }

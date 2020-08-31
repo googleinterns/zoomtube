@@ -12,56 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import IconFeedbackUtil from './icon-feedback-util.js';
+
 /** Stores parsed icon feedback data. */
 export default class ParsedIconFeedback {
-  /* Each index of these represents the number of IconFeedbacks for that
-   * icon type during that 10 seconds interval.
+  /* Values of each icon feedback type at each interval. */
+  #counts = {
+    [IconFeedbackUtil.TYPE_GOOD]: [],
+    [IconFeedbackUtil.TYPE_BAD]: [],
+    [IconFeedbackUtil.TYPE_TOO_FAST]: [],
+    [IconFeedbackUtil.TYPE_TOO_SLOW]: [],
+    [IconFeedbackUtil.INTERVAL]: [],
+  }
+
+  /**
+   * Appends each value in `typeCountsAndInterval` to it's respective
+   * dictionary value.
    */
-  #goodCounts = [];
-  #badCounts = [];
-  #tooFastCounts = [];
-  #tooSlowCounts = [];
-
-  /* Each index of this represents a point on the horizontal axis of graph. */
-  #intervals = [];
-
-  appendGoodCount(goodCount) {
-    this.#goodCounts.push(goodCount);
+  appendTypeCountsAndInterval(typeCountsAndInterval) {
+    for (const type in typeCountsAndInterval) {
+      if (Object.prototype.hasOwnProperty.call(typeCountsAndInterval, type)) {
+        this.#counts[type].push(typeCountsAndInterval[type]);
+      }
+    }
   }
 
-  appendBadCount(badCount) {
-    this.#badCounts.push(badCount);
-  }
-
-  appendTooFastCount(tooFastCount) {
-    this.#tooFastCounts.push(tooFastCount);
-  }
-
-  appendTooSlowCount(tooSlowCount) {
-    this.#tooSlowCounts.push(tooSlowCount);
-  }
-
-  appendInterval(interval) {
-    this.#intervals.push(interval);
-  }
-
-  getGoodCounts() {
-    return this.#goodCounts;
-  }
-
-  getBadCounts() {
-    return this.#badCounts;
-  }
-
-  getTooFastCounts() {
-    return this.#tooFastCounts;
-  }
-
-  getTooSlowCounts() {
-    return this.#tooSlowCounts;
-  }
-
-  getInterval() {
-    return this.#intervals;
+  getCounts() {
+    return this.#counts;
   }
 }

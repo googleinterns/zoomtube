@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.Comment;
 import com.googleinterns.zoomtube.utils.CommentUtil;
 import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,6 +78,7 @@ public class DiscussionServletTest {
   public void doPost_loggedOut_postForbidden() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(false);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.REPLY.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
@@ -103,6 +106,7 @@ public class DiscussionServletTest {
   public void doPost_missingType_badRequest() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
 
     servlet.doPost(request, response);
@@ -115,6 +119,7 @@ public class DiscussionServletTest {
   public void doPost_missingReplyParent_badRequest() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.REPLY.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
@@ -129,6 +134,7 @@ public class DiscussionServletTest {
   public void doPost_missingRootTimestamp_badRequest() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.QUESTION.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
@@ -140,7 +146,8 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_reply_storesCommentWithAllProperties() throws ServletException, IOException {
+  public void doPost_reply_storesCommentWithNoTranscriptLine()
+      throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
@@ -153,9 +160,29 @@ public class DiscussionServletTest {
 
     verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);
     PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
+    Comment comment = CommentUtil.createComment(query.asSingleEntity());
+    assertThat(comment.transcriptLineKey().isPresent()).isFalse();
+  }
+
+  @Test
+  public void doPost_reply_storesCommentWithAllProperties() throws ServletException, IOException {
+    testServices.setEnvIsLoggedIn(true);
+    testServices.setEnvEmail("author@example.com");
+    when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
+    when(request.getParameter(DiscussionServlet.PARAM_TYPE))
+        .thenReturn(Comment.Type.REPLY.toString());
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
+    when(request.getParameter(DiscussionServlet.PARAM_PARENT)).thenReturn("456");
+
+    servlet.doPost(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);
+    PreparedQuery query = datastore.prepare(new Query(CommentUtil.KIND));
     assertThat(query.countEntities(withLimit(2))).isEqualTo(1);
     Comment comment = CommentUtil.createComment(query.asSingleEntity());
     assertThat(comment.lectureKey().getId()).isEqualTo(LECTURE_ID);
+    assertThat(comment.transcriptLineKey().get().getId()).isEqualTo(789);
     assertThat(comment.author().getEmail()).isEqualTo("author@example.com");
     assertThat(comment.content()).isEqualTo("Something unique");
     assertThat(comment.parentKey().get().getId()).isEqualTo(456);
@@ -166,6 +193,7 @@ public class DiscussionServletTest {
   public void doPost_reply_storesCommentWithParent() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.REPLY.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Something unique")));
@@ -184,6 +212,7 @@ public class DiscussionServletTest {
   public void doPost_rootComment_storesTypeAndTimestamp() throws ServletException, IOException {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
+    when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP)).thenReturn("2000");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
         .thenReturn(Comment.Type.QUESTION.toString());
@@ -270,10 +299,13 @@ public class DiscussionServletTest {
 
   private Entity createTestCommentEntity(int lectureId) {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    Optional<Key> transcriptLineKey =
+        Optional.of(KeyFactory.createKey(TranscriptLineUtil.KIND, /* id= */ 4567));
     User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     Date dateNow = new Date();
 
-    return CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, author,
+    return CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, transcriptLineKey,
+        author,
         /* content= */ "Untested comment content", dateNow, Comment.Type.QUESTION);
   }
 
