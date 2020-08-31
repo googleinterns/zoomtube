@@ -98,8 +98,9 @@ public final class TranscriptLanguageServletTest {
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("https://www.youtube.com/watch?v=fzQ6gRAEoy0");
 
     transcriptLanguageServlet.doGet(request, response);
-    List<TranscriptLanguage> actualTranscriptLines = transcriptLanguages(transcriptLanguages.toString());
-    assertThat(actualTranscriptLines.size()).isEqualTo(38);
+    
+    List<TranscriptLanguage> actualTranscriptLanguages = transcriptLanguages(transcriptLanguages.toString());
+    assertThat(actualTranscriptLanguages.size()).isEqualTo(38);
   }
 
   @Test
@@ -108,24 +109,22 @@ public final class TranscriptLanguageServletTest {
 
     transcriptLanguageServlet.doGet(request, response);
 
-    List<TranscriptLanguage> actualTranscriptLines = transcriptLines(transcriptLanguages.toString());
-    assertThat(actualTranscriptLines.size()).isEqualTo(0);
+    List<TranscriptLanguage> actualTranscriptLanguages = transcriptLanguages(transcriptLanguages.toString());
+    assertThat(actualTranscriptLanguages.size()).isEqualTo(0);
   }
 
   @Test
-  public void doGet_onlyOtherLecturesInDatastore_GetNoLectures()
+  public void doGet_getListOfLanguages_videoWithOnlyOneLanguage()
       throws ServletException, IOException {
-    putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
-    putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
-    when(request.getParameter(TranscriptLanguageServlet.PARAM_ID)).thenReturn(LECTURE_ID_C.toString());
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("https://www.youtube.com/watch?v=9DwzBICPhdM");
 
     transcriptLanguageServlet.doGet(request, response);
 
-    List<TranscriptLine> actualTranscriptLines = transcriptLanguages(transcriptLanguages.toString());
-    assertThat(actualTranscriptLines.size()).isEqualTo(0);
+    List<TranscriptLanguage> actualTranscriptLanguages = transcriptLanguages(transcriptLanguages.toString());
+    assertThat(actualTranscriptLanguages.size()).isEqualTo(1);
   }
 
-  private static List<TranscriptLanguage> transcriptLanguages(String transcriptLinesJson) {
+  private static List<TranscriptLanguage> transcriptLanguages(String transcriptLanguagesJson) {
     Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
     return (ArrayList<TranscriptLanguage>) gson.fromJson(
         transcriptLanguagesJson, (new ArrayList<List<TranscriptLanguage>>().getClass()));
