@@ -56,8 +56,6 @@ export default class LoadIconFeedback {
    * ParseIconFeedback object.
    */
   parseFeedback(iconFeedbackJson) {
-    console.log(iconFeedbackJson);
-    let index = 0;
     let interval = 0;
     let typeCountsAndInterval = this.makeCountDictionary(interval);
     for (const iconFeedback of iconFeedbackJson) {
@@ -74,6 +72,10 @@ export default class LoadIconFeedback {
     this.#parsedIconFeedback.appendTypeCountsAndInterval(typeCountsAndInterval);
   }
 
+  /**
+   * Returns a dictionary mapping each icon type to a value which represents
+   * how many times that icon was clicked in an interval.
+   */
   makeCountDictionary(interval) {
     return {
       [IconFeedbackUtil.TYPE_GOOD]: 0,

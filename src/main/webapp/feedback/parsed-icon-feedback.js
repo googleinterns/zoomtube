@@ -16,9 +16,7 @@ import IconFeedbackUtil from './icon-feedback-util.js';
 
 /** Stores parsed icon feedback data. */
 export default class ParsedIconFeedback {
-  /* Each index of these represents the number of IconFeedbacks for that
-   * icon type during that 10 seconds interval.
-   */
+  /* Values of each icon feedback type at each interval. */
   #counts = {
     [IconFeedbackUtil.TYPE_GOOD]: [],
     [IconFeedbackUtil.TYPE_BAD]: [],
@@ -27,17 +25,13 @@ export default class ParsedIconFeedback {
     [IconFeedbackUtil.INTERVAL]: [],
   }
 
-  appendTypeCountsAndInterval(counts) {
-    console.log(counts);
-    this.#counts[IconFeedbackUtil.TYPE_GOOD].push(
-        counts[IconFeedbackUtil.TYPE_GOOD]);
-    this.#counts[IconFeedbackUtil.TYPE_BAD].push(
-        counts[IconFeedbackUtil.TYPE_BAD]);
-    this.#counts[IconFeedbackUtil.TYPE_TOO_FAST].push(
-        counts[IconFeedbackUtil.TYPE_TOO_FAST]);
-    this.#counts[IconFeedbackUtil.TYPE_TOO_SLOW].push(
-        counts[IconFeedbackUtil.TYPE_TOO_SLOW]);
-    this.#counts[IconFeedbackUtil.INTERVAL].push(
-        counts[IconFeedbackUtil.INTERVAL]);
+  /**
+     Appends each value in `typeCountsAndInterval` to it's respective
+     dictionary value.
+   */
+  appendTypeCountsAndInterval(typeCountsAndInterval) {
+    for (const type in typeCountsAndInterval) {
+      this.#counts[type].push(typeCountsAndInterval[type]);
+    }
   }
 }
