@@ -53,7 +53,7 @@ function createLectureListItem(lecture) {
   return lectureLink;
 }
 
-async function fetchTranscriptLanguages(inputElement) {
+export async function fetchTranscriptLanguages(inputElement) {
   const url = new URL('/transcript-language');
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
@@ -76,7 +76,8 @@ function displayLanguages(languages) {
   const defaultLanguageOptionElement = document.createElement('option');
   defaultLanguageOptionElement.disabled = true;
   defaultLanguageOptionElement.selected = true;
-  defaultLanguageOptionElement.innerText = 'Select the language for the transcript.';
+  defaultLanguageOptionElement.innerText =
+      'Select the language for the transcript.';
   for (const language of languages) {
     const languageOptionElement = document.createElement('option');
     languageOptionElement.value = language.languageCode;
