@@ -57,13 +57,18 @@ function createLectureListItem(lecture) {
 
   return lectureLink;
 }
-
-async function fetchTranscriptLanguages(inputElement) {
+/**
+ * Fetches and displays the list of transcript languages.
+ *
+ * @param {Element} videoLinkInputElement The input element containing the video
+ *     link.
+ */
+export async function fetchAndDisplayTranscriptLanguages(videoLinkInputElement) {
   const languageSelectorDivElement =
       document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
   languageSelectorDivElement.innerHTML = '';
   const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES, window.location.origin);
-  url.searchParams.append(inputElement.name, inputElement.value);
+  url.searchParams.append(videoLinkInputElement.name, videoLinkInputElement.value);
   let languagesResponse;
   try {
     languagesResponse = await fetch(url);
@@ -81,7 +86,6 @@ function displayLanguages(languages) {
     languageSelectorDivElement.innerText = NO_LANGUAGES_AVAILABLE_MESSAGE;
     return;
   }
-
   const languageSelectElement = document.createElement('select');
   languageSelectorDivElement.appendChild(languageSelectElement);
   languageSelectElement.appendChild(createDefaultDisabledLanguageOption());
