@@ -57,7 +57,6 @@ export default class Video {
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
     event.target.playVideo();
-    IconFeedback.loadIconFeedbackList();
     this.#synchronizer.startVideoSyncTimer(
         this.getCurrentVideoTimeMs.bind(this));
   }
