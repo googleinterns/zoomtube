@@ -27,6 +27,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
+import com.googleinterns.zoomtube.data.TranscriptLanguage;
 import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
@@ -124,12 +125,10 @@ public class TranscriptLanguageServlet extends HttpServlet {
    * transcript for the lecture referenced by {@code lectureKey}.
    */
   private Entity createTranscriptLanguageFromElement(Element transcriptLineElement) {
-    String lineContent = transcriptLineElement.getTextContent();
-
     String languageName = transcriptLineElement.getAttribute(ATTR_NAME);
     String languageCode = transcriptLineElement.getAttribute(ATTR_LANG_CODE);
     String languageTranslatedName = transcriptLineElement.getAttribute(ATTR_LANG_TRANSLATED);
     // TODO: Create a language object
-    return;
+    return TranscriptLanguage.builder().setLanguageName(languageName).setLanguageCode(languageCode).setLanguageTranslatedName(languageTranslatedName);
   }
 }
