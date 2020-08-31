@@ -31,7 +31,9 @@ export default class ParsedIconFeedback {
    */
   appendTypeCountsAndInterval(typeCountsAndInterval) {
     for (const type in typeCountsAndInterval) {
-      this.#counts[type].push(typeCountsAndInterval[type]);
+      if (Object.prototype.hasOwnProperty.call(typeCountsAndInterval, type)) {
+        this.#counts[type].push(typeCountsAndInterval[type]);
+      }
     }
   }
 }

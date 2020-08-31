@@ -22,7 +22,7 @@ export default class LoadIconFeedback {
   static #PARAM_LECTURE_ID = 'lectureId';
 
   /* Each interval is 10 seconds, used to increment interval. */
-  static #INCREMENT_INTERVAL = 10000;
+  static #INCREMENT_INTERVAL_MS = 10000;
 
   #lectureId;
   #parsedIconFeedback;
@@ -37,7 +37,7 @@ export default class LoadIconFeedback {
   }
 
   /**
-   * Fetches avaiable IconFeedback from `ENDPOINT_FEEDBACK`
+   * Fetches available IconFeedback from `ENDPOINT_FEEDBACK`
    * and parses the data for it to be graphed.
    */
   async loadIconFeedbackList() {
@@ -48,6 +48,7 @@ export default class LoadIconFeedback {
     const response = await fetch(url);
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
+    console.log(this.#parsedIconFeedback);
   }
 
   /**
@@ -56,16 +57,16 @@ export default class LoadIconFeedback {
    * ParseIconFeedback object.
    */
   parseFeedback(iconFeedbackJson) {
-    let interval = 0;
-    let typeCountsAndInterval = this.makeCountDictionary(interval);
+    let intervalLowerBound = 0;
+    let typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
     for (const iconFeedback of iconFeedbackJson) {
-      if (interval < iconFeedback.timestampMs) {
+      if (intervalLowerBound < iconFeedback.timestampMs) {
         this.#parsedIconFeedback.appendTypeCountsAndInterval(
             typeCountsAndInterval);
-        interval += LoadIconFeedback.#INCREMENT_INTERVAL;
-        typeCountsAndInterval = this.makeCountDictionary(interval)
+        intervalLowerBound += LoadIconFeedback.#INCREMENT_INTERVAL_MS;
+        typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
       } else {
-        const type = iconFeedbackJson[index].type;
+        const type = iconFeedback.type;
         typeCountsAndInterval[type]++;
       }
     }
@@ -74,16 +75,16 @@ export default class LoadIconFeedback {
 
   /**
    * Returns a dictionary mapping each icon type to a value which represents
-   * how many times that icon was clicked in an interval.
+   * how many times that icon was clicked in an `intervalLowerBound`.
    */
-  makeCountDictionary(interval) {
+  makeCountDictionary(intervalLowerBound) {
     return {
       [IconFeedbackUtil.TYPE_GOOD]: 0,
       [IconFeedbackUtil.TYPE_BAD]: 0,
       [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
       [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
       [IconFeedbackUtil.INTERVAL]:
-          TimestampUtil.millisecondsToSeconds(interval),
+          TimestampUtil.millisecondsToSeconds(intervalLowerBound),
     };
   }
 }
