@@ -13,7 +13,12 @@
 // limitations under the License.
 
 const ENDPOINT_LECTURE_LIST = '/lecture-list';
-
+const ENDPOINT_TRANSCRIPT_LANGUAGES = '/transcript-language';
+const LANGUAGE_SELECTOR_CONTAINER = 'language-selector';
+const NO_LANGUAGES_AVAILABLE_MESSAGE =
+    'Sorry, there is no transcript available for this lecture.';
+const SELECT_LANGUAGE_OPTION_MESSAGE =
+    'Select the language for the transcript.';
 /* Used to gather URL parameters. */
 const PARAM_ID = 'id';
 
@@ -54,7 +59,7 @@ function createLectureListItem(lecture) {
 }
 
 export async function fetchTranscriptLanguages(inputElement) {
-  const url = new URL('/transcript-language');
+  const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES);
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
   const languagesJson = await languagesResponse.json();
@@ -63,10 +68,9 @@ export async function fetchTranscriptLanguages(inputElement) {
 
 function displayLanguages(languages) {
   const languageSelectorDivElement =
-      document.getElementById('language-selector');
+      document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
   if (languages.length == 0) {
-    languageSelectorDivElement.innerText =
-        'Sorry, there is no transcript available for this lecture.';
+    languageSelectorDivElement.innerText = NO_LANGUAGES_AVAILABLE_MESSAGE;
     return;
   }
 
@@ -76,8 +80,8 @@ function displayLanguages(languages) {
   const defaultLanguageOptionElement = document.createElement('option');
   defaultLanguageOptionElement.disabled = true;
   defaultLanguageOptionElement.selected = true;
-  defaultLanguageOptionElement.innerText =
-      'Select the language for the transcript.';
+  defaultLanguageOptionElement.innerText = SELECT_LANGUAGE_OPTION_MESSAGE;
+  languageSelectorDivElement.appendChild(defaultLanguageOptionElement);
   for (const language of languages) {
     const languageOptionElement = document.createElement('option');
     languageOptionElement.value = language.languageCode;
