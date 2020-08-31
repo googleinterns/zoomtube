@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {ScrollContainer} from '../../scroll-container.js';
 import {timestampToString} from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_REPLY} from './discussion.js';
 
-export const ELEMENT_DISCUSSION =
-    document.querySelector('#discussion-comments');
 
 /*
  * Displays the entire Discussion Area UI, and implements posting
@@ -27,6 +26,8 @@ export const ELEMENT_DISCUSSION =
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
+  static #ELEMENT_DISCUSSION = document.querySelector('#discussion');
+  static #ID_DISCUSSION_CONTAINER = 'discussion-comments';
   static #ELEMENT_NEW_COMMENT_TYPES =
       document.querySelector('#new-comment-types');
   /**
@@ -36,25 +37,50 @@ export default class DiscussionArea {
   static #SELECTOR_SELECTED_TYPE = 'label.active > input';
 
   #lecture;
+  #eventController;
   #manager;
   #currentTimeMs;
   #nearestComments;
+  #scrollContainer;
+  #discussionCommentsDiv;
 
   /**
    * Creates a `DiscussionArea` for a `lecture`.
    */
-  constructor(lecture) {
+  constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
   }
 
   /**
-   * Initialize the discussion area by loading the current comments.
+   * Adds event listener for seeking and initializes the discussion area by
+   * loading the current comments.
    */
   async initialize() {
+    this.#scrollContainer = new ScrollContainer();
+    this.#scrollContainer.id = DiscussionArea.#ID_DISCUSSION_CONTAINER;
+    this.#discussionCommentsDiv = document.createElement('div');
+    this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
+    DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
+    this.addSeekingListener();
+
+    // This is used as the `onclick` handler of the new comment area submit
+    // button. It must be set after discussion is initialized.
+    window.postNewComment = this.postNewComment.bind(this);
     await this.updateDiscussion();
+  }
+
+  /**
+   * Adds event listener allowing seeking discussion area
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timestampMs) => {
+      this.seek(timestampMs);
+    }, 'seek');
   }
 
   /**
@@ -96,7 +122,7 @@ export default class DiscussionArea {
     const newCommentTimeMs = newComment.timestampMs.value;
     // For now, we use a linear search. This can be improved if it becomes
     // an issue.
-    for (const commentElement of ELEMENT_DISCUSSION.children) {
+    for (const commentElement of this.#discussionCommentsDiv.children) {
       const commentTimeMs = commentElement.comment.timestampMs.value;
       if (commentTimeMs >= newCommentTimeMs) {
         commentElement.before(newComment.element);
@@ -104,7 +130,7 @@ export default class DiscussionArea {
       }
     }
     // If it isn't before any existing comments, it must belong at the end.
-    ELEMENT_DISCUSSION.appendChild(newComment.element);
+    this.#discussionCommentsDiv.appendChild(newComment.element);
   }
 
   /**
@@ -118,8 +144,8 @@ export default class DiscussionArea {
   getNearestDiscussionComments(timeMs) {
     let nearest = [];
     let nearestDistance = Infinity;
-    // ELEMENT_DISCUSSION is sorted by timestamp.
-    for (const element of ELEMENT_DISCUSSION.children) {
+    // this.#discussionCommentsDiv is sorted by timestamp.
+    for (const element of this.#discussionCommentsDiv.children) {
       const commentTimeMs = element.comment.timestampMs.value;
       const distance = Math.abs(timeMs - commentTimeMs);
       if (nearest.length == 0) {
@@ -168,7 +194,7 @@ export default class DiscussionArea {
     this.unhightlightNearestComments();
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
     if (this.#nearestComments.length > 0) {
-      this.#nearestComments[0].scrollToTopOfDiscussion();
+      this.#scrollContainer.scrollToTopOfContainer(this.#nearestComments[0]);
     }
     this.highlightNearestComments();
   }
@@ -177,6 +203,8 @@ export default class DiscussionArea {
    * Posts the comment in the new comment area, and updates the discussion.
    */
   postNewComment() {
+    const commentContent = DiscussionArea.#ELEMENT_POST_TEXTAREA.value;
+    const commentTimestampMs = this.#currentTimeMs;
     /* eslint-disable indent */
     const commentType =
         DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
@@ -188,12 +216,12 @@ export default class DiscussionArea {
     const currentTranscripLineId = '123';
 
     this.#manager
-        .postRootComment(
-            DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            commentType, currentTranscripLineId)
+        .postRootComment(commentContent, commentTimestampMs, commentType, currentTranscripLineId)
         .then(() => {
           this.updateDiscussion();
         });
+
+    DiscussionArea.#ELEMENT_POST_TEXTAREA.value = '';
   }
 
   /**
