@@ -54,12 +54,11 @@ function createLectureListItem(lecture) {
 }
 
 function fetchTranscriptLanguages(inputElement) {
-  const url = new URL('/lang')
+  const url = new URL('/lang');
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
   const languagesJson = await languagesResponse.json();
-
-  // TODO: Handle displaying the languages in the form
+  displayLanguages(languagesJson);
 }
 
 function displayLanguages(languages) {
