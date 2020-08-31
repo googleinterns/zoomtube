@@ -64,7 +64,7 @@ function createLectureListItem(lecture) {
  * @param {Element} videoLinkInputElement The input element containing the video
  *     link.
  */
-export async function fetchAndDisplayTranscriptLanguages(
+async function fetchAndDisplayTranscriptLanguages(
     videoLinkInputElement) {
   const languageSelectorDivElement =
       document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
