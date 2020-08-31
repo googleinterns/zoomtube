@@ -52,3 +52,15 @@ function createLectureListItem(lecture) {
 
   return lectureLink;
 }
+
+function fetchTranscriptLanguages(inputElement) {
+  const url = new URL('/lang')
+  url.searchParams.append(inputElement.name, inputElement.value);
+  const languagesResponse = await fetch(url);
+  const languagesJson = await languagesResponse.json();
+  // TODO: Check if is JSON or list
+  if (languagesJson.length == 0) {
+    // TODO: Handle case where there is no transcripts
+  }
+  // TODO: Handle displaying the languages in the form
+}

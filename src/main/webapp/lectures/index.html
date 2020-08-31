@@ -58,7 +58,7 @@
           <form name="lectureForm" action="/lecture" method="post">
             <input type="text" class="form-control" placeholder="Lecture Name" name="name-input" required />
             <br />
-            <input type="url" class="form-control" placeholder="Lecture YouTube URL" name="link-input" required />
+            <input type="url" class="form-control" placeholder="Lecture YouTube URL" name="link-input" oninput="fetchTranscriptLanguages(this)" required />
             <br />
             <div id="submit-btn-cont">
               <button type="submit" class="zt-btn btn btn-primary btn-wide">Submit</button>
