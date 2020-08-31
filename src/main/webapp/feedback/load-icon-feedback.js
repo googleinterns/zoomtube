@@ -48,7 +48,6 @@ export default class LoadIconFeedback {
     const response = await fetch(url);
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
-    console.log(this.#parsedIconFeedback);
     this.makeGraph();
   }
 
@@ -89,48 +88,39 @@ export default class LoadIconFeedback {
     };
   }
 
-  makeGraph(parsedData) {
-    window.chartColors = {
-      red: 'rgb(255, 99, 132)',
-      orange: 'rgb(255, 159, 64)',
-      yellow: 'rgb(255, 205, 86)',
-      green: 'rgb(75, 192, 192)',
-      blue: 'rgb(54, 162, 235)',
-      purple: 'rgb(153, 102, 255)',
-      grey: 'rgb(201, 203, 207)',
-    };
-
-    var ctx = document.getElementById('myChart')
-    var myLineChart = new Chart(ctx, {
+  /** Charts IconFeedback data into a graph. */
+  makeGraph() {
+    var chartElement = document.getElementById('iconFeedbackChart')
+    var myLineChart = new Chart(chartElement, {
       type: 'line',
       data: {
         labels: this.#parsedIconFeedback.getInterval(),
         datasets: [
           {
             label: 'GOOD',
-            backgroundColor: window.chartColors.red,
-            borderColor: window.chartColors.red,
+            backgroundColor: [IconFeedbackUtil.chartColors.red],
+            borderColor: [IconFeedbackUtil.chartColors.red],
             data: this.#parsedIconFeedback.getGoodCounts(),
             fill: false,
           },
           {
             label: 'BAD',
-            backgroundColor: window.chartColors.blue,
-            borderColor: window.chartColors.blue,
+            backgroundColor: [IconFeedbackUtil.chartColors.blue],
+            borderColor: [IconFeedbackUtil.chartColors.blue],
             data: this.#parsedIconFeedback.getBadCounts(),
             fill: false,
           },
           {
             label: 'TOO_FAST',
-            backgroundColor: window.chartColors.orange,
-            borderColor: window.chartColors.orange,
+            backgroundColor: [IconFeedbackUtil.chartColors.orange],
+            borderColor: [IconFeedbackUtil.chartColors.orange],
             data: this.#parsedIconFeedback.getTooFastCounts(),
             fill: false,
           },
           {
             label: 'TOO_SLOW',
-            backgroundColor: window.chartColors.green,
-            borderColor: window.chartColors.green,
+            backgroundColor: [IconFeedbackUtil.chartColors.green],
+            borderColor: [IconFeedbackUtil.chartColors.green],
             data: this.#parsedIconFeedback.getTooSlowCounts(),
             fill: false,
           },

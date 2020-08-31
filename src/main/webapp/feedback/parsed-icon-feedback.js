@@ -37,7 +37,23 @@ export default class ParsedIconFeedback {
     }
   }
 
-  getCounts() {
-    return this.#counts;
+  getGoodCounts() {
+    return this.#counts[IconFeedbackUtil.TYPE_GOOD];
+  }
+
+  getBadCounts() {
+    return this.#counts[IconFeedbackUtil.TYPE_BAD];
+  }
+
+  getTooFastCounts() {
+    return this.#counts[IconFeedbackUtil.TYPE_TOO_FAST];
+  }
+
+  getTooSlowCounts() {
+    return this.#counts[IconFeedbackUtil.TYPE_TOO_SLOW];
+  }
+
+  getInterval() {
+    return this.#counts[IconFeedbackUtil.INTERVAL];
   }
 }

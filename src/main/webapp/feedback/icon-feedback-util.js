@@ -19,4 +19,11 @@ export default class IconFeedbackUtil {
   static TYPE_TOO_FAST = 'TOO_FAST';
   static TYPE_TOO_SLOW = 'TOO_SLOW';
   static INTERVAL = 'INTERVAL';
+
+  static chartColors = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+  };
 }
