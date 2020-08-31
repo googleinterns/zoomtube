@@ -22,7 +22,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Comment;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 import org.junit.After;
@@ -47,7 +46,7 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createComment_reply_shouldReturnCommentFromEntity() throws IOException {
+  public void createComment_reply_shouldReturnCommentFromEntity() throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
     Key transcriptLineKey = KeyFactory.createKey(TranscriptLineUtil.KIND, /* id= */ 4567);
     User author = new User("test@example.com", "example.com");
@@ -78,7 +77,7 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createComment_root_shouldReturnCommentFromEntity() throws IOException {
+  public void createComment_root_shouldReturnCommentFromEntity() throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
     long timestamp = 123;
     Key transcriptLineKey = KeyFactory.createKey(TranscriptLineUtil.KIND, /* id= */ 4567);
@@ -110,7 +109,7 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createRootEntity_shouldReturnEntityWithProperties() throws IOException {
+  public void createRootEntity_shouldReturnEntityWithProperties() throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
     long timestampMs = 123;
     Optional<Key> transcriptLineKey =
@@ -134,7 +133,7 @@ public final class CommentUtilTest {
   }
 
   @Test
-  public void createReplyEntity_shouldReturnEntityWithProperties() throws IOException {
+  public void createReplyEntity_shouldReturnEntityWithProperties() throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* id= */ 12345);
     Key parentKey = KeyFactory.createKey(CommentUtil.KIND, /* id= */ 67890);
     Optional<Key> transcriptLineKey =
