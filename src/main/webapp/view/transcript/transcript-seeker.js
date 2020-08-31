@@ -118,7 +118,8 @@ export default class TranscriptSeeker {
   }
 
   /**
-   * Returns the eventController.
+   * Returns the eventController responsible for sending and receiving
+   * seeking signals.
    */
   eventController() {
     return this.#eventController;
