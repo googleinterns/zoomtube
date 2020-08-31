@@ -126,7 +126,7 @@ export default class TranscriptArea {
     return this.#transcriptContainer;
   }
 
-  /** Increments the indicator corresponding to `transcriptLineKey` by 1. */
+  /** Increments the indicator corresponding to `transcriptLineKeyId` by 1. */
   incrementCommentIndicatorAt(transcriptLineKeyId) {
     if (!this.#transcriptLineToCommentCount.has(transcriptLineKeyId)) {
       return;
