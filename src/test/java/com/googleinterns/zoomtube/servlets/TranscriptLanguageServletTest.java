@@ -95,7 +95,7 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithManyLanguages() throws ServletException, IOException {
-    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("fzQ6gRAEoy0");
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("https://www.youtube.com/watch?v=fzQ6gRAEoy0");
 
     transcriptLanguageServlet.doGet(request, response);
     List<TranscriptLanguage> actualTranscriptLines = transcriptLanguages(transcriptLanguages.toString());
@@ -103,14 +103,13 @@ public final class TranscriptLanguageServletTest {
   }
 
   @Test
-  public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
-    when(request.getParameter(TranscriptLanguageServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
+  public void doGet_getListOfLanguages_videoWithNoLanguages() throws ServletException, IOException {
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("https://www.youtube.com/watch?v=QJO3ROT-A4E");
 
     transcriptLanguageServlet.doGet(request, response);
 
-    List<TranscriptLine> expectedTranscriptLines = longVideoTranscriptLines;
-    List<TranscriptLine> actualTranscriptLines = transcriptLines(transcriptLanguages.toString());
-    assertThat(actualTranscriptLines.size()).isEqualTo(expectedTranscriptLines.size());
+    List<TranscriptLanguage> actualTranscriptLines = transcriptLines(transcriptLanguages.toString());
+    assertThat(actualTranscriptLines.size()).isEqualTo(0);
   }
 
   @Test
