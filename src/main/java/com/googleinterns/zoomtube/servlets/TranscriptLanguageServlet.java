@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/** Parses the transcript options from XML. */
+/** Fetches and parses the transcript options as XML from the Google Video Timetext API. */
 public class TranscriptLanguageServlet extends HttpServlet {
   /* Properties of the API Url. */
   private static final String API_URL = "http://video.google.com/timedtext";
