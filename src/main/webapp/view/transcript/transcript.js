@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {timestampRangeToString} from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
@@ -44,7 +44,7 @@ export class TranscriptLineElement extends HTMLElement {
    *     whose `attributes` should be used.
    */
   static createTranscriptLineElement(transcriptLine) {
-    const timestampRange = timestampRangeToString(
+    const timestampRange = TimestampUtil.timestampRangeToString(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     return new TranscriptLineElement(timestampRange, transcriptLine);
   }
