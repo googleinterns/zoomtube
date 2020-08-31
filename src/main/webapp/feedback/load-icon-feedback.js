@@ -32,8 +32,8 @@ export default class LoadIconFeedback {
   }
 
   /**
-   * Fetches avaiable Lectures from `ENDPOINT_FEEDBACK`
-   * and sets them in the lecture selection page.
+   * Fetches avaiable IconFeedback from `ENDPOINT_FEEDBACK`
+   * and parses the data for it to be graphed.
    */
   async loadIconFeedbackList() {
     const url =
@@ -76,7 +76,7 @@ export default class LoadIconFeedback {
       this.#parsedIconFeedback.appendBadCount(badCount);
       this.#parsedIconFeedback.appendTooFastCount(tooFastCount);
       this.#parsedIconFeedback.appendTooSlowCount(tooSlowCount);
-      // TODO: Use timestamp to seconds function here.
+      // TODO: Use timestamp util function here once in master.
       this.#parsedIconFeedback.appendInterval(interval / 1000);
       interval += LoadIconFeedback.#INCREMENT_INTERVAL;
     }

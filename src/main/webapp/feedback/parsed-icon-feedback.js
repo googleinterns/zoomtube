@@ -14,10 +14,15 @@
 
 /** Stores parsed icon feedback data. */
 export default class ParsedIconFeedback {
+  /* Each index of these represents the number of IconFeedbacks for that
+   * icon type during that 10 seconds interval.
+   */
   #goodCounts = [];
   #badCounts = [];
   #tooFastCounts = [];
   #tooSlowCounts = [];
+
+  /* Each index of this represents a point on the horizontal axis of graph. */
   #intervals = [];
 
   appendGoodCount(goodCount) {
