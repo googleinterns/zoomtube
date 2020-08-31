@@ -121,7 +121,7 @@ export default class DiscussionComment extends HTMLElement {
         DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
     this.#discussion.postReply(
         textarea.value, this.comment.commentKey.id,
-        this.comment.transcriptLineKey.id);
+        this.comment.transcriptLineKey.value.id);
 
     textarea.value = '';
     const replyForm =

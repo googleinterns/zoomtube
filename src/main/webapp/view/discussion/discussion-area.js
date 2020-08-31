@@ -215,13 +215,15 @@ export default class DiscussionArea {
             .value;
     /* eslint-enable indent */
 
-    const currentTranscripLineId =
+    const currentTranscriptLine =
         this.#transcriptSeeker.currentTranscriptLine();
+    const currentTranscriptLineId =
+        currentTranscriptLine.transcriptLine.transcriptKey.id;
 
     this.#manager
         .postRootComment(
             commentContent, commentTimestampMs, commentType,
-            currentTranscripLineId)
+            currentTranscriptLineId)
         .then(() => {
           this.updateDiscussion();
         });
@@ -230,10 +232,11 @@ export default class DiscussionArea {
   }
 
   /**
-   * Posts `content` as a reply to `parentId`, and updates the discussion.
+   *Posts `content` as a reply to `parentId` with the specified
+   * `transcriptLineId`, and updates the discussion.
    */
-  postReply(content, parentId) {
-    this.#manager.postReply(content, parentId).then(() => {
+  postReply(content, parentId, transcriptLineId) {
+    this.#manager.postReply(content, parentId, transcriptLineId).then(() => {
       this.updateDiscussion();
     });
   }
