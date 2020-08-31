@@ -58,9 +58,12 @@ function fetchTranscriptLanguages(inputElement) {
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
   const languagesJson = await languagesResponse.json();
-  // TODO: Check if is JSON or list
+
+  // TODO: Handle displaying the languages in the form
+}
+
+function displayLanguages(languagesJson) {
   if (languagesJson.length == 0) {
     // TODO: Handle case where there is no transcripts
   }
-  // TODO: Handle displaying the languages in the form
 }
