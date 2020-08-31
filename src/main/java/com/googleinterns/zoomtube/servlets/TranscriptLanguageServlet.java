@@ -14,7 +14,6 @@
 
 package com.googleinterns.zoomtube.servlets;
 
-import com.google.common.collect.ImmutableList;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -27,6 +26,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.TranscriptLanguage;
 import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
@@ -49,7 +49,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import com.google.gson.Gson;
 
 /** Provides information on a lecture. */
 public class TranscriptLanguageServlet extends HttpServlet {
@@ -89,9 +88,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
         TranscriptParser.fetchUrlAsXmlDocument(transcriptLanguagesUrl);
     List<TranscriptLanguage> transcriptLanguages =
         parseTranscriptLanguages(transcriptLanguagesDocument);
-        writeTranscriptLanguages(response, transcriptLanguages);
-
-    
+    writeTranscriptLanguages(response, transcriptLanguages);
   }
 
   private Optional<String> validateGetRequest(HttpServletRequest request) {
@@ -114,7 +111,8 @@ public class TranscriptLanguageServlet extends HttpServlet {
 
   private ImmutableList<TranscriptLanguage> parseTranscriptLanguages(Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
-    ImmutableList.Builder<TranscriptLanguage> transcriptLanguagesBuilder = new ImmutableList.Builder<>();
+    ImmutableList.Builder<TranscriptLanguage> transcriptLanguagesBuilder =
+        new ImmutableList.Builder<>();
     for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
       Element transcriptElement = (Element) transcriptNodes.item(nodeIndex);
       transcriptLanguagesBuilder.add(createTranscriptLanguageFromElement(transcriptElement));
@@ -122,10 +120,6 @@ public class TranscriptLanguageServlet extends HttpServlet {
     return transcriptLanguagesBuilder.build();
   }
 
-  /**
-   * Creates a Transcript Line entity from the XML {@code transcriptLineElement} as part of the
-   * transcript for the lecture referenced by {@code lectureKey}.
-   */
   private TranscriptLanguage createTranscriptLanguageFromElement(Element transcriptLineElement) {
     String languageName = transcriptLineElement.getAttribute(ATTR_NAME);
     String languageCode = transcriptLineElement.getAttribute(ATTR_LANG_CODE);
@@ -138,7 +132,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
   }
 
   /**
-   * Writes {@code transcriptLines} as Json to {@code response}.
+   * Writes {@code transcriptLanguages} as Json to {@code response}.
    */
   private void writeTranscriptLanguages(HttpServletResponse response,
       List<TranscriptLanguage> transcriptLanguages) throws IOException {
