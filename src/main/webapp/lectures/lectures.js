@@ -69,6 +69,7 @@ async function fetchTranscriptLanguages(inputElement) {
 function displayLanguages(languages) {
   const languageSelectorDivElement =
       document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
+  languageSelectorDivElement.innerHTML = '';
   if (languages.length == 0) {
     languageSelectorDivElement.innerText = NO_LANGUAGES_AVAILABLE_MESSAGE;
     return;
@@ -80,7 +81,7 @@ function displayLanguages(languages) {
   for (const language of languages) {
     const languageOptionElement = document.createElement('option');
     languageOptionElement.value = language.languageCode;
-    languageOptionElement.innerText = language.languageTranslatedName;
+    languageOptionElement.innerText = language.languageNameInEnglish;
     languageSelectElement.appendChild(languageOptionElement);
   }
 }
