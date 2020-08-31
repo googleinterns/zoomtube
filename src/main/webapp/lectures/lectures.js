@@ -54,7 +54,7 @@ function createLectureListItem(lecture) {
 }
 
 function fetchTranscriptLanguages(inputElement) {
-  const url = new URL('/lang');
+  const url = new URL('/transcript-language');
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
   const languagesJson = await languagesResponse.json();
