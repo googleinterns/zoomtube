@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import IconFeedback from '../../feedback/icon-feedback.js';
 import Synchronizer from '../../synchronizer.js';
 import {secondsToMilliseconds} from '../../timestamps.js';
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import EventController from '../event-controller.js';
-import IconFeedback from '../feedback/icon-feedback.js';
+import PostIconFeedback from '../feedback/post-icon-feedback.js';
 
 import DiscussionArea from './discussion/discussion-area.js';
 import TranscriptArea from './transcript/transcript-area.js';
@@ -34,7 +34,7 @@ export default class LectureView {
   #video;
   #transcript;
   #discussion;
-  #iconFeedback;
+  #postIconFeedback;
 
   constructor(lecture) {
     this.#lecture = lecture;
@@ -49,14 +49,14 @@ export default class LectureView {
 
     this.#eventController = new EventController();
     this.#video = new Video(this.#lecture, this.#eventController);
-    this.#iconFeedback = new IconFeedback(this.#lecture, this.#video);
+    this.#postIconFeedback = new PostIconFeedback(this.#lecture, this.#video);
     this.#transcript = new TranscriptArea(this.#lecture, this.#eventController);
     this.#discussion = new DiscussionArea(this.#lecture, this.#eventController);
 
     await this.#video.loadVideoApi();
     await this.#transcript.initialize();
     await this.#discussion.initialize();
-    this.#iconFeedback.initialize();
+    this.#postIconFeedback.initialize();
   }
 
   /** Sets the lecture name in `header-text`. */

@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export default class IconFeedback {
+/** Stores icon feedback data in the database. */
+export default class PostIconFeedback {
   static #ENDPOINT_FEEDBACK = '/icon-feedback';
   static #PARAM_LECTURE_ID = 'lectureId';
   static #PARAM_TIMESTAMP = 'timestampMs';
@@ -29,7 +30,7 @@ export default class IconFeedback {
   initialize() {
     window.iconOnClick = this.iconOnClick.bind(this);
   }
-  
+
   /**
    * Sends `iconType`, video timestamp of when icon was clicked,
    * and lecture ID to be stored in database.
@@ -37,11 +38,11 @@ export default class IconFeedback {
   iconOnClick(iconType) {
     const videoTimeStamp = this.#video.getCurrentVideoTimeMs();
     const url =
-        new URL(IconFeedback.#ENDPOINT_FEEDBACK, window.location.origin);
+        new URL(PostIconFeedback.#ENDPOINT_FEEDBACK, window.location.origin);
     url.searchParams.append(
-        IconFeedback.#PARAM_LECTURE_ID, this.#lecture.key.id);
-    url.searchParams.append(IconFeedback.#PARAM_TIMESTAMP, videoTimeStamp);
-    url.searchParams.append(IconFeedback.#PARAM_ICON_TYPE, iconType);
+        PostIconFeedback.#PARAM_LECTURE_ID, this.#lecture.key.id);
+    url.searchParams.append(PostIconFeedback.#PARAM_TIMESTAMP, videoTimeStamp);
+    url.searchParams.append(PostIconFeedback.#PARAM_ICON_TYPE, iconType);
     fetch(url, {method: 'POST'});
   }
 }
