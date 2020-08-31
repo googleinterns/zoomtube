@@ -71,7 +71,7 @@ export default class TranscriptArea {
       TranscriptArea.displayNoTranscriptMessage();
       return;
     }
-    TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+    this.addTranscriptLinesToDom(transcriptLines);
   }
 
   /**
