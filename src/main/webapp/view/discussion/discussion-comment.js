@@ -70,8 +70,7 @@ export default class DiscussionComment extends HTMLElement {
     this.setSlotSpan(
         DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
     this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
-    this.setTypeTag(comment.type);
-    this.setMarkAsButton(comment.type);
+    this.updateCommentType(comment.type);
   }
 
   /**
@@ -165,11 +164,15 @@ export default class DiscussionComment extends HTMLElement {
       return;
     }
 
-    const typePill = document.createElement('span');
-    typePill.innerText = COMMENT_TYPES[type].name;
-    typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
-    typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
-    this.appendChild(typePill);
+    if (this.typePill) {
+      this.typePill.remove();
+    }
+
+    this.typePill = document.createElement('span');
+    this.typePill.innerText = COMMENT_TYPES[type].name;
+    this.typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
+    this.typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
+    this.appendChild(this.typePill);
   }
 
   /**
@@ -198,6 +201,13 @@ export default class DiscussionComment extends HTMLElement {
     markAsButton.onclick = listener;
   }
 
+  /**
+   * Updates the type tag and mark as button based on `newType`.
+   */
+  updateCommentType(newType) {
+    this.setTypeTag(newType);
+    this.setMarkAsButton(newType);
+  }
 
   /**
    * Scroll such that this element is at the top of the discussion area.
