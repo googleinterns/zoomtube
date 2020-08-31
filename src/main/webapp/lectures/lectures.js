@@ -59,7 +59,7 @@ function createLectureListItem(lecture) {
 }
 
 async function fetchTranscriptLanguages(inputElement) {
-  const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES);
+  const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES, window.location.origin);
   url.searchParams.append(inputElement.name, inputElement.value);
   const languagesResponse = await fetch(url);
   const languagesJson = await languagesResponse.json();
@@ -76,16 +76,19 @@ function displayLanguages(languages) {
 
   const languageSelectElement = document.createElement('select');
   languageSelectorDivElement.appendChild(languageSelectElement);
-
-  const defaultLanguageOptionElement = document.createElement('option');
-  defaultLanguageOptionElement.disabled = true;
-  defaultLanguageOptionElement.selected = true;
-  defaultLanguageOptionElement.innerText = SELECT_LANGUAGE_OPTION_MESSAGE;
-  languageSelectorDivElement.appendChild(defaultLanguageOptionElement);
+  languageSelectElement.appendChild(createDefaultDisabledLanguageOption());
   for (const language of languages) {
     const languageOptionElement = document.createElement('option');
     languageOptionElement.value = language.languageCode;
     languageOptionElement.innerText = language.languageTranslatedName;
     languageSelectElement.appendChild(languageOptionElement);
   }
+}
+
+function createDefaultDisabledLanguageOption() {
+  const defaultLanguageOptionElement = document.createElement('option');
+  defaultLanguageOptionElement.disabled = true;
+  defaultLanguageOptionElement.selected = true;
+  defaultLanguageOptionElement.innerText = SELECT_LANGUAGE_OPTION_MESSAGE;
+  return defaultLanguageOptionElement;
 }
