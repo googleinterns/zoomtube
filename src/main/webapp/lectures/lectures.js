@@ -63,8 +63,12 @@ function fetchTranscriptLanguages(inputElement) {
 }
 
 function displayLanguages(languagesJson) {
+  const languageSelectorDivElement = document.getElementById('language-selector');
   if (languagesJson.length == 0) {
-    // TODO: Handle case where there is no transcripts
+    languageSelectorDivElement.innerText = "Sorry, there is no transcript available for this lecture.";
   }
+  const languageSelectElement = document.createElement('select');
+  languageSelectorDivElement.appendChild(languageSelectElement);
+
   return
 }
