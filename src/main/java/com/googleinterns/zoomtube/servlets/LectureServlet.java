@@ -61,14 +61,12 @@ public class LectureServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_ID = "id";
 
   /* Pattern used to create a matcher for a video ID. */
-  private static Pattern videoUrlGeneratedPattern;
-
+  private static Pattern videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   private static DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
     datastore = DatastoreServiceFactory.getDatastoreService();
-    videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
   @Override
@@ -161,9 +159,9 @@ public class LectureServlet extends HttpServlet {
     return Optional.ofNullable(results.asSingleEntity());
   }
 
-  @VisibleForTesting
   /** Returns YouTube video ID for a given {@code videoUrl}. */
-  protected Optional<String> getVideoId(String videoUrl) {
+  // TODO: Move this function to a Utils class.
+  public static Optional<String> getVideoId(String videoUrl) {
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
       return Optional.of(matcher.group());
