@@ -56,7 +56,7 @@ export default class TranscriptSeeker {
     return this.#currentTranscriptLine;
   }
 
-  /** Seeks transcript to `timeMs`. */
+  /** Seeks transcript to `timeMs` if the transcript exists. */
   seekTranscript(timeMs) {
     if (this.currentTranscriptLine() == null) {
       return;
@@ -75,6 +75,7 @@ export default class TranscriptSeeker {
       this.currentTranscriptLine().addBold();
     }
   }
+
   /**
    * Returns the next transcript line for `timeMs`.
    */

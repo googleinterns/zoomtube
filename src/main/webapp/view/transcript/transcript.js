@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {timestampRangeToString} from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 
 const CUSTOM_ELEMENT_TRANSCRIPT_LINE = 'transcript-line';
 
@@ -35,6 +35,11 @@ export class TranscriptLineElement extends HTMLElement {
   static #SEEK_TIME_OFFSET_MS = 1;
 
   #timestampElement;
+  static #COMMENT_INDICATOR_CLASSES = 'indicator badge badge-pill';
+  static #COMMENT_INDICATOR_POPOVER_MESSAGE =
+      'The number of comments at this transcript line';
+
+  commentIndicator;
 
   /**
    * Creates a custom HTML element representing `transcriptLine` with
@@ -44,7 +49,7 @@ export class TranscriptLineElement extends HTMLElement {
    *     whose `attributes` should be used.
    */
   static createTranscriptLineElement(transcriptLine) {
-    const timestampRange = timestampRangeToString(
+    const timestampRange = TimestampUtil.timestampRangeToString(
         transcriptLine.startTimestampMs, transcriptLine.endTimestampMs);
     return new TranscriptLineElement(timestampRange, transcriptLine);
   }
@@ -68,6 +73,8 @@ export class TranscriptLineElement extends HTMLElement {
     contentDivElement.appendChild(this.#timestampElement);
     TranscriptLineElement.appendParagraphToContainer(
         transcriptLine.content, contentDivElement, ['ml-4', 'mb-1']);
+    this.commentIndicator = TranscriptLineElement.createCommentIndicator();
+    contentDivElement.appendChild(this.commentIndicator);
     this.classList.add(
         'align-self-center', 'mb-2',
         TranscriptLineElement.#DEFAULT_FONT_WEIGHT);
@@ -109,7 +116,33 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Creates a `p` tag to store the given `text` inside the
+   * Creates an invisible stylized comment indicator element
+   * with a popover.
+   *
+   * <p>Once the element is populated then it becomes visible.
+   */
+  static createCommentIndicator() {
+    const commentIndicator = document.createElement('span');
+    commentIndicator.className =
+        TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
+    commentIndicator.innerText = 0;
+    TranscriptLineElement.addPopoverToCommentIndicator(commentIndicator);
+    return commentIndicator;
+  }
+
+  /**
+   * Adds a popover to `commentIndicator` that will appear upon
+   * hovering over it.
+   */
+  static addPopoverToCommentIndicator(commentIndicator) {
+    commentIndicator.setAttribute(
+        'data-content',
+        TranscriptLineElement.#COMMENT_INDICATOR_POPOVER_MESSAGE);
+    commentIndicator.setAttribute('data-toggle', 'popover');
+  }
+
+  /**
+   * Creates a p tag to store the given `text` inside the
    * `container`.
    *
    * <p>Adds classes to the `p` tag if `classList` is provided.

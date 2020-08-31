@@ -23,6 +23,8 @@ export default class TranscriptArea {
   static #TRANSCRIPT_PARENT_CONTAINER = 'transcript-container';
   static #transcriptContainer;
   static #PARAM_ID = 'id';
+  static #TRANSCRIPT_ERROR_MESSAGE =
+      'Sorry, there is no transcript available for this lecture recording. :(';
 
   #lecture
   #eventController;
@@ -51,10 +53,12 @@ export default class TranscriptArea {
   }
 
   /**
-   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`.
+   * Fetches the transcript lines from `ENDPOINT_TRANSCRIPT`. If there
+   * are no transcript lines, an error message is displayed in the
+   * transcript container instead.
    *
-   * <p>This function assumes that the transcript lines have already
-   * been added to the datastore.
+   * <p>This function assumes that if there is a transcript for the
+   * current lecture, the lines have already been added to the datastore.
    */
   async loadTranscript() {
     const url =
@@ -62,7 +66,22 @@ export default class TranscriptArea {
     url.searchParams.append(TranscriptArea.#PARAM_ID, this.#lecture.key.id);
     const transcriptResponse = await fetch(url);
     const transcriptLines = await transcriptResponse.json();
-    this.addTranscriptLinesToDom(transcriptLines);
+    // No transcript lines are available for this lecture.
+    if (transcriptLines.length == 0) {
+      TranscriptArea.displayNoTranscriptMessage();
+      return;
+    }
+    TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+  }
+
+  /**
+   * Displays a message in the transcript container if there is no
+   * transcript available for the lecture recording.
+   */
+  static displayNoTranscriptMessage() {
+    const transcriptContainer = TranscriptArea.transcriptScrollContainer();
+    transcriptContainer.innerText = TranscriptArea.#TRANSCRIPT_ERROR_MESSAGE;
+    transcriptContainer.classList.add('text-center');
   }
 
   /**
@@ -84,6 +103,7 @@ export default class TranscriptArea {
           this.transcriptSeeker().eventController());
       ulElement.appendChild(transcriptLineElement);
     });
+    $('.indicator').popover({trigger: 'hover'});
   }
 
   /**
