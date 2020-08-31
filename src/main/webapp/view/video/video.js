@@ -21,10 +21,12 @@ const SCRIPT = 'script';
 export default class Video {
   #lecture;
   #synchronizer;
+  #eventController;
   #videoPlayer
 
   constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
     this.#synchronizer = new Synchronizer(eventController);
   }
 
@@ -56,9 +58,20 @@ export default class Video {
 
   /** `event` plays the YouTube video. */
   onPlayerReady(event) {
+    this.addSeekingListener();
     event.target.playVideo();
     this.#synchronizer.startVideoSyncTimer(
         this.getCurrentVideoTimeMs.bind(this));
+  }
+
+  /**
+   * Adds event listener allowing seeking video
+   * on event broadcast.
+   */
+  addSeekingListener() {
+    this.#eventController.addEventListener((timeMs) => {
+      this.seek(timeMs);
+    }, 'seekAll');
   }
 
   /** Seeks video to `timeMs`. */
@@ -68,7 +81,7 @@ export default class Video {
         /* allowSeekAhead= */ true);
   }
 
-  /** Returns current video time of 'videoPlayer' in milliseconds. */
+  /** Returns current video time in milliseconds. */
   getCurrentVideoTimeMs() {
     return TimestampUtil.secondsToMilliseconds(
         this.#videoPlayer.getCurrentTime());
