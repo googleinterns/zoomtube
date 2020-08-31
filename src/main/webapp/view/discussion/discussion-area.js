@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {ScrollContainer} from '../../scroll-container.js';
 import {timestampToString} from '../../timestamps.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
-import {COMMENT_TYPE_QUESTION} from './discussion.js';
+import {COMMENT_TYPE_REPLY} from './discussion.js';
 
-export const ELEMENT_DISCUSSION =
-    document.querySelector('#discussion-comments');
 
 /*
  * Displays the entire Discussion Area UI, and implements posting
@@ -27,45 +26,111 @@ export const ELEMENT_DISCUSSION =
 export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
+  static #ELEMENT_DISCUSSION = document.querySelector('#discussion');
+  static #ID_DISCUSSION_CONTAINER = 'discussion-comments';
+  static #ELEMENT_NEW_COMMENT_TYPES =
+      document.querySelector('#new-comment-types');
+  /**
+   * A selector to query on `ELEMENT_NEW_COMMENT_TYPES`. It returns the
+   * selected type button in the new comment area.
+   */
+  static #SELECTOR_SELECTED_TYPE = 'label.active > input';
+
   #lecture;
+  #eventController;
   #manager;
   #currentTimeMs;
-  #currentRootCommentElements;
   #nearestComments;
+  #scrollContainer;
+  #discussionCommentsDiv;
 
   /**
    * Creates a `DiscussionArea` for a `lecture`.
    */
-  constructor(lecture) {
+  constructor(lecture, eventController) {
     this.#lecture = lecture;
+    this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
-    this.#currentRootCommentElements = [];
     this.#nearestComments = [];
   }
 
   /**
-   * Initialize the discussion area by loading the current comments.
+   * Adds event listener for seeking and initializes the discussion area by
+   * loading the current comments.
    */
   async initialize() {
-    await this.loadDiscussion();
+    this.#scrollContainer = new ScrollContainer();
+    this.#scrollContainer.id = DiscussionArea.#ID_DISCUSSION_CONTAINER;
+    this.#discussionCommentsDiv = document.createElement('div');
+    this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
+    DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
+    this.addSeekingListener();
+
+    // This is used as the `onclick` handler of the new comment area submit
+    // button. It must be set after discussion is initialized.
+    window.postNewComment = this.postNewComment.bind(this);
+    await this.updateDiscussion();
   }
 
   /**
-   * Fetches and displays the current comments.
+   * Adds event listener allowing seeking discussion area
+   * on event broadcast.
    */
-  async loadDiscussion() {
-    // Clear any existing comments before loading.
-    ELEMENT_DISCUSSION.textContent = '';
-    this.#currentRootCommentElements = [];
+  addSeekingListener() {
+    this.#eventController.addEventListener((timestampMs) => {
+      this.seek(timestampMs);
+    }, 'seek');
+  }
 
-    const rootComments = await this.#manager.fetchRootComments();
-    for (const rootComment of rootComments) {
-      const rootCommentElement = new DiscussionComment(this);
-      rootCommentElement.setComment(rootComment);
-      this.#currentRootCommentElements.push(rootCommentElement);
-      ELEMENT_DISCUSSION.appendChild(rootCommentElement);
+  /**
+   * Fetches and updates the currently displayed comments.
+   */
+  async updateDiscussion() {
+    const newComments = await this.#manager.fetchNewComments();
+    if (newComments.length == 0) {
+      return;
     }
+
+    // Create a new element for every new comment.
+    // This must be done first for all comments because comment order is
+    // not guarenteed.
+    for (const comment of newComments) {
+      const commentElement = new DiscussionComment(this);
+      commentElement.setComment(comment);
+      comment.element = commentElement;
+    }
+
+    // Insert comments.
+    for (const comment of newComments) {
+      if (comment.type === COMMENT_TYPE_REPLY) {
+        comment.parent.element.insertReply(comment);
+        continue;
+      }
+      this.insertRootComment(comment);
+    }
+
+    // It's possible that the comment we should be seeked to has changed,
+    // so we run seek again.
+    this.seek(this.#currentTimeMs);
+  }
+
+  /**
+   * Inserts a new root comment into the DOM, maintaining order by timestamp.
+   */
+  insertRootComment(newComment) {
+    const newCommentTimeMs = newComment.timestampMs.value;
+    // For now, we use a linear search. This can be improved if it becomes
+    // an issue.
+    for (const commentElement of this.#discussionCommentsDiv.children) {
+      const commentTimeMs = commentElement.comment.timestampMs.value;
+      if (commentTimeMs >= newCommentTimeMs) {
+        commentElement.before(newComment.element);
+        return;
+      }
+    }
+    // If it isn't before any existing comments, it must belong at the end.
+    this.#discussionCommentsDiv.appendChild(newComment.element);
   }
 
   /**
@@ -79,8 +144,8 @@ export default class DiscussionArea {
   getNearestDiscussionComments(timeMs) {
     let nearest = [];
     let nearestDistance = Infinity;
-    // #currentRootCommentElements is sorted by timestamp.
-    for (const element of this.#currentRootCommentElements) {
+    // this.#discussionCommentsDiv is sorted by timestamp.
+    for (const element of this.#discussionCommentsDiv.children) {
       const commentTimeMs = element.comment.timestampMs.value;
       const distance = Math.abs(timeMs - commentTimeMs);
       if (nearest.length == 0) {
@@ -129,30 +194,39 @@ export default class DiscussionArea {
     this.unhightlightNearestComments();
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
     if (this.#nearestComments.length > 0) {
-      this.#nearestComments[0].scrollToTopOfDiscussion();
+      this.#scrollContainer.scrollToTopOfContainer(this.#nearestComments[0]);
     }
     this.highlightNearestComments();
   }
 
   /**
-   * Posts the comment in the new comment area, and reloads the discussion.
+   * Posts the comment in the new comment area, and updates the discussion.
    */
   postNewComment() {
+    const commentContent = DiscussionArea.#ELEMENT_POST_TEXTAREA.value;
+    const commentTimestampMs = this.#currentTimeMs;
+    /* eslint-disable indent */
+    const commentType =
+        DiscussionArea.#ELEMENT_NEW_COMMENT_TYPES
+            .querySelector(DiscussionArea.#SELECTOR_SELECTED_TYPE)
+            .value;
+    /* eslint-enable indent */
+
     this.#manager
-        .postRootComment(
-            DiscussionArea.#ELEMENT_POST_TEXTAREA.value, this.#currentTimeMs,
-            COMMENT_TYPE_QUESTION)
+        .postRootComment(commentContent, commentTimestampMs, commentType)
         .then(() => {
-          this.loadDiscussion();
+          this.updateDiscussion();
         });
+
+    DiscussionArea.#ELEMENT_POST_TEXTAREA.value = '';
   }
 
   /**
-   * Posts `content` as a reply to `parentId`, and reloads the discussion.
+   * Posts `content` as a reply to `parentId`, and updates the discussion.
    */
   postReply(content, parentId) {
     this.#manager.postReply(content, parentId).then(() => {
-      this.loadDiscussion();
+      this.updateDiscussion();
     });
   }
 }

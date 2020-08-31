@@ -30,8 +30,9 @@ export function deleteTranscript() {
 export class TranscriptLineElement extends HTMLElement {
   static #DEFAULT_FONT_WEIGHT = 'text-muted';
   static #BOLD_FONT_WEIGHT = 'font-weight-bold';
-  static #COMMENT_INDICATOR_CLASSES =
-      'indicator badge badge-pill';
+  static #COMMENT_INDICATOR_CLASSES = 'indicator badge badge-pill';
+  static #COMMENT_INDICATOR_POPOVER_MESSAGE =
+      'The number of comments at this transcript line';
 
   commentIndicator;
 
@@ -94,14 +95,29 @@ export class TranscriptLineElement extends HTMLElement {
   }
 
   /**
-   * Creates a stylized comment indicator element.
+   * Creates an invisible stylized comment indicator element
+   * with a popover.
+   *
+   * <p>Once the element is populated then it becomes visible.
    */
   static createCommentIndicator() {
     const commentIndicator = document.createElement('span');
     commentIndicator.className =
         TranscriptLineElement.#COMMENT_INDICATOR_CLASSES;
     commentIndicator.innerText = 0;
+    TranscriptLineElement.addPopoverToCommentIndicator(commentIndicator);
     return commentIndicator;
+  }
+
+  /**
+   * Adds a popover to `commentIndicator` that will appear upon
+   * hovering over it.
+   */
+  static addPopoverToCommentIndicator(commentIndicator) {
+    commentIndicator.setAttribute(
+        'data-content',
+        TranscriptLineElement.#COMMENT_INDICATOR_POPOVER_MESSAGE);
+    commentIndicator.setAttribute('data-toggle', 'popover');
   }
 
   /**

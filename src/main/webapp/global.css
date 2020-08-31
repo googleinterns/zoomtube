@@ -11,21 +11,7 @@
   font-family: 'Product Sans';
 }
 
-body,
-html {
-  height: 100vh;
-  max-height: 100vh;
-  max-width: 100vw;
-  width: 100vw;
-  overflow: hidden;
-}
-
-body {
-  margin-bottom: 60px !important;
-}
-
 #footer {
-  bottom: 0;
   height: 60px;
   line-height: 60px;
   padding-top: 0px !important;
@@ -46,14 +32,18 @@ body {
   margin-bottom: 0 !important;
 }
 
-/* Buttons */
+.smooth-scrolling {
+  scroll-behavior: smooth;
+}
 
-.btn {
+/* Zoomtube Buttons */
+
+.zt-btn {
   border-color: #4c8bf5 !important;
   border-radius: 50px !important;
 }
 
-.btn:hover {
+.zt-btn:hover {
   background-color: #4c8bf5 !important;
 }
 
