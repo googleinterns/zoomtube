@@ -60,16 +60,6 @@ public class LectureServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_LINK = "link-input";
   @VisibleForTesting static final String PARAM_ID = "id";
 
-  /* Pattern used to create a matcher for a video ID. */
-  private static Pattern videoUrlGeneratedPattern;
-
-  private static DatastoreService datastore;
-
-  @Override
-  public void init() throws ServletException {
-    videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
-  }
-
   @Override
   // TODO: Check if videoId is a valid YouTube video. See: #224.
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
