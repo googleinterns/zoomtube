@@ -14,9 +14,12 @@
 
 import ParsedIconFeedback from './parsed-icon-feedback.js';
 
+/* Handles loading IconFeedback from database and parses data for graph. */
 export default class LoadIconFeedback {
   static #ENDPOINT_FEEDBACK = '/icon-feedback';
   static #PARAM_LECTURE_ID = 'lectureId';
+
+  /* Each interval is 10 seconds, used to increment interval. */
   static #INCREMENT_INTERVAL = 10000;
 
   #lectureId;
@@ -43,7 +46,6 @@ export default class LoadIconFeedback {
     const response = await fetch(url);
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
-    console.log(this.#parsedIconFeedback);
   }
 
   /**
