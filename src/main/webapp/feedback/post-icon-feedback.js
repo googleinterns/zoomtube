@@ -20,7 +20,7 @@ export default class PostIconFeedback {
   static #PARAM_ICON_TYPE = 'iconType';
 
   #lecture;
-  #video
+  #video;
 
   constructor(lecture, video) {
     this.#lecture = lecture;
