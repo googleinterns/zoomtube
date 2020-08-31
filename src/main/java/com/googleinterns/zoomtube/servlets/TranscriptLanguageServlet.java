@@ -39,9 +39,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /** Provides information on a lecture. */
 public class TranscriptLanguageServlet extends HttpServlet {
+  private static final String API_URL = "http://video.google.com/timedtext";
+  private static final String API_PARAM_TYPE = "type";
+  private static final String API_TYPE_LIST = "list";
+  private static final String API_LANG_ENGLISH = "en";
+  private static final String API_PARAM_VIDEO = "v";
   private static final String ERROR_MISSING_LINK = "Missing link parameter.";
   private static final String ERROR_INVALID_LINK = "Invalid video link.";
 
@@ -68,6 +75,8 @@ public class TranscriptLanguageServlet extends HttpServlet {
       return;
     }
 
+    Url transcriptLanguagesUrl = getTranscriptLanguagesUrlForVideo(videoId);
+
   }
 
   private Optional<String> validateGetRequest(HttpServletRequest request) {
@@ -75,5 +84,16 @@ public class TranscriptLanguageServlet extends HttpServlet {
       return Optional.of(ERROR_MISSING_LINK);
     }
     return Optional.empty();
+  }
+
+  private URL getTranscriptLanguagesUrlForVideo(String videoId) throws IOException {
+    try {
+      URIBuilder urlBuilder = new URIBuilder(API_URL);
+      urlBuilder.addParameter(API_PARAM_TYPE, API_TYPE_LIST);
+      urlBuilder.addParameter(API_PARAM_VIDEO, videoId);
+      return urlBuilder.build().toURL();
+    } catch (URISyntaxException | MalformedURLException e) {
+      throw new IOException(e.getCause());
+    }
   }
 }
