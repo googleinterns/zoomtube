@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +57,9 @@ public class TranscriptLanguageServlet extends HttpServlet {
   private static final String ERROR_MISSING_LINK = "Missing link parameter.";
   private static final String ERROR_INVALID_LINK = "Invalid video link.";
   private static final String TAG_TRACK = "track";
+  private static final String ATTR_LANG_CODE = "lang_code";
+  private static final String ATTR_NAME = "name";
+  private static final String ATTR_LANG_TRANSLATED = "lang_translated";
 
   /* Name of input field used for lecture name in lecture selection page. */
   @VisibleForTesting static final String PARAM_NAME = "name-input";
@@ -82,6 +86,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
     URL transcriptLanguagesUrl = getTranscriptLanguagesUrlForVideo(videoId.get());
     Document transcriptLanguagesDocument =
         TranscriptParser.fetchUrlAsXmlDocument(transcriptLanguagesUrl);
+    List transcriptLanguages = parseTranscriptLanguages(transcriptLanguagesDocument);
   }
 
   private Optional<String> validateGetRequest(HttpServletRequest request) {
@@ -102,13 +107,16 @@ public class TranscriptLanguageServlet extends HttpServlet {
     }
   }
 
-  private parseTranscriptLanguages(Document document) {
+  private List parseTranscriptLanguages(Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
+    List transcriptLanguages = new ArrayList()<>;
     for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
       Element transcriptElement = (Element) transcriptNodes.item(nodeIndex);
       Entity transcriptLineEntity =
-      createTranscriptLanguageFromElement(transcriptElement);
+      transcriptLanguages.add(createTranscriptLanguageFromElement(transcriptElement));
     }
+
+
   }
 
   /**
@@ -118,10 +126,10 @@ public class TranscriptLanguageServlet extends HttpServlet {
   private Entity createTranscriptLanguageFromElement(Element transcriptLineElement) {
     String lineContent = transcriptLineElement.getTextContent();
 
-    float lineStartSeconds = Float.parseFloat(transcriptLineElement.getAttribute(ATTR_START));
-    float lineDurationSeconds = Float.parseFloat(transcriptLineElement.getAttribute(ATTR_DURATION));
-
-    return TranscriptLineUtil.createEntity(
-        lectureKey, lineContent, lineStartMs, lineDurationMs, lineEndMs);
+    String languageName = transcriptLineElement.getAttribute(ATTR_NAME);
+    String languageCode = transcriptLineElement.getAttribute(ATTR_LANG_CODE);
+    String languageTranslatedName = transcriptLineElement.getAttribute(ATTR_LANG_TRANSLATED);
+    // TODO: Create a language object
+    return;
   }
 }
