@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {timestampToString} from '../../timestamps.js';
-import {ELEMENT_DISCUSSION} from './discussion-area.js';
+import TimestampUtil from '../../timestamp-util.js';
 import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 
 /**
@@ -80,7 +79,8 @@ export default class DiscussionComment extends HTMLElement {
     let timestampPrefix = '';
     if (comment.type !== COMMENT_TYPE_REPLY) {
       // Don't show timestamp on replies.
-      timestampPrefix = `${timestampToString(comment.timestampMs.value)} - `;
+      timestampPrefix =
+          `${TimestampUtil.timestampToString(comment.timestampMs.value)} - `;
     }
     return `${timestampPrefix}${username} on ${comment.created}`;
   }
@@ -95,9 +95,13 @@ export default class DiscussionComment extends HTMLElement {
     /* eslint-disable indent */
     const replyForm =
         this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_REPLY_FORM);
+    const replyTextarea = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
+
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_SHOW_REPLY)
         .onclick = () => {
       $(replyForm).collapse('show');
+      $(replyTextarea).focus();
     };
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_CANCEL_REPLY)
         .onclick = () => {
@@ -115,7 +119,9 @@ export default class DiscussionComment extends HTMLElement {
   postReplyClicked() {
     const textarea = this.shadowRoot.querySelector(
         DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
-    this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
+    this.#discussion.postReply(
+        textarea.value, this.comment.commentKey.id,
+        this.comment.transcriptLineKey.id);
 
     textarea.value = '';
     const replyForm =
@@ -165,17 +171,6 @@ export default class DiscussionComment extends HTMLElement {
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
     typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
     this.appendChild(typePill);
-  }
-
-
-  /**
-   * Scroll such that this element is at the top of the discussion area.
-   */
-  scrollToTopOfDiscussion() {
-    const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
-    const elementTop = this.offsetTop;
-    const offset = elementTop - scrollPaneTop;
-    ELEMENT_DISCUSSION.scrollTop = offset;
   }
 
   /**
