@@ -124,11 +124,10 @@ public class TranscriptLanguageServlet extends HttpServlet {
    * Creates a Transcript Line entity from the XML {@code transcriptLineElement} as part of the
    * transcript for the lecture referenced by {@code lectureKey}.
    */
-  private Entity createTranscriptLanguageFromElement(Element transcriptLineElement) {
+  private TranscriptLanguage createTranscriptLanguageFromElement(Element transcriptLineElement) {
     String languageName = transcriptLineElement.getAttribute(ATTR_NAME);
     String languageCode = transcriptLineElement.getAttribute(ATTR_LANG_CODE);
     String languageTranslatedName = transcriptLineElement.getAttribute(ATTR_LANG_TRANSLATED);
-    // TODO: Create a language object
-    return TranscriptLanguage.builder().setLanguageName(languageName).setLanguageCode(languageCode).setLanguageTranslatedName(languageTranslatedName);
+    return TranscriptLanguage.builder().setLanguageName(languageName).setLanguageCode(languageCode).setLanguageTranslatedName(languageTranslatedName).build();
   }
 }

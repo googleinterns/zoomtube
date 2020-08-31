@@ -14,7 +14,6 @@
 
 package com.googleinterns.zoomtube.data;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
@@ -22,23 +21,15 @@ import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 @GenerateTypeAdapter
 @AutoValue
 public abstract class TranscriptLanguage {
-  /** Returns the key for the transcript. */
-  public abstract Key transcriptKey();
 
-  /** Returns the key for the lecture. */
-  public abstract Key lectureKey();
+  /** Returns the name of the language. */
+  public abstract String languageName();
 
-  /** Returns the starting timestamp for the transcript line in milliseconds. */
-  public abstract long startTimestampMs();
+/** Returns the ISO language code for the language. */
+public abstract String languageCode();
 
-  /** Returns the duration of the transcript line in milliseconds. */
-  public abstract long durationMs();
-
-  /** Returns the ending timestamp for the transcript line in milliseconds. */
-  public abstract long endTimestampMs();
-
-  /** Returns the text content of the transcript line. */
-  public abstract String content();
+/** Returns the name of the language in English. */
+public abstract String languageTranslatedName();
 
   /**
    * Returns a builder instance that can be used to create TranscriptLines.
@@ -52,12 +43,9 @@ public abstract class TranscriptLanguage {
    */
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder setTranscriptKey(Key transcriptKey);
-    public abstract Builder setLectureKey(Key lectureKey);
-    public abstract Builder setStartTimestampMs(long startTimestampMs);
-    public abstract Builder setDurationMs(long durationMs);
-    public abstract Builder setEndTimestampMs(long endTimestampMs);
-    public abstract Builder setContent(String content);
-    public abstract TranscriptLine build();
+    public abstract Builder setLanguageName(String languageName);
+    public abstract Builder setLanguageCode(String languageCode);
+    public abstract Builder setLanguageTranslatedName(String languageTranslatedName);
+    public abstract TranscriptLanguage build();
   }
 }
