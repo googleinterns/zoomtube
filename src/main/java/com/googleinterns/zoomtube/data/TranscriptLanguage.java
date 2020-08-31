@@ -28,7 +28,7 @@ public abstract class TranscriptLanguage {
   public abstract String languageCode();
 
   /** Returns the name of the language in English. */
-  public abstract String languageTranslatedName();
+  public abstract String languageNameInEnglish();
 
   /**
    * Returns a builder instance that can be used to create TranscriptLanguages.
@@ -44,7 +44,7 @@ public abstract class TranscriptLanguage {
   public abstract static class Builder {
     public abstract Builder setLanguageName(String languageName);
     public abstract Builder setLanguageCode(String languageCode);
-    public abstract Builder setLanguageTranslatedName(String languageTranslatedName);
+    public abstract Builder setLanguageNameInEnglish(String languageNameInEnglish);
     public abstract TranscriptLanguage build();
   }
 }
