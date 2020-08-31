@@ -44,6 +44,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /** Provides information on a lecture. */
 public class TranscriptLanguageServlet extends HttpServlet {
@@ -54,6 +55,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
   private static final String API_PARAM_VIDEO = "v";
   private static final String ERROR_MISSING_LINK = "Missing link parameter.";
   private static final String ERROR_INVALID_LINK = "Invalid video link.";
+  private static final String TAG_TRACK = "track";
 
   /* Name of input field used for lecture name in lecture selection page. */
   @VisibleForTesting static final String PARAM_NAME = "name-input";
@@ -62,7 +64,6 @@ public class TranscriptLanguageServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_ID = "id";
 
   @Override
-  // TODO: Check if videoId is a valid YouTube video. See: #224.
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> error = validateGetRequest(request);
     if (error.isPresent()) {
@@ -99,5 +100,28 @@ public class TranscriptLanguageServlet extends HttpServlet {
     } catch (URISyntaxException | MalformedURLException e) {
       throw new IOException(e.getCause());
     }
+  }
+
+  private parseTranscriptLanguages(Document document) {
+    NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
+    for (int nodeIndex = 0; nodeIndex < transcriptNodes.getLength(); nodeIndex++) {
+      Element transcriptElement = (Element) transcriptNodes.item(nodeIndex);
+      Entity transcriptLineEntity =
+      createTranscriptLanguageFromElement(transcriptElement);
+    }
+  }
+
+  /**
+   * Creates a Transcript Line entity from the XML {@code transcriptLineElement} as part of the
+   * transcript for the lecture referenced by {@code lectureKey}.
+   */
+  private Entity createTranscriptLanguageFromElement(Element transcriptLineElement) {
+    String lineContent = transcriptLineElement.getTextContent();
+
+    float lineStartSeconds = Float.parseFloat(transcriptLineElement.getAttribute(ATTR_START));
+    float lineDurationSeconds = Float.parseFloat(transcriptLineElement.getAttribute(ATTR_DURATION));
+
+    return TranscriptLineUtil.createEntity(
+        lectureKey, lineContent, lineStartMs, lineDurationMs, lineEndMs);
   }
 }
