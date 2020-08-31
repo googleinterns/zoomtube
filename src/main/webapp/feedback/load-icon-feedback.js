@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import TimestampUtil from '../timestamp-util.js';
 import IconFeedbackUtil from './icon-feedback-util.js';
 import ParsedIconFeedback from './parsed-icon-feedback.js';
 
@@ -47,8 +48,6 @@ export default class LoadIconFeedback {
     const response = await fetch(url);
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
-    console.log('HERE');
-    console.log(this.#parsedIconFeedback);
   }
 
   /**
@@ -57,34 +56,33 @@ export default class LoadIconFeedback {
    * ParseIconFeedback object.
    */
   parseFeedback(iconFeedbackJson) {
+    console.log(iconFeedbackJson);
     let index = 0;
     let interval = 0;
-    while (index < iconFeedbackJson.length) {
-      const typeCountsAndInterval = {
-        [IconFeedbackUtil.TYPE_GOOD]: 0,
-        [IconFeedbackUtil.TYPE_BAD]: 0,
-        [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
-        [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
-        [IconFeedbackUtil.INTERVAl]: interval / 1000,
-      };
-      while (index < iconFeedbackJson.length &&
-             iconFeedbackJson[index].timestampMs < interval) {
-        if (iconFeedbackJson[index].type == IconFeedbackUtil.TYPE_GOOD) {
-          typeCountsAndInterval[IconFeedbackUtil.TYPE_GOOD]++;
-        } else if (iconFeedbackJson[index].type == IconFeedbackUtil.TYPE_BAD) {
-          typeCountsAndInterval[IconFeedbackUtil.TYPE_BAD]++;
-        } else if (
-          iconFeedbackJson[index].type == IconFeedbackUtil.TYPE_TOO_FAST) {
-          typeCountsAndInterval[IconFeedbackUtil.TYPE_TOO_FAST]++;
-        } else {
-          typeCountsAndInterval[IconFeedbackUtil.TYPE_TOO_SLOW]++;
-        }
-        index++;
+    let typeCountsAndInterval = this.makeCountDictionary(interval);
+    for (const iconFeedback of iconFeedbackJson) {
+      if (interval < iconFeedback.timestampMs) {
+        this.#parsedIconFeedback.appendTypeCountsAndInterval(
+            typeCountsAndInterval);
+        interval += LoadIconFeedback.#INCREMENT_INTERVAL;
+        typeCountsAndInterval = this.makeCountDictionary(interval)
+      } else {
+        const type = iconFeedbackJson[index].type;
+        typeCountsAndInterval[type]++;
       }
-      this.#parsedIconFeedback.appendTypeCountsAndInterval(
-          typeCountsAndInterval);
-      interval += LoadIconFeedback.INCREMENT_INTERVAL;
     }
+    this.#parsedIconFeedback.appendTypeCountsAndInterval(typeCountsAndInterval);
+  }
+
+  makeCountDictionary(interval) {
+    return {
+      [IconFeedbackUtil.TYPE_GOOD]: 0,
+      [IconFeedbackUtil.TYPE_BAD]: 0,
+      [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
+      [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
+      [IconFeedbackUtil.INTERVAL]:
+          TimestampUtil.millisecondsToSeconds(interval),
+    };
   }
 }
 

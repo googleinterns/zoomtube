@@ -28,6 +28,7 @@ export default class ParsedIconFeedback {
   }
 
   appendTypeCountsAndInterval(counts) {
+    console.log(counts);
     this.#counts[IconFeedbackUtil.TYPE_GOOD].push(
         counts[IconFeedbackUtil.TYPE_GOOD]);
     this.#counts[IconFeedbackUtil.TYPE_BAD].push(
