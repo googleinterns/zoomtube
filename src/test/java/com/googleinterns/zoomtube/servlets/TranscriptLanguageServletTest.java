@@ -22,12 +22,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.TranscriptLanguage;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
@@ -50,7 +48,7 @@ public final class TranscriptLanguageServletTest {
   private StringWriter transcriptLanguages;
 
   @Before
-  public void setUp() throws ServletException, IOException {
+  public void setUp() throws Exception {
     transcriptLanguageServlet = new TranscriptLanguageServlet();
     transcriptLanguageServlet.init();
     transcriptLanguages = new StringWriter();
@@ -59,7 +57,7 @@ public final class TranscriptLanguageServletTest {
   }
 
   @Test
-  public void doGet_missingVideoLink_badRequest() throws ServletException, IOException {
+  public void doGet_missingVideoLink_badRequest() throws Exception {
     transcriptLanguageServlet.doGet(request, response);
 
     verify(response).sendError(
@@ -67,7 +65,7 @@ public final class TranscriptLanguageServletTest {
   }
 
   @Test
-  public void doGet_invalidVideoLink_badRequest() throws ServletException, IOException {
+  public void doGet_invalidVideoLink_badRequest() throws Exception {
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK)).thenReturn("123456");
 
     transcriptLanguageServlet.doGet(request, response);
@@ -78,7 +76,7 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithManyLanguages()
-      throws ServletException, IOException {
+      throws Exception {
     String videoWithManyLanguageOptions = "https://www.youtube.com/watch?v=fzQ6gRAEoy0";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithManyLanguageOptions);
@@ -91,7 +89,7 @@ public final class TranscriptLanguageServletTest {
   }
 
   @Test
-  public void doGet_getListOfLanguages_videoWithNoLanguages() throws ServletException, IOException {
+  public void doGet_getListOfLanguages_videoWithNoLanguages() throws Exception {
     String videoWithNoLanguageOptions = "https://www.youtube.com/watch?v=QJO3ROT-A4E";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithNoLanguageOptions);
@@ -105,7 +103,7 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithOnlyOneLanguage()
-      throws ServletException, IOException {
+      throws Exception {
     String videoWithOnlyOneLanguage = "https://www.youtube.com/watch?v=9DwzBICPhdM";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithOnlyOneLanguage);
