@@ -128,6 +128,11 @@ discussion-comment[highlighted] > [slot='header'] {
   padding: 15px;
 }
 
+.transcript-line-timestamp {
+  display: inline-block;
+  width: 110px;
+}
+
 #transcript-lines-container {
   height: 100%;
   overflow: scroll;
@@ -139,6 +144,7 @@ discussion-comment[highlighted] > [slot='header'] {
 }
 
 .transcript-line-timestamp {
+  cursor: pointer;
   display: inline-block;
   width: 110px;
 }

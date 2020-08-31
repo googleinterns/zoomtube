@@ -74,7 +74,7 @@ export default class TranscriptArea {
       TranscriptArea.displayNoTranscriptMessage();
       return;
     }
-    TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+    this.addTranscriptLinesToDom(transcriptLines);
   }
 
   /**
@@ -93,7 +93,7 @@ export default class TranscriptArea {
    * <p>This is a private method that should only be called in
    * `loadTranscript()`.
    */
-  static addTranscriptLinesToDom(transcriptLines) {
+  addTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer = TranscriptArea.transcriptScrollContainer();
     const ulElement = document.createElement('ul');
     // TODO: Move the class assignment to the HTML.
@@ -105,6 +105,8 @@ export default class TranscriptArea {
       ulElement.appendChild(transcriptLineElement);
       this.#transcriptLineToCommentCount.set(
           transcriptLine.transcriptKey.id, transcriptLineElement);
+      transcriptLineElement.attachSeekingEventListener(
+          this.transcriptSeeker().eventController());
     });
     $('.indicator').popover({trigger: 'hover'});
   }
