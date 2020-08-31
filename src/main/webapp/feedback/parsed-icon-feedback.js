@@ -12,36 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import IconFeedbackUtil from './icon-feedback-util.js';
+
 /** Stores parsed icon feedback data. */
 export default class ParsedIconFeedback {
   /* Each index of these represents the number of IconFeedbacks for that
    * icon type during that 10 seconds interval.
    */
-  #goodCounts = [];
-  #badCounts = [];
-  #tooFastCounts = [];
-  #tooSlowCounts = [];
-
-  /* Each index of this represents a point on the horizontal axis of graph. */
-  #intervals = [];
-
-  appendGoodCount(goodCount) {
-    this.#goodCounts.push(goodCount);
+  #counts = {
+    [IconFeedbackUtil.#TYPE_GOOD]: [],
+    [IconFeedbackUtil.#TYPE_BAD]: [],
+    [IconFeedbackUtil.#TYPE_TOO_FAST]: [],
+    [IconFeedbackUtil.#TYPE_TOO_SLOW]: [],
+    [IconFeedbackUtil.#INTERVAL]: [],
   }
 
-  appendBadCount(badCount) {
-    this.#badCounts.push(badCount);
-  }
-
-  appendTooFastCount(tooFastCount) {
-    this.#tooFastCounts.push(tooFastCount);
-  }
-
-  appendTooSlowCount(tooSlowCount) {
-    this.#tooSlowCounts.push(tooSlowCount);
-  }
-
-  appendInterval(interval) {
-    this.#intervals.push(interval);
+  appendCounts(counts) {
+    this.#counts[IconFeedbackUtil.#TYPE_GOOD].push(
+        counts[IconFeedbackUtil.#TYPE_GOOD]);
+    this.#counts[IconFeedbackUtil.#TYPE_BAD].push(
+        counts[IconFeedbackUtil.#TYPE_BAD]);
+    this.#counts[IconFeedbackUtil.#TYPE_TOO_FAST].push(
+        counts[IconFeedbackUtil.#TYPE_TOO_FAST]);
+    this.#counts[IconFeedbackUtil.#TYPE_TOO_SLOW].push(
+        counts[IconFeedbackUtil.#TYPE_TOO_SLOW]);
+    this.#counts[IconFeedbackUtil.#INTERVAL].push(
+        counts[IconFeedbackUtil.#INTERVAL]);
   }
 }
