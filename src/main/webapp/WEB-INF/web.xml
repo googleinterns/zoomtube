@@ -25,6 +25,10 @@
     <servlet-class>com.googleinterns.zoomtube.servlets.TranscriptServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>transcript-language</servlet-name>
+    <servlet-class>com.googleinterns.zoomtube.servlets.TranscriptLanguageServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>icon-feedback</servlet-name>
     <servlet-class>com.googleinterns.zoomtube.servlets.IconFeedbackServlet</servlet-class>
   </servlet>
@@ -48,6 +52,10 @@
   <servlet-mapping>
     <servlet-name>transcript</servlet-name>
     <url-pattern>/transcript</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>transcript-language</servlet-name>
+    <url-pattern>/lang</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>icon-feedback</servlet-name>
