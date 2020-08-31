@@ -124,11 +124,11 @@ public class TranscriptLanguageServlet extends HttpServlet {
       Element transcriptLanguageElement) {
     String languageName = transcriptLanguageElement.getAttribute(ATTR_NAME);
     String languageCode = transcriptLanguageElement.getAttribute(ATTR_LANG_CODE);
-    String languageTranslatedName = transcriptLanguageElement.getAttribute(ATTR_LANG_TRANSLATED);
+    String languageNameInEnglish = transcriptLanguageElement.getAttribute(ATTR_LANG_TRANSLATED);
     return TranscriptLanguage.builder()
         .setLanguageName(languageName)
         .setLanguageCode(languageCode)
-        .setLanguageTranslatedName(languageTranslatedName)
+        .setLanguageNameInEnglish(languageNameInEnglish)
         .build();
   }
 
