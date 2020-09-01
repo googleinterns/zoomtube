@@ -46,4 +46,8 @@ export const COMMENT_TYPES = {
     markAsFunction: MarkAnsweredEndpoint.markAnswered,
     oppositeType: COMMENT_TYPE_QUESTION_UNANSWERED,
   },
+  [COMMENT_TYPE_QUESTION_ANSWERED]: {
+    name: 'Answered',
+    badgeStyles: ['badge-success', 'float-right', 'badge', 'badge-pill'],
+  },
 };

@@ -51,6 +51,12 @@ public abstract class Comment {
   public abstract Optional<Long> timestampMs();
 
   /**
+   * Returns the transcript line key for which this comment is for, or {@code Optional.empty()} if
+   * it doesn't have one.
+   */
+  public abstract Optional<Key> transcriptLineKey();
+
+  /**
    * Returns the comment's author.
    */
   public abstract User author();
@@ -76,6 +82,7 @@ public abstract class Comment {
     public abstract Builder setParentKey(Optional<Key> parentKey);
     public abstract Builder setTimestampMs(long timestampMs);
     public abstract Builder setTimestampMs(Optional<Long> timestampMs);
+    public abstract Builder setTranscriptLineKey(Optional<Key> transcriptLineKey);
     public abstract Builder setAuthor(User author);
     public abstract Builder setContent(String content);
     public abstract Builder setCreated(Date created);
