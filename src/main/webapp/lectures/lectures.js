@@ -115,4 +115,4 @@ function createDefaultDisabledLanguageOption() {
   return defaultLanguageOptionElement;
 }
 
-window.fetchAndDisplayTranscriptLanguages = fetchAndDisplayTranscriptLanguages
+window.fetchAndDisplayTranscriptLanguages = fetchAndDisplayTranscriptLanguages;
