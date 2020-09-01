@@ -241,8 +241,10 @@ export default class DiscussionArea {
 
     const currentTranscriptLine =
         this.#transcriptSeeker.currentTranscriptLine();
-    const currentTranscriptLineId =
-        currentTranscriptLine.transcriptLine.transcriptKey.id;
+    let currentTranscriptLineId;
+    if (currentTranscriptLine) {
+      currentTranscriptLineId = currentTranscriptLine.transcriptLine.transcriptKey.id;
+    }
 
     this.#manager
         .postRootComment(
