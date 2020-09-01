@@ -209,20 +209,20 @@ export default class DiscussionComment extends HTMLElement {
   setMarkAsButton(type) {
     const markAsButton = this.shadowRoot.querySelector(
         DiscussionComment.#SELECTOR_MARK_AS_BUTTON);
-    if (!COMMENT_TYPES[type].hasMarkAs) {
+    if (!COMMENT_TYPES[type].isQuestion) {
       markAsButton.style.visibility = 'hidden';
       return;
     }
 
     const oppositeType = COMMENT_TYPES[type].oppositeType;
 
-    const markAsText = COMMENT_TYPES[oppositeType].markAsText;
-    markAsButton.innerText = markAsText;
+    const updateTypeText = COMMENT_TYPES[oppositeType].updateTypeText;
+    markAsButton.innerText = updateTypeText;
 
-    const markAsFunction = COMMENT_TYPES[oppositeType].markAsFunction;
+    const updateType = COMMENT_TYPES[oppositeType].updateTypeFunction;
     const listener = async () => {
       markAsButton.removeEventListener('click', listener);
-      await markAsFunction(this.comment.commentKey.id);
+      await updateType(this.comment.commentKey.id);
       await this.#discussion.updateDiscussion();
     };
     markAsButton.onclick = listener;

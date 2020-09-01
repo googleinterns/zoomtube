@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import MarkAnsweredEndpoint from './mark-answered-endpoint.js';
+import MarkAnsweredUtil from './mark-answered-util.js';
 
 export const COMMENT_TYPE_REPLY = 'REPLY';
 export const COMMENT_TYPE_QUESTION_UNANSWERED = 'QUESTION_UNANSWERED';
@@ -54,7 +54,7 @@ export const COMMENT_TYPES = {
     isQuestion: true,
     oppositeType: COMMENT_TYPE_QUESTION_ANSWERED,
     updateTypeText: 'Mark as Unanswered',
-    updateTypeFunction: MarkAnsweredEndpoint.markUnanswered,
+    updateTypeFunction: MarkAnsweredUtil.markUnanswered,
   },
   [COMMENT_TYPE_QUESTION_ANSWERED]: {
     name: 'Answered',
@@ -62,6 +62,6 @@ export const COMMENT_TYPES = {
     isQuestion: true,
     oppositeType: COMMENT_TYPE_QUESTION_UNANSWERED,
     updateTypeText: 'Mark as Answered',
-    updateTypeFunction: MarkAnsweredEndpoint.markAnswered,
+    updateTypeFunction: MarkAnsweredUtil.markAnswered,
   },
 };

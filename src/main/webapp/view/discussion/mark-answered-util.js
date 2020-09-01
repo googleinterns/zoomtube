@@ -21,7 +21,7 @@ import {COMMENT_TYPE_QUESTION_UNANSWERED} from './discussion.js';
  * Provides static utility methods for marking comments as answered or
  * unanswered.
  */
-export default class MarkAnsweredEndpoint {
+export default class MarkAnsweredUtil {
   static #ENDPOINT = '/mark-answered';
   static #PARAM_COMMENT = 'comment';
   static #PARAM_NEW_TYPE = 'new-type';
