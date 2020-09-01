@@ -38,6 +38,11 @@ export default class DiscussionArea {
    * selected type button in the new comment area.
    */
   static #SELECTOR_SELECTED_TYPE = 'label.active > input';
+  /**
+   * How long to wait between updating the discussion comments in the
+   * background.
+   */
+  static #BACKGROUND_UPDATE_INTERVAL_MS = 5000;
 
   #lecture;
   #eventController;
@@ -75,6 +80,10 @@ export default class DiscussionArea {
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment = this.postNewComment.bind(this);
+
+    setInterval(
+        this.updateDiscussion.bind(this),
+        DiscussionArea.#BACKGROUND_UPDATE_INTERVAL_MS);
     await this.updateDiscussion();
     DiscussionArea.#ELEMENT_DISCUSSION.removeChild(
         DiscussionArea.#ELEMENT_LOADING_SPINNER);
