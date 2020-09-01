@@ -18,11 +18,11 @@ import IconFeedbackUtil from './icon-feedback-util.js';
 export default class ParsedIconFeedback {
   /* Values of each icon feedback type at each interval. */
   #counts = {
-    [IconFeedbackUtil.TYPE_GOOD]: [],
-    [IconFeedbackUtil.TYPE_BAD]: [],
-    [IconFeedbackUtil.TYPE_TOO_FAST]: [],
-    [IconFeedbackUtil.TYPE_TOO_SLOW]: [],
-    [IconFeedbackUtil.INTERVAL]: [],
+    [IconFeedbackUtil.TYPE_GOOD]: [0],
+    [IconFeedbackUtil.TYPE_BAD]: [0],
+    [IconFeedbackUtil.TYPE_TOO_FAST]: [0],
+    [IconFeedbackUtil.TYPE_TOO_SLOW]: [0],
+    [IconFeedbackUtil.INTERVAL]: [0],
   }
 
   /**
