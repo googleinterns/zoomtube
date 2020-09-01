@@ -105,32 +105,32 @@ export default class LoadIconFeedback {
         datasets: [
           {
             label: [IconFeedbackUtil.TYPE_GOOD],
-            backgroundColor: [IconFeedbackUtil.chartColors.red],
-            borderColor: [IconFeedbackUtil.chartColors.red],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.red],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.red],
             data: this.#parsedIconFeedback.getTypeCount(
                 IconFeedbackUtil.TYPE_GOOD),
             fill: false,
           },
           {
             label: [IconFeedbackUtil.TYPE_BAD],
-            backgroundColor: [IconFeedbackUtil.chartColors.blue],
-            borderColor: [IconFeedbackUtil.chartColors.blue],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.blue],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.blue],
             data: this.#parsedIconFeedback.getTypeCount(
                 IconFeedbackUtil.TYPE_BAD),
             fill: false,
           },
           {
             label: [IconFeedbackUtil.TYPE_TOO_FAST],
-            backgroundColor: [IconFeedbackUtil.chartColors.orange],
-            borderColor: [IconFeedbackUtil.chartColors.orange],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.orange],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.orange],
             data: this.#parsedIconFeedback.getTypeCount(
                 IconFeedbackUtil.TYPE_TOO_FAST),
             fill: false,
           },
           {
             label: [IconFeedbackUtil.TYPE_TOO_SLOW],
-            backgroundColor: [IconFeedbackUtil.chartColors.green],
-            borderColor: [IconFeedbackUtil.chartColors.green],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.green],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.green],
             data: this.#parsedIconFeedback.getTypeCount(
                 IconFeedbackUtil.TYPE_TOO_SLOW),
             fill: false,
