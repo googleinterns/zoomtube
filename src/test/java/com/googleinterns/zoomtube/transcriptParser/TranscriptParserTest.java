@@ -118,7 +118,8 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        SHORT_VIDEO_ID, lectureKeyB, LECTURE_LANGUAGE);
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyB);
     int expectedQueryCount = (shortVideoTranscriptLines).size();
@@ -129,7 +130,8 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws Exception {
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        LONG_VIDEO_ID, lectureKeyC, LECTURE_LANGUAGE);
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyC);
     int expectedQueryCount = (longVideoTranscriptLines).size();
@@ -156,7 +158,8 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_removesNewlines() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(VIDEO_WITH_NEWLINES_ID, lectureKeyB, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        VIDEO_WITH_NEWLINES_ID, lectureKeyB, LECTURE_LANGUAGE);
 
     PreparedQuery preparedQuery =
         datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKeyB));

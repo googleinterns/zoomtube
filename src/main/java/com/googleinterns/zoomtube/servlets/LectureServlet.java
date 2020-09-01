@@ -122,7 +122,8 @@ public class LectureServlet extends HttpServlet {
    * and {@code videoId} properties in {@code lectureEntity}. The language for parsing
    * is determined by {@code transcriptLanguage}
    */
-  private void initializeTranscript(Entity lectureEntity, String transcriptLanguage) throws IOException, ServletException {
+  private void initializeTranscript(Entity lectureEntity, String transcriptLanguage)
+      throws IOException, ServletException {
     TranscriptParser transcriptParser = TranscriptParser.getParser();
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
