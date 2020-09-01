@@ -30,7 +30,7 @@ export default class MarkAnsweredUtil {
    * Sends a request to mark `commentId` as answered.
    */
   static async markAnswered(commentId) {
-    await MarkAnsweredEndpoint.postNewType(
+    await MarkAnsweredUtil.postNewType(
         commentId, COMMENT_TYPE_QUESTION_ANSWERED);
   }
 
@@ -38,7 +38,7 @@ export default class MarkAnsweredUtil {
    * Sends a request to mark `commentId` as unanswered.
    */
   static async markUnanswered(commentId) {
-    await MarkAnsweredEndpoint.postNewType(
+    await MarkAnsweredUtil.postNewType(
         commentId, COMMENT_TYPE_QUESTION_UNANSWERED);
   }
 
@@ -50,9 +50,9 @@ export default class MarkAnsweredUtil {
    * from outside of this class.
    */
   static async postNewType(commentId, newType) {
-    const url = new URL(MarkAnsweredEndpoint.#ENDPOINT, window.location.origin);
-    url.searchParams.append(MarkAnsweredEndpoint.#PARAM_COMMENT, commentId);
-    url.searchParams.append(MarkAnsweredEndpoint.#PARAM_NEW_TYPE, newType);
+    const url = new URL(MarkAnsweredUtil.#ENDPOINT, window.location.origin);
+    url.searchParams.append(MarkAnsweredUtil.#PARAM_COMMENT, commentId);
+    url.searchParams.append(MarkAnsweredUtil.#PARAM_NEW_TYPE, newType);
 
     await fetch(url, {method: 'POST'});
   }

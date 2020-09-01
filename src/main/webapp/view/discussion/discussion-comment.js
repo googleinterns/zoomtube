@@ -215,11 +215,9 @@ export default class DiscussionComment extends HTMLElement {
     }
 
     const oppositeType = COMMENT_TYPES[type].oppositeType;
-
-    const updateTypeText = COMMENT_TYPES[oppositeType].updateTypeText;
-    markAsButton.innerText = updateTypeText;
-
+    markAsButton.innerText = COMMENT_TYPES[oppositeType].updateTypeText;
     const updateType = COMMENT_TYPES[oppositeType].updateTypeFunction;
+
     const listener = async () => {
       markAsButton.removeEventListener('click', listener);
       await updateType(this.comment.commentKey.id);
