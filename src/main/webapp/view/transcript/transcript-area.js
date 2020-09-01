@@ -150,4 +150,3 @@ export default class TranscriptArea {
     return this.#transcriptSeeker;
   }
 }
-
