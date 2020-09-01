@@ -48,8 +48,7 @@ export default class LectureView {
     this.#video = new Video(this.#lecture, this.#eventController);
     this.#transcript = new TranscriptArea(this.#lecture, this.#eventController);
     this.#discussion = new DiscussionArea(
-        this.#lecture, this.#eventController,
-        this.#transcript.transcriptSeeker());
+        this.#lecture, this.#eventController, this.#transcript);
 
     await this.#video.loadVideoApi();
     await this.#transcript.initialize();
