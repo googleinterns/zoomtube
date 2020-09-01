@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import TimestampUtil from '../timestamp-util.js';
 import IconFeedbackUtil from './icon-feedback-util.js';
 
 /** Stores parsed icon feedback data. */
@@ -22,7 +23,7 @@ export default class ParsedIconFeedback {
     [IconFeedbackUtil.TYPE_BAD]: [0],
     [IconFeedbackUtil.TYPE_TOO_FAST]: [0],
     [IconFeedbackUtil.TYPE_TOO_SLOW]: [0],
-    [IconFeedbackUtil.INTERVAL]: [0],
+    [IconFeedbackUtil.INTERVAL]: [TimestampUtil.timestampToString(0)],
   }
 
   /**

@@ -85,7 +85,7 @@ export default class LoadIconFeedback {
       [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
       [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
       [IconFeedbackUtil.INTERVAL]:
-          TimestampUtil.millisecondsToSeconds(intervalLowerBound),
+          TimestampUtil.timestampToString(intervalLowerBound),
     };
   }
 
@@ -153,7 +153,7 @@ export default class LoadIconFeedback {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: 'Timestamp (seconds)',
+                labelString: 'Video Timestamp',
               },
             },
           ],
