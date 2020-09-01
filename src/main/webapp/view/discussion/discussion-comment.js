@@ -111,7 +111,15 @@ export default class DiscussionComment extends HTMLElement {
           TimestampUtil.timestampToString(this.comment.timestampMs.value);
       timestampPrefix = `${timestampString} - `;
     }
-    return `${timestampPrefix}${username} on ${this.comment.created}`;
+
+    // An undefined locale means to use the browser's default.
+    const createdDateString = this.comment.created.toLocaleDateString(
+        /* locale= */ undefined, {
+          timeStyle: 'short',
+          dateStyle: 'short',
+        });
+
+    return `${timestampPrefix}${username} on ${createdDateString}`;
   }
 
   /**
