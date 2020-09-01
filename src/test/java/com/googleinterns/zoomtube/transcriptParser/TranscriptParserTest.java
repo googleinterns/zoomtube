@@ -139,7 +139,7 @@ public final class TranscriptParserTest {
     try {
       TranscriptParser.getParser().parseAndStoreTranscript(
         LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "notAValidLanguage");
-      fail("The language is not supposed to be valid.");
+      fail();
     } catch (IOException e) {
     }
   }
@@ -151,7 +151,7 @@ public final class TranscriptParserTest {
     try {
       TranscriptParser.getParser().parseAndStoreTranscript(
         LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "");
-      fail("The language is not supposed to be present.");
+      fail();
     } catch (IOException e) {
     }
   }
