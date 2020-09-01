@@ -194,7 +194,6 @@ export default class DiscussionComment extends HTMLElement {
     if (type === COMMENT_TYPE_REPLY) {
       return;
     }
-
     const typePill = document.createElement('span');
     typePill.innerText = COMMENT_TYPES[type].name;
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
