@@ -114,3 +114,5 @@ function createDefaultDisabledLanguageOption() {
   defaultLanguageOptionElement.innerText = SELECT_LANGUAGE_OPTION_MESSAGE;
   return defaultLanguageOptionElement;
 }
+
+window.fetchAndDisplayTranscriptLanguages = fetchAndDisplayTranscriptLanguages
