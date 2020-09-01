@@ -29,10 +29,10 @@ export default class LoadIconFeedback {
 
   constructor(lectureId) {
     this.#lectureId = lectureId;
+    this.#parsedIconFeedback = new ParsedIconFeedback();
   }
 
   async initialize() {
-    this.#parsedIconFeedback = new ParsedIconFeedback();
     await this.loadIconFeedbackList();
   }
 
@@ -51,11 +51,7 @@ export default class LoadIconFeedback {
     this.parseFeedback(jsonData);
   }
 
-  /**
-   * Parses `iconFeedbackJson` by couting how many times each IconFeedback type
-   * is clicked in each 10 second interval and stores that data in a
-   * ParseIconFeedback object.
-   */
+  /** Parses `iconFeedbackJson` data so that it can be graphed. */
   parseFeedback(iconFeedbackJson) {
     let intervalLowerBound = LoadIconFeedback.#INCREMENT_INTERVAL_MS;
     let typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
