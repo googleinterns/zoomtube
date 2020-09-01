@@ -35,6 +35,7 @@ import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.Comment;
 import com.googleinterns.zoomtube.utils.CommentUtil;
 import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.Date;
@@ -52,6 +53,7 @@ public class DiscussionServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_PARENT = "parent";
   @VisibleForTesting static final String PARAM_TIMESTAMP = "timestamp";
   @VisibleForTesting static final String PARAM_TYPE = "type";
+  @VisibleForTesting static final String PARAM_TRANSCRIPT_LINE = "transcript-line";
 
   private static final String ERROR_MISSING_LECTURE = "Missing lecture parameter.";
   private static final String ERROR_MISSING_COMMENT_TYPE = "Missing comment type parameter.";
@@ -85,20 +87,31 @@ public class DiscussionServlet extends HttpServlet {
 
     final Entity commentEntity;
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE));
-    Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
-    // TODO: Require non-zero content length. See: #183.
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, lectureId);
     String content = CharStreams.toString(request.getReader());
     Date dateNow = new Date(Clock.systemUTC().millis());
+
+    // We use Optional to avoid duplicating the creation code below for each case.
+    final Optional<Key> transcriptLineKey;
+    if (request.getParameter(PARAM_TRANSCRIPT_LINE) != null) {
+      // TODO: Validate that the transcript line contains the timestampMs.
+      long transcriptLineId = Long.parseLong(request.getParameter(PARAM_TRANSCRIPT_LINE));
+      transcriptLineKey =
+          Optional.of(KeyFactory.createKey(TranscriptLineUtil.KIND, transcriptLineId));
+    } else {
+      transcriptLineKey = Optional.empty();
+    }
 
     Comment.Type type = Comment.Type.valueOf(request.getParameter(PARAM_TYPE));
     if (type == Comment.Type.REPLY) {
       long parentId = Long.parseLong(request.getParameter(PARAM_PARENT));
-      Key parent = KeyFactory.createKey(CommentUtil.KIND, parentId);
-      commentEntity = CommentUtil.createReplyEntity(lecture, parent, author, content, dateNow);
+      Key parentKey = KeyFactory.createKey(CommentUtil.KIND, parentId);
+      commentEntity = CommentUtil.createReplyEntity(
+          lectureKey, parentKey, transcriptLineKey, author, content, dateNow);
     } else {
       long timestampMs = Long.parseLong(request.getParameter(PARAM_TIMESTAMP));
-      commentEntity =
-          CommentUtil.createRootEntity(lecture, timestampMs, author, content, dateNow, type);
+      commentEntity = CommentUtil.createRootEntity(
+          lectureKey, timestampMs, transcriptLineKey, author, content, dateNow, type);
     }
     datastore.put(commentEntity);
 

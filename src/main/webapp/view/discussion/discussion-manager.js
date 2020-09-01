@@ -23,6 +23,7 @@ export default class DiscussionManager {
   static #PARAM_PARENT = 'parent';
   static #PARAM_TIMESTAMP = 'timestamp';
   static #PARAM_TYPE = 'type';
+  static #PARAM_TRANSCRIPT_LINE = 'transcript-line';
   #lecture;
   #displayedComments;
 
@@ -88,22 +89,25 @@ export default class DiscussionManager {
 
   /**
    * Posts `content` as a new root comment at `timestampMs` with the specified
-   * `type`.
+   * `type` and `transcriptLineId`.
    */
-  async postRootComment(content, timestampMs, type) {
+  async postRootComment(content, timestampMs, type, transcriptLineId) {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_TIMESTAMP]: timestampMs,
       [DiscussionManager.#PARAM_TYPE]: type,
+      [DiscussionManager.#PARAM_TRANSCRIPT_LINE]: transcriptLineId,
     });
   }
 
   /**
-   * Posts `content` as a reply to `parentId`.
+   * Posts `content` as a reply to `parentId` with the specified
+   * `transcriptLineId`.
    */
-  async postReply(content, parentId) {
+  async postReply(content, parentId, transcriptLineId) {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_PARENT]: parentId,
       [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
+      [DiscussionManager.#PARAM_TRANSCRIPT_LINE]: transcriptLineId,
     });
   }
 
