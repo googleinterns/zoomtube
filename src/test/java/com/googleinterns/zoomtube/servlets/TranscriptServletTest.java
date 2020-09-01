@@ -113,7 +113,7 @@ public final class TranscriptServletTest {
   }
 
   @Before
-  public void setUp() throws ServletException, IOException {
+  public void setUp() throws Exception {
     localServiceHelper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
     transcriptServlet = new TranscriptServlet();
@@ -131,7 +131,7 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_missingId_badRequest() throws ServletException, IOException {
+  public void doGet_missingId_badRequest() throws Exception {
     transcriptServlet.doGet(request, response);
 
     verify(response).sendError(
@@ -139,7 +139,7 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_getDataInDatastoreForShortVideo() throws ServletException, IOException {
+  public void doGet_getDataInDatastoreForShortVideo() throws Exception {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
@@ -151,7 +151,7 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_returnsLectureForLongVideoFromDatastore() throws ServletException, IOException {
+  public void doGet_returnsLectureForLongVideoFromDatastore() throws Exception {
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
 
@@ -163,8 +163,7 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_onlyOtherLecturesInDatastore_GetNoLectures()
-      throws ServletException, IOException {
+  public void doGet_onlyOtherLecturesInDatastore_GetNoLectures() throws Exception {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_C.toString());
@@ -176,8 +175,7 @@ public final class TranscriptServletTest {
   }
 
   @Test
-  public void doGet_twoLecturesInDatastore_returnsOneLecture()
-      throws ServletException, IOException {
+  public void doGet_twoLecturesInDatastore_returnsOneLecture() throws Exception {
     putTranscriptLinesInDatastore(shortVideoTranscriptLines, lectureKeyB);
     putTranscriptLinesInDatastore(longVideoTranscriptLines, lectureKeyA);
     when(request.getParameter(TranscriptServlet.PARAM_ID)).thenReturn(LECTURE_ID_A.toString());
