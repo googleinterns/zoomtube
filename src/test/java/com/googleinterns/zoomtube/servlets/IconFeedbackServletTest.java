@@ -20,12 +20,27 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.IconFeedback;
 import com.googleinterns.zoomtube.utils.IconFeedbackUtil;
+import com.googleinterns.zoomtube.utils.LectureUtil;
+import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -49,12 +64,17 @@ public final class IconFeedbackServletTest {
   private DatastoreService datastoreService;
   private IconFeedbackServlet servlet;
 
+  /* Writer where response is written. */
+  private StringWriter content;
+
   @Before
-  public void setUp() throws Exception {
+  public void setUp() throws IOException, ServletException {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new IconFeedbackServlet();
     servlet.init();
+    content = new StringWriter();
+    when(response.getWriter()).thenReturn(new PrintWriter(content));
   }
 
   @After
@@ -105,5 +125,64 @@ public final class IconFeedbackServletTest {
     assertThat(iconFeedback.lectureKey().getId()).isEqualTo(123);
     assertThat(iconFeedback.timestampMs()).isEqualTo(456);
     assertThat(iconFeedback.type().toString()).isEqualTo("GOOD");
+  }
+
+  @Test
+  public void doGet_missingLectureId_shouldRespondWithBadRequest()
+      throws IOException, ServletException {
+    servlet.doGet(request, response);
+
+    verify(response).sendError(
+        HttpServletResponse.SC_BAD_REQUEST, /* message= */ "Missing lecture id parameter.");
+  }
+
+  @Test
+  public void doGet_noFeedback_shouldReturnNoIconFeedback() throws IOException, ServletException {
+    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
+
+    servlet.doGet(request, response);
+
+    verify(response).setContentType("application/json");
+    List<IconFeedback> result = getIconFeedbackFromJson(content.toString());
+    assertThat(result.size()).isEqualTo(0);
+  }
+
+  @Test
+  public void doGet_oneIconFeedback_shouldReturnOneIconFeedback()
+      throws IOException, ServletException {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
+    datastoreService.put(
+        IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));
+    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
+
+    servlet.doGet(request, response);
+
+    verify(response).setContentType("application/json");
+    List<IconFeedback> result = getIconFeedbackFromJson(content.toString());
+    assertThat(result.size()).isEqualTo(1);
+    assertThat(result.get(0).lectureKey().getId()).isEqualTo(123);
+    assertThat(result.get(0).timestampMs()).isEqualTo(456);
+    assertThat(result.get(0).type()).isEqualTo(IconFeedback.Type.GOOD);
+  }
+
+  @Test
+  public void doGet_oneIconFeedbackLectureIdDoesntMatch_shouldReturnNoIconFeedback()
+      throws IOException, ServletException {
+    Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
+    datastoreService.put(
+        IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));
+    when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("789");
+
+    servlet.doGet(request, response);
+
+    verify(response).setContentType("application/json");
+    List<IconFeedback> result = getIconFeedbackFromJson(content.toString());
+    assertThat(result.size()).isEqualTo(0);
+  }
+
+  private List<IconFeedback> getIconFeedbackFromJson(String json) {
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(GenerateTypeAdapter.FACTORY).create();
+    Type listType = new TypeToken<ArrayList<IconFeedback>>() {}.getType();
+    return gson.fromJson(json, listType);
   }
 }

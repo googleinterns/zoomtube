@@ -16,8 +16,10 @@ package com.googleinterns.zoomtube.data;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.auto.value.AutoValue;
+import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
 /** Contains data related to feedback left by clicking icons. */
+@GenerateTypeAdapter
 @AutoValue
 public abstract class IconFeedback {
   public static enum Type {
