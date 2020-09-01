@@ -60,7 +60,7 @@ public final class IconFeedbackServletTest {
   @Mock private HttpServletResponse response;
 
   private final LocalServiceTestHelper testServices =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig().setNoStorage(true));
   private DatastoreService datastoreService;
   private IconFeedbackServlet servlet;
 
