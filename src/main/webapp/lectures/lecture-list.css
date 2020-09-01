@@ -1,3 +1,11 @@
+/* Layout */
+
+body {
+  min-height: 100vh;
+  padding-bottom: 50px;
+  position: relative;
+}
+
 /* List page */
 
 #add-btn-cont {
