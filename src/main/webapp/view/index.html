@@ -13,7 +13,6 @@
   crossorigin="anonymous"
 />
 <script type="module" src="/synchronizer.js" defer></script>
-<script type="module" src="/timestamps.js" defer></script>
 <script type="module" src="/view/discussion/discussion.js" defer></script>
 <script type="module" src="/view/video/video.js" defer></script>
 <script type="module" src="/view/transcript/transcript.js" defer></script>
@@ -38,7 +37,7 @@
           <button type="button" onclick="iconOnClick('TOO_SLOW')">Too Slow</button>
         </div>
       </div>
-      <div id="transcript-container" class="bg-light rounded"></div>
+      <div id="transcript-container" class="bg-light rounded"><div class="spinner-border"></div></div>
     </div>
     <div class="halfpage rounded bg-light" id="discussion">
       <div id="new-comment-row">
@@ -60,7 +59,7 @@
           </button>
         </div>
       </div>
-      <div class="container" id="discussion-comments"></div>
+      <div class="spinner-border mt-3"></div>
     </div>
   </div>
 </body>
@@ -88,6 +87,7 @@
         </div>
       </div>
       <div class="replies">
+        <slot name="replies"></slot>
         <div id="reply-form" class="collapse">
           <textarea class="form-control" id="reply-textarea" rows="3"></textarea>
           <div class="actions-bar">
@@ -95,7 +95,6 @@
             <button class="zt-btn btn btn-sm btn-primary mb-2" type="button" id="post-reply">Post Reply</button>
           </div>
         </div>
-        <slot name="replies"></slot>
       </div>
     </div>
   </div>

@@ -54,6 +54,10 @@ body {
   padding: 15px;
 }
 
+#discussion .spinner-border {
+  margin-left: 45%;
+}
+
 discussion-comment {
   display: block;
 }
@@ -65,7 +69,11 @@ discussion-comment[highlighted] > [slot='header'] {
 #discussion-comments {
   height: calc(100vh - 206px);
   overflow: scroll;
-  padding-bottom: calc(100vh - 306px);
+  padding-bottom: calc(100vh - 306px) !important;
+}
+
+#discussion-comments > discussion-comment > [slot='header'] {
+  cursor: pointer;
 }
 
 #new-comment-row {
@@ -122,9 +130,8 @@ discussion-comment[highlighted] > [slot='header'] {
   padding: 15px;
 }
 
-.transcript-line-timestamp {
-  display: inline-block;
-  width: 110px;
+#transcript-container .spinner-border {
+  margin-left: 40%;
 }
 
 #transcript-lines-container {
@@ -137,11 +144,30 @@ discussion-comment[highlighted] > [slot='header'] {
   padding: 0 0 calc(100vh - 560px);
 }
 
+.transcript-line-timestamp {
+  cursor: pointer;
+  display: inline-block;
+  width: 110px;
+}
+
 /* Video */
 
 iframe {
   display: block;
   width: 100%;
+}
+
+/* Comment Indicator */
+
+.indicator {
+  background-color: lightgray !important;
+  color: black !important;
+  font-size: 15px !important;
+  font-weight: normal !important;
+  height: 25px;
+  margin-left: auto;
+  padding-top: 5px !important;
+  visibility: hidden;
 }
 
 /* Feedback Icons */

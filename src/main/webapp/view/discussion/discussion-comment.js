@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {timestampToString} from '../../timestamps.js';
-import {ELEMENT_DISCUSSION} from './discussion-area.js';
+import TimestampUtil from '../../timestamp-util.js';
 import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
 
 /**
@@ -64,10 +63,38 @@ export default class DiscussionComment extends HTMLElement {
    */
   setComment(comment) {
     this.comment = comment;
-    this.setSlotSpan(
-        DiscussionComment.#SLOT_HEADER, this.getHeaderString(comment));
-    this.setSlotSpan(DiscussionComment.#SLOT_CONTENT, comment.content);
+    this.setHeader();
+    this.setContent();
     this.setTypeTag(comment.type);
+  }
+
+  /**
+   * Adds the comment's header to the header slot. For root comments, adds
+   * a click event handler to seek everything to the comment's timestamp.
+   */
+  setHeader() {
+    const headerSpan = document.createElement('span');
+    headerSpan.innerText = this.getHeaderString();
+    headerSpan.slot = DiscussionComment.#SLOT_HEADER;
+    this.appendChild(headerSpan);
+
+    if (this.comment.type === COMMENT_TYPE_REPLY) {
+      return;
+    }
+
+    headerSpan.onclick = () => {
+      this.#discussion.onCommentHeaderClicked(this.comment.timestampMs.value);
+    };
+  }
+
+  /**
+   * Adds the comment's content to the content slot.
+   */
+  setContent() {
+    const contentSpan = document.createElement('span');
+    contentSpan.innerText = this.comment.content;
+    contentSpan.slot = DiscussionComment.#SLOT_CONTENT;
+    this.appendChild(contentSpan);
   }
 
   /**
@@ -75,14 +102,16 @@ export default class DiscussionComment extends HTMLElement {
    * the `comment`.  The timestamp is not displayed for replies to
    * other comments.
    */
-  getHeaderString(comment) {
-    const username = comment.author.email.split('@')[0];
+  getHeaderString() {
+    const username = this.comment.author.email.split('@')[0];
     let timestampPrefix = '';
-    if (comment.type !== COMMENT_TYPE_REPLY) {
+    if (this.comment.type !== COMMENT_TYPE_REPLY) {
       // Don't show timestamp on replies.
-      timestampPrefix = `${timestampToString(comment.timestampMs.value)} - `;
+      const timestampString =
+          TimestampUtil.timestampToString(this.comment.timestampMs.value);
+      timestampPrefix = `${timestampString} - `;
     }
-    return `${timestampPrefix}${username} on ${comment.created}`;
+    return `${timestampPrefix}${username} on ${this.comment.created}`;
   }
 
   /**
@@ -95,9 +124,13 @@ export default class DiscussionComment extends HTMLElement {
     /* eslint-disable indent */
     const replyForm =
         this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_REPLY_FORM);
+    const replyTextarea = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
+
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_SHOW_REPLY)
         .onclick = () => {
       $(replyForm).collapse('show');
+      $(replyTextarea).focus();
     };
     this.shadowRoot.querySelector(DiscussionComment.#SELECTOR_CANCEL_REPLY)
         .onclick = () => {
@@ -115,7 +148,9 @@ export default class DiscussionComment extends HTMLElement {
   postReplyClicked() {
     const textarea = this.shadowRoot.querySelector(
         DiscussionComment.#SELECTOR_REPLY_TEXTAREA);
-    this.#discussion.postReply(textarea.value, this.comment.commentKey.id);
+    this.#discussion.postReply(
+        textarea.value, this.comment.commentKey.id,
+        this.comment.transcriptLineKey.id);
 
     textarea.value = '';
     const replyForm =
@@ -143,17 +178,6 @@ export default class DiscussionComment extends HTMLElement {
   }
 
   /**
-   * Sets the content of the shadow-dom slot named `name` to a span
-   * element containing `value` as text.
-   */
-  setSlotSpan(name, value) {
-    const span = document.createElement('span');
-    span.innerText = value;
-    span.slot = name;
-    this.appendChild(span);
-  }
-
-  /**
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
    */
   setTypeTag(type) {
@@ -165,17 +189,6 @@ export default class DiscussionComment extends HTMLElement {
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
     typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
     this.appendChild(typePill);
-  }
-
-
-  /**
-   * Scroll such that this element is at the top of the discussion area.
-   */
-  scrollToTopOfDiscussion() {
-    const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
-    const elementTop = this.offsetTop;
-    const offset = elementTop - scrollPaneTop;
-    ELEMENT_DISCUSSION.scrollTop = offset;
   }
 
   /**
