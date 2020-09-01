@@ -71,7 +71,7 @@ export default class TranscriptArea {
       TranscriptArea.displayNoTranscriptMessage();
       return;
     }
-    TranscriptArea.addTranscriptLinesToDom(transcriptLines);
+    this.addTranscriptLinesToDom(transcriptLines);
   }
 
   /**
@@ -90,16 +90,20 @@ export default class TranscriptArea {
    * <p>This is a private method that should only be called in
    * `loadTranscript()`.
    */
-  static addTranscriptLinesToDom(transcriptLines) {
+  addTranscriptLinesToDom(transcriptLines) {
     const transcriptContainer = TranscriptArea.transcriptScrollContainer();
     const ulElement = document.createElement('ul');
     // TODO: Move the class assignment to the HTML.
     ulElement.class = 'mx-auto';
     transcriptContainer.appendChild(ulElement);
     transcriptLines.forEach((transcriptLine) => {
-      ulElement.appendChild(
-          TranscriptLineElement.createTranscriptLineElement(transcriptLine));
+      const transcriptLineElement =
+          TranscriptLineElement.createTranscriptLineElement(transcriptLine);
+      transcriptLineElement.attachSeekingEventListener(
+          this.transcriptSeeker().eventController());
+      ulElement.appendChild(transcriptLineElement);
     });
+    $('.indicator').popover({trigger: 'hover'});
   }
 
   /**

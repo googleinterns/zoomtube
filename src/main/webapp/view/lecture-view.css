@@ -143,11 +143,30 @@ discussion-comment[highlighted] > [slot='header'] {
   padding: 0 0 calc(100vh - 560px);
 }
 
+.transcript-line-timestamp {
+  cursor: pointer;
+  display: inline-block;
+  width: 110px;
+}
+
 /* Video */
 
 iframe {
   display: block;
   width: 100%;
+}
+
+/* Comment Indicator */
+
+.indicator {
+  background-color: lightgray !important;
+  color: black !important;
+  font-size: 15px !important;
+  font-weight: normal !important;
+  height: 25px;
+  margin-left: auto;
+  padding-top: 5px !important;
+  visibility: hidden;
 }
 
 /* Feedback Icons */
