@@ -243,7 +243,8 @@ export default class DiscussionArea {
         this.#transcriptSeeker.currentTranscriptLine();
     let currentTranscriptLineId;
     if (currentTranscriptLine) {
-      currentTranscriptLineId = currentTranscriptLine.transcriptLine.transcriptKey.id;
+      currentTranscriptLineId =
+          currentTranscriptLine.transcriptLine.transcriptKey.id;
     }
 
     this.#manager
