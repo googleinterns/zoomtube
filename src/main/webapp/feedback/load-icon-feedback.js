@@ -49,6 +49,7 @@ export default class LoadIconFeedback {
     const jsonData = await response.json();
     console.log(jsonData);
     this.parseFeedback(jsonData);
+    console.log(this.#parsedIconFeedback);
   }
 
   /**
@@ -57,10 +58,13 @@ export default class LoadIconFeedback {
    * ParseIconFeedback object.
    */
   parseFeedback(iconFeedbackJson) {
-    let intervalLowerBound = 0;
+    let intervalLowerBound = LoadIconFeedback.#INCREMENT_INTERVAL_MS;
     let typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
-    for (const iconFeedback of iconFeedbackJson) {
-      if (intervalLowerBound < iconFeedback.timestampMs) {
+    for (let index = 0; index < iconFeedbackJson.length;) {
+      const iconFeedback = iconFeedbackJson[index];
+      if (intervalLowerBound < iconFeedback.timestampMs &&
+          iconFeedback.timestampMs >
+              intervalLowerBound + LoadIconFeedback.#INCREMENT_INTERVAL_MS) {
         this.#parsedIconFeedback.appendTypeCountsAndInterval(
             typeCountsAndInterval);
         intervalLowerBound += LoadIconFeedback.#INCREMENT_INTERVAL_MS;
@@ -68,6 +72,7 @@ export default class LoadIconFeedback {
       } else {
         const type = iconFeedback.type;
         typeCountsAndInterval[type]++;
+        index++;
       }
     }
     this.#parsedIconFeedback.appendTypeCountsAndInterval(typeCountsAndInterval);
