@@ -68,7 +68,7 @@ public final class IconFeedbackServletTest {
   private StringWriter content;
 
   @Before
-  public void setUp() throws IOException, ServletException {
+  public void setUp() throws Exception {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new IconFeedbackServlet();
@@ -83,8 +83,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_missingLectureId_shouldRespondWithBadRequest()
-      throws IOException, ServletException {
+  public void doPost_missingLectureId_shouldRespondWithBadRequest() throws Exception {
     servlet.doPost(request, response);
 
     verify(response).sendError(
@@ -92,8 +91,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_missingTimestamp_shouldRespondWithBadRequest()
-      throws IOException, ServletException {
+  public void doPost_missingTimestamp_shouldRespondWithBadRequest() throws Exception {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
 
     servlet.doPost(request, response);
@@ -103,8 +101,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_missingIconType_shouldRespondWithBadRequest()
-      throws IOException, ServletException {
+  public void doPost_missingIconType_shouldRespondWithBadRequest() throws Exception {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
     when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn("456");
 
@@ -115,7 +112,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doPost_validRequest_shouldStoreInDatabase() throws IOException, ServletException {
+  public void doPost_validRequest_shouldStoreInDatabase() throws Exception {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
     when(request.getParameter(IconFeedbackServlet.PARAM_TIMESTAMP)).thenReturn("456");
     when(request.getParameter(IconFeedbackServlet.PARAM_ICON_TYPE)).thenReturn("GOOD");
@@ -131,8 +128,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doGet_missingLectureId_shouldRespondWithBadRequest()
-      throws IOException, ServletException {
+  public void doGet_missingLectureId_shouldRespondWithBadRequest() throws Exception {
     servlet.doGet(request, response);
 
     verify(response).sendError(
@@ -140,7 +136,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doGet_noFeedback_shouldReturnNoIconFeedback() throws IOException, ServletException {
+  public void doGet_noFeedback_shouldReturnNoIconFeedback() throws Exception {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
 
     servlet.doGet(request, response);
@@ -151,8 +147,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doGet_oneIconFeedback_shouldReturnOneIconFeedback()
-      throws IOException, ServletException {
+  public void doGet_oneIconFeedback_shouldReturnOneIconFeedback() throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
     datastoreService.put(
         IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));
@@ -170,7 +165,7 @@ public final class IconFeedbackServletTest {
 
   @Test
   public void doGet_oneIconFeedbackLectureIdDoesntMatch_shouldReturnNoIconFeedback()
-      throws IOException, ServletException {
+      throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
     datastoreService.put(
         IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));
