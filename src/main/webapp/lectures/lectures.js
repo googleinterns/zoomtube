@@ -66,21 +66,20 @@ function createLectureListItem(lecture) {
  * @param {Element} videoLinkInputElement The input element containing the video
  *     link.
  */
-async function fetchAndDisplayTranscriptLanguages(
-    videoLinkInputElement) {
+async function fetchAndDisplayTranscriptLanguages(videoLinkInputElement) {
   const languageSelectorDivElement =
       document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
   languageSelectorDivElement.innerHTML = '';
   const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES, window.location.origin);
   url.searchParams.append(
       videoLinkInputElement.name, videoLinkInputElement.value);
-  let languagesResponse;
+  let languagesJson;
   try {
-    languagesResponse = await fetch(url);
+    const languagesResponse = await fetch(url);
+    languagesJson = await languagesResponse.json();
   } catch (error) {
     return;
   }
-  const languagesJson = await languagesResponse.json();
   displayLanguages(languagesJson);
 }
 
@@ -118,3 +117,5 @@ function createDefaultDisabledLanguageOption() {
   defaultLanguageOptionElement.innerText = SELECT_LANGUAGE_OPTION_MESSAGE;
   return defaultLanguageOptionElement;
 }
+
+window.fetchAndDisplayTranscriptLanguages = fetchAndDisplayTranscriptLanguages;
