@@ -29,6 +29,9 @@ export default class DiscussionArea {
   static #ELEMENT_DISCUSSION = document.querySelector('#discussion');
   static #ELEMENT_NEW_COMMENT_TYPES =
       document.querySelector('#new-comment-types');
+  static #ELEMENT_LOADING_SPINNER =
+      DiscussionArea.#ELEMENT_DISCUSSION.querySelector('.spinner-border');
+
   /**
    * A selector to query on `ELEMENT_NEW_COMMENT_TYPES`. It returns the
    * selected type button in the new comment area.
@@ -70,7 +73,6 @@ export default class DiscussionArea {
     this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
     this.addSeekingListener();
-
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment = this.postNewComment.bind(this);
@@ -78,6 +80,8 @@ export default class DiscussionArea {
     setInterval(
         this.updateDiscussion.bind(this),
         DiscussionArea.#BACKGROUND_UPDATE_PERIOD_MS);
+    DiscussionArea.#ELEMENT_DISCUSSION.removeChild(
+        DiscussionArea.#ELEMENT_LOADING_SPINNER);
   }
 
   /**
