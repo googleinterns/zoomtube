@@ -26,9 +26,11 @@ export default class TranscriptArea {
   static #TRANSCRIPT_ERROR_MESSAGE =
       'Sorry, there is no transcript available for this lecture recording. :(';
 
+  #transcriptLineToCommentCount;
+  #transcriptSeeker;
   #lecture
   #eventController;
-  #transcriptSeeker;
+
 
   /**
    * Creates an instance of `TranscriptArea` for loading
@@ -41,6 +43,7 @@ export default class TranscriptArea {
     this.#lecture = lecture;
     this.#eventController = eventController;
     this.#transcriptSeeker = new TranscriptSeeker(eventController);
+    this.#transcriptLineToCommentCount = new Map();
   }
 
   /**
@@ -99,9 +102,11 @@ export default class TranscriptArea {
     transcriptLines.forEach((transcriptLine) => {
       const transcriptLineElement =
           TranscriptLineElement.createTranscriptLineElement(transcriptLine);
+      ulElement.appendChild(transcriptLineElement);
+      this.#transcriptLineToCommentCount.set(
+          transcriptLine.transcriptKey.id, transcriptLineElement);
       transcriptLineElement.attachSeekingEventListener(
           this.transcriptSeeker().eventController());
-      ulElement.appendChild(transcriptLineElement);
     });
     $('.indicator').popover({trigger: 'hover'});
   }
@@ -123,6 +128,19 @@ export default class TranscriptArea {
     return this.#transcriptContainer;
   }
 
+  /** Increments the indicator corresponding to `transcriptLineKeyId` by 1. */
+  incrementCommentIndicatorAt(transcriptLineKeyId) {
+    if (!this.#transcriptLineToCommentCount.has(transcriptLineKeyId)) {
+      return;
+    }
+    const commentIndicatorElement =
+        this.#transcriptLineToCommentCount.get(transcriptLineKeyId)
+            .commentIndicator;
+    commentIndicatorElement.textContent =
+        parseInt(commentIndicatorElement.textContent) + 1;
+    commentIndicatorElement.style.visibility = 'visible';
+  }
+
   /**
    * Returns the `transcriptSeeker`.
    */
@@ -130,3 +148,4 @@ export default class TranscriptArea {
     return this.#transcriptSeeker;
   }
 }
+
