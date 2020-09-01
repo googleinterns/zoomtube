@@ -30,6 +30,9 @@ export default class DiscussionArea {
   static #ID_DISCUSSION_CONTAINER = 'discussion-comments';
   static #ELEMENT_NEW_COMMENT_TYPES =
       document.querySelector('#new-comment-types');
+  static #ELEMENT_LOADING_SPINNER =
+      DiscussionArea.#ELEMENT_DISCUSSION.querySelector('.spinner-border');
+
   /**
    * A selector to query on `ELEMENT_NEW_COMMENT_TYPES`. It returns the
    * selected type button in the new comment area.
@@ -69,11 +72,12 @@ export default class DiscussionArea {
     this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
     this.addSeekingListener();
-
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment = this.postNewComment.bind(this);
     await this.updateDiscussion();
+    DiscussionArea.#ELEMENT_DISCUSSION.removeChild(
+        DiscussionArea.#ELEMENT_LOADING_SPINNER);
   }
 
   /**
@@ -83,7 +87,18 @@ export default class DiscussionArea {
   addSeekingListener() {
     this.#eventController.addEventListener((timestampMs) => {
       this.seek(timestampMs);
-    }, 'seek');
+    }, 'seek', 'seekAll');
+  }
+
+  /**
+   * Seeks the transcript, discussion, and video to `timestampMs`.
+   *
+   * <p>This should be added as an event listener to every root
+   * discussion header's onclick event.
+   */
+  onCommentHeaderClicked(timestampMs) {
+    // TODO: Enable scroll container autoscroll.
+    this.#eventController.broadcastEvent('seekAll', timestampMs);
   }
 
   /**

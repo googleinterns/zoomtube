@@ -37,7 +37,7 @@
           <button type="button" onclick="iconOnClick('TOO_SLOW')">Too Slow</button>
         </div>
       </div>
-      <div id="transcript-container" class="bg-light rounded"></div>
+      <div id="transcript-container" class="bg-light rounded"><div class="spinner-border"></div></div>
     </div>
     <div class="halfpage rounded bg-light" id="discussion">
       <div id="new-comment-row">
@@ -47,7 +47,7 @@
         </div>
         <div class="btn-group-toggle" data-toggle="buttons" id="new-comment-types">
           <label class="badge btn btn-outline-danger btn-sm float-left">
-            <input type="radio" value="QUESTION" />Question
+            <input type="radio" value="QUESTION_UNANSWERED" />Question
           </label>
           <label class="badge btn btn-outline-secondary btn-sm float-left active">
             <input type="radio" value="NOTE" />Note
@@ -59,6 +59,7 @@
           </button>
         </div>
       </div>
+      <div class="spinner-border mt-3"></div>
     </div>
   </div>
 </body>

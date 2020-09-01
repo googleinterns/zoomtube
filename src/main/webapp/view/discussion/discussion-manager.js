@@ -55,6 +55,8 @@ export default class DiscussionManager {
         continue;
       }
       comment.replies = [];
+      // comment.created is sent as a string in UTC, so we convert it to a Date.
+      comment.created = new Date(comment.created + ' UTC');
       newComments.push(comment);
       this.#displayedComments.set(id, comment);
     }
