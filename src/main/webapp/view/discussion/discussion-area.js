@@ -126,7 +126,8 @@ export default class DiscussionArea {
       const commentElement = new DiscussionComment(this);
       commentElement.setComment(comment);
       comment.element = commentElement;
-      this.#transcriptArea.incrementCommentIndicatorAt(comment.transcriptLineKey.value.id);
+      this.#transcriptArea.incrementCommentIndicatorAt(
+          comment.transcriptLineKey.value.id);
     }
 
     // Insert comments.
