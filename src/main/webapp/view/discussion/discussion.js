@@ -13,7 +13,8 @@
 // limitations under the License.
 
 export const COMMENT_TYPE_REPLY = 'REPLY';
-export const COMMENT_TYPE_QUESTION = 'QUESTION';
+export const COMMENT_TYPE_QUESTION_UNANSWERED = 'QUESTION_UNANSWERED';
+export const COMMENT_TYPE_QUESTION_ANSWERED = 'QUESTION_ANSWERED';
 export const COMMENT_TYPE_NOTE = 'NOTE';
 
 export const COMMENT_TYPES = {
@@ -25,8 +26,12 @@ export const COMMENT_TYPES = {
     name: 'Note',
     badgeStyles: ['badge-secondary', 'float-right', 'badge', 'badge-pill'],
   },
-  [COMMENT_TYPE_QUESTION]: {
+  [COMMENT_TYPE_QUESTION_UNANSWERED]: {
     name: 'Question',
     badgeStyles: ['badge-danger', 'float-right', 'badge', 'badge-pill'],
+  },
+  [COMMENT_TYPE_QUESTION_ANSWERED]: {
+    name: 'Answered',
+    badgeStyles: ['badge-success', 'float-right', 'badge', 'badge-pill'],
   },
 };
