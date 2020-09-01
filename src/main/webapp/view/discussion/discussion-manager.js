@@ -92,10 +92,8 @@ export default class DiscussionManager {
   /**
    * Posts `content` as a new root comment at `timestampMs` with the specified
    * `type` and `transcriptLineId`.
-   * 
-   * <p>If `transcriptLineId` is undefined, it is set to an empty string.
    */
-  async postRootComment(content, timestampMs, type, transcriptLineId = "") {
+  async postRootComment(content, timestampMs, type, transcriptLineId) {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_TIMESTAMP]: timestampMs,
       [DiscussionManager.#PARAM_TYPE]: type,
@@ -106,10 +104,8 @@ export default class DiscussionManager {
   /**
    * Posts `content` as a reply to `parentId` with the specified
    * `transcriptLineId`.
-   *
-   * <p>If `transcriptLineId` is undefined, it is set to an empty string.
    */
-  async postReply(content, parentId, transcriptLineId = "") {
+  async postReply(content, parentId, transcriptLineId) {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_PARENT]: parentId,
       [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
@@ -132,7 +128,7 @@ export default class DiscussionManager {
     for (const param in params) {
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
-      if (params.hasOwnProperty(param)) {
+      if (params.hasOwnProperty(param) && params[param]) {
         url.searchParams.append(param, params[param]);
       }
       /* eslint-enable no-prototype-builtins */
