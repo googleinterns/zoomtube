@@ -301,7 +301,8 @@ public class DiscussionServletTest {
     Date dateNow = new Date();
 
     return CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, transcriptLineKey,
-        author, /* content= */ "Untested comment content", dateNow, Comment.Type.QUESTION_UNANSWERED);
+        author, /* content= */ "Untested comment content", dateNow,
+        Comment.Type.QUESTION_UNANSWERED);
   }
 
   private List<Comment> getCommentsFromJson(String json) {

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import TimestampUtil from '../../timestamp-util.js';
-import {ELEMENT_DISCUSSION} from './discussion-area.js';
 import {COMMENT_TYPE_REPLY} from './discussion.js';
 import {COMMENT_TYPES} from './discussion.js';
 
@@ -116,7 +115,7 @@ export default class DiscussionComment extends HTMLElement {
     }
 
     // An undefined locale means to use the browser's default.
-    const createdDateString = comment.created.toLocaleDateString(
+    const createdDateString = this.comment.created.toLocaleDateString(
         /* locale= */ undefined, {
           timeStyle: 'short',
           dateStyle: 'short',
@@ -239,16 +238,6 @@ export default class DiscussionComment extends HTMLElement {
   updateCommentType(newType) {
     this.setTypeTag(newType);
     this.setMarkAsButton(newType);
-  }
-
-  /**
-   * Scroll such that this element is at the top of the discussion area.
-   */
-  scrollToTopOfDiscussion() {
-    const scrollPaneTop = ELEMENT_DISCUSSION.offsetTop;
-    const elementTop = this.offsetTop;
-    const offset = elementTop - scrollPaneTop;
-    ELEMENT_DISCUSSION.scrollTop = offset;
   }
 
   /**
