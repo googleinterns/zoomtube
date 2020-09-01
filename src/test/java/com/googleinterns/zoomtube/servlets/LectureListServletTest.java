@@ -52,7 +52,7 @@ public final class LectureListServletTest {
   @Mock private HttpServletResponse response;
 
   private final LocalServiceTestHelper testServices =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig().setNoStorage(true));
   private DatastoreService datastoreService;
   private LectureListServlet servlet;
 
