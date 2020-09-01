@@ -168,6 +168,4 @@ public final class TranscriptParserTest {
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLineUtil.KIND).setFilter(lectureKeyFilter);
   }
-
-  // TODO: Add tests for non english
 }
