@@ -26,7 +26,8 @@ import java.util.Optional;
 @AutoValue
 public abstract class Comment {
   public static enum Type {
-    QUESTION,
+    QUESTION_UNANSWERED,
+    QUESTION_ANSWERED,
     NOTE,
     REPLY,
   }
