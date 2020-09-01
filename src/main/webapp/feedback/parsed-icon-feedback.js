@@ -36,4 +36,9 @@ export default class ParsedIconFeedback {
       }
     }
   }
+
+  /** Returns value of key `type`. */
+  getTypeCount(type) {
+    return this.#counts[type];
+  }
 }

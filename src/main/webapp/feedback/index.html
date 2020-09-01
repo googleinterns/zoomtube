@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+<title>ZoomTube - Feedback</title>
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="stylesheet" href="../global.css" />
+<link rel="stylesheet" href="./icon-feedback.css" />
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+  crossorigin="anonymous"
+/>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+  integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg=="
+  crossorigin="anonymous"
+  defer
+></script>
+<script type="module" src="./load-icon-feedback.js" defer></script>
+
+<body>
+  <nav class="navbar navbar-light">
+    <h2 id="header-text">Feedback</h2>
+    <a type="button" class="btn zt-btn btn-outline-primary" href="/lectures/">Back to lecture</a>
+  </nav>
+
+  <div id="graph">
+    <canvas id="iconFeedbackChart"></canvas>
+  </div>
+</body>
+
+<footer id="footer">
+  <div class="container">
+    <p class="text-center">
+      <a href="/" class="link">About</a> |
+      <a href="https://github.com/googleinterns/zoomtube/issues" class="link" target="_blank">Feedback</a> |
+      <a href="https://github.com/googleinterns/zoomtube" class="link" target="_blank">Source Code</a>
+    </p>
+  </div>
+</footer>

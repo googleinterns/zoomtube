@@ -49,6 +49,7 @@ export default class LoadIconFeedback {
     const jsonData = await response.json();
     console.log(jsonData);
     this.parseFeedback(jsonData);
+    this.makeGraph();
   }
 
   /**
@@ -90,6 +91,89 @@ export default class LoadIconFeedback {
       [IconFeedbackUtil.INTERVAL]:
           TimestampUtil.millisecondsToSeconds(intervalLowerBound),
     };
+  }
+
+  /** Charts IconFeedback data into a graph. */
+  makeGraph() {
+    const chartElement = document.getElementById('iconFeedbackChart');
+    /* eslint-disable no-unused-vars */
+    const iconFeedbackLineChart = new window.Chart(chartElement, {
+      type: 'line',
+      data: {
+        labels:
+            this.#parsedIconFeedback.getTypeCount(IconFeedbackUtil.INTERVAL),
+        datasets: [
+          {
+            label: [IconFeedbackUtil.TYPE_GOOD],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.red],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.red],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_GOOD),
+            fill: false,
+          },
+          {
+            label: [IconFeedbackUtil.TYPE_BAD],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.blue],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.blue],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_BAD),
+            fill: false,
+          },
+          {
+            label: [IconFeedbackUtil.TYPE_TOO_FAST],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.orange],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.orange],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_TOO_FAST),
+            fill: false,
+          },
+          {
+            label: [IconFeedbackUtil.TYPE_TOO_SLOW],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.green],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.green],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_TOO_SLOW),
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: 'Icon Feedback Line Chart',
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false,
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true,
+        },
+        scales: {
+          xAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Timestamp (seconds)',
+              },
+            },
+          ],
+          yAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of clicks',
+              },
+            },
+          ],
+        },
+      },
+    });
+    /* eslint-enable no-unused-vars*/
   }
 }
 
