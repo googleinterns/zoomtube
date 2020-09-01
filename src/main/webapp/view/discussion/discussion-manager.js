@@ -129,7 +129,8 @@ export default class DiscussionManager {
     for (const paramName in paramsMap) {
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
-      if (paramsMap.hasOwnProperty(paramName) && paramsMap[paramName] !== null) {
+      if (paramsMap.hasOwnProperty(paramName) &&
+          paramsMap[paramName] !== null) {
         url.searchParams.append(paramName, paramsMap[paramName]);
       }
       /* eslint-enable no-prototype-builtins */
