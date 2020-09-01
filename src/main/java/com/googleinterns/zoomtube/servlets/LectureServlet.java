@@ -59,6 +59,7 @@ public class LectureServlet extends HttpServlet {
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
   @VisibleForTesting static final String PARAM_ID = "id";
+  @VisibleForTesting static final String PARAM_LANGUAGE = "language-input";
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
@@ -95,7 +96,8 @@ public class LectureServlet extends HttpServlet {
     String lectureName = request.getParameter(PARAM_NAME);
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
-    initializeTranscript(lectureEntity);
+    String transcriptLanguage = request.getParameter(PARAM_LANGUAGE);
+    initializeTranscript(lectureEntity, transcriptLanguage);
     response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
@@ -113,11 +115,11 @@ public class LectureServlet extends HttpServlet {
    * Parses and stores the transcript lines in datastore using the {@code lectureKey}
    * and {@code videoId} properties in {@code lectureEntity}.
    */
-  private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
+  private void initializeTranscript(Entity lectureEntity, String transcriptLanguage) throws IOException, ServletException {
     TranscriptParser transcriptParser = TranscriptParser.getParser();
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
-    transcriptParser.parseAndStoreTranscript(videoId, lectureKey);
+    transcriptParser.parseAndStoreTranscript(videoId, lectureKey, transcriptLanguage);
   }
 
   @Override

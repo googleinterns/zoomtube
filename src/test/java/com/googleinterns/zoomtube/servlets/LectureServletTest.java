@@ -114,6 +114,7 @@ public final class LectureServletTest {
       throws IOException, ServletException {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
+    when(request.getParameter(LectureServlet.PARAM_LANGUAGE)).thenReturn("en");
     datastoreService.put(LectureUtil.createEntity(TEST_NAME, TEST_LINK, TEST_ID));
 
     servlet.doPost(request, response);
@@ -127,6 +128,7 @@ public final class LectureServletTest {
       throws IOException, ServletException {
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LANGUAGE)).thenReturn("en");
 
     // No lecture in datastoreService.
     servlet.doPost(request, response);

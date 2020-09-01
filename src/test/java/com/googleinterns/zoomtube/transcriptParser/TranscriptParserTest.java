@@ -70,6 +70,7 @@ public final class TranscriptParserTest {
   private static final String LECTURE_ID_C = "234";
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
+  private static final String LECTURE_LANGUAGE = "en";
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
@@ -128,7 +129,7 @@ public final class TranscriptParserTest {
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB);
+    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB, LECTURE_LANGUAGE);
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyB);
     int expectedQueryCount = (shortVideoTranscriptLines).size();
@@ -141,7 +142,7 @@ public final class TranscriptParserTest {
     when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC);
+    TranscriptParser.getParser().parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC, LECTURE_LANGUAGE);
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyC);
     int expectedQueryCount = (longVideoTranscriptLines).size();
@@ -167,4 +168,6 @@ public final class TranscriptParserTest {
         new FilterPredicate(TranscriptLineUtil.LECTURE, FilterOperator.EQUAL, lectureKey);
     return new Query(TranscriptLineUtil.KIND).setFilter(lectureKeyFilter);
   }
+
+  // TODO: Add tests for non english
 }
