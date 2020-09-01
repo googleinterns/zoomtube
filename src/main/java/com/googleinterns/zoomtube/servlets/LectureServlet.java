@@ -113,7 +113,8 @@ public class LectureServlet extends HttpServlet {
 
   /**
    * Parses and stores the transcript lines in datastore using the {@code lectureKey}
-   * and {@code videoId} properties in {@code lectureEntity}.
+   * and {@code videoId} properties in {@code lectureEntity}. The language for parsing
+   * is determined by {@code transcriptLanguage}
    */
   private void initializeTranscript(Entity lectureEntity, String transcriptLanguage) throws IOException, ServletException {
     TranscriptParser transcriptParser = TranscriptParser.getParser();
