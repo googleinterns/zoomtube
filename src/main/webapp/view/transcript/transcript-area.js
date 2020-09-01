@@ -136,8 +136,8 @@ export default class TranscriptArea {
     const commentIndicatorElement =
         this.#transcriptLineToCommentCount.get(transcriptLineKeyId)
             .commentIndicator;
-    commentIndicatorElement.innerText =
-        parseInt(commentIndicatorElement.innerText) + 1;
+    commentIndicatorElement.textContent =
+        parseInt(commentIndicatorElement.textContent) + 1;
     commentIndicatorElement.style.visibility = 'visible';
   }
 
