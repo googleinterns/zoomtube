@@ -164,15 +164,15 @@ export default class DiscussionComment extends HTMLElement {
       return;
     }
 
-    if (this.typePill) {
-      this.typePill.remove();
+    if (this.typeTag) {
+      this.typeTag.remove();
     }
 
-    this.typePill = document.createElement('span');
-    this.typePill.innerText = COMMENT_TYPES[type].name;
-    this.typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
-    this.typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
-    this.appendChild(this.typePill);
+    this.typeTag = document.createElement('span');
+    this.typeTag.innerText = COMMENT_TYPES[type].name;
+    this.typeTag.classList.add(...COMMENT_TYPES[type].badgeStyles);
+    this.typeTag.slot = DiscussionComment.#SLOT_TYPE_TAG;
+    this.appendChild(this.typeTag);
   }
 
   /**
