@@ -9,3 +9,8 @@ indexes:
   properties:
   - name: lecture
   - name: start_ms
+- kind: IconFeedback
+  properties:
+  - name: lecture
+  - name: timestampMs
+    direction: asc
