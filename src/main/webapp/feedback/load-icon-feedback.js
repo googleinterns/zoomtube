@@ -48,7 +48,6 @@ export default class LoadIconFeedback {
     const response = await fetch(url);
     const jsonData = await response.json();
     this.parseFeedback(jsonData);
-    console.log(this.#parsedIconFeedback);
   }
 
   /**
