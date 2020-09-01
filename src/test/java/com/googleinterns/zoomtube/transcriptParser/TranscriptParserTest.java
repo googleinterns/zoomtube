@@ -16,12 +16,14 @@ package com.googleinterns.zoomtube.transcriptParser;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.fail;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -35,30 +37,24 @@ import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 @RunWith(JUnit4.class)
 public final class TranscriptParserTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-
-  @Mock private HttpServletRequest request;
-  @Mock private HttpServletResponse response;
-
+  @Rule public ExpectedException thrown = ExpectedException.none();
   private DatastoreService datastore;
   private StringWriter lectureTranscript;
 
@@ -70,7 +66,8 @@ public final class TranscriptParserTest {
   private static final String LECTURE_ID_C = "234";
   private static final String SHORT_VIDEO_ID = "Obgnr9pc820";
   private static final String LONG_VIDEO_ID = "jNQXAC9IVRw";
-  private static final String LECTURE_LANGUAGE = "en";
+  private static final String VIDEO_WITH_NEWLINES_ID = "8PrOp9t0PyQ";
+  private static final String VIDEO_WITH_ESCAPED_APOSTROPHE_ID = "jNQXAC9IVRw";
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
@@ -113,9 +110,6 @@ public final class TranscriptParserTest {
   public void setUp() throws IOException {
     localServiceHelper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
-    lectureTranscript = new StringWriter();
-    PrintWriter writer = new PrintWriter(lectureTranscript);
-    when(response.getWriter()).thenReturn(writer);
   }
 
   @After
@@ -125,11 +119,9 @@ public final class TranscriptParserTest {
 
   @Test
   public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(SHORT_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_B);
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB, "en");
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyB);
     int expectedQueryCount = (shortVideoTranscriptLines).size();
@@ -138,15 +130,69 @@ public final class TranscriptParserTest {
 
   @Test
   public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws IOException {
-    when(request.getParameter(LectureUtil.VIDEO_ID)).thenReturn(LONG_VIDEO_ID);
-    when(request.getParameter(LectureUtil.ID)).thenReturn(LECTURE_ID_C);
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        LONG_VIDEO_ID, lectureKeyC, /* transcriptLanguage= */ "en");
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyC);
     int expectedQueryCount = (longVideoTranscriptLines).size();
     assertThat(actualQueryCount).isEqualTo(expectedQueryCount);
+  }
+
+  @Test
+  public void parseAndStoreTranscript_unescapesXml() throws IOException {
+    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
+
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        VIDEO_WITH_ESCAPED_APOSTROPHE_ID, lectureKeyB, /* transcriptLanguage= */ "en");
+
+    PreparedQuery preparedQuery =
+        datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKeyB));
+    for (Entity transcriptLineEntity : preparedQuery.asIterable()) {
+      String content = (String) transcriptLineEntity.getProperty(TranscriptLineUtil.CONTENT);
+      // Make sure the apostrophes are not longer escaped.
+      assertThat(content).doesNotContain("&#39;");
+    }
+  }
+
+  @Test
+  public void parseAndStoreTranscript_removesNewlines() throws IOException {
+    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
+
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        VIDEO_WITH_NEWLINES_ID, lectureKeyB, /* transcriptLanguage= */ "en");
+
+    PreparedQuery preparedQuery =
+        datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKeyB));
+    for (Entity transcriptLineEntity : preparedQuery.asIterable()) {
+      String content = (String) transcriptLineEntity.getProperty(TranscriptLineUtil.CONTENT);
+      assertThat(content).doesNotContain("\n");
+    }
+  }
+
+  @Test
+  public void parseAndStoreTranscript_invalidLanguage_throwsException() throws IOException {
+    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
+
+    try {
+      TranscriptParser.getParser().parseAndStoreTranscript(
+          VIDEO_WITH_NEWLINES_ID, lectureKeyB, /* transcriptLanguage= */ "notAValidLanguage");
+      fail("The language is not supposed to be valid.");
+    } catch (IOException e) {
+    }
+  }
+
+  @Test
+  public void parseAndStoreTranscript_noLanguageAvailable_throwsException() throws IOException {
+    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
+
+    try {
+      TranscriptParser.getParser().parseAndStoreTranscript(
+          VIDEO_WITH_NEWLINES_ID, lectureKeyB, /* transcriptLanguage= */ "");
+      fail("The language is not supposed to be present.");
+    } catch (IOException e) {
+    }
   }
 
   private static List<TranscriptLine> transcriptLines(String transcriptLinesJson) {
