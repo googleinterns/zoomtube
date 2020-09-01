@@ -41,21 +41,21 @@ export default class DiscussionArea {
   #manager;
   #currentTimeMs;
   #nearestComments;
-  #transcriptSeeker;
+  #transcriptArea;
   #scrollContainer;
   #discussionCommentsDiv;
 
   /**
    * Creates a `DiscussionArea` for a `lecture`
-   * with a `transcriptSeeker`.
+   * with a `transcriptArea`.
    */
-  constructor(lecture, eventController, transcriptSeeker) {
+  constructor(lecture, eventController, transcriptArea) {
     this.#lecture = lecture;
     this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
-    this.#transcriptSeeker = transcriptSeeker;
+    this.#transcriptArea = transcriptArea;
   }
 
   /**
@@ -216,7 +216,7 @@ export default class DiscussionArea {
     /* eslint-enable indent */
 
     const currentTranscriptLine =
-        this.#transcriptSeeker.currentTranscriptLine();
+        this.#transcriptArea.transcriptSeeker().currentTranscriptLine();
     const currentTranscriptLineId =
         currentTranscriptLine.transcriptLine.transcriptKey.id;
 
