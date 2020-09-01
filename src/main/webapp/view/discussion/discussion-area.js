@@ -83,7 +83,18 @@ export default class DiscussionArea {
   addSeekingListener() {
     this.#eventController.addEventListener((timestampMs) => {
       this.seek(timestampMs);
-    }, 'seek');
+    }, 'seek', 'seekAll');
+  }
+
+  /**
+   * Seeks the transcript, discussion, and video to `timestampMs`.
+   *
+   * <p>This should be added as an event listener to every root
+   * discussion header's onclick event.
+   */
+  onCommentHeaderClicked(timestampMs) {
+    // TODO: Enable scroll container autoscroll.
+    this.#eventController.broadcastEvent('seekAll', timestampMs);
   }
 
   /**
