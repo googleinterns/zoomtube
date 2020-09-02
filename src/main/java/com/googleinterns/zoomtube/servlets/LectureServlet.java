@@ -96,7 +96,8 @@ public class LectureServlet extends HttpServlet {
     String lectureName = request.getParameter(PARAM_NAME);
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
-    String transcriptLanguage = request.getParameter(PARAM_LANGUAGE);
+    String transcriptLanguage =
+        Optional.ofNullable(request.getParameter(PARAM_LANGUAGE)).orElse("");
     initializeTranscript(lectureEntity, transcriptLanguage);
     response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
@@ -116,7 +117,8 @@ public class LectureServlet extends HttpServlet {
    * and {@code videoId} properties in {@code lectureEntity}. The language for parsing
    * is determined by {@code transcriptLanguage}
    */
-  private void initializeTranscript(Entity lectureEntity, String transcriptLanguage) throws IOException, ServletException {
+  private void initializeTranscript(Entity lectureEntity, String transcriptLanguage)
+      throws IOException, ServletException {
     TranscriptParser transcriptParser = TranscriptParser.getParser();
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);

@@ -83,13 +83,15 @@ public final class TranscriptParser {
    * <p>This method is called from the {@code LectureServlet} upon adding a lecture to
    * datastore.
    */
-  public void parseAndStoreTranscript(String videoId, Key lectureKey, String transcriptLanguage) throws IOException {
+  public void parseAndStoreTranscript(String videoId, Key lectureKey, String transcriptLanguage)
+      throws IOException {
     URL url = getTranscriptUrlForVideo(videoId, transcriptLanguage);
     Document document = fetchUrlAsXmlDocument(url);
     putTranscriptLinesInDatastore(lectureKey, document);
   }
 
-  private URL getTranscriptUrlForVideo(String videoId, String transcriptLanguage) throws IOException {
+  private URL getTranscriptUrlForVideo(String videoId, String transcriptLanguage)
+      throws IOException {
     try {
       URIBuilder urlBuilder = new URIBuilder(API_URL);
       urlBuilder.addParameter(API_PARAM_LANG, transcriptLanguage);

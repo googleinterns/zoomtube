@@ -138,7 +138,7 @@ public final class TranscriptParserTest {
 
     try {
       TranscriptParser.getParser().parseAndStoreTranscript(
-        LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "notAValidLanguage");
+          LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "notAValidLanguage");
       fail();
     } catch (IOException e) {
     }
@@ -150,7 +150,7 @@ public final class TranscriptParserTest {
 
     try {
       TranscriptParser.getParser().parseAndStoreTranscript(
-        LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "");
+          LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "");
       fail();
     } catch (IOException e) {
     }
