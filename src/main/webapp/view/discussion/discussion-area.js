@@ -55,7 +55,7 @@ export default class DiscussionArea {
 
   /**
    * Creates a `DiscussionArea` for a `lecture`
-   * with a `transcriptSeeker`.
+   * with a `transcriptArea`.
    */
   constructor(lecture, eventController, transcriptArea) {
     this.#lecture = lecture;
