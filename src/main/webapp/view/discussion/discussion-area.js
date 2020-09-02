@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {ScrollContainer} from '../../scroll-container.js';
-import {timestampToString} from '../../timestamps.js';
+import TimestampUtil from '../../timestamp-util.js';
 import DiscussionComment from './discussion-comment.js';
 import DiscussionManager from './discussion-manager.js';
 import {COMMENT_TYPE_REPLY} from './discussion.js';
@@ -30,29 +30,40 @@ export default class DiscussionArea {
   static #ID_DISCUSSION_CONTAINER = 'discussion-comments';
   static #ELEMENT_NEW_COMMENT_TYPES =
       document.querySelector('#new-comment-types');
+  static #ELEMENT_LOADING_SPINNER =
+      DiscussionArea.#ELEMENT_DISCUSSION.querySelector('.spinner-border');
+
   /**
    * A selector to query on `ELEMENT_NEW_COMMENT_TYPES`. It returns the
    * selected type button in the new comment area.
    */
   static #SELECTOR_SELECTED_TYPE = 'label.active > input';
+  /**
+   * How long to wait between updating the discussion comments in the
+   * background.
+   */
+  static #BACKGROUND_UPDATE_INTERVAL_MS = 5000;
 
   #lecture;
   #eventController;
   #manager;
   #currentTimeMs;
   #nearestComments;
+  #transcriptSeeker;
   #scrollContainer;
   #discussionCommentsDiv;
 
   /**
-   * Creates a `DiscussionArea` for a `lecture`.
+   * Creates a `DiscussionArea` for a `lecture`
+   * with a `transcriptSeeker`.
    */
-  constructor(lecture, eventController) {
+  constructor(lecture, eventController, transcriptSeeker) {
     this.#lecture = lecture;
     this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
+    this.#transcriptSeeker = transcriptSeeker;
   }
 
   /**
@@ -66,11 +77,16 @@ export default class DiscussionArea {
     this.#scrollContainer.appendChild(this.#discussionCommentsDiv);
     DiscussionArea.#ELEMENT_DISCUSSION.appendChild(this.#scrollContainer);
     this.addSeekingListener();
-
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment = this.postNewComment.bind(this);
+
+    setInterval(
+        this.updateDiscussion.bind(this),
+        DiscussionArea.#BACKGROUND_UPDATE_INTERVAL_MS);
     await this.updateDiscussion();
+    DiscussionArea.#ELEMENT_DISCUSSION.removeChild(
+        DiscussionArea.#ELEMENT_LOADING_SPINNER);
   }
 
   /**
@@ -80,7 +96,18 @@ export default class DiscussionArea {
   addSeekingListener() {
     this.#eventController.addEventListener((timestampMs) => {
       this.seek(timestampMs);
-    }, 'seek');
+    }, 'seek', 'seekAll');
+  }
+
+  /**
+   * Seeks the transcript, discussion, and video to `timestampMs`.
+   *
+   * <p>This should be added as an event listener to every root
+   * discussion header's onclick event.
+   */
+  onCommentHeaderClicked(timestampMs) {
+    // TODO: Enable scroll container autoscroll.
+    this.#eventController.broadcastEvent('seekAll', timestampMs);
   }
 
   /**
@@ -189,7 +216,7 @@ export default class DiscussionArea {
   seek(timeMs) {
     this.#currentTimeMs = timeMs;
     DiscussionArea.#ELEMENT_TIMESTAMP_SPAN.innerText =
-        timestampToString(timeMs);
+        TimestampUtil.timestampToString(timeMs);
 
     this.unhightlightNearestComments();
     this.#nearestComments = this.getNearestDiscussionComments(timeMs);
@@ -212,8 +239,15 @@ export default class DiscussionArea {
             .value;
     /* eslint-enable indent */
 
+    const currentTranscriptLine =
+        this.#transcriptSeeker.currentTranscriptLine();
+    const currentTranscriptLineId =
+        currentTranscriptLine.transcriptLine.transcriptKey.id;
+
     this.#manager
-        .postRootComment(commentContent, commentTimestampMs, commentType)
+        .postRootComment(
+            commentContent, commentTimestampMs, commentType,
+            currentTranscriptLineId)
         .then(() => {
           this.updateDiscussion();
         });
@@ -222,10 +256,11 @@ export default class DiscussionArea {
   }
 
   /**
-   * Posts `content` as a reply to `parentId`, and updates the discussion.
+   *Posts `content` as a reply to `parentId` with the specified
+   * `transcriptLineId`, and updates the discussion.
    */
-  postReply(content, parentId) {
-    this.#manager.postReply(content, parentId).then(() => {
+  postReply(content, parentId, transcriptLineId) {
+    this.#manager.postReply(content, parentId, transcriptLineId).then(() => {
       this.updateDiscussion();
     });
   }
