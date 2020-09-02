@@ -127,9 +127,9 @@ export default class DiscussionManager {
     url.searchParams.append(
         DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
     for (const paramName in paramNamesTo) {
+      const commentParamValue = paramNamesTo[paramName];
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
-      let commentParamValue = paramNamesTo[paramName];
       if (paramNamesTo.hasOwnProperty(paramName) && commentParamValue != null) {
         url.searchParams.append(paramName, paramNamesTo[paramName]);
       }
