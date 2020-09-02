@@ -29,6 +29,8 @@ import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
@@ -81,6 +83,7 @@ public final class LectureServletTest {
   @Test
   public void doPost_missingName_badRequest() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
+    when(request.getParameter(LectureServlet.PARAM_LANGUAGE)).thenReturn("en");
 
     servlet.doPost(request, response);
 
@@ -91,6 +94,7 @@ public final class LectureServletTest {
   @Test
   public void doPost_missingLink_badRequest() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LANGUAGE)).thenReturn("en");
 
     servlet.doPost(request, response);
 
@@ -206,5 +210,28 @@ public final class LectureServletTest {
     assertThat(servlet.getVideoId(video6).get()).isEqualTo(id);
     assertThat(servlet.getVideoId(video7).get()).isEqualTo(id);
     assertThat(servlet.getVideoId(video8).get()).isEqualTo(id);
+  }
+
+  @Test
+  public void doPost_noLanguageParameter_shouldAddToDatabaseAndReturnRedirect() throws Exception{
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
+    
+    servlet.doPost(request, response);
+
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
+    verify(response).sendRedirect("/view/?id=1");
+  }
+
+  @Test
+  public void doPost_invalidLanguageParameter_shouldAddToDatabaseAndReturnRedirect() throws Exception{
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
+    when(request.getParameter(LectureServlet.PARAM_LANGUAGE)).thenReturn("notAValidLanguage");
+    
+    servlet.doPost(request, response);
+
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
+    verify(response).sendRedirect("/view/?id=1");
   }
 }
