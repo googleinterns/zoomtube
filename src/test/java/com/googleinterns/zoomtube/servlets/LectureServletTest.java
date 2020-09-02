@@ -30,7 +30,6 @@ import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
