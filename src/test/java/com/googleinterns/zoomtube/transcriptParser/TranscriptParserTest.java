@@ -165,7 +165,7 @@ public final class TranscriptParserTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_noLanguageAvailable_throwsException() throws IOException {
+  public void parseAndStoreTranscript_noLanguageAvailable_throwsException() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
     try {
