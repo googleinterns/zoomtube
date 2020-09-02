@@ -114,9 +114,9 @@ export default class DiscussionManager {
   }
 
   /**
-   * Posts `content` to the discussion with the given `commentParameterNameToValue`.
-   * This method is private and should only be called within
-   * `DiscussionManager`.
+   * Posts `content` to the discussion with the given
+   * `commentParameterNameToValue`. This method is private and should only be
+   * called within `DiscussionManager`.
    *
    * <p>Different types of comments require different parameters, such as
    * `PARAM_TIMESTAMP` or `PARAM_PARENT`. The caller should ensure the correct
@@ -131,7 +131,8 @@ export default class DiscussionManager {
       /* eslint-disable no-prototype-builtins */
       if (commentParameterNameToValue.hasOwnProperty(paramName) &&
           commentParameterNameToValue[paramName] !== null) {
-        url.searchParams.append(paramName, commentParameterNameToValue[paramName]);
+        url.searchParams.append(
+            paramName, commentParameterNameToValue[paramName]);
       }
       /* eslint-enable no-prototype-builtins */
     }
