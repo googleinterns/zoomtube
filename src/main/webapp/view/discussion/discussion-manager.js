@@ -126,8 +126,6 @@ export default class DiscussionManager {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
     url.searchParams.append(
         DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
-
-
     for (const paramName in paramNamesTo) {
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
