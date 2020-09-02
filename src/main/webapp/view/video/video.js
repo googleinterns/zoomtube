@@ -47,8 +47,6 @@ export default class Video {
   // TODO: Support dynamic video height and width.
   onYouTubeIframeAPIReady() {
     this.#videoPlayer = new window.YT.Player('player', {
-      height: '390',
-      width: '640',
       videoId: this.#lecture.videoId,
       events: {
         onReady: window.onPlayerReady,

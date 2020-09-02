@@ -16,8 +16,8 @@
 <script type="module" src="/view/discussion/discussion.js" defer></script>
 <script type="module" src="/view/video/video.js" defer></script>
 <script type="module" src="/view/transcript/transcript.js" defer></script>
-<script type="module" src="../feedback/icon-feedback.js" defer></script>
 <script type="module" src="../event-controller.js" defer></script>
+<script type="module" src="../feedback/post-icon-feedback.js" defer></script>
 <script type="module" src="/view/lecture-view.js" defer></script>
 
 <body>
@@ -29,7 +29,9 @@
   <div id="page">
     <div class="halfpage" id="player-transcript">
       <div id="video-icons">
-        <div id="player"></div>
+        <div id="video-container">
+          <div id="player"></div>
+        </div>
         <div id="icons">
           <button type="button" onclick="iconOnClick('GOOD')">Thumbs Up</button>
           <button type="button" onclick="iconOnClick('BAD')">Thumbs Down</button>
@@ -47,7 +49,7 @@
         </div>
         <div class="btn-group-toggle" data-toggle="buttons" id="new-comment-types">
           <label class="badge btn btn-outline-danger btn-sm float-left">
-            <input type="radio" value="QUESTION" />Question
+            <input type="radio" value="QUESTION_UNANSWERED" />Question
           </label>
           <label class="badge btn btn-outline-secondary btn-sm float-left active">
             <input type="radio" value="NOTE" />Note

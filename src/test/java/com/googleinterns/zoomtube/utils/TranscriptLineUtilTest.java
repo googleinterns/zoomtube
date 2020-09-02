@@ -22,7 +22,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.TranscriptLine;
-import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -55,7 +54,7 @@ public final class TranscriptLineUtilTest {
   }
 
   @Test
-  public void createTranscriptLine_transcriptLineSuccessfullyCreated() throws IOException {
+  public void createTranscriptLine_transcriptLineSuccessfullyCreated() throws Exception {
     final long testTimestampMs = 123;
     final Key testLectureKey = KeyFactory.createKey(LectureUtil.KIND, LECTURE_ID_A);
     final Entity lineEntity = new Entity(TranscriptLineUtil.KIND);
@@ -75,7 +74,7 @@ public final class TranscriptLineUtilTest {
   }
 
   @Test
-  public void createEntity_entityAndPropertiesSuccessfullyCreated() throws IOException {
+  public void createEntity_entityAndPropertiesSuccessfullyCreated() throws Exception {
     final long start = 23320;
     final long duration = 1337;
     final long end = start + duration;

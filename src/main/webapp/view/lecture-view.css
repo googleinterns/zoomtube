@@ -72,6 +72,10 @@ discussion-comment[highlighted] > [slot='header'] {
   padding-bottom: calc(100vh - 306px) !important;
 }
 
+#discussion-comments > discussion-comment > [slot='header'] {
+  cursor: pointer;
+}
+
 #new-comment-row {
   border-bottom: 2px solid #eee;
   overflow: hidden;
@@ -148,8 +152,19 @@ discussion-comment[highlighted] > [slot='header'] {
 
 /* Video */
 
-iframe {
-  display: block;
+#video-container {
+  height: 0;
+  margin: 15px 0px 0px 15px;
+  padding-bottom: 56.25%;
+  position: relative;
+  width: 100%;
+}
+
+#player {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
   width: 100%;
 }
 

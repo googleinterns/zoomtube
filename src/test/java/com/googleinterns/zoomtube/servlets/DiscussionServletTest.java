@@ -18,14 +18,12 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.Comment;
 import com.googleinterns.zoomtube.utils.CommentUtil;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -52,7 +50,6 @@ public class DiscussionServletTest {
 
   private static final int LECTURE_ID = 1;
   private static final String LECTURE_ID_STR = "1";
-  private static final long TIMESTAMP_MS = 123;
   private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
       new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
@@ -75,7 +72,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_loggedOut_postForbidden() throws ServletException, IOException {
+  public void doPost_loggedOut_postForbidden() throws Exception {
     testServices.setEnvIsLoggedIn(false);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
@@ -93,7 +90,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_missingLecture_badRequest() throws ServletException, IOException {
+  public void doPost_missingLecture_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
 
     servlet.doPost(request, response);
@@ -103,7 +100,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_missingType_badRequest() throws ServletException, IOException {
+  public void doPost_missingType_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
@@ -116,7 +113,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_missingReplyParent_badRequest() throws ServletException, IOException {
+  public void doPost_missingReplyParent_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
@@ -131,12 +128,12 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_missingRootTimestamp_badRequest() throws ServletException, IOException {
+  public void doPost_missingRootTimestamp_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
-        .thenReturn(Comment.Type.QUESTION.toString());
+        .thenReturn(Comment.Type.QUESTION_UNANSWERED.toString());
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("Untested Content")));
 
     servlet.doPost(request, response);
@@ -146,8 +143,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_reply_storesCommentWithNoTranscriptLine()
-      throws ServletException, IOException {
+  public void doPost_reply_storesCommentWithNoTranscriptLine() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
@@ -165,7 +161,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_reply_storesCommentWithAllProperties() throws ServletException, IOException {
+  public void doPost_reply_storesCommentWithAllProperties() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     testServices.setEnvEmail("author@example.com");
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
@@ -190,7 +186,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_reply_storesCommentWithParent() throws ServletException, IOException {
+  public void doPost_reply_storesCommentWithParent() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
@@ -209,13 +205,13 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doPost_rootComment_storesTypeAndTimestamp() throws ServletException, IOException {
+  public void doPost_rootComment_storesTypeAndTimestamp() throws Exception {
     testServices.setEnvIsLoggedIn(true);
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     when(request.getParameter(DiscussionServlet.PARAM_TRANSCRIPT_LINE)).thenReturn("789");
     when(request.getParameter(DiscussionServlet.PARAM_TIMESTAMP)).thenReturn("2000");
     when(request.getParameter(DiscussionServlet.PARAM_TYPE))
-        .thenReturn(Comment.Type.QUESTION.toString());
+        .thenReturn(Comment.Type.QUESTION_UNANSWERED.toString());
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader("Random untested content")));
 
@@ -226,11 +222,11 @@ public class DiscussionServletTest {
     Comment comment = CommentUtil.createComment(query.asSingleEntity());
     assertThat(comment.parentKey().isPresent()).isFalse();
     assertThat(comment.timestampMs().get()).isEqualTo(2000);
-    assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION);
+    assertThat(comment.type()).isEqualTo(Comment.Type.QUESTION_UNANSWERED);
   }
 
   @Test
-  public void doGet_missingLecture_badRequest() throws ServletException, IOException {
+  public void doGet_missingLecture_badRequest() throws Exception {
     testServices.setEnvIsLoggedIn(true);
 
     servlet.doGet(request, response);
@@ -240,7 +236,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doGet_returnsNothingForUnknownLecture() throws ServletException, IOException {
+  public void doGet_returnsNothingForUnknownLecture() throws Exception {
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     StringWriter content = new StringWriter();
     PrintWriter writer = new PrintWriter(content);
@@ -254,7 +250,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doGet_returnsComments() throws ServletException, IOException {
+  public void doGet_returnsComments() throws Exception {
     when(request.getParameter(DiscussionServlet.PARAM_LECTURE)).thenReturn(LECTURE_ID_STR);
     datastore.put(createTestCommentEntity(LECTURE_ID));
     datastore.put(createTestCommentEntity(LECTURE_ID));
@@ -271,7 +267,7 @@ public class DiscussionServletTest {
   }
 
   @Test
-  public void doGet_returnsCommentsForSpecificLecture() throws ServletException, IOException {
+  public void doGet_returnsCommentsForSpecificLecture() throws Exception {
     final int lectureA = 1;
     final int lectureB = 2;
     final int lectureC = 3;
@@ -305,8 +301,8 @@ public class DiscussionServletTest {
     Date dateNow = new Date();
 
     return CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, transcriptLineKey,
-        author,
-        /* content= */ "Untested comment content", dateNow, Comment.Type.QUESTION);
+        author, /* content= */ "Untested comment content", dateNow,
+        Comment.Type.QUESTION_UNANSWERED);
   }
 
   private List<Comment> getCommentsFromJson(String json) {
