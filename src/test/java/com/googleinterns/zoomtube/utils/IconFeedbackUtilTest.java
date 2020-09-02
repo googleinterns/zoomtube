@@ -21,8 +21,6 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.IconFeedback;
-import com.googleinterns.zoomtube.utils.IconFeedbackUtil;
-import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +43,7 @@ public final class IconFeedbackUtilTest {
   }
 
   @Test
-  public void createIconFeedback_shouldReturnFeedbackFromEntity() throws IOException {
+  public void createIconFeedback_shouldReturnFeedbackFromEntity() throws Exception {
     Entity iconFeedbackEntity = new Entity(IconFeedbackUtil.KIND);
     Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/123);
     iconFeedbackEntity.setProperty(IconFeedbackUtil.LECTURE, lectureKey);
@@ -60,7 +58,7 @@ public final class IconFeedbackUtilTest {
   }
 
   @Test
-  public void createEntity_shouldReturnEntityWithInputs() throws IOException {
+  public void createEntity_shouldReturnEntityWithInputs() throws Exception {
     Key lectureKey = KeyFactory.createKey("Lecture", /*lectureId=*/123);
 
     Entity result = IconFeedbackUtil.createEntity(lectureKey, 456L, IconFeedback.Type.GOOD);

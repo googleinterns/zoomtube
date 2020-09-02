@@ -39,7 +39,7 @@ export default class TranscriptSeeker {
   addSeekingListener() {
     this.#eventController.addEventListener((timestampMs) => {
       this.seekTranscript(timestampMs);
-    }, 'seek');
+    }, 'seek', 'seekAll');
   }
 
   /**
@@ -118,5 +118,11 @@ export default class TranscriptSeeker {
     return transcriptLinePointer;
   }
 
-  // TODO: Add a method that adds the eventListeners.
+  /**
+   * Returns the eventController responsible for sending and receiving
+   * seeking signals.
+   */
+  eventController() {
+    return this.#eventController;
+  }
 }

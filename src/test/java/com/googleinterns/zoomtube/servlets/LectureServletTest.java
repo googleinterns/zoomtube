@@ -29,10 +29,8 @@ import com.google.gson.GsonBuilder;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -62,9 +60,11 @@ public final class LectureServletTest {
   private static final String TEST_NAME = "TestName";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=3ymwOvzhwHs";
   private static final String TEST_ID = "3ymwOvzhwHs";
+  private static final String NO_TRANSCRIPT_LINK = "https://www.youtube.com/watch?v=F6VnkwBBI1k";
+  private static final String NO_TRANSCRIPT_ID = "F6VnkwBBI1k";
 
   @Before
-  public void setUp() throws ServletException, IOException {
+  public void setUp() throws Exception {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new LectureServlet();
@@ -79,7 +79,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_missingName_badRequest() throws IOException, ServletException {
+  public void doPost_missingName_badRequest() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
 
     servlet.doPost(request, response);
@@ -89,7 +89,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_missingLink_badRequest() throws IOException, ServletException {
+  public void doPost_missingLink_badRequest() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
 
     servlet.doPost(request, response);
@@ -99,7 +99,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_invalidLink_badRequest() throws IOException, ServletException {
+  public void doPost_invalidLink_badRequest() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn("this is not a link");
 
@@ -110,8 +110,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_urlAlreadyInDatabase_shouldReturnLecture()
-      throws IOException, ServletException {
+  public void doPost_urlAlreadyInDatabase_shouldReturnLecture() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     datastoreService.put(LectureUtil.createEntity(TEST_NAME, TEST_LINK, TEST_ID));
@@ -123,8 +122,19 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect()
-      throws IOException, ServletException {
+  public void doPost_videoHasNoTranscript_shouldReturnLectureAnyways() throws Exception {
+    when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
+    when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(NO_TRANSCRIPT_LINK);
+    datastoreService.put(LectureUtil.createEntity(TEST_NAME, NO_TRANSCRIPT_LINK, NO_TRANSCRIPT_ID));
+
+    servlet.doPost(request, response);
+
+    assertThat(datastoreService.prepare(new Query(LectureUtil.KIND)).countEntities()).isEqualTo(1);
+    verify(response).sendRedirect("/view/?id=1");
+  }
+
+  @Test
+  public void doPost_urlNotInDatabase_shouldAddToDatabaseAndReturnRedirect() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
 
@@ -136,7 +146,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doGet_missingLecture_badRequest() throws IOException {
+  public void doGet_missingLecture_badRequest() throws Exception {
     servlet.doGet(request, response);
 
     verify(response).sendError(
@@ -144,7 +154,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doGet_lectureInDatabase_shouldWriteLecture() throws IOException {
+  public void doGet_lectureInDatabase_shouldWriteLecture() throws Exception {
     Entity lectureEntity =
         LectureUtil.createEntity(/* lectureName= */ TEST_NAME, TEST_LINK, TEST_ID);
     datastoreService.put(lectureEntity);
@@ -163,7 +173,7 @@ public final class LectureServletTest {
   }
 
   @Test
-  public void doGet_noLectureInDatabase_shouldWriteNoLecture() throws IOException {
+  public void doGet_noLectureInDatabase_shouldWriteNoLecture() throws Exception {
     when(request.getParameter(LectureUtil.ID)).thenReturn(/* lectureId= */ "1");
 
     servlet.doGet(request, response);

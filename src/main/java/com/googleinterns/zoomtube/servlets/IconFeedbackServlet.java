@@ -19,13 +19,19 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.data.IconFeedback;
 import com.googleinterns.zoomtube.utils.IconFeedbackUtil;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.ServletException;
@@ -62,6 +68,39 @@ public class IconFeedbackServlet extends HttpServlet {
     datastore.put(createEntityFromRequest(request));
   }
 
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Optional<String> getRequestError = validateGetRequest(request);
+    if (getRequestError.isPresent()) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, getRequestError.get());
+      return;
+    }
+    long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
+    List<IconFeedback> lectures = getIconFeedback(lectureId);
+    Gson gson = new Gson();
+    response.setContentType("application/json");
+    response.getWriter().println(gson.toJson(lectures));
+  }
+
+  /** Returns IconFeedback (associated with {@code lectureId}) from the database. */
+  private List<IconFeedback> getIconFeedback(long lectureId) {
+    Key lecture = KeyFactory.createKey(LectureUtil.KIND, lectureId);
+    Filter lectureFilter =
+        new FilterPredicate(IconFeedbackUtil.LECTURE, FilterOperator.EQUAL, lecture);
+
+    Query query = new Query(IconFeedbackUtil.KIND)
+                      .setFilter(lectureFilter)
+                      .addSort(IconFeedbackUtil.TIMESTAMP_MS, SortDirection.ASCENDING);
+    PreparedQuery pq = datastore.prepare(query);
+    ImmutableList.Builder<IconFeedback> iconFeedbackListBuilder = new ImmutableList.Builder<>();
+
+    for (Entity iconFeedbackEntity : pq.asQueryResultIterable()) {
+      iconFeedbackListBuilder.add(IconFeedbackUtil.createIconFeedback(iconFeedbackEntity));
+    }
+    ImmutableList<IconFeedback> iconFeedbackList = iconFeedbackListBuilder.build();
+    return iconFeedbackList;
+  }
+
   /** Returns an IconFeedback Entity from parameters found in {@code request}. */
   private Entity createEntityFromRequest(HttpServletRequest request) {
     long lectureId = Long.parseLong(request.getParameter(PARAM_LECTURE_ID));
@@ -81,6 +120,14 @@ public class IconFeedbackServlet extends HttpServlet {
     }
     if (request.getParameter(PARAM_ICON_TYPE) == null) {
       return Optional.of(ERROR_MISSING_ICON_TYPE);
+    }
+    return Optional.empty();
+  }
+
+  /** Ensures request paramters are present. Returns error message if any of them are missing. */
+  private Optional<String> validateGetRequest(HttpServletRequest request) {
+    if (request.getParameter(PARAM_LECTURE_ID) == null) {
+      return Optional.of(ERROR_MISSING_LECTURE_ID);
     }
     return Optional.empty();
   }
