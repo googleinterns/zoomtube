@@ -185,12 +185,12 @@ discussion-comment[highlighted] > [slot='header'] {
 
 #icons {
   align-items: center;
+  background-color: #f8f9fa;
+  border-radius: 0px 10px 10px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: #f8f9fa;
   margin: 75px 0px 60px 0px;
-  border-radius: 0px 10px 10px 0px;
 }
 
 #icons h6 {
@@ -206,7 +206,7 @@ discussion-comment[highlighted] > [slot='header'] {
 
 .icon-button {
   background-color: #f8f9fa;
-  outline: none;
   border: none;
   margin: 5px 10px 5px 10px;
+  outline: none;
 }
