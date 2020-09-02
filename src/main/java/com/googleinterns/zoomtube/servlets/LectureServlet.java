@@ -171,7 +171,6 @@ public class LectureServlet extends HttpServlet {
   }
 
   /** Returns YouTube video ID for a given {@code videoUrl}. */
-  // TODO: Move this function to a Utils class.
   public static Optional<String> getVideoId(String videoUrl) {
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {

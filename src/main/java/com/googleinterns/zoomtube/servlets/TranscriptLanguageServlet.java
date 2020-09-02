@@ -33,7 +33,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/** Fetches and parses the transcript options as XML from the Google Video Timetext API. */
+/** 
+ * Fetches and parses the transcript language options as XML from the Google
+ * Video Timetext API. 
+ */
 public class TranscriptLanguageServlet extends HttpServlet {
   /* Properties of the API Url. */
   private static final String API_URL = "http://video.google.com/timedtext";
@@ -81,7 +84,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
 
   /**
    * Returns {@code Optional.empty()} if the video link is present. Else,
-   * returns an Optional containing an error message if it is missing.
+   * returns an error message if it is missing.
    */
   private Optional<String> validateGetRequest(HttpServletRequest request) {
     if (request.getParameter(PARAM_LINK) == null) {
@@ -106,8 +109,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
   }
 
   /**
-   * Returns the API Url used to fetch the list of transcript language options
-   * for {@code videoId}.
+   * Parses the {@code document} containing the list of transcript language options.
    */
   private ImmutableList<TranscriptLanguage> parseTranscriptLanguages(Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
