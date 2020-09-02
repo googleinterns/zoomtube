@@ -126,15 +126,18 @@ export default class DiscussionManager {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
     url.searchParams.append(
         DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
+
+
     for (const paramName in paramNamesTo) {
-      const commentParamValue = paramNamesTo[paramName];
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
-      if (paramNamesTo.hasOwnProperty(paramName) && commentParamValue != null) {
+      if (paramNamesTo.hasOwnProperty(paramName) &&
+          paramNamesTo[paramName] !== null) {
         url.searchParams.append(paramName, paramNamesTo[paramName]);
       }
       /* eslint-enable no-prototype-builtins */
     }
+
 
     await fetch(url, {
       method: 'POST',
