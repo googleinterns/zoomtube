@@ -107,7 +107,6 @@ public final class TranscriptParser {
    * @param url Indicates the url to fetch and parse.
    * @throws IOException if there is an error parsing the transcript.
    */
-  // TODO: Move this to a Utils method.
   public static Document fetchUrlAsXmlDocument(URL url) throws IOException {
     try {
       DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
