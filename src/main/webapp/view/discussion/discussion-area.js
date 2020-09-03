@@ -49,21 +49,21 @@ export default class DiscussionArea {
   #manager;
   #currentTimeMs;
   #nearestComments;
-  #transcriptSeeker;
+  #transcriptArea;
   #scrollContainer;
   #discussionCommentsDiv;
 
   /**
    * Creates a `DiscussionArea` for a `lecture`
-   * with a `transcriptSeeker`.
+   * with a `transcriptArea`.
    */
-  constructor(lecture, eventController, transcriptSeeker) {
+  constructor(lecture, eventController, transcriptArea) {
     this.#lecture = lecture;
     this.#eventController = eventController;
     this.#manager = new DiscussionManager(this.#lecture);
     this.#currentTimeMs = 0;
     this.#nearestComments = [];
-    this.#transcriptSeeker = transcriptSeeker;
+    this.#transcriptArea = transcriptArea;
   }
 
   /**
@@ -126,6 +126,11 @@ export default class DiscussionArea {
       const commentElement = new DiscussionComment(this);
       commentElement.setComment(comment);
       comment.element = commentElement;
+      console.log(comment);
+      if (comment.transcriptLineKey.value != null) {
+        this.#transcriptArea.incrementCommentIndicatorAt(
+            comment.transcriptLineKey.value.id);
+      }
     }
 
     // Insert comments.
@@ -240,9 +245,12 @@ export default class DiscussionArea {
     /* eslint-enable indent */
 
     const currentTranscriptLine =
-        this.#transcriptSeeker.currentTranscriptLine();
-    const currentTranscriptLineId =
-        currentTranscriptLine.transcriptLine.transcriptKey.id;
+        this.#transcriptArea.transcriptSeeker().currentTranscriptLine();
+    let currentTranscriptLineId = null;
+    if (currentTranscriptLine != null) {
+      currentTranscriptLineId =
+          currentTranscriptLine.transcriptLine.transcriptKey.id;
+    }
 
     this.#manager
         .postRootComment(
