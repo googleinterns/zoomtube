@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import TimestampUtil from '../timestamp-util.js';
 import IconFeedbackUtil from './icon-feedback-util.js';
 
 /** Stores parsed icon feedback data. */
@@ -22,17 +23,21 @@ export default class ParsedIconFeedback {
     [IconFeedbackUtil.TYPE_BAD]: [0],
     [IconFeedbackUtil.TYPE_TOO_FAST]: [0],
     [IconFeedbackUtil.TYPE_TOO_SLOW]: [0],
-    [IconFeedbackUtil.INTERVAL]: [0],
   }
 
+  #interval = [TimestampUtil.timestampToString(0)];
+
   /**
-   * Appends each value in `typeCountsAndInterval` to it's respective
+   * Appends each value in `intervalIconFeedbackCount` to it's respective
    * dictionary value.
    */
-  appendTypeCountsAndInterval(typeCountsAndInterval) {
-    for (const type in typeCountsAndInterval) {
-      if (Object.prototype.hasOwnProperty.call(typeCountsAndInterval, type)) {
-        this.#counts[type].push(typeCountsAndInterval[type]);
+  appendTypeCountsAndInterval(intervalIconFeedbackCount) {
+    const iconFeedbackCounts =
+        intervalIconFeedbackCount.getIconFeedbackCounts();
+    this.#interval.push(intervalIconFeedbackCount.getTimestampInterval());
+    for (const type in iconFeedbackCounts) {
+      if (Object.prototype.hasOwnProperty.call(iconFeedbackCounts, type)) {
+        this.#counts[type].push(iconFeedbackCounts[type]);
       }
     }
   }
