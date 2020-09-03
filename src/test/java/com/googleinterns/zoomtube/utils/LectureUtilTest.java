@@ -19,8 +19,6 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googleinterns.zoomtube.data.Lecture;
-import com.googleinterns.zoomtube.utils.LectureUtil;
-import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public final class LectureUtilTest {
   }
 
   @Test
-  public void createLecture_shouldReturnLectureFromEntity() throws IOException {
+  public void createLecture_shouldReturnLectureFromEntity() throws Exception {
     Entity lectureEntity = new Entity(LectureUtil.KIND);
     lectureEntity.setProperty(LectureUtil.NAME, "testName");
     lectureEntity.setProperty(LectureUtil.VIDEO_URL, "testUrl");
@@ -57,7 +55,7 @@ public final class LectureUtilTest {
   }
 
   @Test
-  public void createEntity_shouldReturnEntityWithInputs() throws IOException {
+  public void createEntity_shouldReturnEntityWithInputs() throws Exception {
     Entity result = LectureUtil.createEntity(
         /* lectureName= */ "testName", /* videoUrl= */ "testUrl", /* videoId= */ "testId");
 

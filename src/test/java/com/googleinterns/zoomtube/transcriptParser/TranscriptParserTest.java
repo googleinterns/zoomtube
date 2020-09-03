@@ -16,7 +16,6 @@ package com.googleinterns.zoomtube.transcriptParser;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -36,13 +35,8 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -50,7 +44,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -59,7 +52,6 @@ public final class TranscriptParserTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
 
   private DatastoreService datastore;
-  private StringWriter lectureTranscript;
 
   private static final LocalDatastoreServiceTestConfig datastoreConfig =
       (new LocalDatastoreServiceTestConfig()).setNoStorage(true);
@@ -111,7 +103,7 @@ public final class TranscriptParserTest {
   }
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() throws Exception {
     localServiceHelper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
@@ -122,7 +114,7 @@ public final class TranscriptParserTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
     TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB);
@@ -133,7 +125,7 @@ public final class TranscriptParserTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws IOException {
+  public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws Exception {
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
 
     TranscriptParser.getParser().parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC);
@@ -144,7 +136,7 @@ public final class TranscriptParserTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_unescapesXml() throws IOException {
+  public void parseAndStoreTranscript_unescapesXml() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
     TranscriptParser.getParser().parseAndStoreTranscript(
@@ -160,7 +152,7 @@ public final class TranscriptParserTest {
   }
 
   @Test
-  public void parseAndStoreTranscript_removesNewlines() throws IOException {
+  public void parseAndStoreTranscript_removesNewlines() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
     TranscriptParser.getParser().parseAndStoreTranscript(VIDEO_WITH_NEWLINES_ID, lectureKeyB);
