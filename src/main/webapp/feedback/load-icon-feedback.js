@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import TimestampUtil from '../timestamp-util.js';
 import IconFeedbackUtil from './icon-feedback-util.js';
+import IntervalIconFeedbackCount from './interval-icon-feedback-count.js';
 import ParsedIconFeedback from './parsed-icon-feedback.js';
 
 /* Handles loading IconFeedback from database and parses data for graph. */
@@ -47,7 +47,6 @@ export default class LoadIconFeedback {
         LoadIconFeedback.#PARAM_LECTURE_ID, this.#lectureId);
     const response = await fetch(url);
     const jsonData = await response.json();
-    console.log(jsonData);
     this.parseFeedback(jsonData);
     this.makeGraph();
   }
@@ -55,7 +54,8 @@ export default class LoadIconFeedback {
   /** Parses `iconFeedbackJson` data so that it can be graphed. */
   parseFeedback(iconFeedbackJson) {
     let intervalLowerBound = LoadIconFeedback.#INCREMENT_INTERVAL_MS;
-    let typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
+    let typeCountsAndInterval =
+        new IntervalIconFeedbackCount(intervalLowerBound);
     for (let index = 0; index < iconFeedbackJson.length;) {
       const iconFeedback = iconFeedbackJson[index];
       if (intervalLowerBound < iconFeedback.timestampMs &&
@@ -64,29 +64,15 @@ export default class LoadIconFeedback {
         this.#parsedIconFeedback.appendTypeCountsAndInterval(
             typeCountsAndInterval);
         intervalLowerBound += LoadIconFeedback.#INCREMENT_INTERVAL_MS;
-        typeCountsAndInterval = this.makeCountDictionary(intervalLowerBound);
+        typeCountsAndInterval =
+            new IntervalIconFeedbackCount(intervalLowerBound);
       } else {
         const type = iconFeedback.type;
-        typeCountsAndInterval[type]++;
+        typeCountsAndInterval.incrementIconFeedbackCount(type);
         index++;
       }
     }
     this.#parsedIconFeedback.appendTypeCountsAndInterval(typeCountsAndInterval);
-  }
-
-  /**
-   * Returns a dictionary mapping each icon type to a value which represents
-   * how many times that icon was clicked in an `intervalLowerBound`.
-   */
-  makeCountDictionary(intervalLowerBound) {
-    return {
-      [IconFeedbackUtil.TYPE_GOOD]: 0,
-      [IconFeedbackUtil.TYPE_BAD]: 0,
-      [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
-      [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
-      [IconFeedbackUtil.INTERVAL]:
-          TimestampUtil.timestampToString(intervalLowerBound),
-    };
   }
 
   /** Charts IconFeedback data into a graph. */
@@ -96,8 +82,7 @@ export default class LoadIconFeedback {
     const iconFeedbackLineChart = new window.Chart(chartElement, {
       type: 'line',
       data: {
-        labels:
-            this.#parsedIconFeedback.getTypeCount(IconFeedbackUtil.INTERVAL),
+        labels: this.#parsedIconFeedback.getIntervals(),
         datasets: [
           {
             label: [IconFeedbackUtil.TYPE_GOOD],

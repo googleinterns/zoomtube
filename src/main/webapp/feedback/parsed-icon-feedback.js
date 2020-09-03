@@ -23,17 +23,21 @@ export default class ParsedIconFeedback {
     [IconFeedbackUtil.TYPE_BAD]: [0],
     [IconFeedbackUtil.TYPE_TOO_FAST]: [0],
     [IconFeedbackUtil.TYPE_TOO_SLOW]: [0],
-    [IconFeedbackUtil.INTERVAL]: [TimestampUtil.timestampToString(0)],
   }
 
+  #intervals = [TimestampUtil.timestampToString(0)];
+
   /**
-   * Appends each value in `typeCountsAndInterval` to it's respective
+   * Appends each value in `intervalIconFeedbackCount` to it's respective
    * dictionary value.
    */
-  appendTypeCountsAndInterval(typeCountsAndInterval) {
-    for (const type in typeCountsAndInterval) {
-      if (Object.prototype.hasOwnProperty.call(typeCountsAndInterval, type)) {
-        this.#counts[type].push(typeCountsAndInterval[type]);
+  appendTypeCountsAndInterval(intervalIconFeedbackCount) {
+    const iconFeedbackCounts =
+        intervalIconFeedbackCount.getIconFeedbackCounts();
+    this.#intervals.push(intervalIconFeedbackCount.getTimestampInterval());
+    for (const type in iconFeedbackCounts) {
+      if (Object.prototype.hasOwnProperty.call(iconFeedbackCounts, type)) {
+        this.#counts[type].push(iconFeedbackCounts[type]);
       }
     }
   }
@@ -41,5 +45,10 @@ export default class ParsedIconFeedback {
   /** Returns value of key `type`. */
   getTypeCount(type) {
     return this.#counts[type];
+  }
+
+  /** Returns value of key `type`. */
+  getIntervals() {
+    return this.#intervals;
   }
 }
