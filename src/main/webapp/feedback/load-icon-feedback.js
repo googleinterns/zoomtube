@@ -178,9 +178,11 @@ export default class LoadIconFeedback {
 }
 
 const PARAM_ID = 'id';
+const REDIRECT_VIEW = '/view/';
 
 /** Lecture ID stored in `window.location.serach`. */
 const lectureId = getLectureId(window.location.search);
+setViewRedirectLink();
 
 /**
  * Returns the lecture id from `urlSearchParams`.
@@ -188,6 +190,13 @@ const lectureId = getLectureId(window.location.search);
 function getLectureId(urlSearchParams) {
   const urlParams = new URLSearchParams(urlSearchParams);
   return urlParams.get(PARAM_ID);
+}
+
+function setViewRedirectLink() {
+  const lectureViewLink = document.getElementById('view-link');
+  const url = new URL(REDIRECT_VIEW, window.location.origin);
+  url.searchParams.append(PARAM_ID, lectureId);
+  lectureViewLink.href = url;
 }
 
 const loadIconFeedback = new LoadIconFeedback(lectureId);
