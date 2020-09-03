@@ -15,28 +15,34 @@
 import TimestampUtil from '../timestamp-util.js';
 import IconFeedbackUtil from './icon-feedback-util.js';
 
-/** Stores parsed icon feedback data. */
-export default class ParsedIconFeedback {
+/** Stores IconFeeback counts in current interval. */
+export default class IntervalIconFeedbackCount {
   /* Values of each icon feedback type at each interval. */
-  #counts = {
-    [IconFeedbackUtil.TYPE_GOOD]: [0],
-    [IconFeedbackUtil.TYPE_BAD]: [0],
-    [IconFeedbackUtil.TYPE_TOO_FAST]: [0],
-    [IconFeedbackUtil.TYPE_TOO_SLOW]: [0],
+  #iconFeedbackCounts = {
+    [IconFeedbackUtil.TYPE_GOOD]: 0,
+    [IconFeedbackUtil.TYPE_BAD]: 0,
+    [IconFeedbackUtil.TYPE_TOO_FAST]: 0,
+    [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
   }
 
-  #interval = [TimestampUtil.timestampToString(0)];
+  #interval;
 
-  /**
-   * Appends each value in `intervalIconFeedbackCount` to it's respective
-   * dictionary value.
-   */
-  appendTypeCountsAndInterval(intervalIconFeedbackCount) {
-    const iconFeedbackCounts =
-        intervalIconFeedbackCount.getIconFeedbackCounts();
-    this.#interval.push(intervalIconFeedbackCount.getInterval());
-    for (const type in iconFeedbackCounts) {
-      this.#counts[type].push(iconFeedbackCounts[type]);
-    }
+  constructor(interval) {
+    this.#interval = TimestampUtil.timestampToString(interval);
+  }
+
+  /** Increments count of `iconFeedbackType`. */
+  incrementIconFeedbackCount(iconFeedbackType) {
+    this.#iconFeedbackCounts[iconFeedbackType]++;
+  }
+
+  /** Returns count of `iconFeedbackType`. */
+  getIconFeedbackCounts() {
+    return this.#iconFeedbackCounts;
+  }
+
+  /** Returns current interval. */
+  getInterval() {
+    return this.#interval;
   }
 }
