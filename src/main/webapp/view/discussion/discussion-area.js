@@ -126,8 +126,11 @@ export default class DiscussionArea {
       const commentElement = new DiscussionComment(this);
       commentElement.setComment(comment);
       comment.element = commentElement;
-      this.#transcriptArea.incrementCommentIndicatorAt(
-          comment.transcriptLineKey.value.id);
+      console.log(comment);
+      if (comment.transcriptLineKey.value != null) {
+        this.#transcriptArea.incrementCommentIndicatorAt(
+            comment.transcriptLineKey.value.id);
+      }
     }
 
     // Insert comments.
@@ -243,8 +246,11 @@ export default class DiscussionArea {
 
     const currentTranscriptLine =
         this.#transcriptArea.transcriptSeeker().currentTranscriptLine();
-    const currentTranscriptLineId =
-        currentTranscriptLine.transcriptLine.transcriptKey.id;
+    let currentTranscriptLineId = null;
+    if (currentTranscriptLine != null) {
+      currentTranscriptLineId =
+          currentTranscriptLine.transcriptLine.transcriptKey.id;
+    }
 
     this.#manager
         .postRootComment(
