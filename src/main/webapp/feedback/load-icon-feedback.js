@@ -178,7 +178,7 @@ export default class LoadIconFeedback {
 }
 
 const PARAM_ID = 'id';
-const REDIRECT_VIEW = '/view'
+const REDIRECT_VIEW = '/view';
 
 /** Lecture ID stored in `window.location.serach`. */
 const lectureId = getLectureId(window.location.search);

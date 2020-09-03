@@ -21,7 +21,6 @@ import Video from './video/video.js';
 const ENDPOINT_LECTURE = '/lecture';
 const REDIRECT_FEEDBACK = '/feedback';
 const HEADER_TEXT = 'header-text';
-const FEEDBACK_LINK = 'feedback-link';
 
 const PARAM_ID = 'id';
 
