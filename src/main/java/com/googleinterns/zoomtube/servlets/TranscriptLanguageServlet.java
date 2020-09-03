@@ -33,9 +33,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/** 
+/**
  * Fetches and parses the transcript language options as XML from the Google
- * Video Timetext API. 
+ * Video Timetext API.
  */
 public class TranscriptLanguageServlet extends HttpServlet {
   /* Properties of the API Url. */
