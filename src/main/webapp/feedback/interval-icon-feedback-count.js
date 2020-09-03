@@ -17,7 +17,7 @@ import IconFeedbackUtil from './icon-feedback-util.js';
 
 /** Stores IconFeeback counts in current interval. */
 export default class IntervalIconFeedbackCount {
-  /* Values of each icon feedback type at each interval. */
+  /* Count of each IconFeedback type. */
   #iconFeedbackCounts = {
     [IconFeedbackUtil.TYPE_GOOD]: 0,
     [IconFeedbackUtil.TYPE_BAD]: 0,
