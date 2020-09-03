@@ -67,36 +67,8 @@ export default class DiscussionComment extends HTMLElement {
     this.comment = comment;
     this.setHeader();
     this.setContent();
-    this.updateCommentType(comment.type);
-  }
-
-  /**
-   * Adds the comment's header to the header slot. For root comments, adds
-   * a click event handler to seek everything to the comment's timestamp.
-   */
-  setHeader() {
-    const headerSpan = document.createElement('span');
-    headerSpan.innerText = this.getHeaderString();
-    headerSpan.slot = DiscussionComment.#SLOT_HEADER;
-    this.appendChild(headerSpan);
-
-    if (this.comment.type === COMMENT_TYPE_REPLY) {
-      return;
-    }
-
-    headerSpan.onclick = () => {
-      this.#discussion.onCommentHeaderClicked(this.comment.timestampMs.value);
-    };
-  }
-
-  /**
-   * Adds the comment's content to the content slot.
-   */
-  setContent() {
-    const contentSpan = document.createElement('span');
-    contentSpan.innerText = this.comment.content;
-    contentSpan.slot = DiscussionComment.#SLOT_CONTENT;
-    this.appendChild(contentSpan);
+    this.setTypeTag(comment.type);
+    this.setMarkAsButton(comment.type);
   }
 
   /**
@@ -218,7 +190,6 @@ export default class DiscussionComment extends HTMLElement {
 
   /**
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
-<<<<<<< HEAD
    */
   setTypeTag(type) {
     if (type === COMMENT_TYPE_REPLY) {
@@ -239,8 +210,6 @@ export default class DiscussionComment extends HTMLElement {
   /**
    * Sets the text and onclick event for the mark as button according to
    * the comment's `type`.
-=======
->>>>>>> add-svg-icons
    */
   setMarkAsButton(type) {
     const markAsButton = this.shadowRoot.querySelector(
@@ -270,6 +239,30 @@ export default class DiscussionComment extends HTMLElement {
   updateCommentType(newType) {
     this.setTypeTag(newType);
     this.setMarkAsButton(newType);
+  }
+
+  /**
+   * Sets the text and onclick event for the mark as button according to
+   * the comment's `type`.
+   */
+  setMarkAsButton(type) {
+    const markAsButton = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_MARK_AS_BUTTON);
+    if (!COMMENT_TYPES[type].isQuestion) {
+      markAsButton.style.visibility = 'hidden';
+      return;
+    }
+
+    const oppositeType = COMMENT_TYPES[type].oppositeType;
+    markAsButton.innerText = COMMENT_TYPES[oppositeType].updateTypeText;
+    const updateType = COMMENT_TYPES[oppositeType].updateTypeFunction;
+
+    const listener = async () => {
+      markAsButton.removeEventListener('click', listener);
+      await updateType(this.comment.commentKey.id);
+      await this.#discussion.updateDiscussion();
+    };
+    markAsButton.onclick = listener;
   }
 
   /**
