@@ -68,7 +68,7 @@ public final class IconFeedbackServletTest {
   private StringWriter content;
 
   @Before
-  public void setUp() throws IOException, ServletException {
+  public void setUp() throws Exception {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new IconFeedbackServlet();
@@ -128,8 +128,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doGet_missingLectureId_shouldRespondWithBadRequest()
-      throws IOException, ServletException {
+  public void doGet_missingLectureId_shouldRespondWithBadRequest() throws Exception {
     servlet.doGet(request, response);
 
     verify(response).sendError(

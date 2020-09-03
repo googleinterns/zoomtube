@@ -76,6 +76,7 @@ export default class DiscussionArea {
     // This is used as the `onclick` handler of the new comment area submit
     // button. It must be set after discussion is initialized.
     window.postNewComment = this.postNewComment.bind(this);
+
     await this.updateDiscussion();
     setInterval(
         this.updateDiscussion.bind(this),
