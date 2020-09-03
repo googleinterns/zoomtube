@@ -76,9 +76,15 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithManyLanguages() throws Exception {
+<<<<<<< HEAD
     String videoWithManyLanguageOptions = "https://www.youtube.com/watch?v=fzQ6gRAEoy0";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithManyLanguageOptions);
+=======
+    String videoWithManyLanguagesAvailable = "https://www.youtube.com/watch?v=fzQ6gRAEoy0";
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
+        .thenReturn(videoWithManyLanguagesAvailable);
+>>>>>>> master
 
     transcriptLanguageServlet.doGet(request, response);
 
@@ -89,9 +95,15 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithNoLanguages() throws Exception {
+<<<<<<< HEAD
     String videoWithNoLanguageOptions = "https://www.youtube.com/watch?v=QJO3ROT-A4E";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithNoLanguageOptions);
+=======
+    String videoWithNoLanguageAvailable = "https://www.youtube.com/watch?v=QJO3ROT-A4E";
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
+        .thenReturn(videoWithNoLanguageAvailable);
+>>>>>>> master
 
     transcriptLanguageServlet.doGet(request, response);
 
@@ -102,9 +114,15 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithOnlyOneLanguage() throws Exception {
+<<<<<<< HEAD
     String videoWithOnlyOneLanguage = "https://www.youtube.com/watch?v=9DwzBICPhdM";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
         .thenReturn(videoWithOnlyOneLanguage);
+=======
+    String videoWithOnlyOneLanguageAvailable = "https://www.youtube.com/watch?v=9DwzBICPhdM";
+    when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
+        .thenReturn(videoWithOnlyOneLanguageAvailable);
+>>>>>>> master
 
     transcriptLanguageServlet.doGet(request, response);
 
@@ -120,4 +138,8 @@ public final class TranscriptLanguageServletTest {
     return (ArrayList<TranscriptLanguage>) gson.fromJson(
         transcriptLanguagesJson, transcriptLanguageClass);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master

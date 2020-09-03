@@ -33,7 +33,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+<<<<<<< HEAD
 /** Fetches and parses the transcript options as XML from the Google Video Timetext API. */
+=======
+/** 
+ * Fetches and parses the available transcript languages as XML from the Google
+ * Video Timetext API. 
+ */
+>>>>>>> master
 public class TranscriptLanguageServlet extends HttpServlet {
   /* Properties of the API Url. */
   private static final String API_URL = "http://video.google.com/timedtext";
@@ -81,7 +88,11 @@ public class TranscriptLanguageServlet extends HttpServlet {
 
   /**
    * Returns {@code Optional.empty()} if the video link is present. Else,
+<<<<<<< HEAD
    * returns an Optional containing an error message if it is missing.
+=======
+   * returns an error message if it is missing.
+>>>>>>> master
    */
   private Optional<String> validateGetRequest(HttpServletRequest request) {
     if (request.getParameter(PARAM_LINK) == null) {
@@ -91,7 +102,11 @@ public class TranscriptLanguageServlet extends HttpServlet {
   }
 
   /**
+<<<<<<< HEAD
    * Returns the API Url used to fetch the list of transcript language options
+=======
+   * Returns the API Url used to fetch the list of available transcript languages
+>>>>>>> master
    * for {@code videoId}.
    */
   private URL getTranscriptLanguagesUrlForVideo(String videoId) throws IOException {
@@ -106,8 +121,12 @@ public class TranscriptLanguageServlet extends HttpServlet {
   }
 
   /**
+<<<<<<< HEAD
    * Returns the API Url used to fetch the list of transcript language options
    * for {@code videoId}.
+=======
+   * Returns the available transcript languages parsed from {@code document}.
+>>>>>>> master
    */
   private ImmutableList<TranscriptLanguage> parseTranscriptLanguages(Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
