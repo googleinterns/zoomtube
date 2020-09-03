@@ -59,7 +59,6 @@ public class LectureServlet extends HttpServlet {
   /* Name of input field used for lecture video link in lecture selection page. */
   @VisibleForTesting static final String PARAM_LINK = "link-input";
   @VisibleForTesting static final String PARAM_ID = "id";
-  @VisibleForTesting static final String PARAM_LANGUAGE = "language-input";
 
   /* Pattern used to create a matcher for a video ID. */
   private static Pattern videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
@@ -96,9 +95,8 @@ public class LectureServlet extends HttpServlet {
     String lectureName = request.getParameter(PARAM_NAME);
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
-    String transcriptLanguage = request.getParameter(PARAM_LANGUAGE);
     try {
-      initializeTranscript(lectureEntity, transcriptLanguage);
+      initializeTranscript(lectureEntity);
     } catch (IOException | ServletException e) {
       // If there was an error initializing the transcript, then this lecture won't have one.
       // Luckily that's still ok, so we suppress these errors so we can redirect.
@@ -119,15 +117,13 @@ public class LectureServlet extends HttpServlet {
 
   /**
    * Parses and stores the transcript lines in datastore using the {@code lectureKey}
-   * and {@code videoId} properties in {@code lectureEntity}. The language for parsing
-   * is determined by {@code transcriptLanguage}
+   * and {@code videoId} properties in {@code lectureEntity}.
    */
-  private void initializeTranscript(Entity lectureEntity, String transcriptLanguage)
-      throws IOException, ServletException {
+  private void initializeTranscript(Entity lectureEntity) throws IOException, ServletException {
     TranscriptParser transcriptParser = TranscriptParser.getParser();
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
-    transcriptParser.parseAndStoreTranscript(videoId, lectureKey, transcriptLanguage);
+    transcriptParser.parseAndStoreTranscript(videoId, lectureKey);
   }
 
   @Override

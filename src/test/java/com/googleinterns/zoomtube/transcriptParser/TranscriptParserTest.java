@@ -64,7 +64,6 @@ public final class TranscriptParserTest {
   private static final String VIDEO_WITH_NEWLINES_ID = "8PrOp9t0PyQ";
   private static final String VIDEO_WITH_ESCAPED_APOSTROPHE_ID = "jNQXAC9IVRw";
 
-  private static final String LECTURE_LANGUAGE = "en";
   // TODO: Find a way to reprsent this differently.
   private static final String SHORT_VIDEO_JSON =
       "[{\"transcriptKey\":{\"kind\":\"TranscriptLine\",\"id\":"
@@ -118,8 +117,7 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(
-        SHORT_VIDEO_ID, lectureKeyB, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB);
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyB);
     int expectedQueryCount = (shortVideoTranscriptLines).size();
@@ -130,8 +128,7 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws Exception {
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(
-        LONG_VIDEO_ID, lectureKeyC, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC);
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyC);
     int expectedQueryCount = (longVideoTranscriptLines).size();
@@ -143,7 +140,7 @@ public final class TranscriptParserTest {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
     TranscriptParser.getParser().parseAndStoreTranscript(
-        VIDEO_WITH_ESCAPED_APOSTROPHE_ID, lectureKeyB, LECTURE_LANGUAGE);
+        VIDEO_WITH_ESCAPED_APOSTROPHE_ID, lectureKeyB);
 
     PreparedQuery preparedQuery =
         datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKeyB));
@@ -158,8 +155,7 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_removesNewlines() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(
-        VIDEO_WITH_NEWLINES_ID, lectureKeyB, LECTURE_LANGUAGE);
+    TranscriptParser.getParser().parseAndStoreTranscript(VIDEO_WITH_NEWLINES_ID, lectureKeyB);
 
     PreparedQuery preparedQuery =
         datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKeyB));
