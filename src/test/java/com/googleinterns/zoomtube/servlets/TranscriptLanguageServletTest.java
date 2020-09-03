@@ -76,9 +76,9 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithManyLanguages() throws Exception {
-    String videoWithManyLanguageOptions = "https://www.youtube.com/watch?v=fzQ6gRAEoy0";
+    String videoWithManyLanguagesAvailable = "https://www.youtube.com/watch?v=fzQ6gRAEoy0";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
-        .thenReturn(videoWithManyLanguageOptions);
+        .thenReturn(videoWithManyLanguagesAvailable);
 
     transcriptLanguageServlet.doGet(request, response);
 
@@ -89,9 +89,9 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithNoLanguages() throws Exception {
-    String videoWithNoLanguageOptions = "https://www.youtube.com/watch?v=QJO3ROT-A4E";
+    String videoWithNoLanguageAvailable = "https://www.youtube.com/watch?v=QJO3ROT-A4E";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
-        .thenReturn(videoWithNoLanguageOptions);
+        .thenReturn(videoWithNoLanguageAvailable);
 
     transcriptLanguageServlet.doGet(request, response);
 
