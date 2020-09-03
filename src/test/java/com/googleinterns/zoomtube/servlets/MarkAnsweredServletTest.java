@@ -34,7 +34,7 @@ public class MarkAnsweredServletTest {
   @Mock private HttpServletResponse response;
 
   private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
-      new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
+      new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig().setNoStorage(true));
 
   private MarkAnsweredServlet servlet;
   private DatastoreService datastore;

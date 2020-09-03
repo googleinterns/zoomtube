@@ -27,12 +27,10 @@ import com.google.gson.reflect.TypeToken;
 import com.googleinterns.zoomtube.data.Lecture;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -52,19 +50,18 @@ public final class LectureListServletTest {
   @Mock private HttpServletResponse response;
 
   private final LocalServiceTestHelper testServices =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig().setNoStorage(true));
   private DatastoreService datastoreService;
   private LectureListServlet servlet;
 
   /* Response is written here. */
   private StringWriter content;
 
-  private static final String LINK_INPUT = "link-input";
   private static final String TEST_LINK = "https://www.youtube.com/watch?v=wXhTHyIgQ_U";
   private static final String TEST_ID = "wXhTHyIgQ_U";
 
   @Before
-  public void setUp() throws ServletException, IOException {
+  public void setUp() throws Exception {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new LectureListServlet();
@@ -79,7 +76,7 @@ public final class LectureListServletTest {
   }
 
   @Test
-  public void doGet_emptyDatabase_shouldReturnNoLecture() throws IOException {
+  public void doGet_emptyDatabase_shouldReturnNoLecture() throws Exception {
     servlet.doGet(request, response);
 
     String json = content.toString();
@@ -87,7 +84,7 @@ public final class LectureListServletTest {
   }
 
   @Test
-  public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws IOException {
+  public void doGet_oneLectureInDatabase_shouldReturnOneLecture() throws Exception {
     datastoreService.put(LectureUtil.createEntity(/* lectureName= */ "", TEST_LINK, TEST_ID));
 
     servlet.doGet(request, response);
