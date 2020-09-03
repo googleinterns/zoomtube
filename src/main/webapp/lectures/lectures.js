@@ -61,7 +61,7 @@ function createLectureListItem(lecture) {
 }
 
 /**
- * Fetches and displays the list of transcript languages.
+ * Fetches and displays the list of available transcript languages.
  *
  * @param {Element} videoLinkInputElement The input element containing the video
  *     link.
