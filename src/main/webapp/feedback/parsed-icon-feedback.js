@@ -36,7 +36,9 @@ export default class ParsedIconFeedback {
         intervalIconFeedbackCount.getIconFeedbackCounts();
     this.#interval.push(intervalIconFeedbackCount.getInterval());
     for (const type in iconFeedbackCounts) {
-      this.#counts[type].push(iconFeedbackCounts[type]);
+      if (Object.prototype.hasOwnProperty.call(iconFeedbackCounts, type)) {
+        this.#counts[type].push(iconFeedbackCounts[type]);
+      }
     }
   }
 }

@@ -46,7 +46,7 @@ export default class LoadIconFeedback {
         LoadIconFeedback.#PARAM_LECTURE_ID, this.#lectureId);
     const response = await fetch(url);
     const jsonData = await response.json();
-    console.log(json);
+    console.log(jsonData);
     this.parseFeedback(jsonData);
   }
 
