@@ -33,6 +33,7 @@ export default class DiscussionComment extends HTMLElement {
   static #SELECTOR_CANCEL_REPLY = '#cancel-reply';
   static #SELECTOR_POST_REPLY = '#post-reply';
   static #SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
+  static #SELECTOR_MARK_AS_BUTTON = '#mark-as-button';
 
   #discussion;
   #replyDiv;
@@ -66,6 +67,7 @@ export default class DiscussionComment extends HTMLElement {
     this.setHeader();
     this.setContent();
     this.setTypeTag(comment.type);
+    this.setMarkAsButton(comment.type);
   }
 
   /**
@@ -197,6 +199,30 @@ export default class DiscussionComment extends HTMLElement {
     typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
     typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
     this.appendChild(typePill);
+  }
+
+  /**
+   * Sets the text and onclick event for the mark as button according to
+   * the comment's `type`.
+   */
+  setMarkAsButton(type) {
+    const markAsButton = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_MARK_AS_BUTTON);
+    if (!COMMENT_TYPES[type].isQuestion) {
+      markAsButton.style.visibility = 'hidden';
+      return;
+    }
+
+    const oppositeType = COMMENT_TYPES[type].oppositeType;
+    markAsButton.innerText = COMMENT_TYPES[oppositeType].updateTypeText;
+    const updateType = COMMENT_TYPES[oppositeType].updateTypeFunction;
+
+    const listener = async () => {
+      markAsButton.removeEventListener('click', listener);
+      await updateType(this.comment.commentKey.id);
+      await this.#discussion.updateDiscussion();
+    };
+    markAsButton.onclick = listener;
   }
 
   /**
