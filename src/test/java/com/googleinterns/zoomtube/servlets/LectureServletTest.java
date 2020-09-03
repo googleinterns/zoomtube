@@ -82,7 +82,7 @@ public final class LectureServletTest {
   public void doPost_missingName_badRequest() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     when(request.getParameter(LectureServlet.PARAM_LANGUAGE))
-        .thenReturn(/* transcriptLanguage= */ "en");
+        .thenReturn("en");
 
     servlet.doPost(request, response);
 
@@ -94,7 +94,7 @@ public final class LectureServletTest {
   public void doPost_missingLink_badRequest() throws Exception {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LANGUAGE))
-        .thenReturn(/* transcriptLanguage= */ "en");
+        .thenReturn("en");
 
     servlet.doPost(request, response);
 
@@ -118,7 +118,7 @@ public final class LectureServletTest {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     when(request.getParameter(LectureServlet.PARAM_LANGUAGE))
-        .thenReturn(/* transcriptLanguage= */ "en");
+        .thenReturn("en");
     datastoreService.put(LectureUtil.createEntity(TEST_NAME, TEST_LINK, TEST_ID));
 
     servlet.doPost(request, response);
@@ -144,7 +144,7 @@ public final class LectureServletTest {
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LANGUAGE))
-        .thenReturn(/* transcriptLanguage= */ "en");
+        .thenReturn("en");
 
     // No lecture in datastoreService.
     servlet.doPost(request, response);
@@ -231,7 +231,7 @@ public final class LectureServletTest {
     when(request.getParameter(LectureServlet.PARAM_NAME)).thenReturn(TEST_NAME);
     when(request.getParameter(LectureServlet.PARAM_LINK)).thenReturn(TEST_LINK);
     when(request.getParameter(LectureServlet.PARAM_LANGUAGE))
-        .thenReturn(/* transcriptLanguage= */ "notAValidLanguage");
+        .thenReturn("notAValidLanguage");
 
     servlet.doPost(request, response);
 
