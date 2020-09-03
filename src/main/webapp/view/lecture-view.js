@@ -19,7 +19,9 @@ import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
 
 const ENDPOINT_LECTURE = '/lecture';
+const REDIRECT_FEEDBACK = '/feedback';
 const HEADER_TEXT = 'header-text';
+const FEEDBACK_LINK = 'feedback-link';
 
 const PARAM_ID = 'id';
 
@@ -68,6 +70,7 @@ export default class LectureView {
 
 /** Lecture ID stored in `window.location.serach`. */
 const lectureId = getLectureId(window.location.search);
+setFeebackRedirect();
 
 /** Creates a LectureView with `lecture`. */
 getLectureFromDatabase(lectureId).then((lecture) => {
@@ -92,4 +95,11 @@ async function getLectureFromDatabase(lectureId) {
 function getLectureId(urlSearchParams) {
   const urlParams = new URLSearchParams(urlSearchParams);
   return urlParams.get(PARAM_ID);
+}
+
+function setFeebackRedirect() {
+  const feedbackLink = document.getElementById('feedback-link');
+  const url = new URL(REDIRECT_FEEDBACK, window.location.origin);
+  url.searchParams.append(PARAM_ID, lectureId);
+  feedbackLink.href = url;
 }
