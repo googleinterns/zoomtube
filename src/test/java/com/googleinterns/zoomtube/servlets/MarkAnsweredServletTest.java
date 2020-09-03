@@ -17,6 +17,7 @@ import com.googleinterns.zoomtube.data.Comment;
 import com.googleinterns.zoomtube.utils.CommentUtil;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import java.util.Date;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -33,7 +34,7 @@ public class MarkAnsweredServletTest {
   @Mock private HttpServletResponse response;
 
   private static final LocalServiceTestHelper testServices = new LocalServiceTestHelper(
-      new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig());
+      new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig().setNoStorage(true));
 
   private MarkAnsweredServlet servlet;
   private DatastoreService datastore;
@@ -130,8 +131,9 @@ public class MarkAnsweredServletTest {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
     User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     Date dateNow = new Date();
-    Entity testEntity = CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, author,
-        /* content= */ "Untested comment content", dateNow, Comment.Type.NOTE);
+    Entity testEntity =
+        CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, Optional.empty(), author,
+            /* content= */ "Untested comment content", dateNow, Comment.Type.NOTE);
     Entity testComment = new Entity(CommentUtil.KIND, /* entityId = */ 34);
     testComment.setPropertiesFrom(testEntity);
     datastore.put(testComment);
@@ -183,8 +185,9 @@ public class MarkAnsweredServletTest {
     User author = new User(/* email= */ "test@example.com", /* authDomain= */ "example.com");
     Date dateNow = new Date();
 
-    Entity tempEntity = CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, author,
-        /* content= */ "Untested comment content", dateNow, Comment.Type.QUESTION_UNANSWERED);
+    Entity tempEntity =
+        CommentUtil.createRootEntity(lectureKey, /* timestampMs= */ 2000, Optional.empty(), author,
+            /* content= */ "Untested comment content", dateNow, Comment.Type.QUESTION_UNANSWERED);
 
     Entity realEntity = new Entity(CommentUtil.KIND, entityId);
     realEntity.setPropertiesFrom(tempEntity);

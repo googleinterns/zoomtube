@@ -39,7 +39,7 @@ export default class TranscriptSeeker {
   addSeekingListener() {
     this.#eventController.addEventListener((timestampMs) => {
       this.seekTranscript(timestampMs);
-    }, 'seek');
+    }, 'seek', 'seekAll');
   }
 
   /**
@@ -56,8 +56,11 @@ export default class TranscriptSeeker {
     return this.#currentTranscriptLine;
   }
 
-  /** Seeks transcript to `timeMs`. */
+  /** Seeks transcript to `timeMs` if the transcript exists. */
   seekTranscript(timeMs) {
+    if (this.currentTranscriptLine() == null) {
+      return;
+    }
     if (this.currentTranscriptLine().isWithinTimeRange(timeMs)) {
       TranscriptArea.transcriptScrollContainer().scrollToTopOfContainer(
           this.currentTranscriptLine());
@@ -72,6 +75,7 @@ export default class TranscriptSeeker {
       this.currentTranscriptLine().addBold();
     }
   }
+
   /**
    * Returns the next transcript line for `timeMs`.
    */
@@ -114,5 +118,11 @@ export default class TranscriptSeeker {
     return transcriptLinePointer;
   }
 
-  // TODO: Add a method that adds the eventListeners.
+  /**
+   * Returns the eventController responsible for sending and receiving
+   * seeking signals.
+   */
+  eventController() {
+    return this.#eventController;
+  }
 }

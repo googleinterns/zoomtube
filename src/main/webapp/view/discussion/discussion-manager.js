@@ -23,6 +23,7 @@ export default class DiscussionManager {
   static #PARAM_PARENT = 'parent';
   static #PARAM_TIMESTAMP = 'timestamp';
   static #PARAM_TYPE = 'type';
+  static #PARAM_TRANSCRIPT_LINE = 'transcript-line';
   #lecture;
   #displayedComments;
 
@@ -55,6 +56,8 @@ export default class DiscussionManager {
         continue;
       }
       comment.replies = [];
+      // comment.created is sent as a string in UTC, so we convert it to a Date.
+      comment.created = new Date(comment.created + ' UTC');
       newComments.push(comment);
       this.#displayedComments.set(id, comment);
     }
@@ -101,42 +104,48 @@ export default class DiscussionManager {
 
   /**
    * Posts `content` as a new root comment at `timestampMs` with the specified
-   * `type`.
+   * `type` and `transcriptLineId`.
    */
-  async postRootComment(content, timestampMs, type) {
+  async postRootComment(content, timestampMs, type, transcriptLineId) {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_TIMESTAMP]: timestampMs,
       [DiscussionManager.#PARAM_TYPE]: type,
+      [DiscussionManager.#PARAM_TRANSCRIPT_LINE]: transcriptLineId,
     });
   }
 
   /**
-   * Posts `content` as a reply to `parentId`.
+   * Posts `content` as a reply to `parentId` with the specified
+   * `transcriptLineId`.
    */
-  async postReply(content, parentId) {
+  async postReply(content, parentId, transcriptLineId) {
     await this.postComment(content, {
       [DiscussionManager.#PARAM_PARENT]: parentId,
       [DiscussionManager.#PARAM_TYPE]: COMMENT_TYPE_REPLY,
+      [DiscussionManager.#PARAM_TRANSCRIPT_LINE]: transcriptLineId,
     });
   }
 
   /**
-   * Posts `content` to the discussion with the given `params`.  This method is
-   * private and should only be called within `DiscussionManager`.
+   * Posts `content` to the discussion with the given
+   * `commentParameterNameToValue`. This method is private and should only be
+   * called within `DiscussionManager`.
    *
    * <p>Different types of comments require different parameters, such as
    * `PARAM_TIMESTAMP` or `PARAM_PARENT`. The caller should ensure the correct
    * parameters are supplied for the type of comment being posted.
    */
-  async postComment(content, params) {
+  async postComment(content, commentParameterNameToValue) {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
     url.searchParams.append(
         DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
-    for (const param in params) {
+    for (const paramName in commentParameterNameToValue) {
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
-      if (params.hasOwnProperty(param)) {
-        url.searchParams.append(param, params[param]);
+      if (commentParameterNameToValue.hasOwnProperty(paramName) &&
+          commentParameterNameToValue[paramName] !== null) {
+        url.searchParams.append(
+            paramName, commentParameterNameToValue[paramName]);
       }
       /* eslint-enable no-prototype-builtins */
     }

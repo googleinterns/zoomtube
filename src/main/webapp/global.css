@@ -12,9 +12,7 @@
 }
 
 #footer {
-  height: 60px;
-  line-height: 60px;
-  padding-top: 0px !important;
+  bottom: 0;
   position: absolute;
   width: 100%;
 }
@@ -30,6 +28,10 @@
 
 .navbar h2 {
   margin-bottom: 0 !important;
+}
+
+.smooth-scrolling {
+  scroll-behavior: smooth;
 }
 
 /* Zoomtube Buttons */

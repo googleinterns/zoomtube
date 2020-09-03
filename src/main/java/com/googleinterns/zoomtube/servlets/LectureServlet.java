@@ -22,6 +22,9 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.googleinterns.zoomtube.transcriptParser.TranscriptParser;
@@ -58,14 +61,12 @@ public class LectureServlet extends HttpServlet {
   @VisibleForTesting static final String PARAM_ID = "id";
 
   /* Pattern used to create a matcher for a video ID. */
-  private static Pattern videoUrlGeneratedPattern;
-
+  private static Pattern videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   private static DatastoreService datastore;
 
   @Override
   public void init() throws ServletException {
     datastore = DatastoreServiceFactory.getDatastoreService();
-    videoUrlGeneratedPattern = Pattern.compile(YOUTUBE_VIDEO_URL_PATTERN);
   }
 
   @Override
@@ -85,7 +86,7 @@ public class LectureServlet extends HttpServlet {
       return;
     }
 
-    Optional<Entity> existingEntity = checkUrlInDatabase(videoUrl);
+    Optional<Entity> existingEntity = queryForLectureWithVideoId(videoId.get());
     if (existingEntity.isPresent()) {
       response.sendRedirect(buildRedirectUrl(existingEntity.get()));
       return;
@@ -94,7 +95,13 @@ public class LectureServlet extends HttpServlet {
     String lectureName = request.getParameter(PARAM_NAME);
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
-    initializeTranscript(lectureEntity);
+    try {
+      initializeTranscript(lectureEntity);
+    } catch (IOException | ServletException e) {
+      // If there was an error initializing the transcript, then this lecture won't have one.
+      // Luckily that's still ok, so we suppress these errors so we can redirect.
+      // We might want to log these somewhere, but that's beyond the scope of this project.
+    }
     response.sendRedirect(buildRedirectUrl(lectureEntity));
   }
 
@@ -147,26 +154,20 @@ public class LectureServlet extends HttpServlet {
   }
 
   /**
-   * Returns the Entity in database that has {@code url}, or
+   * Returns the Entity in database that has {@code videoId}, or
    * {@code Optional.empty()} if one doesn't exist.
    */
-  // TODO: Use a filter to avoid fetching all lectures.  See: #185.
-  private Optional<Entity> checkUrlInDatabase(String url) {
-    Query query = new Query(LectureUtil.KIND);
+  private Optional<Entity> queryForLectureWithVideoId(String videoId) {
+    Filter videoIdFilter = new FilterPredicate(LectureUtil.VIDEO_ID, FilterOperator.EQUAL, videoId);
+    Query query = new Query(LectureUtil.KIND).setFilter(videoIdFilter);
     PreparedQuery results = datastore.prepare(query);
-    Iterable<Entity> resultsIterable = results.asIterable();
 
-    for (Entity lecture : resultsIterable) {
-      if (lecture.getProperty(LectureUtil.VIDEO_URL).equals(url)) {
-        return Optional.of(lecture);
-      }
-    }
-    return Optional.empty();
+    return Optional.ofNullable(results.asSingleEntity());
   }
 
-  @VisibleForTesting
   /** Returns YouTube video ID for a given {@code videoUrl}. */
-  protected Optional<String> getVideoId(String videoUrl) {
+  // TODO: Move this function to a Utils class.
+  public static Optional<String> getVideoId(String videoUrl) {
     Matcher matcher = videoUrlGeneratedPattern.matcher(videoUrl);
     if (matcher.find()) {
       return Optional.of(matcher.group());
