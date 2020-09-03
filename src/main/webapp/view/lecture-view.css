@@ -185,12 +185,28 @@ discussion-comment[highlighted] > [slot='header'] {
 
 #icons {
   align-items: center;
+  background-color: #f8f9fa;
+  border-radius: 0px 10px 10px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 75px 0px 60px 0px;
+}
+
+#icons h6 {
+  margin: 0px 5px 10px 5px;
 }
 
 #video-icons {
   display: flex;
   flex-direction: row;
+}
+
+/* Feedback Icon Buttons */
+
+.icon-button {
+  background-color: #f8f9fa;
+  border: none;
+  margin: 5px 10px 5px 10px;
+  outline: none;
 }
