@@ -118,7 +118,7 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB, "en");
+    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "en");
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyB);
     int expectedQueryCount = (shortVideoTranscriptLines).size();
