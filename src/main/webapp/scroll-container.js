@@ -79,7 +79,8 @@ export class ScrollContainer extends HTMLDivElement {
    * Otherwise, does nothing.
    *
    * <p>If `element` is undefined, the element to scroll is defaulted to the
-   * first element in the container storing the scrollable elements.
+   * first child element in `this.lastChild`, the container storing the
+   * scrollable elements.
    */
   scrollToTopOfContainer(
       element = this.lastChild.firstChild, forceScroll = false) {

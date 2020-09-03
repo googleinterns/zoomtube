@@ -127,24 +127,25 @@ export default class DiscussionManager {
   }
 
   /**
-   * Posts `content` to the discussion with the given `paramsMap`.
-   * This method is private and should only be called within
-   * `DiscussionManager`.
+   * Posts `content` to the discussion with the given
+   * `commentParameterNameToValue`. This method is private and should only be
+   * called within `DiscussionManager`.
    *
    * <p>Different types of comments require different parameters, such as
    * `PARAM_TIMESTAMP` or `PARAM_PARENT`. The caller should ensure the correct
    * parameters are supplied for the type of comment being posted.
    */
-  async postComment(content, paramsMap) {
+  async postComment(content, commentParameterNameToValue) {
     const url = new URL(DiscussionManager.#ENDPOINT, window.location.origin);
     url.searchParams.append(
         DiscussionManager.#PARAM_LECTURE, this.#lecture.key.id);
-    for (const paramName in paramsMap) {
+    for (const paramName in commentParameterNameToValue) {
       // This is recommended by the style guide, but disallowed by linter.
       /* eslint-disable no-prototype-builtins */
-      if (paramsMap.hasOwnProperty(paramName) &&
-          paramsMap[paramName] !== null) {
-        url.searchParams.append(paramName, paramsMap[paramName]);
+      if (commentParameterNameToValue.hasOwnProperty(paramName) &&
+          commentParameterNameToValue[paramName] !== null) {
+        url.searchParams.append(
+            paramName, commentParameterNameToValue[paramName]);
       }
       /* eslint-enable no-prototype-builtins */
     }
