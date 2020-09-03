@@ -19,7 +19,7 @@ import TranscriptArea from './transcript/transcript-area.js';
 import Video from './video/video.js';
 
 const ENDPOINT_LECTURE = '/lecture';
-const REDIRECT_FEEDBACK = '/feedback';
+const REDIRECT_FEEDBACK = '/feedback/';
 const HEADER_TEXT = 'header-text';
 
 const PARAM_ID = 'id';
