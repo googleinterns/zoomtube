@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import IconFeedbackUtil from './icon-feedback-util.js';
 import IntervalIconFeedbackCount from './interval-icon-feedback-count.js';
 import ParsedIconFeedback from './parsed-icon-feedback.js';
 
@@ -46,9 +47,8 @@ export default class LoadIconFeedback {
         LoadIconFeedback.#PARAM_LECTURE_ID, this.#lectureId);
     const response = await fetch(url);
     const jsonData = await response.json();
-    console.log(jsonData);
     this.parseFeedback(jsonData);
-    console.log(this.#parsedIconFeedback);
+    this.makeGraph();
   }
 
   /** Parses `iconFeedbackJson` data so that it can be graphed. */
@@ -74,12 +74,96 @@ export default class LoadIconFeedback {
     }
     this.#parsedIconFeedback.appendTypeCountsAndInterval(typeCountsAndInterval);
   }
+
+  /** Charts IconFeedback data into a graph. */
+  makeGraph() {
+    const chartElement = document.getElementById('iconFeedbackChart');
+    /* eslint-disable no-unused-vars */
+    const iconFeedbackLineChart = new window.Chart(chartElement, {
+      type: 'line',
+      data: {
+        labels: this.#parsedIconFeedback.getIntervals(),
+        datasets: [
+          {
+            label: [IconFeedbackUtil.TYPE_GOOD],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.red],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.red],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_GOOD),
+            fill: false,
+          },
+          {
+            label: [IconFeedbackUtil.TYPE_BAD],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.blue],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.blue],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_BAD),
+            fill: false,
+          },
+          {
+            label: [IconFeedbackUtil.TYPE_TOO_FAST],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.orange],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.orange],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_TOO_FAST),
+            fill: false,
+          },
+          {
+            label: [IconFeedbackUtil.TYPE_TOO_SLOW],
+            backgroundColor: [IconFeedbackUtil.CHART_COLORS.green],
+            borderColor: [IconFeedbackUtil.CHART_COLORS.green],
+            data: this.#parsedIconFeedback.getTypeCount(
+                IconFeedbackUtil.TYPE_TOO_SLOW),
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: 'Icon Feedback Line Chart',
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false,
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true,
+        },
+        scales: {
+          xAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Video Timestamp',
+              },
+            },
+          ],
+          yAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of clicks',
+              },
+            },
+          ],
+        },
+      },
+    });
+    /* eslint-enable no-unused-vars*/
+  }
 }
 
 const PARAM_ID = 'id';
+const REDIRECT_VIEW = '/view/';
 
 /** Lecture ID stored in `window.location.serach`. */
 const lectureId = getLectureId(window.location.search);
+setViewRedirectLink();
 
 /**
  * Returns the lecture id from `urlSearchParams`.
@@ -87,6 +171,13 @@ const lectureId = getLectureId(window.location.search);
 function getLectureId(urlSearchParams) {
   const urlParams = new URLSearchParams(urlSearchParams);
   return urlParams.get(PARAM_ID);
+}
+
+function setViewRedirectLink() {
+  const lectureViewLink = document.getElementById('view-link');
+  const url = new URL(REDIRECT_VIEW, window.location.origin);
+  url.searchParams.append(PARAM_ID, lectureId);
+  lectureViewLink.href = url;
 }
 
 const loadIconFeedback = new LoadIconFeedback(lectureId);

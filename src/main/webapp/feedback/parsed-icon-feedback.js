@@ -25,7 +25,7 @@ export default class ParsedIconFeedback {
     [IconFeedbackUtil.TYPE_TOO_SLOW]: [0],
   }
 
-  #interval = [TimestampUtil.timestampToString(0)];
+  #intervals = [TimestampUtil.timestampToString(0)];
 
   /**
    * Appends each value in `intervalIconFeedbackCount` to it's respective
@@ -34,11 +34,21 @@ export default class ParsedIconFeedback {
   appendTypeCountsAndInterval(intervalIconFeedbackCount) {
     const iconFeedbackCounts =
         intervalIconFeedbackCount.getIconFeedbackCounts();
-    this.#interval.push(intervalIconFeedbackCount.getTimestampInterval());
+    this.#intervals.push(intervalIconFeedbackCount.getTimestampInterval());
     for (const type in iconFeedbackCounts) {
       if (Object.prototype.hasOwnProperty.call(iconFeedbackCounts, type)) {
         this.#counts[type].push(iconFeedbackCounts[type]);
       }
     }
+  }
+
+  /** Returns value of key `type`. */
+  getTypeCount(type) {
+    return this.#counts[type];
+  }
+
+  /** Returns value of key `type`. */
+  getIntervals() {
+    return this.#intervals;
   }
 }
