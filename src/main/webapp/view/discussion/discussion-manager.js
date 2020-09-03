@@ -137,7 +137,6 @@ export default class DiscussionManager {
       /* eslint-enable no-prototype-builtins */
     }
 
-
     await fetch(url, {
       method: 'POST',
       body: content,
