@@ -52,6 +52,7 @@ export default class DiscussionManager {
     for (const comment of allComments) {
       const id = comment.commentKey.id;
       if (this.#displayedComments.has(id)) {
+        this.checkTypeForChanges(comment);
         continue;
       }
       comment.replies = [];
@@ -72,6 +73,18 @@ export default class DiscussionManager {
       }
     }
     return newComments;
+  }
+
+  /**
+   * Check if a `comment`'s type has changed since the last update.  If it has,
+   * run update the displayed type in the DOM.
+   */
+  checkTypeForChanges(comment) {
+    const originalComment = this.#displayedComments.get(comment.commentKey.id);
+    if (originalComment.type !== comment.type) {
+      originalComment.type = comment.type;
+      originalComment.element.updateCommentType(originalComment.type);
+    }
   }
 
   /**
