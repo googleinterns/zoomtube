@@ -25,7 +25,7 @@ export const COMMENT_TYPE_NOTE = 'NOTE';
  * @typedef {Object} CommentTypeInfo
  * @property {string} name The display name of the type.
  * @property {!Array<string>} badgeStyles List of classes to add to the type
- *     tag. TODO: Rename to tagStyles.
+ *     tag.
  * @property {boolean} isQuestion If the type is a question, meaning the
  *     answered status can be changed.
  * @property {string=} oppositeType The opposite type of comment, for
@@ -35,6 +35,7 @@ export const COMMENT_TYPE_NOTE = 'NOTE';
  * @property {function(Object):void=} updateTypeFunction A function to set a
  *     comment to this type, for question types.
  */
+// TODO: Rename badgeStyles to tagStyles.
 
 /** @type {Object.<string, CommentTypeInfo>} */
 export const COMMENT_TYPES = {
