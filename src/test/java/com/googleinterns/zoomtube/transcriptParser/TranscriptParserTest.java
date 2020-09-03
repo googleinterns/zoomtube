@@ -16,6 +16,7 @@ package com.googleinterns.zoomtube.transcriptParser;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -35,6 +36,7 @@ import com.googleinterns.zoomtube.data.TranscriptLine;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.googleinterns.zoomtube.utils.TranscriptLineUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
@@ -50,7 +52,6 @@ import org.mockito.junit.MockitoRule;
 @RunWith(JUnit4.class)
 public final class TranscriptParserTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
-
   private DatastoreService datastore;
 
   private static final LocalDatastoreServiceTestConfig datastoreConfig =
@@ -117,7 +118,8 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForShortVideo() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(SHORT_VIDEO_ID, lectureKeyB);
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        SHORT_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "en");
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyB);
     int expectedQueryCount = (shortVideoTranscriptLines).size();
@@ -128,7 +130,8 @@ public final class TranscriptParserTest {
   public void parseAndStoreTranscript_persistDataInDatastoreForLongVideo() throws Exception {
     Key lectureKeyC = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_C));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(LONG_VIDEO_ID, lectureKeyC);
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        LONG_VIDEO_ID, lectureKeyC, /* transcriptLanguage= */ "en");
 
     int actualQueryCount = entitiesInDatastoreCount(lectureKeyC);
     int expectedQueryCount = (longVideoTranscriptLines).size();
@@ -136,11 +139,22 @@ public final class TranscriptParserTest {
   }
 
   @Test
+  public void parseAndStoreTranscript_invalidLanguage_throwsException() throws Exception {
+    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
+
+    try {
+      TranscriptParser.getParser().parseAndStoreTranscript(
+          LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "notAValidLanguage");
+      fail();
+    } catch (IOException e) {
+    }
+  }
+
   public void parseAndStoreTranscript_unescapesXml() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(
-        VIDEO_WITH_ESCAPED_APOSTROPHE_ID, lectureKeyB);
+    TranscriptParser.getParser().parseAndStoreTranscript(VIDEO_WITH_ESCAPED_APOSTROPHE_ID,
+        lectureKeyB, /* transcriptLanguage= */ "notAValidLanguage");
 
     PreparedQuery preparedQuery =
         datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKeyB));
@@ -152,10 +166,22 @@ public final class TranscriptParserTest {
   }
 
   @Test
+  public void parseAndStoreTranscript_noLanguageAvailable_throwsException() throws Exception {
+    Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
+
+    try {
+      TranscriptParser.getParser().parseAndStoreTranscript(
+          LONG_VIDEO_ID, lectureKeyB, /* transcriptLanguage= */ "");
+      fail();
+    } catch (IOException e) {
+    }
+  }
+
   public void parseAndStoreTranscript_removesNewlines() throws Exception {
     Key lectureKeyB = KeyFactory.createKey(LectureUtil.KIND, Long.parseLong(LECTURE_ID_B));
 
-    TranscriptParser.getParser().parseAndStoreTranscript(VIDEO_WITH_NEWLINES_ID, lectureKeyB);
+    TranscriptParser.getParser().parseAndStoreTranscript(
+        VIDEO_WITH_NEWLINES_ID, lectureKeyB, /* transcriptLanguage= */ "notAValidLanguage");
 
     PreparedQuery preparedQuery =
         datastore.prepare(filteredQueryOfTranscriptLinesByLectureId(lectureKeyB));

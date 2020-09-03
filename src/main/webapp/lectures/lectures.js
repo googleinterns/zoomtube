@@ -19,6 +19,8 @@ const NO_LANGUAGES_AVAILABLE_MESSAGE =
     'Sorry, there is no transcript available for this lecture.';
 const SELECT_LANGUAGE_OPTION_MESSAGE =
     'Select the language for the transcript.';
+const INPUT_LANGUAGE = 'language-input';
+
 /* Used to gather URL parameters. */
 const PARAM_ID = 'id';
 
@@ -93,6 +95,7 @@ function displayLanguages(languages) {
     return;
   }
   const languageSelectElement = document.createElement('select');
+  languageSelectElement.name = INPUT_LANGUAGE;
   languageSelectorDivElement.appendChild(languageSelectElement);
   languageSelectElement.appendChild(createDefaultDisabledLanguageOption());
   for (const language of languages) {

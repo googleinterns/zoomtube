@@ -44,7 +44,6 @@ public final class TranscriptParser {
   /** Transcripts are generated using the Google Video Timedtext API. */
   private static final String API_URL = "http://video.google.com/timedtext";
   private static final String API_PARAM_LANG = "lang";
-  private static final String API_LANG_ENGLISH = "en";
   private static final String API_PARAM_VIDEO = "v";
   private static final long MILLISECONDS_PER_SECOND = 1000;
 
@@ -78,22 +77,24 @@ public final class TranscriptParser {
   }
 
   /**
-   * Parses and stores the transcript lines in datastore given its {@code videoId}
-   * and {@code lectureKey}.
+   * Parses and stores the transcript lines in datastore given its {@code videoId},
+   * {@code lectureKey}, and {@code transcriptLanguage}.
    *
    * <p>This method is called from the {@code LectureServlet} upon adding a lecture to
    * datastore.
    */
-  public void parseAndStoreTranscript(String videoId, Key lectureKey) throws IOException {
-    URL url = getTranscriptUrlForVideo(videoId);
+  public void parseAndStoreTranscript(String videoId, Key lectureKey, String transcriptLanguage)
+      throws IOException {
+    URL url = getTranscriptUrlForVideo(videoId, transcriptLanguage);
     Document document = fetchUrlAsXmlDocument(url);
     putTranscriptLinesInDatastore(lectureKey, document);
   }
 
-  private URL getTranscriptUrlForVideo(String videoId) throws IOException {
+  private URL getTranscriptUrlForVideo(String videoId, String transcriptLanguage)
+      throws IOException {
     try {
       URIBuilder urlBuilder = new URIBuilder(API_URL);
-      urlBuilder.addParameter(API_PARAM_LANG, API_LANG_ENGLISH);
+      urlBuilder.addParameter(API_PARAM_LANG, transcriptLanguage);
       urlBuilder.addParameter(API_PARAM_VIDEO, videoId);
       return urlBuilder.build().toURL();
     } catch (URISyntaxException | MalformedURLException e) {
