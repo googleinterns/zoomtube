@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import MarkAnsweredEndpoint from './mark-answered-endpoint.js';
+
 export const COMMENT_TYPE_REPLY = 'REPLY';
 export const COMMENT_TYPE_QUESTION_UNANSWERED = 'QUESTION_UNANSWERED';
 export const COMMENT_TYPE_QUESTION_ANSWERED = 'QUESTION_ANSWERED';
@@ -21,14 +23,28 @@ export const COMMENT_TYPES = {
   [COMMENT_TYPE_REPLY]: {
     name: 'Reply',
     badgeStyles: ['badge-secondary', 'float-right', 'badge', 'badge-pill'],
+    hasMarkAs: false,
   },
   [COMMENT_TYPE_NOTE]: {
     name: 'Note',
     badgeStyles: ['badge-secondary', 'float-right', 'badge', 'badge-pill'],
+    hasMarkAs: false,
   },
   [COMMENT_TYPE_QUESTION_UNANSWERED]: {
     name: 'Question',
     badgeStyles: ['badge-danger', 'float-right', 'badge', 'badge-pill'],
+    hasMarkAs: true,
+    markAsText: 'Mark as Unanswered',
+    markAsFunction: MarkAnsweredEndpoint.markUnanswered,
+    oppositeType: COMMENT_TYPE_QUESTION_ANSWERED,
+  },
+  [COMMENT_TYPE_QUESTION_ANSWERED]: {
+    name: 'Answered',
+    badgeStyles: ['badge-success', 'float-right', 'badge', 'badge-pill'],
+    hasMarkAs: true,
+    markAsText: 'Mark as Answered',
+    markAsFunction: MarkAnsweredEndpoint.markAnswered,
+    oppositeType: COMMENT_TYPE_QUESTION_UNANSWERED,
   },
   [COMMENT_TYPE_QUESTION_ANSWERED]: {
     name: 'Answered',

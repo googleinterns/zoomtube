@@ -27,7 +27,6 @@ export default class DiscussionArea {
   static #ELEMENT_POST_TEXTAREA = document.querySelector('#post-textarea');
   static #ELEMENT_TIMESTAMP_SPAN = document.querySelector('#timestamp-span');
   static #ELEMENT_DISCUSSION = document.querySelector('#discussion');
-  static #ID_DISCUSSION_CONTAINER = 'discussion-comments';
   static #ELEMENT_NEW_COMMENT_TYPES =
       document.querySelector('#new-comment-types');
   static #ELEMENT_LOADING_SPINNER =
@@ -38,11 +37,8 @@ export default class DiscussionArea {
    * selected type button in the new comment area.
    */
   static #SELECTOR_SELECTED_TYPE = 'label.active > input';
-  /**
-   * How long to wait between updating the discussion comments in the
-   * background.
-   */
-  static #BACKGROUND_UPDATE_INTERVAL_MS = 5000;
+  static #ID_DISCUSSION_CONTAINER = 'discussion-comments';
+  static #BACKGROUND_UPDATE_PERIOD_MS = 5000;
 
   #lecture;
   #eventController;
@@ -83,8 +79,11 @@ export default class DiscussionArea {
 
     setInterval(
         this.updateDiscussion.bind(this),
-        DiscussionArea.#BACKGROUND_UPDATE_INTERVAL_MS);
+        DiscussionArea.#BACKGROUND_UPDATE_PERIOD_MS);
     await this.updateDiscussion();
+    setInterval(
+        this.updateDiscussion.bind(this),
+        DiscussionArea.#BACKGROUND_UPDATE_PERIOD_MS);
     DiscussionArea.#ELEMENT_DISCUSSION.removeChild(
         DiscussionArea.#ELEMENT_LOADING_SPINNER);
   }

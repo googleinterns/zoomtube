@@ -13,6 +13,13 @@
 // limitations under the License.
 
 const ENDPOINT_LECTURE_LIST = '/lecture-list';
+const ENDPOINT_TRANSCRIPT_LANGUAGES = '/transcript-language';
+const LANGUAGE_SELECTOR_CONTAINER = 'language-selector';
+const NO_LANGUAGES_AVAILABLE_MESSAGE =
+    'Sorry, there is no transcript available for this lecture.';
+const SELECT_LANGUAGE_OPTION_MESSAGE =
+    'Select the language for the transcript.';
+const LANGUAGE_SELECTOR = 'language-input';
 
 /* Used to gather URL parameters. */
 const PARAM_ID = 'id';
@@ -52,3 +59,63 @@ function createLectureListItem(lecture) {
 
   return lectureLink;
 }
+
+/**
+ * Fetches and displays the list of transcript languages.
+ *
+ * @param {Element} videoLinkInputElement The input element containing the video
+ *     link.
+ */
+async function fetchAndDisplayTranscriptLanguages(videoLinkInputElement) {
+  const languageSelectorDivElement =
+      document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
+  languageSelectorDivElement.innerHTML = '';
+  const url = new URL(ENDPOINT_TRANSCRIPT_LANGUAGES, window.location.origin);
+  url.searchParams.append(
+      videoLinkInputElement.name, videoLinkInputElement.value);
+  let languagesJson;
+  try {
+    const languagesResponse = await fetch(url);
+    languagesJson = await languagesResponse.json();
+  } catch (error) {
+    return;
+  }
+  displayLanguages(languagesJson);
+}
+
+/**
+ * Adds each language in `languages` as an element in a
+ * drop-down selector.
+ */
+function displayLanguages(languages) {
+  const languageSelectorDivElement =
+      document.getElementById(LANGUAGE_SELECTOR_CONTAINER);
+  if (languages.length == 0) {
+    languageSelectorDivElement.innerText = NO_LANGUAGES_AVAILABLE_MESSAGE;
+    return;
+  }
+  const languageSelectElement = document.createElement('select');
+  languageSelectElement.name = LANGUAGE_SELECTOR;
+  languageSelectorDivElement.appendChild(languageSelectElement);
+  languageSelectElement.appendChild(createDefaultDisabledLanguageOption());
+  for (const language of languages) {
+    const languageOptionElement = document.createElement('option');
+    languageOptionElement.value = language.languageCode;
+    languageOptionElement.innerText = language.languageNameInEnglish;
+    languageSelectElement.appendChild(languageOptionElement);
+  }
+}
+
+/**
+ * Creates a disabled default option, which contains a message telling users
+ * to select a language.
+ */
+function createDefaultDisabledLanguageOption() {
+  const defaultLanguageOptionElement = document.createElement('option');
+  defaultLanguageOptionElement.disabled = true;
+  defaultLanguageOptionElement.selected = true;
+  defaultLanguageOptionElement.innerText = SELECT_LANGUAGE_OPTION_MESSAGE;
+  return defaultLanguageOptionElement;
+}
+
+window.fetchAndDisplayTranscriptLanguages = fetchAndDisplayTranscriptLanguages;

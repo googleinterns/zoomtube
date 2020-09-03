@@ -13,7 +13,8 @@
 // limitations under the License.
 
 import TimestampUtil from '../../timestamp-util.js';
-import {COMMENT_TYPE_REPLY, COMMENT_TYPES} from './discussion.js';
+import {COMMENT_TYPE_REPLY} from './discussion.js';
+import {COMMENT_TYPES} from './discussion.js';
 
 /**
  * Renders a comment and its replies, with a form to post a new reply.
@@ -33,6 +34,7 @@ export default class DiscussionComment extends HTMLElement {
   static #SELECTOR_CANCEL_REPLY = '#cancel-reply';
   static #SELECTOR_POST_REPLY = '#post-reply';
   static #SELECTOR_REPLY_TEXTAREA = '#reply-textarea';
+  static #SELECTOR_MARK_AS_BUTTON = '#mark-as-button';
 
   #discussion;
   #replyDiv;
@@ -65,7 +67,36 @@ export default class DiscussionComment extends HTMLElement {
     this.comment = comment;
     this.setHeader();
     this.setContent();
-    this.setTypeTag(comment.type);
+    this.updateCommentType(comment.type);
+  }
+
+  /**
+   * Adds the comment's header to the header slot. For root comments, adds
+   * a click event handler to seek everything to the comment's timestamp.
+   */
+  setHeader() {
+    const headerSpan = document.createElement('span');
+    headerSpan.innerText = this.getHeaderString();
+    headerSpan.slot = DiscussionComment.#SLOT_HEADER;
+    this.appendChild(headerSpan);
+
+    if (this.comment.type === COMMENT_TYPE_REPLY) {
+      return;
+    }
+
+    headerSpan.onclick = () => {
+      this.#discussion.onCommentHeaderClicked(this.comment.timestampMs.value);
+    };
+  }
+
+  /**
+   * Adds the comment's content to the content slot.
+   */
+  setContent() {
+    const contentSpan = document.createElement('span');
+    contentSpan.innerText = this.comment.content;
+    contentSpan.slot = DiscussionComment.#SLOT_CONTENT;
+    this.appendChild(contentSpan);
   }
 
   /**
@@ -187,16 +218,58 @@ export default class DiscussionComment extends HTMLElement {
 
   /**
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
+<<<<<<< HEAD
    */
   setTypeTag(type) {
     if (type === COMMENT_TYPE_REPLY) {
       return;
     }
-    const typePill = document.createElement('span');
-    typePill.innerText = COMMENT_TYPES[type].name;
-    typePill.classList.add(...COMMENT_TYPES[type].badgeStyles);
-    typePill.slot = DiscussionComment.#SLOT_TYPE_TAG;
-    this.appendChild(typePill);
+
+    if (this.typeTag) {
+      this.typeTag.remove();
+    }
+
+    this.typeTag = document.createElement('span');
+    this.typeTag.innerText = COMMENT_TYPES[type].name;
+    this.typeTag.classList.add(...COMMENT_TYPES[type].badgeStyles);
+    this.typeTag.slot = DiscussionComment.#SLOT_TYPE_TAG;
+    this.appendChild(this.typeTag);
+  }
+
+  /**
+   * Sets the text and onclick event for the mark as button according to
+   * the comment's `type`.
+=======
+>>>>>>> add-svg-icons
+   */
+  setMarkAsButton(type) {
+    const markAsButton = this.shadowRoot.querySelector(
+        DiscussionComment.#SELECTOR_MARK_AS_BUTTON);
+    if (!COMMENT_TYPES[type].hasMarkAs) {
+      markAsButton.style.visibility = 'hidden';
+      return;
+    }
+
+    const oppositeType = COMMENT_TYPES[type].oppositeType;
+
+    const markAsText = COMMENT_TYPES[oppositeType].markAsText;
+    markAsButton.innerText = markAsText;
+
+    const markAsFunction = COMMENT_TYPES[oppositeType].markAsFunction;
+    const listener = async () => {
+      markAsButton.removeEventListener('click', listener);
+      await markAsFunction(this.comment.commentKey.id);
+      await this.#discussion.updateDiscussion();
+    };
+    markAsButton.onclick = listener;
+  }
+
+  /**
+   * Updates the type tag and mark as button based on `newType`.
+   */
+  updateCommentType(newType) {
+    this.setTypeTag(newType);
+    this.setMarkAsButton(newType);
   }
 
   /**
