@@ -25,23 +25,22 @@ export default class IntervalIconFeedbackCount {
     [IconFeedbackUtil.TYPE_TOO_SLOW]: 0,
   }
 
+  /* Current interval IconFeedback counts appear in. */
   #interval;
 
   constructor(interval) {
     this.#interval = TimestampUtil.timestampToString(interval);
   }
 
-  /** Increments count of `iconFeedbackType`. */
+  /** Increments count of `iconFeedbackType` in dictionary. */
   incrementIconFeedbackCount(iconFeedbackType) {
     this.#iconFeedbackCounts[iconFeedbackType]++;
   }
 
-  /** Returns count of `iconFeedbackType`. */
   getIconFeedbackCounts() {
     return this.#iconFeedbackCounts;
   }
 
-  /** Returns current interval. */
   getInterval() {
     return this.#interval;
   }
