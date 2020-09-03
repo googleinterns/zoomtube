@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -34,13 +33,11 @@ import com.googleinterns.zoomtube.data.IconFeedback;
 import com.googleinterns.zoomtube.utils.IconFeedbackUtil;
 import com.googleinterns.zoomtube.utils.LectureUtil;
 import com.ryanharter.auto.value.gson.GenerateTypeAdapter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -68,7 +65,7 @@ public final class IconFeedbackServletTest {
   private StringWriter content;
 
   @Before
-  public void setUp() throws IOException, ServletException {
+  public void setUp() throws Exception {
     testServices.setUp();
     datastoreService = DatastoreServiceFactory.getDatastoreService();
     servlet = new IconFeedbackServlet();
@@ -128,8 +125,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doGet_missingLectureId_shouldRespondWithBadRequest()
-      throws IOException, ServletException {
+  public void doGet_missingLectureId_shouldRespondWithBadRequest() throws Exception {
     servlet.doGet(request, response);
 
     verify(response).sendError(
@@ -137,7 +133,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doGet_noFeedback_shouldReturnNoIconFeedback() throws IOException, ServletException {
+  public void doGet_noFeedback_shouldReturnNoIconFeedback() throws Exception {
     when(request.getParameter(IconFeedbackServlet.PARAM_LECTURE_ID)).thenReturn("123");
 
     servlet.doGet(request, response);
@@ -148,8 +144,7 @@ public final class IconFeedbackServletTest {
   }
 
   @Test
-  public void doGet_oneIconFeedback_shouldReturnOneIconFeedback()
-      throws IOException, ServletException {
+  public void doGet_oneIconFeedback_shouldReturnOneIconFeedback() throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
     datastoreService.put(
         IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));
@@ -167,7 +162,7 @@ public final class IconFeedbackServletTest {
 
   @Test
   public void doGet_oneIconFeedbackLectureIdDoesntMatch_shouldReturnNoIconFeedback()
-      throws IOException, ServletException {
+      throws Exception {
     Key lectureKey = KeyFactory.createKey(LectureUtil.KIND, /* lectureId= */ 123);
     datastoreService.put(
         IconFeedbackUtil.createEntity(lectureKey, /* timestampMs= */ 456L, IconFeedback.Type.GOOD));

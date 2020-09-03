@@ -100,6 +100,35 @@ export default class DiscussionComment extends HTMLElement {
   }
 
   /**
+   * Adds the comment's header to the header slot. For root comments, adds
+   * a click event handler to seek everything to the comment's timestamp.
+   */
+  setHeader() {
+    const headerSpan = document.createElement('span');
+    headerSpan.innerText = this.getHeaderString();
+    headerSpan.slot = DiscussionComment.#SLOT_HEADER;
+    this.appendChild(headerSpan);
+
+    if (this.comment.type === COMMENT_TYPE_REPLY) {
+      return;
+    }
+
+    headerSpan.onclick = () => {
+      this.#discussion.onCommentHeaderClicked(this.comment.timestampMs.value);
+    };
+  }
+
+  /**
+   * Adds the comment's content to the content slot.
+   */
+  setContent() {
+    const contentSpan = document.createElement('span');
+    contentSpan.innerText = this.comment.content;
+    contentSpan.slot = DiscussionComment.#SLOT_CONTENT;
+    this.appendChild(contentSpan);
+  }
+
+  /**
    * Returns a string containing the timestamp, author, and creation time of
    * the `comment`.  The timestamp is not displayed for replies to
    * other comments.
@@ -189,6 +218,7 @@ export default class DiscussionComment extends HTMLElement {
 
   /**
    * Sets the comment's type tag to a Bootstrap pill badge based on `type`.
+<<<<<<< HEAD
    */
   setTypeTag(type) {
     if (type === COMMENT_TYPE_REPLY) {
@@ -209,6 +239,8 @@ export default class DiscussionComment extends HTMLElement {
   /**
    * Sets the text and onclick event for the mark as button according to
    * the comment's `type`.
+=======
+>>>>>>> add-svg-icons
    */
   setMarkAsButton(type) {
     const markAsButton = this.shadowRoot.querySelector(
