@@ -33,9 +33,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
- * Fetches and parses the transcript language options as XML from the Google
- * Video Timetext API.
+/** 
+ * Fetches and parses the available transcript languages as XML from the Google
+ * Video Timetext API. 
  */
 public class TranscriptLanguageServlet extends HttpServlet {
   /* Properties of the API Url. */
@@ -94,7 +94,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
   }
 
   /**
-   * Returns the API Url used to fetch the list of transcript language options
+   * Returns the API Url used to fetch the list of available transcript languages
    * for {@code videoId}.
    */
   private URL getTranscriptLanguagesUrlForVideo(String videoId) throws IOException {
@@ -109,7 +109,7 @@ public class TranscriptLanguageServlet extends HttpServlet {
   }
 
   /**
-   * Parses the {@code document} containing the list of transcript language options.
+   * Returns the available transcript languages parsed from {@code document}.
    */
   private ImmutableList<TranscriptLanguage> parseTranscriptLanguages(Document document) {
     NodeList transcriptNodes = document.getElementsByTagName(TAG_TRACK);
