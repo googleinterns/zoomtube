@@ -102,9 +102,9 @@ public final class TranscriptLanguageServletTest {
 
   @Test
   public void doGet_getListOfLanguages_videoWithOnlyOneLanguage() throws Exception {
-    String videoWithOnlyOneLanguage = "https://www.youtube.com/watch?v=9DwzBICPhdM";
+    String videoWithOnlyOneLanguageAvailable = "https://www.youtube.com/watch?v=9DwzBICPhdM";
     when(request.getParameter(TranscriptLanguageServlet.PARAM_LINK))
-        .thenReturn(videoWithOnlyOneLanguage);
+        .thenReturn(videoWithOnlyOneLanguageAvailable);
 
     transcriptLanguageServlet.doGet(request, response);
 
