@@ -26,10 +26,11 @@ export default class IntervalIconFeedbackCount {
   }
 
   /* Current interval IconFeedback counts appear in. */
-  #interval;
+  #timestampInterval;
 
-  constructor(interval) {
-    this.#interval = TimestampUtil.timestampToString(interval);
+  constructor(timestampInterval) {
+    this.#timestampInterval =
+        TimestampUtil.timestampToString(timestampInterval);
   }
 
   /** Increments count of `iconFeedbackType` in dictionary. */
@@ -41,7 +42,7 @@ export default class IntervalIconFeedbackCount {
     return this.#iconFeedbackCounts;
   }
 
-  getInterval() {
-    return this.#interval;
+  getTimestampInterval() {
+    return this.#timestampInterval;
   }
 }
