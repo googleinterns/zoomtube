@@ -97,8 +97,8 @@ public class LectureServlet extends HttpServlet {
     Entity lectureEntity = LectureUtil.createEntity(lectureName, videoUrl, videoId.get());
     datastore.put(lectureEntity);
     try {
-      String transcriptLanguage =
-          Optional.ofNullable(request.getParameter(PARAM_LANGUAGE)).orElse("");
+      Optional<String> transcriptLanguage =
+          Optional.ofNullable(request.getParameter(PARAM_LANGUAGE));
       initializeTranscript(lectureEntity, transcriptLanguage);
     } catch (IOException | ServletException e) {
       // If there was an error initializing the transcript, then this lecture won't have one.
@@ -123,12 +123,12 @@ public class LectureServlet extends HttpServlet {
    * in {@code lectureEntity}. The language for parsing is determined by
    * {@code transcriptLanguage}.
    */
-  private void initializeTranscript(Entity lectureEntity, String transcriptLanguage)
+  private void initializeTranscript(Entity lectureEntity, Optional<String> transcriptLanguage)
       throws IOException, ServletException {
     TranscriptParser transcriptParser = TranscriptParser.getParser();
     Key lectureKey = lectureEntity.getKey();
     String videoId = (String) lectureEntity.getProperty(LectureUtil.VIDEO_ID);
-    transcriptParser.parseAndStoreTranscript(videoId, lectureKey, transcriptLanguage);
+    transcriptParser.parseAndStoreTranscript(videoId, lectureKey, transcriptLanguage.orElse(""));
   }
 
   @Override
